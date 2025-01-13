@@ -8,6 +8,10 @@
         <servlet-name>ViewProfileServlet</servlet-name>
         <servlet-class>controller.resident.ViewProfileServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <servlet-class>controller.resident.ResetPasswordServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>test</servlet-name>
         <url-pattern>/test</url-pattern>
@@ -15,5 +19,9 @@
     <servlet-mapping>
         <servlet-name>ViewProfileServlet</servlet-name>
         <url-pattern>/view-profile</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ResetPasswordServlet</servlet-name>
+        <url-pattern>/reset-password</url-pattern>
     </servlet-mapping>
 </web-app>
