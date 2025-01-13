@@ -12,6 +12,10 @@
         <servlet-name>ResetPasswordServlet</servlet-name>
         <servlet-class>controller.resident.ResetPasswordServlet</servlet-class>
     </servlet>
+    <servlet>
+        <servlet-name>RequestPasswordServlet</servlet-name>
+        <servlet-class>authentication.RequestPasswordServlet</servlet-class>
+    </servlet>
     <servlet-mapping>
         <servlet-name>test</servlet-name>
         <url-pattern>/test</url-pattern>
@@ -23,5 +27,9 @@
     <servlet-mapping>
         <servlet-name>ResetPasswordServlet</servlet-name>
         <url-pattern>/reset-password</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>RequestPasswordServlet</servlet-name>
+        <url-pattern>/request-password</url-pattern>
     </servlet-mapping>
 </web-app>

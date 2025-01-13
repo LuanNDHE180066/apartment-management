@@ -68,6 +68,18 @@ public class AccountDao extends DBContext {
         return null;
     }
 
+    public void changePassword(String username, String password) {
+        String sql = "Update Account set password = ? where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, password);
+            ps.setString(2, username);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(AccountDao.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void main(String[] args) {
         AccountDao dao = new AccountDao();
         System.out.println(dao.getEmailByUsername("quang"));

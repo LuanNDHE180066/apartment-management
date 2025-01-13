@@ -1,5 +1,6 @@
 package model;
 
+import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.UUID;
 import javax.mail.Authenticator;
@@ -15,6 +16,7 @@ import javax.mail.internet.MimeMessage;
  */
 public class SendEmail {
 
+    private final int LIMIT_MINUS = 10;
     private final String from = "playunknowquangoc@gmail.com"; // Địa chỉ email gửi
     private final String password = "tven yxhi haaw wrnk"; // Mật khẩu email
 
@@ -25,10 +27,18 @@ public class SendEmail {
         return UUID.randomUUID().toString();
     }
 
+    public LocalDateTime expireDateTime() {
+        return LocalDateTime.now().plusMinutes(LIMIT_MINUS);
+    }
+
+    public boolean isExpired(LocalDateTime time) {
+        return LocalDateTime.now().isAfter(time);
+    }
+
     /**
      * Gửi email chứa mật khẩu cũ hoặc thông tin xác nhận đơn hàng.
      */
-    public void sendEmail(String to, String subject, String content) {
+    public boolean sendEmail(String to, String subject, String content) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587"); // Sử dụng 587 cho TLS
@@ -54,9 +64,11 @@ public class SendEmail {
             msg.setContent(content, "text/html; charset=UTF-8");
             Transport.send(msg);
             System.out.println("Email đã được gửi thành công.");
+            return true;
         } catch (Exception e) {
             System.out.println("Lỗi khi gửi email:");
             e.printStackTrace(); // Hiển thị lỗi chi tiết
         }
+        return false;
     }
 }

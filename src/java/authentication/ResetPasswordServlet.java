@@ -2,16 +2,20 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.resident;
+package authentication;
 
 import dao.AccountDao;
+import dao.TokenForgetPassDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Account;
 import model.SendEmail;
+import model.TokenForgetPassword;
 
 /**
  *
@@ -57,7 +61,40 @@ public class ResetPasswordServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        String token = request.getParameter("token");
+        TokenForgetPassDAO daoT = new TokenForgetPassDAO();
+        HttpSession session = request.getSession();
+        if (token != null) {
+            SendEmail send = new SendEmail();
+            TokenForgetPassword newToken = daoT.getTokenPassword(token);
+            if (newToken == null) {
+                request.setAttribute("message", "Token invalid");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+
+            if (newToken.isIsUsed()) {
+                request.setAttribute("message", "Token is used");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+            if (send.isExpired(newToken.getExpireTime())) {
+                request.setAttribute("message", "Token is expired");
+                request.getRequestDispatcher("login.jsp").forward(request, response);
+                return;
+            }
+            AccountDao daoA = new AccountDao();
+            Account a = daoA.getAccountByUsername(newToken.getUserId());
+
+            session.setAttribute("username", a.getUsername());
+            session.setAttribute("token", newToken.getToken());
+            request.getRequestDispatcher("resetpassword.jsp").forward(request, response);
+            return;
+        } else {
+            request.setAttribute("message", "Token invalid");
+            request.getRequestDispatcher("requestpassword.jsp");
+            return;
+        }
     }
 
     /**
@@ -71,22 +108,35 @@ public class ResetPasswordServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        AccountDao daoA = new AccountDao();
+        HttpSession session = request.getSession();
         String username = request.getParameter("username");
-        try {
-            String email = daoA.getEmailByUsername(username);
-            String fullName = daoA.getFullNameByUsername(username);
-            SendEmail send = new SendEmail();
-            send.sendEmail(email, " RETRIEVE OLD PASSWORD ", "Hello " + fullName + ", your old password is: " + daoA.getAccountByUsername(username).getPassword());
-            request.setAttribute("message", "Your password has been sent to your email!");
-            request.setAttribute("status", "true");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        } catch (Exception e) {
-            request.setAttribute("message", "Can not found Username!");
+        String password = request.getParameter("new_password");
+        String confirmPassword = request.getParameter("confirm_password");
+        TokenForgetPassDAO daoT = new TokenForgetPassDAO();
+        String token = daoT.getTokenByUsername(username);
+
+        if (password.trim().isEmpty() || confirmPassword.trim().isEmpty()) {
             request.setAttribute("status", "false");
+            request.setAttribute("message", "Password can not be empty");
+            request.getRequestDispatcher("resetpassword.jsp").forward(request, response);
+            return;
+        }
+
+        if (!confirmPassword.equals(password)) {
+            request.setAttribute("status", "false");
+            request.setAttribute("message", "Password does not match");
+            request.getRequestDispatcher("resetpassword.jsp").forward(request, response);
+            return;
+        } else {
+            AccountDao daoA = new AccountDao();
+            daoA.changePassword(username, password);
+            daoT.updateStatusToken(token);
+            request.setAttribute("status", "true");
+            session.setAttribute("username", null);
+            request.setAttribute("message", "Password is changed");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
+
         }
     }
 
