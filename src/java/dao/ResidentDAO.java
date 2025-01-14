@@ -26,6 +26,7 @@ public class ResidentDAO extends DBContext{
         String sql ="select  * from resident";
         List<Resident> list = new ArrayList<>();
         PersonDAO pd = new PersonDAO();
+        String test = "xin chao";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
