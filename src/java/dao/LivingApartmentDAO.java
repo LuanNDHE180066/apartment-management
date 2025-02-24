@@ -147,6 +147,6 @@ public class LivingApartmentDAO extends DBContext {
         oa.setStatus(1);
         oa.setEndDate(null);
         oa.setStartDate(date);
-        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
+        System.out.println(dao.getByApartmentID("A001").size());
     }
 }
