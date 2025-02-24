@@ -27,15 +27,15 @@ public class SearchServices extends HttpServlet {
         }
 
         // Fetch services matching the search term
-        List<Service> filteredServices = sd.searchByName(searchName);
-
-        // Convert the list to JSON and return it
-        Gson gson = new Gson();
-        String jsonResponse = gson.toJson(filteredServices);
-
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        response.getWriter().write(jsonResponse);
+//        List<Service> filteredServices = sd.searchByName(searchName);
+//
+//        // Convert the list to JSON and return it
+//        Gson gson = new Gson();
+//        String jsonResponse = gson.toJson(filteredServices);
+//
+//        response.setContentType("application/json");
+//        response.setCharacterEncoding("UTF-8");
+//        response.getWriter().write(jsonResponse);
     }
 
     @Override
