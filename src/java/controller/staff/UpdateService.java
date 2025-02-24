@@ -14,13 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.Service;
 
 /**
  *
  * @author thanh
  */
-@WebServlet(name = "AddNewServiceServlet", urlPatterns = {"/add-service-staff"})
-public class AddNewServiceServlet extends HttpServlet {
+@WebServlet(name = "UpdateService", urlPatterns = {"/update-service-staff"})
+public class UpdateService extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -39,10 +40,10 @@ public class AddNewServiceServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddNewServiceServlet</title>");
+            out.println("<title>Servlet UpdateService</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddNewServiceServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateService at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -62,9 +63,13 @@ public class AddNewServiceServlet extends HttpServlet {
             throws ServletException, IOException {
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-        request.setAttribute("companies", cd.getAll());
+        ServiceDAO sd = new ServiceDAO();
+        String id = request.getParameter("id");
+        Service s = sd.getById(id);
+        request.setAttribute("service", s);
         request.setAttribute("types", csd.getAll());
-        request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+        request.setAttribute("companies", cd.getAll());
+        request.getRequestDispatcher("updateservice.jsp").forward(request, response);
     }
 
     /**
@@ -80,8 +85,9 @@ public class AddNewServiceServlet extends HttpServlet {
             throws ServletException, IOException {
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
+        String id = request.getParameter("id");
         String name = request.getParameter("name");
-        int price = Integer.parseInt(request.getParameter("price"));
+        float price = Float.parseFloat(request.getParameter("price"));
         String des = request.getParameter("des");
         if (name.trim().isBlank() || des.trim().isBlank()) {
             request.setAttribute("error", "Name or description is not a blank");
@@ -91,17 +97,22 @@ public class AddNewServiceServlet extends HttpServlet {
             return;
         }
         ServiceDAO sd = new ServiceDAO();
-        if (sd.isExistName(name)) {
-            request.setAttribute("error", "Name is existed");
-            request.setAttribute("companies", cd.getAll());
-            request.setAttribute("types", csd.getAll());
-            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
-            return;
-        }
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
         int status = Integer.parseInt(request.getParameter("status"));
-        sd.addService(name, price, des, categoryId, companyId, status);
+        
+        if (status != sd.getById(id).getStatus()) {//trường hợp đổi status
+            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
+                sd.addService(name, price, des, categoryId, companyId, status);
+            }
+            else{ //từ hoạt động xuống dừng thì chỉ đổi status và enddate
+                sd.turnToInActive(id);
+            }
+        }
+        else{//nếu như status không đổi mà chỉ đổi các thuộc tính khác, tạo mới và off cái cũ
+            sd.addService(name, price, des, categoryId, companyId, status);
+            sd.turnToInActive(id);
+        }
         response.sendRedirect("all-services");
     }
 

@@ -9,6 +9,8 @@ import java.util.List;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
+import java.util.Date;
 import jdbc.DBContext;
 import model.CategoryService;
 import model.Company;
@@ -31,12 +33,16 @@ public class ServiceDAO extends DBContext {
             while (rs.next()) {
                 String id = rs.getString("id");
                 String name = rs.getString("name");
-                int price = rs.getInt("unitprice");
+                double price = rs.getDouble("unitprice");
                 String des = rs.getString("description");
                 CategoryService ct = csd.getByCategoryId(rs.getString("scid"));
                 Company c = cd.getById(rs.getString("cid"));
                 int status = rs.getInt("status");
                 Service s = new Service(id, name, price, des, ct, c, status);
+                s.setStartDate(rs.getDate("startdate").toString());
+                if (rs.getDate("enddate") != null) {
+                    s.setEndDate(rs.getDate("enddate").toString());
+                }
                 list.add(s);
             }
             return list;
@@ -100,7 +106,8 @@ public class ServiceDAO extends DBContext {
                 s.setCategoryService(csd.getByServiceId(s.getId()));
                 s.setCompany(cd.getByServiceId(s.getId()));
                 s.setStatus(rs.getInt(7));
-
+                s.setStartDate(rs.getDate("startdate").toString());
+                s.setEndDate(rs.getDate("enddate").toString());
                 list.add(s);
             }
             return list;
@@ -138,25 +145,65 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public void addService(String name,int price,String des,String type,String company,int status) {
-        String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status)\n"
+    public void addService(String name, float price, String des, String type, String company, int status) {
+        String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status,startDate)\n"
                 + "VALUES\n"
-                + "(?, ?, ?, ?, ?, ?, ?)";
+                + "(?, ?, ?, ?, ?, ?, ?,?)";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            st.setString(1, "SVC"+(this.getNumberService()+1));
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, "SVC" + (this.getNumberService() + 1));
             st.setString(2, name);
-            st.setInt(3, price);
+            st.setFloat(3, price);
             st.setString(4, des);
             st.setString(5, type);
             st.setString(6, company);
             st.setString(7, Integer.toString(status));
+            st.setDate(8, java.sql.Date.valueOf(LocalDate.now()));
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
-
+    public Service getById(String id){
+        String sql = "Select * from Service where id =?";
+        CompanyDAO cd = new CompanyDAO();
+        CategoryServiceDAO csd = new CategoryServiceDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1,id);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("name");
+                float price = rs.getFloat("unitprice");
+                String des = rs.getString("description");
+                CategoryService ct = csd.getByCategoryId(rs.getString("scid"));
+                Company c = cd.getById(rs.getString("cid"));
+                int status = rs.getInt("status");
+                Service s = new Service(id, name, price, des, ct, c, status);
+                s.setStartDate(rs.getDate("startdate").toString());
+                if (rs.getDate("enddate") != null) {
+                    s.setEndDate(rs.getDate("enddate").toString());
+                }
+                return s;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+    public void turnToInActive(String id){
+        String sql ="update service set status = 0, enddate =? where id=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
+            st.setString(2, id);
+            st.executeQuery();
+            //thiếu phần chuyển đổi những dịch vu đang có sang cái mới
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+  
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
         List<Service> list = sd.getAll();

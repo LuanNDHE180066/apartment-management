@@ -81,6 +81,8 @@
                                                             <th>Category</th>
                                                             <th>Supplier</th>
                                                             <th>Status</th>
+                                                            <th>Start</th>
+                                                            <th>End</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -93,7 +95,9 @@
                                                                 <td>${list.categoryService.name}</td>
                                                                 <td>${list.company.name}</td>
                                                                 <td>${list.status==1?'Active':'Inactive'}</td>
-                                                                <td><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                                                                <td>${list.startDate}</td>
+                                                                <td>${list.endDate}</td>
+                                                                <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>
