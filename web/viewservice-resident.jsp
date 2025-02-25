@@ -87,14 +87,59 @@
                                                         </c:forEach>
                                                     </select>
                                                 </form>
-                                                <button type="button" style="padding: 8px 16px; background-color: #007bff; color: white; border: none;
-                                                        border-radius: 4px; font-size: 14px; cursor: pointer;">
-                                                    <a style="color: black" href="#">Add service</a>
-                                                </button>
                                             </div>
 
 
                                             <div class="table-responsive-sm">
+                                                <div>
+                                                    <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
+                                                        Dịch vụ theo yêu cầu
+                                                    </h3>
+                                                </div>
+
+                                                <table class="table w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 40%;">Name of service</th>
+                                                            <th style="width: 15%;">Quantity</th>
+                                                            <th style="width: 15%;">Unit Price</th>
+                                                            <th style="width: 25%;">Supplier</th>
+                                                            <th>Action</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:forEach items="${requestScope.usingServices}" var="item">
+                                                            <c:if test="${item.service.categoryService.id!='SV001'}">
+                                                            <form action="update-service-resident">
+                                                                <tr>
+                                                                    <td>${item.service.name}</td>
+                                                                    <td>
+                                                                        <input name="serviceId" value="${item.service.id}" hidden=""/>
+                                                                        <input name="apartmentId" value="${item.apartment.id}" hidden=""/>
+                                                                        <input onchange="this.form.submit()" step="1" ${item.service.categoryService.id == 'SV002' ? 'readonly' : ''}
+                                                                               type="number" min="1" name="quantity" value="${item.quantity}"/>
+                                                                    </td> 
+                                                                    <td>${item.service.unitPrice}</td>
+                                                                    <td>${item.service.company.name}</td>
+                                                                    <td style="text-align: center">
+                                                                        <a href="delete-service-resident?sid=${item.service.id}&aid=${item.apartment.id}" class="fa-solid fa-minus"></a>
+                                                                    </td>
+                                                                </tr>
+                                                            </form>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+
+                                            <div class="table-responsive-sm">
+                                                <div>
+                                                    <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
+                                                        Dịch vụ cố định
+                                                    </h3>
+                                                </div>
+
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
@@ -106,12 +151,14 @@
                                                     </thead>
                                                     <tbody>
                                                         <c:forEach items="${requestScope.usingServices}" var="item">
-                                                            <tr>
-                                                                <td>${item.service.name}</td>
-                                                                <td>${item.quantity}</td> 
-                                                                <td>${item.service.unitPrice}</td>
-                                                                <td>${item.service.company.name}</td>
-                                                            </tr>
+                                                            <c:if test="${item.service.categoryService.id=='SV001'}">
+                                                                <tr>
+                                                                    <td>${item.service.name}</td>
+                                                                    <td>${item.quantity}</td> 
+                                                                    <td>${item.service.unitPrice}</td>
+                                                                    <td>${item.service.company.name}</td>
+                                                                </tr>
+                                                            </c:if>
                                                         </c:forEach>
                                                     </tbody>
                                                 </table>

@@ -45,6 +45,29 @@ public class MonthlyServiceDAO extends DBContext {
         }
         return list;
     }
+    public void updateQuantityByServiceAndApartment(String sid,String aid,int quantity){
+        String sql ="update MonthlyInvoice set quantity= ? where sid = ? and aid=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, quantity);
+            st.setString(2, sid);
+            st.setString(3, aid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public void deleteMonthlyService(String sid,String aid){
+        String sql ="delete MonthlyInvoice where sid = ? and aid=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, sid);
+            st.setString(2, aid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         MonthlyServiceDAO dao = new MonthlyServiceDAO();
         System.out.println(dao.getByApartmentId("A01_01").size());
