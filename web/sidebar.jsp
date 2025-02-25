@@ -122,6 +122,9 @@
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
                     </li>
+                    <li>
+                        <a  href="view-service-resident"><i class="fa fa-dashboard"></i><span>Service</span></a>
+                    </li>
                     
 
                     <!--                    <li>

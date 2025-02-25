@@ -132,21 +132,39 @@ public class LivingApartmentDAO extends DBContext {
         return false;
     }
 
+    public List<Apartment> getApartmentsByResidentId(String id) {
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Apartment> list = new ArrayList<>();
+        String sql = "select * from LivingAparment where rid =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(ad.getById(rs.getString("aid")));
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
-        ResidentDAO daoR = new ResidentDAO();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate now = LocalDate.now();
-        String date = now.format(formatter);
-        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
-        Resident ownerResident = daoR.getById("P102");
-        oa.setRid(ownerResident);
-        oa.setEndDate(date);
-        oa.setStatus(0);
-
-        oa.setStatus(1);
-        oa.setEndDate(null);
-        oa.setStartDate(date);
-        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
+//        ResidentDAO daoR = new ResidentDAO();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDate now = LocalDate.now();
+//        String date = now.format(formatter);
+//        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
+//        Resident ownerResident = daoR.getById("P102");
+//        oa.setRid(ownerResident);
+//        oa.setEndDate(date);
+//        oa.setStatus(0);
+//
+//        oa.setStatus(1);
+//        oa.setEndDate(null);
+//        oa.setStartDate(date);
+//        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
+System.out.println(dao.getApartmentsByResidentId("P101").size());
     }
 }
