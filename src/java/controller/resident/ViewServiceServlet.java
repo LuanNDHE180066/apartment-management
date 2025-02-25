@@ -92,6 +92,7 @@ public class ViewServiceServlet extends HttpServlet {
         }
         MonthlyServiceDAO md = new MonthlyServiceDAO();
         request.setAttribute("usingServices", md.getByApartmentId(aid));
+        request.setAttribute("notUsingServices", md.getNotUsingServiceByApartmentId(aid));
         request.setAttribute("aid", aid);
         request.getRequestDispatcher("viewservice-resident.jsp").forward(request, response);
     }

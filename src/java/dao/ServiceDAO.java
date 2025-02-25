@@ -145,13 +145,14 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public void addService(String name, float price, String des, String type, String company, int status) {
+    public String addService(String name, float price, String des, String type, String company, int status) {
         String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status,startDate)\n"
                 + "VALUES\n"
                 + "(?, ?, ?, ?, ?, ?, ?,?)";
+        String newServiceId= "SVC" + (this.getNumberService() + 1);
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, "SVC" + (this.getNumberService() + 1));
+            st.setString(1, newServiceId);
             st.setString(2, name);
             st.setFloat(3, price);
             st.setString(4, des);
@@ -162,7 +163,9 @@ public class ServiceDAO extends DBContext {
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
+            return null;
         }
+        return newServiceId;
     }
     public Service getById(String id){
         String sql = "Select * from Service where id =?";
@@ -197,8 +200,7 @@ public class ServiceDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
             st.setString(2, id);
-            st.executeQuery();
-            //thiếu phần chuyển đổi những dịch vu đang có sang cái mới
+            st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
         }

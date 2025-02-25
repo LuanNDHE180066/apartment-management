@@ -6,6 +6,7 @@ package controller.staff;
 
 import dao.CategoryServiceDAO;
 import dao.CompanyDAO;
+import dao.MonthlyServiceDAO;
 import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -107,11 +108,15 @@ public class UpdateService extends HttpServlet {
             }
             else{ //từ hoạt động xuống dừng thì chỉ đổi status và enddate
                 sd.turnToInActive(id);
+                MonthlyServiceDAO md = new MonthlyServiceDAO();
+                md.deleteWhenTurnOffService(id);//tắt các nơi đã đki dịch vụ
             }
         }
-        else{//nếu như status không đổi mà chỉ đổi các thuộc tính khác, tạo mới và off cái cũ
-            sd.addService(name, price, des, categoryId, companyId, status);
-            sd.turnToInActive(id);
+        else{//nếu như status không đổi mà chỉ đổi các thuộc tính khác
+            String newServiceId =sd.addService(name, price, des, categoryId, companyId, status);//tạo mới
+            sd.turnToInActive(id);//off cũ
+            MonthlyServiceDAO md = new MonthlyServiceDAO();
+            md.switchService(newServiceId, id);//đổi cũ sang mới
         }
         response.sendRedirect("all-services");
     }

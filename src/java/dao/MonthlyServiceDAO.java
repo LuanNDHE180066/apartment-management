@@ -68,6 +68,53 @@ public class MonthlyServiceDAO extends DBContext {
             System.out.println(e);
         }
     }
+    public List<Service> getNotUsingServiceByApartmentId(String aid){
+        String sql="select id from Service where status =1 except select sid from MonthlyInvoice where aid=?";
+        List<Service> list = new ArrayList<>();
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setString(1, aid);
+            ServiceDAO sd= new ServiceDAO();
+            ResultSet rs= st.executeQuery();
+            while(rs.next()){
+                list.add(sd.getById(rs.getString("id")));
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
+    public void addServiceToApartment(String sid,String aid){
+        String sql="insert into MonthlyInvoice values(?,1,?)";
+        try {
+            PreparedStatement st= connection.prepareStatement(sql);
+            st.setString(1, sid);
+            st.setString(2, aid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public void deleteWhenTurnOffService(String sid){
+        String sql ="delete MonthlyInvoice where sid = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, sid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public void switchService(String newIs,String oldId){
+        String sql="update MonthlyInvoice set sid =? where sid =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, newIs);
+            st.setString(2, oldId);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         MonthlyServiceDAO dao = new MonthlyServiceDAO();
         System.out.println(dao.getByApartmentId("A01_01").size());

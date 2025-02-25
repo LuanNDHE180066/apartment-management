@@ -56,11 +56,10 @@ public class UpdateResidentService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String aid=request.getParameter("apartmentId");
-        String sid=request.getParameter("serviceId");
-        int quantity = Integer.parseInt(request.getParameter("quantity"));
-        MonthlyServiceDAO md = new MonthlyServiceDAO();
-        md.updateQuantityByServiceAndApartment(sid, aid, quantity);
+        String aid= request.getParameter("aid");
+        String sid = request.getParameter("sid");
+        MonthlyServiceDAO md =new MonthlyServiceDAO();
+        md.addServiceToApartment(sid, aid);
         response.sendRedirect("view-service-resident");
     } 
 
@@ -74,7 +73,12 @@ public class UpdateResidentService extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String aid=request.getParameter("apartmentId");
+        String sid=request.getParameter("serviceId");
+        int quantity = Integer.parseInt(request.getParameter("quantity"));
+        MonthlyServiceDAO md = new MonthlyServiceDAO();
+        md.updateQuantityByServiceAndApartment(sid, aid, quantity);
+        response.sendRedirect("view-service-resident");
     }
 
     /** 
