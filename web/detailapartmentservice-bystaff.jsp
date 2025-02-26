@@ -71,38 +71,41 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
-                                        <div class="full graph_head d-flex justify-content-between align-items-center">
+                                        <div style="text-align: right" class="full graph_head d-flex justify-content-between align-items-center">
                                             <div class="heading1 margin_0">
-                                                <h2>Service Register</h2>
+                                                <button style="width: 200px;height: 50px" class="btn btn-primary">
+                                                    <a style="color: black; font-size: 1.2rem " href="#">Xuất hóa đơn</a>
+                                                </button>
                                             </div>
                                         </div>
                                         <div class="table_section padding_infor_info">
-                                            <div style="margin-left: 40px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
-                                                <form action="view-service-resident" method="post" style="display: flex; align-items: center; gap: 10px;">
-                                                    <label for="idapartment" style="font-weight: bold;">Chung cư số:</label>
-                                                    <select onchange="this.form.submit()" id="idapartment" name="idapartment" 
-                                                            style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 200px;">
-                                                        <c:forEach items="${requestScope.owned}" var="item">
-                                                            <option ${requestScope.aid==item.id? 'selected':'' } value="${item.id}">${item.id}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </form>
-                                            </div>
                                             <div class="table-responsive-sm">
                                                 <div>
-                                                    <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
-                                                        Các chung cu đang sử dụng dịch vụ
+                                                    <h3 style="text-align: right;margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
+                                                        Chi tiết dịch vụ
                                                     </h3>
                                                 </div>
-                                                <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-                                                    <c:forEach items="${requestScope.listApartment}" var="item">
-                                                        <div style="width: calc(100% / 6 - 10px); text-align: center;">
-                                                            <img src="images/logo/house.jpg" style="width: 100%;"/>
-                                                            <a style="color: black" href="view-apartmentservice-staff?method=post&aid=${item}">${item}</a>
-                                                        </div>
-                                                    </c:forEach>
-                                                </div>
 
+                                                <table class="table w-100">
+                                                    <thead>
+                                                        <tr>
+                                                            <th style="width: 40%;">Name of service</th>
+                                                            <th style="width: 15%;">Quantity</th>
+                                                            <th style="width: 15%;">Unit Price</th>
+                                                            <th style="width: 25%;">Supplier</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <c:forEach items="${requestScope.listService}" var="item">
+                                                            <tr>
+                                                                <td>${item.service.name}</td>
+                                                                <td>${item.quantity}</td> 
+                                                                <td>${item.service.unitPrice}</td>
+                                                                <td>${item.service.company.name}</td>
+                                                            </tr>
+                                                        </c:forEach>
+                                                    </tbody>
+                                                </table>
                                             </div>
                                         </div>
                                     </div>

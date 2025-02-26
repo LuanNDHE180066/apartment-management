@@ -125,6 +125,9 @@
                     <li>
                         <a  href="view-service-resident"><i class="fa fa-dashboard"></i><span>Service</span></a>
                     </li>
+                    <li>
+                        <a  href="view-apartmentservice-staff"><i class="fa fa-dashboard"></i><span>admin service quản lí dân</span></a>
+                    </li>
                     
 
                     <!--                    <li>
