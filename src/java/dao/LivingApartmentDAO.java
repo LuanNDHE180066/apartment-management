@@ -148,7 +148,19 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    public List<String> getAllActiveApartment(){
+        String sql = "select distinct(aid) as aid from LivingAparment where status =1";
+        List<String> list = new ArrayList<>();
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("aid"));
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
 //        ResidentDAO daoR = new ResidentDAO();

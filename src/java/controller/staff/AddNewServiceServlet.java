@@ -6,6 +6,7 @@ package controller.staff;
 
 import dao.CategoryServiceDAO;
 import dao.CompanyDAO;
+import dao.MonthlyServiceDAO;
 import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -101,7 +102,11 @@ public class AddNewServiceServlet extends HttpServlet {
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
         int status = Integer.parseInt(request.getParameter("status"));
-        sd.addService(name, price, des, categoryId, companyId, status);
+        String newServiceID =sd.addService(name, price, des, categoryId, companyId, status);
+        if(categoryId.equals("SV001")){//khi thêm 1 service bắt buộc mới thì tất các phòng sẽ tự động thêm
+            MonthlyServiceDAO md = new MonthlyServiceDAO();
+            md.addServiceToAllApartment(newServiceID);
+        }
         response.sendRedirect("all-services");
     }
 

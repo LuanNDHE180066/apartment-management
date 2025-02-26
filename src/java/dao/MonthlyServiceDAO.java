@@ -115,6 +115,21 @@ public class MonthlyServiceDAO extends DBContext {
             System.out.println(e);
         }
     }
+    public void addServiceToAllApartment(String sid){
+        LivingApartmentDAO ld = new  LivingApartmentDAO();
+        List<String> listApartment = ld.getAllActiveApartment();
+        for (int i = 0; i < listApartment.size(); i++) {
+            String aid = listApartment.get(i);
+            String sql="insert into MonthlyInvoice values(?,1,?)";
+            try {
+                PreparedStatement st = connection.prepareStatement(sql);
+                st.setString(1, sid);
+                st.setString(2, aid);
+                st.executeUpdate();
+            } catch (SQLException e) {
+            }
+        }
+    }
     public static void main(String[] args) {
         MonthlyServiceDAO dao = new MonthlyServiceDAO();
         System.out.println(dao.getByApartmentId("A01_01").size());

@@ -217,7 +217,7 @@ public class ApartmentDAO extends DBContext {
         return false;
 
     }
-
+    
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
