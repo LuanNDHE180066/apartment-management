@@ -17,8 +17,9 @@ public class Service {
     private Company company;
     private int status;
     private String startDate,endDate;
+    private String unit;
 
-    public Service(String id, String name, double unitPrice, String description, CategoryService categoryService, Company company, int status, String startDate, String endDate) {
+    public Service(String id, String name, double unitPrice, String description, CategoryService categoryService, Company company, int status, String startDate, String endDate, String unit) {
         this.id = id;
         this.name = name;
         this.unitPrice = unitPrice;
@@ -28,8 +29,17 @@ public class Service {
         this.status = status;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.unit = unit;
     }
 
+    public String getUnit() {
+        return unit;
+    }
+
+    public void setUnit(String unit) {
+        this.unit = unit;
+    }
+    
     public String getStartDate() {
         return startDate;
     }

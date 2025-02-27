@@ -43,6 +43,7 @@ public class ServiceDAO extends DBContext {
                 if (rs.getDate("enddate") != null) {
                     s.setEndDate(rs.getDate("enddate").toString());
                 }
+                s.setUnit(rs.getString("unit"));
                 list.add(s);
             }
             return list;
@@ -108,6 +109,7 @@ public class ServiceDAO extends DBContext {
                 s.setStatus(rs.getInt(7));
                 s.setStartDate(rs.getDate("startdate").toString());
                 s.setEndDate(rs.getDate("enddate").toString());
+                s.setUnit(rs.getString("unit"));
                 list.add(s);
             }
             return list;
@@ -145,10 +147,10 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public String addService(String name, float price, String des, String type, String company, int status) {
-        String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status,startDate)\n"
+    public String addService(String name, float price, String des, String type, String company, int status,String unit) {
+        String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status,startDate,unit)\n"
                 + "VALUES\n"
-                + "(?, ?, ?, ?, ?, ?, ?,?)";
+                + "(?, ?, ?, ?, ?, ?, ?,?,?)";
         String newServiceId= "SVC" + (this.getNumberService() + 1);
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -160,6 +162,7 @@ public class ServiceDAO extends DBContext {
             st.setString(6, company);
             st.setString(7, Integer.toString(status));
             st.setDate(8, java.sql.Date.valueOf(LocalDate.now()));
+            st.setString(9, unit);
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
@@ -187,6 +190,7 @@ public class ServiceDAO extends DBContext {
                 if (rs.getDate("enddate") != null) {
                     s.setEndDate(rs.getDate("enddate").toString());
                 }
+                s.setUnit(rs.getString("unit"));
                 return s;
             }
         } catch (SQLException e) {

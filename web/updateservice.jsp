@@ -79,6 +79,11 @@
                                             <label for="price" style="display: block; font-weight: bold; margin-bottom: 5px;">Unit Price</label>
                                             <input min="0" type="number" id="price" name="price" value="${requestScope.service.unitPrice}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
+                                        
+                                         <div class="form-group" style="margin-bottom: 15px;">
+                                            <label for="price" style="display: block; font-weight: bold; margin-bottom: 5px;">Unit</label>
+                                            <input type="text" id="unit" name="unit" value="${requestScope.service.unit}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                                        </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
                                             <label for="des" style="display: block; font-weight: bold; margin-bottom: 5px;">Description</label>

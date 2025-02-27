@@ -77,6 +77,7 @@
                                                         <tr>
                                                             <th>Services Name</th>
                                                             <th>Unit Price</th>
+                                                            <th>Unit</th>
                                                             <th>Description</th>
                                                             <th>Category</th>
                                                             <th>Supplier</th>
@@ -91,6 +92,7 @@
                                                             <tr>
                                                                 <td>${list.name}</td>
                                                                 <td>${list.unitPrice}</td>
+                                                                <td>${list.unit}</td>
                                                                 <td>${list.description}</td>
                                                                 <td>${list.categoryService.name}</td>
                                                                 <td>${list.company.name}</td>

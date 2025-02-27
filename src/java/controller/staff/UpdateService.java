@@ -84,6 +84,7 @@ public class UpdateService extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String unit = request.getParameter("unit");
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
         String id = request.getParameter("id");
@@ -104,7 +105,7 @@ public class UpdateService extends HttpServlet {
         
         if (status != sd.getById(id).getStatus()) {//trường hợp đổi status
             if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
-                sd.addService(name, price, des, categoryId, companyId, status);
+                sd.addService(name, price, des, categoryId, companyId, status,unit);
             }
             else{ //từ hoạt động xuống dừng thì chỉ đổi status và enddate
                 sd.turnToInActive(id);
@@ -113,7 +114,7 @@ public class UpdateService extends HttpServlet {
             }
         }
         else{//nếu như status không đổi mà chỉ đổi các thuộc tính khác
-            String newServiceId =sd.addService(name, price, des, categoryId, companyId, status);//tạo mới
+            String newServiceId =sd.addService(name, price, des, categoryId, companyId, status,unit);//tạo mới
             sd.turnToInActive(id);//off cũ
             MonthlyServiceDAO md = new MonthlyServiceDAO();
             md.switchService(newServiceId, id);//đổi cũ sang mới

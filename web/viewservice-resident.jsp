@@ -100,8 +100,9 @@
                                                         <thead>
                                                             <tr>
                                                                 <th style="width: 40%;">Name of service</th>
-                                                                <th style="width: 10%;">Quantity</th>
+                                                                <th style="width: 5%;">Quantity</th>
                                                                 <th style="width: 15%;">Unit Price</th>
+                                                                <th style="width: 15%;">Unit</th>
                                                                 <th style="width: 25%;">Supplier</th>
                                                                 <th>Action</th>
                                                             </tr>
@@ -119,6 +120,7 @@
                                                                                    type="number" min="1" name="quantity" value="${item.quantity}"/>
                                                                         </td> 
                                                                         <td>${item.service.unitPrice}</td>
+                                                                        <td>${item.service.unit}</td>
                                                                         <td>${item.service.company.name}</td>
                                                                         <td style="text-align: center">
                                                                             <a href="delete-service-resident?sid=${item.service.id}&aid=${item.apartment.id}" class="fa-solid fa-minus"></a>
@@ -171,8 +173,9 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width: 40%;">Name of service</th>
-                                                            <th style="width: 15%;">Quantity</th>
+                                                            <th style="width: 5%;">Quantity</th>
                                                             <th style="width: 15%;">Unit Price</th>
+                                                            <th style="width: 15%;">Unit</th>
                                                             <th style="width: 25%;">Supplier</th>
                                                         </tr>
                                                     </thead>
@@ -183,6 +186,7 @@
                                                                     <td>${item.service.name}</td>
                                                                     <td>${item.quantity}</td> 
                                                                     <td>${item.service.unitPrice}</td>
+                                                                    <td>${item.service.unit}</td>
                                                                     <td>${item.service.company.name}</td>
                                                                 </tr>
                                                             </c:if>
