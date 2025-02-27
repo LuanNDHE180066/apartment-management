@@ -37,7 +37,7 @@ public class InvoiceDAO extends DBContext{
             ResultSet rs =st.executeQuery();
             if(rs.next()){
                 String i = rs.getString("id");
-                float total = rs.getFloat("amount");
+                float total = rs.getFloat("total");
                 String invoicedate = rs.getDate("invoicedate").toString();
                 String duedate = rs.getDate("duedate").toString();
                 int status = rs.getInt("status");
@@ -51,5 +51,35 @@ public class InvoiceDAO extends DBContext{
             System.out.println(e);
         }
         return null;
+    }
+    public List<Invoice> getByResidentId(String rid){
+        String sql = "select * from invoice where rid=?";
+        List<Invoice> list = new ArrayList<>();
+        ResidentDAO rd= new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, rid);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                list.add(invoice);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+    public static void main(String[] args) {
+        InvoiceDAO id = new InvoiceDAO();
+        System.out.println(id.getByResidentId("P101").size());
     }
 }
