@@ -78,8 +78,62 @@ public class InvoiceDAO extends DBContext{
         }
         return list;
     }
+    public List<Invoice> getNonPaidInvoice(){
+        ResidentDAO rd = new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Invoice> list = new ArrayList<>();
+        String sql = "select * from invoice where status =0";
+        try{
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                list.add(invoice);
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e);
+        }
+        return list;
+    }
+    public List<Invoice> searchByYearAndApartment(int year,String aid){
+        ResidentDAO rd = new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Invoice> list = new ArrayList<>();
+        String sql="select * from invoice where aid =? and year(invoicedate) =?";
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setString(1, aid);
+            st.setInt(2, year);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                 String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                list.add(invoice);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
         System.out.println(id.getByResidentId("P101").size());
+        System.out.println(id.getNonPaidInvoice().size());
+        System.out.println(id.searchByYearAndApartment(2025, "A10_04").size());
     }
 }

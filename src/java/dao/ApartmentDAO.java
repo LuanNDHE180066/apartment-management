@@ -217,7 +217,28 @@ public class ApartmentDAO extends DBContext {
         return false;
 
     }
-    
+    public List<Apartment> getAll(){
+        String sql = "select * from Apartment";
+        List<Apartment> list = new ArrayList<>();
+        RoomTypeDAO rtd = new RoomTypeDAO();
+        FloorDAO fd = new FloorDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int noPerson = rs.getInt("Noperson");
+                Floor floor = fd.getByNumber(rs.getInt("floor"));
+                String information = rs.getString("information");
+                RoomType rt = rtd.getRoomTypeById(rs.getString("rtId"));
+                int status = rs.getInt("status");
+                Apartment a = new Apartment(id, noPerson, floor, information, rt, status);
+                list.add(a);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
@@ -233,6 +254,7 @@ public class ApartmentDAO extends DBContext {
 //
 //        System.out.println(dao.updatenoperson(a));
         System.out.println(dao.getById("A10_04").getFloor().getSquare());
+        System.out.println(dao.getAll().size());
 //        
     }
 }
