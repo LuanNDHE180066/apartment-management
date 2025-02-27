@@ -72,22 +72,17 @@
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head d-flex justify-content-between align-items-center">
-                                            <div class="heading1 margin_0">
-                                                <h2>Service Register</h2>
-                                            </div>
                                         </div>
                                         <div class="table_section padding_infor_info">
                                             <div style="margin-left: 40px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
-                                                <form action="view-service-resident" method="post" style="display: flex; align-items: center; gap: 10px;">
-                                                    <label for="idapartment" style="font-weight: bold;">Chung cư số:</label>
-                                                    <select onchange="this.form.submit()" id="idapartment" name="idapartment" 
-                                                            style="padding: 5px; border: 1px solid #ccc; border-radius: 4px; font-size: 14px; width: 200px;">
-                                                        <c:forEach items="${requestScope.owned}" var="item">
-                                                            <option ${requestScope.aid==item.id? 'selected':'' } value="${item.id}">${item.id}</option>
-                                                        </c:forEach>
-                                                    </select>
-                                                </form>
+                                                <a href="generate-invoice-staff" 
+                                                   style="display: inline-block; padding: 10px 18px; font-size: 16px; font-weight: bold;
+                                                   color: white; background-color: #007bff; border-radius: 6px; text-decoration: none;
+                                                   transition: background-color 0.3s ease, transform 0.2s ease;">
+                                                    Tạo hóa đơn tháng này
+                                                </a>
                                             </div>
+
                                             <div class="table-responsive-sm">
                                                 <div>
                                                     <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
