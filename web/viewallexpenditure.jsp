@@ -78,16 +78,19 @@
                                                                 <div class="col-md-2">
                                                                     <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
                                                                 </div>
-                                                                <div class="col-md-2">
+                                                                <div class="col-md-2.5">
                                                                     <select class="form-control" name="category">
+                                                                        <option value="">Select category</option>
                                                                         <c:forEach items="${requestScope.categorylist}" var="category">
-                                                                            <option value="${category}">${category}</option>
+                                                                            <option ${param.category == category? 'selected':''} value="${category}">${category}</option>
                                                                         </c:forEach>
                                                                     </select>
                                                                 </div>
                                                                 <div class="col-md-2 d-flex">
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                                    <span class="btn btn-primary" style="display: inline-block"><a style="color: white" href="add-expenditure">Add</a></span>
                                                                 </div>
+                                                               
                                                             </div>
                                                         </div>
                                                 </form>
@@ -101,7 +104,7 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Expense</th>
-                                                            <th>Price</th>
+                                                            <th>Total fees</th>
                                                             <th>Approve Date</th>
                                                             <th>Payment Date</th>
                                                             <th>Category</th>
@@ -144,7 +147,7 @@
                     </div>
                     <form method="get" action="view-expenditure" style="display: flex; align-items: center; gap: 10px;">
                         <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                        <input type="text" name="clientName" value="" hidden="">
+                        <input type="text" name="title" value="" hidden="">
                         <input type="date" name="startDate" value="" hidden="">
                         <input type="date" name="endDate" value="" hidden="">
                         <select id="page" name="page" onchange="this.form.submit()" 

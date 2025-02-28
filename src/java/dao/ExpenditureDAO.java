@@ -20,6 +20,10 @@ import java.sql.SQLException;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Locale.Category;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.ExpenseCategory;
 
 public class ExpenditureDAO extends DBContext {
 
@@ -55,6 +59,7 @@ public class ExpenditureDAO extends DBContext {
 //    }
     public List<Expenditure> getAll() {
         List<Expenditure> list = new ArrayList<>();
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
         String sql = "select * from Expenditure";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -66,7 +71,7 @@ public class ExpenditureDAO extends DBContext {
                 String approveddate = rs.getString("approveddate");
                 String paymentdate = rs.getString("paymentdate");
                 String note = rs.getString("note");
-                String category = rs.getString("category");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
                 CompanyDAO cdao = new CompanyDAO();
                 StaffDAO sdao = new StaffDAO();
                 Company company = cdao.getById(rs.getString("cid"));
@@ -99,10 +104,11 @@ public class ExpenditureDAO extends DBContext {
 
     public List<Expenditure> getViewExpenditure(String title, String startDate, String endDate, String categories) {
         List<Expenditure> list = new ArrayList<>();
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
         String sql = "select * from Expenditure where id <> '0'";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if (title != "") {
-            sql += " and title = '%" + title + "%'";
+            sql += " and title like N'%" + title + "%'";
         }
         if (startDate != "") {
             Date date = Date.valueOf(startDate);
@@ -116,7 +122,7 @@ public class ExpenditureDAO extends DBContext {
             sql += " and approveddate <= '" + formatDate + "'";
         }
         if (categories != "") {
-            sql += " and category = '%" + categories + "%'";
+            sql += " and category like N'%" + categories + "%'";
         }
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -128,7 +134,7 @@ public class ExpenditureDAO extends DBContext {
                 String approveddate = rs.getString("approveddate");
                 String paymentdate = rs.getString("paymentdate");
                 String note = rs.getString("note");
-                String category = rs.getString("category");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
                 CompanyDAO cdao = new CompanyDAO();
                 StaffDAO sdao = new StaffDAO();
                 Company company = cdao.getById(rs.getString("cid"));
@@ -144,10 +150,40 @@ public class ExpenditureDAO extends DBContext {
         return list;
     }
 
+    public Expenditure getExpenditureById(String id) {
+        String sql = "select * from Expenditure where id = '" + id + "'";
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
+        PreparedStatement ps;
+        try {
+            ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String eid = rs.getString("id");
+                String titleE = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
+                String approveddate = rs.getString("approveddate");
+                String paymentdate = rs.getString("paymentdate");
+                String note = rs.getString("note");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
+                CompanyDAO cdao = new CompanyDAO();
+                StaffDAO sdao = new StaffDAO();
+                Company company = cdao.getById(rs.getString("cid"));
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                return new Expenditure(id, titleE, approveddate, paymentdate, totalPrice,
+                        note, category, company, createdStaff, chiefAccountant, currentAdminId);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
         ExpenditureDAO dao = new ExpenditureDAO();
         CompanyDAO cp = new CompanyDAO();
-        System.out.println(cp.getById("c001"));
-        System.out.println(dao.getViewExpenditure("", "", "", "").get(0).getCompany().getName());
+
+        System.out.println(dao.getExpenditureById("E001"));
     }
 }

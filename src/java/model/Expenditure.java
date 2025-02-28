@@ -15,13 +15,13 @@ public class Expenditure {
     String paymentdate;
     float totalPrice;
     String note;
-    String category;
+     ExpenseCategory category;
     Company company;
     Staff createdStaff;
     Staff chiefAccountantId;
     Staff currentAdmin;    
 
-    public Expenditure(String id, String title, String approveddate, String paymentdate, float totalPrice, String note, String category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin) {
+    public Expenditure(String id, String title, String approveddate, String paymentdate, float totalPrice, String note, ExpenseCategory category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin) {
         this.id = id;
         this.title = title;
         this.approveddate = approveddate;
@@ -35,12 +35,21 @@ public class Expenditure {
         this.currentAdmin = currentAdmin;
     }
 
+
     public String getTitle() {
         return title;
     }
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public ExpenseCategory getCategory() {
+        return category;
+    }
+
+    public void setCategory(ExpenseCategory category) {
+        this.category = category;
     }
 
    
@@ -85,13 +94,7 @@ public class Expenditure {
         this.note = note;
     }
 
-    public String getCategory() {
-        return category;
-    }
-
-    public void setCategory(String category) {
-        this.category = category;
-    }
+  
 
     public Company getCompany() {
         return company;
