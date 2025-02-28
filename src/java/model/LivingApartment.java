@@ -72,7 +72,7 @@ public class LivingApartment {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
-
+    
     public int getStatus() {
         return status;
     }

@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.admin;
+package controller.staff;
 
 import dao.CategoryServiceDAO;
 import dao.CompanyDAO;
+import dao.MonthlyServiceDAO;
 import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,20 +15,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import model.CategoryService;
-import model.Company;
-import model.Service;
-import util.Util;
 
 /**
  *
- * @author Lenovo
+ * @author thanh
  */
-@WebServlet(name = "ViewAllServices", urlPatterns = {"/all-services"})
-public class ViewAllServices extends HttpServlet {
+@WebServlet(name = "AddNewServiceServlet", urlPatterns = {"/add-service-staff"})
+public class AddNewServiceServlet extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,10 +40,10 @@ public class ViewAllServices extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewAllServices</title>");
+            out.println("<title>Servlet AddNewServiceServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewAllServices at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddNewServiceServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -67,17 +61,11 @@ public class ViewAllServices extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServiceDAO sd = new ServiceDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-        List<Company> listCompany = cd.getAll();
-        List<Service> listServices = sd.getAll();
-        List<CategoryService> listCategory = csd.getAll();
-
-        request.setAttribute("listServices", listServices);
-        request.setAttribute("listCategories", listCategory);
-        request.setAttribute("listCompanies", listCompany);
-        request.getRequestDispatcher("viewallservices.jsp").forward(request, response);
+        request.setAttribute("companies", cd.getAll());
+        request.setAttribute("types", csd.getAll());
+        request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
     }
 
     /**
@@ -91,39 +79,36 @@ public class ViewAllServices extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String status = request.getParameter("status");
-        String category = request.getParameter("category");
-        String company = request.getParameter("company");
-
-        if (name == null) {
-            name = "";
-        }
-        if (status == null) {
-            status = "";
-        }
-        if (category == null) {
-            category = "";
-        }
-        if (company == null) {
-            company = "";
-        }
-
-        ServiceDAO sd = new ServiceDAO();
+        String unit = request.getParameter("unit");
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-
-        List<Service> listServices = sd.filterByNameAndCompanyAndCategoryAndStatus(Util.stringNomalize(name), category, company, status);
-
-        HttpSession session = request.getSession();
-        session.setAttribute("status", status.isEmpty() ? null : status);
-        session.setAttribute("category", category.isEmpty() ? null : category);
-        session.setAttribute("company", company.isEmpty() ? null : company);
-
-        request.setAttribute("listServices", listServices);
-        request.setAttribute("listCategories", csd.getAll());
-        request.setAttribute("listCompanies", cd.getAll());
-        request.getRequestDispatcher("viewallservices.jsp").forward(request, response);
+        String name = request.getParameter("name");
+        int price = Integer.parseInt(request.getParameter("price"));
+        String des = request.getParameter("des");
+        if (name.trim().isBlank() || des.trim().isBlank()) {
+            request.setAttribute("error", "Name or description is not a blank");
+            request.setAttribute("companies", cd.getAll());
+            request.setAttribute("types", csd.getAll());
+            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+            return;
+        }
+        ServiceDAO sd = new ServiceDAO();
+        if (sd.isExistName(name)) {
+            request.setAttribute("error", "Name is existed");
+            request.setAttribute("companies", cd.getAll());
+            request.setAttribute("types", csd.getAll());
+            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+            return;
+        }
+        String categoryId = request.getParameter("category");
+        String companyId = request.getParameter("company");
+        int status = Integer.parseInt(request.getParameter("status"));
+        String newServiceID =sd.addService(name, price, des, categoryId, companyId, status,unit);
+        if(categoryId.equals("SV001")){//khi thêm 1 service bắt buộc mới thì tất các phòng sẽ tự động thêm
+            MonthlyServiceDAO md = new MonthlyServiceDAO();
+            md.addServiceToAllApartment(newServiceID);
+        }
+        response.sendRedirect("all-services");
     }
 
     /**

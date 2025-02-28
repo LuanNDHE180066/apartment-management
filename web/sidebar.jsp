@@ -122,6 +122,18 @@
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
                     </li>
+                    <li>
+                        <a  href="view-service-resident"><i class="fa fa-dashboard"></i><span>Service</span></a>
+                    </li>
+                    <li>
+                        <a  href="view-apartmentservice-staff"><i class="fa fa-dashboard"></i><span>admin service quản lí dân</span></a>
+                    </li>
+                    <li>
+                        <a  href="view-invoice-resident"><i class="fa fa-dashboard"></i><span>Xem hóa đơn của phòng mình</span></a>
+                    </li>
+                    <li>
+                        <a  href="view-invoice-staff"><i class="fa fa-dashboard"></i><span>Xem tình trạng hóa đơn của dân</span></a>
+                    </li>
                     
 
                     <!--                    <li>

@@ -247,6 +247,40 @@ public class ApartmentDAO extends DBContext {
     public boolean updatenoperson(Apartment a) {
         String sql = "update Apartment set NoPerson =? where id=?";
         try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setString(1, reId);
+            ResultSet rs = pre.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("Number Of Person: " + rs.getInt("NoPerson"));
+                System.out.println("Floor: " + rs.getInt("floor"));
+                System.out.println("Information: " + rs.getString("information"));
+
+                RoomType roomtype = rt.getRoomTypeByApartmentId(rs.getString("id"));
+
+                Floor floor = new Floor();
+                floor.setNumber(rs.getInt("floor"));
+
+                Apartment apartment = new Apartment(rs.getString("Id"),
+                        rs.getInt("NoPerson"),
+                        floor,
+                        rs.getString("information"), roomtype
+                );
+                apartment.setRoomtype(roomtype);
+                list.add(apartment);
+            }
+
+            rs.close();
+            pre.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    public boolean updatenoperson(Apartment a) {
+        String sql = "update Apartment set NoPerson =? where id=?";
+        try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, a.getNumberOfPerson());
             ps.setString(2, a.getId());
@@ -264,6 +298,18 @@ public class ApartmentDAO extends DBContext {
         ApartmentDAO dao = new ApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
         ResidentDAO daoR = new ResidentDAO();
+////        RoomType rt = daoRT.getRoomTypeById("4");
+//        Apartment a = dao.getById("A001");
+//        a.setRoomtype(rt);
+//        a.setInfor("Abc");
+//        dao.updateApartment(a);
+//Apartment a=new Apartment();
+//a.setId("A01_01");
+//a.setNumberOfPerson(4);
+//
+//        System.out.println(dao.updatenoperson(a));
+        System.out.println(dao.getById("A10_04").getFloor().getSquare());
+//        
         RoomType rt = daoRT.getRoomTypeById("4");
         Apartment a = dao.getById("A001");
         a.setRoomtype(rt);
