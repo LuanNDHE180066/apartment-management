@@ -58,7 +58,7 @@
                                             <div class="heading1 margin_0">
                                                 <h2>Recently Contracts</h2>
                                             </div>
-                                            <br> <hr>
+                                            <br> <hr><!-- comment -->
                                             <div>
                                                 <form action="view-all-contract" method="get">
                                                     <div class="row align-items-center">

@@ -35,11 +35,11 @@ public class CategoryServiceDAO extends DBContext {
         return list;
     }
     
-     public CategoryService getByCategoryId(String id){
+     public CategoryService getByCategoryId(String ids){
         String sql="select * from ServiceCategory where id = ?";
         try {
             PreparedStatement st= connection.prepareStatement(sql);
-            st.setString(1, id);
+            st.setString(1, ids);
             ResultSet rs = st.executeQuery();
             while(rs.next()){
                 return new CategoryService(rs.getString("id"), rs.getString("name"), rs.getString("detail"));
