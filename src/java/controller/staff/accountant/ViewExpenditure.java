@@ -3,7 +3,7 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller.staff.accountant;
 
 import dao.ContractDAO;
 import dao.ExpenditureDAO;
@@ -69,7 +69,6 @@ public class ViewExpenditure extends HttpServlet {
         String endDate = request.getParameter("endDate");
         String category = request.getParameter("category");
         List<String> categorylist = edao.getListCategory();
-        System.out.println("catelist:"+categorylist+"cate:"+category);
         request.setAttribute("categorylist", categorylist);
         if (title == null) {
             title = "";

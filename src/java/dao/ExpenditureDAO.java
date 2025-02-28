@@ -23,37 +23,36 @@ import java.text.SimpleDateFormat;
 
 public class ExpenditureDAO extends DBContext {
 
-    public boolean updateExpenditure(Expenditure e) {
-        String sql = "UPDATE [dbo].[Expenditure]\n"
-                + "   SET[amount] = ?\n"
-                + "      ,[Price] =?\n"
-                + "      ,[Approveddate] = ?\n"
-                + "      ,[Paymentdate] = ?\n"
-                + "      ,[note] = ?\n"
-                + "      ,[category] = ?\n"
-                + "      ,[cid] = ?\n"
-                + "      ,[sId] = ?\n"
-                + " WHERE id=?";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, e.getAmount());
-            st.setFloat(2, e.getPrice());
-            st.setString(3, e.getApproveddate());
-            st.setString(4, e.getPaymentdate());
-            st.setString(5, e.getNote());
-            st.setString(6, e.getCategory());
-            st.setString(7, e.getCid().getId());
-            st.setString(8, e.getSid().getId());
-            st.setString(9, e.getId());
-            st.executeUpdate();
-            return true;
-
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return false;
-    }
-
+//    public boolean updateExpenditure(Expenditure e) {
+//        String sql = "UPDATE [dbo].[Expenditure]\n"
+//                + "   SET[amount] = ?\n"
+//                + "      ,[Price] =?\n"
+//                + "      ,[Approveddate] = ?\n"
+//                + "      ,[Paymentdate] = ?\n"
+//                + "      ,[note] = ?\n"
+//                + "      ,[category] = ?\n"
+//                + "      ,[cid] = ?\n"
+//                + "      ,[sId] = ?\n"
+//                + " WHERE id=?";
+//        try {
+//            PreparedStatement st = connection.prepareStatement(sql);
+//            st.setInt(1, e.getAmount());
+//            st.setFloat(2, e.getPrice());
+//            st.setString(3, e.getApproveddate());
+//            st.setString(4, e.getPaymentdate());
+//            st.setString(5, e.getNote());
+//            st.setString(6, e.getCategory());
+//            st.setString(7, e.getCid().getId());
+//            st.setString(8, e.getSid().getId());
+//            st.setString(9, e.getId());
+//            st.executeUpdate();
+//            return true;
+//
+//        } catch (SQLException ex) {
+//            System.out.println(ex);
+//        }
+//        return false;
+//    }
     public List<Expenditure> getAll() {
         List<Expenditure> list = new ArrayList<>();
         String sql = "select * from Expenditure";
@@ -62,8 +61,8 @@ public class ExpenditureDAO extends DBContext {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
-                int amount = rs.getInt("amount");
-                float price = rs.getFloat("price");
+                String title = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
                 String approveddate = rs.getString("approveddate");
                 String paymentdate = rs.getString("paymentdate");
                 String note = rs.getString("note");
@@ -71,9 +70,11 @@ public class ExpenditureDAO extends DBContext {
                 CompanyDAO cdao = new CompanyDAO();
                 StaffDAO sdao = new StaffDAO();
                 Company company = cdao.getById(rs.getString("cid"));
-                Staff staff = sdao.getById(rs.getString("sid"));
-                Expenditure ne = new Expenditure(id, amount, price, approveddate, paymentdate, note, category, company, staff);
-                System.out.println("new =" + ne);
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                Expenditure ne = new Expenditure(id, title, approveddate, paymentdate, totalPrice,
+                        note, category, company, createdStaff, chiefAccountant, currentAdminId);
                 list.add(ne);
             }
         } catch (Exception e) {
@@ -106,13 +107,13 @@ public class ExpenditureDAO extends DBContext {
         if (startDate != "") {
             Date date = Date.valueOf(startDate);
             String formatDate = format.format(date);
-            sql += " and startdate >= '" + formatDate + "'";
+            sql += " and approveddate >= '" + formatDate + "'";
         }
 
         if (endDate != "") {
             Date date = Date.valueOf(endDate);
             String formatDate = format.format(date);
-            sql += " and startdate <= '" + formatDate + "'";
+            sql += " and approveddate <= '" + formatDate + "'";
         }
         if (categories != "") {
             sql += " and category = '%" + categories + "%'";
@@ -122,8 +123,8 @@ public class ExpenditureDAO extends DBContext {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
-                int amount = rs.getInt("amount");
-                float price = rs.getFloat("price");
+                String titleE = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
                 String approveddate = rs.getString("approveddate");
                 String paymentdate = rs.getString("paymentdate");
                 String note = rs.getString("note");
@@ -131,12 +132,22 @@ public class ExpenditureDAO extends DBContext {
                 CompanyDAO cdao = new CompanyDAO();
                 StaffDAO sdao = new StaffDAO();
                 Company company = cdao.getById(rs.getString("cid"));
-                Staff staff = sdao.getById(rs.getString("sid"));
-                Expenditure ne = new Expenditure(id, amount, price, approveddate, paymentdate, note, category, company, staff);
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                Expenditure ne = new Expenditure(id, titleE, approveddate, paymentdate, totalPrice,
+                        note, category, company, createdStaff, chiefAccountant, currentAdminId);
                 list.add(ne);
             }
         } catch (Exception e) {
         }
         return list;
+    }
+
+    public static void main(String[] args) {
+        ExpenditureDAO dao = new ExpenditureDAO();
+        CompanyDAO cp = new CompanyDAO();
+        System.out.println(cp.getById("c001"));
+        System.out.println(dao.getViewExpenditure("", "", "", "").get(0).getCompany().getName());
     }
 }

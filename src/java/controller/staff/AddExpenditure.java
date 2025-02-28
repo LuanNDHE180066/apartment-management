@@ -93,14 +93,7 @@ public class AddExpenditure extends HttpServlet {
         String paydate = request.getParameter("paydate");
         String company = request.getParameter("company");
         String sid = request.getParameter("sid");
-        System.out.println("Note: " + note);
-        System.out.println("Category: " + category);
-        System.out.println("Amount: " + amount_raw);
-        System.out.println("Price: " + price_raw);
-        System.out.println("Approved Date: " + approdate);
-        System.out.println("Payment Date: " + paydate);
-        System.out.println("Company ID: " + company);
-        System.out.println("SID: " + sid);
+
 
         if (note == null || amount_raw == null || price_raw == null
                 || approdate == null || paydate == null

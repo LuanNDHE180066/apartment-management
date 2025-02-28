@@ -10,51 +10,40 @@ package model;
  */
 public class Expenditure {
     String id;
-    int amount;
-    float price;
+    String title;
     String approveddate;
     String paymentdate;
+    float totalPrice;
     String note;
     String category;
-    Company cid;
-    Staff sid;
+    Company company;
+    Staff createdStaff;
+    Staff chiefAccountantId;
+    Staff currentAdmin;    
 
-    public Expenditure() {
-    }
-
-    public Expenditure(String id, int amount, float price, String approveddate, String paymentdate, String note, String category, Company cid, Staff sid) {
+    public Expenditure(String id, String title, String approveddate, String paymentdate, float totalPrice, String note, String category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin) {
         this.id = id;
-        this.amount = amount;
-        this.price = price;
+        this.title = title;
         this.approveddate = approveddate;
         this.paymentdate = paymentdate;
+        this.totalPrice = totalPrice;
         this.note = note;
         this.category = category;
-        this.cid = cid;
-        this.sid = sid;
+        this.company = company;
+        this.createdStaff = createdStaff;
+        this.chiefAccountantId = chiefAccountantId;
+        this.currentAdmin = currentAdmin;
     }
 
-    public Expenditure(int amount, float price, String approveddate, String paymentdate, String note, String category, Company cid, Staff sid) {
-        this.amount = amount;
-        this.price = price;
-        this.approveddate = approveddate;
-        this.paymentdate = paymentdate;
-        this.note = note;
-        this.category = category;
-        this.cid = cid;
-        this.sid = sid;
+    public String getTitle() {
+        return title;
     }
 
-    public Expenditure(String note, String category, int amount, float price, String aprroveddate, String paymentdate, Company cid, Staff sid) {
-        this.note=note;
-        this.category=category;
-        this.amount=amount;
-        this.price=price;
-        this.approveddate=aprroveddate;
-        this.paymentdate=paymentdate;
-        this.cid=cid;
-        this.sid=sid;
+    public void setTitle(String title) {
+        this.title = title;
     }
+
+   
 
     public String getId() {
         return id;
@@ -62,22 +51,6 @@ public class Expenditure {
 
     public void setId(String id) {
         this.id = id;
-    }
-
-    public int getAmount() {
-        return amount;
-    }
-
-    public void setAmount(int amount) {
-        this.amount = amount;
-    }
-
-    public float getPrice() {
-        return price;
-    }
-
-    public void setPrice(float price) {
-        this.price = price;
     }
 
     public String getApproveddate() {
@@ -96,6 +69,14 @@ public class Expenditure {
         this.paymentdate = paymentdate;
     }
 
+    public float getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(float totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
     public String getNote() {
         return note;
     }
@@ -112,24 +93,37 @@ public class Expenditure {
         this.category = category;
     }
 
-    public Company getCid() {
-        return cid;
+    public Company getCompany() {
+        return company;
     }
 
-    public void setCid(Company cid) {
-        this.cid = cid;
+    public void setCompany(Company company) {
+        this.company = company;
     }
 
-    public Staff getSid() {
-        return sid;
+    public Staff getCreatedStaff() {
+        return createdStaff;
     }
 
-    public void setSid(Staff sid) {
-        this.sid = sid;
+    public void setCreatedStaff(Staff createdStaff) {
+        this.createdStaff = createdStaff;
     }
 
-    
+    public Staff getChiefAccountantId() {
+        return chiefAccountantId;
+    }
 
-   
+    public void setChiefAccountantId(Staff chiefAccountantId) {
+        this.chiefAccountantId = chiefAccountantId;
+    }
+
+    public Staff getCurrentAdmin() {
+        return currentAdmin;
+    }
+
+    public void setCurrentAdmin(Staff currentAdmin) {
+        this.currentAdmin = currentAdmin;
+    }
+
     
 }

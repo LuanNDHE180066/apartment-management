@@ -100,14 +100,17 @@
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Amount</th>
+                                                            <th>Expense</th>
                                                             <th>Price</th>
                                                             <th>Approve Date</th>
                                                             <th>Payment Date</th>
                                                             <th>Category</th>
                                                             <th>Company</th>
-                                                            <th>Staff sign</th>
-                                                            <th>Note</th>
+                                                            <th>Staff Create</th>
+                                                            <th>Chief Acountant</th>
+                                                            <th>Responsible Person</th>
+                                                            <th>Option</th>
+                                                            <!--       <th>Note</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -115,14 +118,19 @@
                                                     <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
                                                         <tr>
                                                             <td>${expenditure.id}</td>
-                                                            <td>${expenditure.amount}</td>
-                                                            <td>${expenditure.price}</td>
+                                                            <td>${expenditure.title}</td>
+                                                            <td>${expenditure.totalPrice}</td>
                                                             <td>${expenditure.approveddate}</td>
                                                             <td>${expenditure.paymentdate}</td>
                                                             <td>${expenditure.category}</td>
-                                                            <td>${expenditure.cid.name}</td>
-                                                            <td>${expenditure.sid.name}</td>
-                                                            <td>${expenditure.note}</td>
+                                                            <td>${expenditure.company.name}</td>
+                                                            <td>${expenditure.createdStaff.name}</td>
+                                                            <td>${expenditure.chiefAccountantId.name}</td>
+                                                            <td>${expenditure.currentAdmin.name}</td>
+                                                            <td>
+                                                                <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                            </td>
+                                                    <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
@@ -134,7 +142,7 @@
                             </div>
                         </div>
                     </div>
-                    <form method="get" action="view-all-contract" style="display: flex; align-items: center; gap: 10px;">
+                    <form method="get" action="view-expenditure" style="display: flex; align-items: center; gap: 10px;">
                         <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
                         <input type="text" name="clientName" value="" hidden="">
                         <input type="date" name="startDate" value="" hidden="">
