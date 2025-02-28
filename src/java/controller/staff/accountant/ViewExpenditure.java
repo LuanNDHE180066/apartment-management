@@ -7,6 +7,7 @@ package controller.staff.accountant;
 
 import dao.ContractDAO;
 import dao.ExpenditureDAO;
+import dao.ExpenseCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Expenditure;
+import model.ExpenseCategory;
 import util.Util;
 
 /**
@@ -63,12 +65,13 @@ public class ViewExpenditure extends HttpServlet {
     throws ServletException, IOException {
         HttpSession session = request.getSession();
         Util u = new Util();
+        ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
         ExpenditureDAO edao = new ExpenditureDAO();
         String title = request.getParameter("title");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String category = request.getParameter("category");
-        List<String> categorylist = edao.getListCategory();
+        List<ExpenseCategory> categorylist = daoEc.getAllExpenseCategory();
         request.setAttribute("categorylist", categorylist);
         if (title == null) {
             title = "";

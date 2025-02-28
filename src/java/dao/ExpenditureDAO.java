@@ -122,7 +122,7 @@ public class ExpenditureDAO extends DBContext {
             sql += " and approveddate <= '" + formatDate + "'";
         }
         if (categories != "") {
-            sql += " and category like N'%" + categories + "%'";
+            sql += " and categoryid = " + categories;
         }
         try {
             PreparedStatement st = connection.prepareStatement(sql);
