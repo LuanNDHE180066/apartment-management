@@ -189,6 +189,16 @@ public class InvoiceDAO extends DBContext{
         }
         return 0;
     }
+    public void switchToPaidStatusById(String id){
+        String sql = "update invoice set status =1 where id =?";
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setString(1, id);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
         System.out.println(id.getByResidentId("P101").size());

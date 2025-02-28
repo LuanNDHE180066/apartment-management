@@ -131,7 +131,7 @@
                                                                                     border-radius: 3px;
                                                                                     cursor: pointer;
                                                                                     ">
-                                                                                <a href="#" style="color: white; text-decoration: none;">Thanh toán</a>
+                                                                                <a href="pay-invoice-resident?invoiceId=${item.id}&total=${item.total}" style="color: white; text-decoration: none;">Thanh toán</a>
                                                                             </button>
                                                                         </td>
 
