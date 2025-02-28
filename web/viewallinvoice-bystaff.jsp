@@ -161,7 +161,7 @@
                                                     </h3>
                                                     <div style="display: flex; align-items: center; gap: 10px;margin-bottom: 20px">
                                                         <form action="view-invoice-staff" method="post" style="display: flex; align-items: center; gap: 10px;">
-                                                            <select required="" name="yearCollected" 
+                                                            <select required="" name="yearSelected" 
                                                                     style="height: 40px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer;">
                                                                 <c:forEach begin="${requestScope.startYear}" end="${currentYear}" var="year">
                                                                     <option ${year== requestScope.usingYear?'selected':''} value="${year}">${year}</option>

@@ -102,7 +102,7 @@ public class ViewAllInvoiceServlet extends HttpServlet {
 
         //Đoạn code trên fill những phần đã có
         String yearSelected = request.getParameter("yearSelected");
-        String apartmentSelected = request.getParameter("aapartmentSelected");
+        String apartmentSelected = request.getParameter("apartmentSelected");
         request.setAttribute("usingYear", Integer.parseInt(yearSelected));
         request.setAttribute("usingApartment", apartmentSelected);
         request.setAttribute("historyInvoice", ivd.searchByYearAndApartment(Integer.parseInt(yearSelected), apartmentSelected));

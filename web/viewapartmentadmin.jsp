@@ -108,21 +108,21 @@
                                             <form action="view-apartment-admin" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input type="number" min="0" max="16" class="form-control" name="floor" value="${param.floor}" placeholder="Search by Floor">
+                                                        <input type="number" min="0" max="16" class="form-control" name="floor" value="${requestScope.floor != null ? requestScope.floor:''}" placeholder="Search by Floor">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterType">
                                                             <option value="">Filter by Types</option>
                                                             <c:forEach items="${requestScope.types}" var="o">
-                                                                <option value="${o.id}" <c:if test="${param.filterType == o.id}">selected</c:if>>${o.name}</option>
+                                                                <option value="${o.id}" <c:if test="${requestScope.filterType == o.id}">selected</c:if>>${o.name}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
                                                             <option value="">Filter by Status</option>
-                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
-                                                            <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>InActive</option>
+                                                            <option value="1" ${requestScope.filterStatus == '1' ? 'selected' : ''}>Active</option>
+                                                            <option value="0" ${requestScope.filterStatus == '0' ? 'selected' : ''}>InActive</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex">
@@ -170,8 +170,7 @@
                         </div>
                         <form method="get" action="view-apartment-admin" style="display: flex; align-items: center; gap: 10px;">
                             <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                            <input type="text" name="filterStatus" value="${param.filterStatus}" hidden="">
-                            <input type="text" name="filterType" value="${param.filterType}" hidden=""><!-- comment -->
+                            <input type="text" name="filterStatus" value="${param.filterStatus}" hidden=""><!-- comment -->
                             <input type="text" name="searchName" value="${param.searchName}" hidden=""><!-- comment -->
                             <select id="page" name="page" onchange="this.form.submit()" 
                                     style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">

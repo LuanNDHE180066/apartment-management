@@ -103,7 +103,7 @@ public class AddNewServiceServlet extends HttpServlet {
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
         int status = Integer.parseInt(request.getParameter("status"));
-        String newServiceID =sd.addService(name, price, des, categoryId, companyId, status);
+        String newServiceID =sd.addService(name, price, des, categoryId, companyId, status,unit);
         if(categoryId.equals("SV001")){//khi thêm 1 service bắt buộc mới thì tất các phòng sẽ tự động thêm
             MonthlyServiceDAO md = new MonthlyServiceDAO();
             md.addServiceToAllApartment(newServiceID);

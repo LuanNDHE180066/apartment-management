@@ -196,6 +196,7 @@ public class InvoiceDAO extends DBContext{
             st.setString(1, id);
             st.executeUpdate();
         } catch (SQLException e) {
+            System.out.println(e);
         }
     }
     public static void main(String[] args) {

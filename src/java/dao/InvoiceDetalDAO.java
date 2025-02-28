@@ -67,6 +67,7 @@ public class InvoiceDetalDAO extends DBContext {
                 st.executeUpdate();
                 
             } catch (SQLException e) {
+                System.out.println(e);
             }
         }
     }

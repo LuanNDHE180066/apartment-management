@@ -60,6 +60,7 @@ public class UpdateResidentService extends HttpServlet {
         String sid = request.getParameter("sid");
         MonthlyServiceDAO md =new MonthlyServiceDAO();
         md.addServiceToApartment(sid, aid);
+        response.sendRedirect("view-service-resident");
     } 
 
     /** 

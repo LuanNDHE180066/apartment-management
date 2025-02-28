@@ -132,21 +132,82 @@ public class LivingApartmentDAO extends DBContext {
         return false;
     }
 
+    public List<Apartment> getApartmentsByResidentId(String id) {
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Apartment> list = new ArrayList<>();
+        String sql = "select * from LivingAparment where rid =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(ad.getById(rs.getString("aid")));
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+
+    public List<String> getAllActiveApartment() {
+        String sql = "select distinct(aid) as aid from LivingAparment where status =1";
+        List<String> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getString("aid"));
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
+
+    public List<LivingApartment> getAllActiveLivingApartmentObejct() {
+        String sql = "select * from LivingAparment where status =1";
+        List<LivingApartment> list = new ArrayList<>();
+        ApartmentDAO ad = new ApartmentDAO();
+        ResidentDAO rd = new ResidentDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                String startDate = rs.getDate("startDate").toString();
+                String endDate;
+                if (rs.getDate("enddate") == null) {
+                    endDate = null;
+                } else {
+                    endDate = rs.getDate("enddate").toString();
+                }
+                int status = rs.getInt("status");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                list.add(la);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
-        ResidentDAO daoR = new ResidentDAO();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
-        LocalDate now = LocalDate.now();
-        String date = now.format(formatter);
-        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
-        Resident ownerResident = daoR.getById("P102");
-        oa.setRid(ownerResident);
-        oa.setEndDate(date);
-        oa.setStatus(0);
-
-        oa.setStatus(1);
-        oa.setEndDate(null);
-        oa.setStartDate(date);
-        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
+//        ResidentDAO daoR = new ResidentDAO();
+//        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+//        LocalDate now = LocalDate.now();
+//        String date = now.format(formatter);
+//        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
+//        Resident ownerResident = daoR.getById("P102");
+//        oa.setRid(ownerResident);
+//        oa.setEndDate(date);
+//        oa.setStatus(0);
+//
+//        oa.setStatus(1);
+//        oa.setEndDate(null);
+//        oa.setStartDate(date);
+//        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
+        System.out.println(dao.getApartmentsByResidentId("P101").size());
+        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
     }
 }

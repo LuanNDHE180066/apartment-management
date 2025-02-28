@@ -81,7 +81,7 @@
                                         </div>
                                         <div class="form-group" style="margin-bottom: 15px;">
                                             <label for="unti" style="display: block; font-weight: bold; margin-bottom: 5px;">Unit</label>
-                                            <input type="text" id="unti" name="unti" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                                            <input type="text" id="unit" name="unit" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">

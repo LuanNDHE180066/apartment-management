@@ -5,6 +5,7 @@
 
 package controller.resident;
 
+import dao.MonthlyServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -57,6 +58,9 @@ public class DeleteServiceResident extends HttpServlet {
     throws ServletException, IOException {
         String sid = request.getParameter("sid");
         String aid = request.getParameter("aid");
+        MonthlyServiceDAO md = new MonthlyServiceDAO();
+        md.deleteMonthlyService(sid, aid);
+        response.sendRedirect("view-service-resident");
     } 
 
     /** 

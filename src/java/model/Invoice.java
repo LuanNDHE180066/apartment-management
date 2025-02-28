@@ -4,6 +4,7 @@
  */
 package model;
 
+import dao.InvoiceDetalDAO;
 import java.util.List;
 
 /**
@@ -42,7 +43,8 @@ public class Invoice {
         this.apartment = apartment;
     }
     public List<InvoiceDetail> getInvoiceDetail(){
-        
+        InvoiceDetalDAO idd = new InvoiceDetalDAO();
+        return idd.getByInvoiceId(this.id);
     }
     public String getId() {
         return id;

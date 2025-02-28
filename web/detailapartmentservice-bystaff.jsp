@@ -74,7 +74,7 @@
                                         <div style="text-align: right" class="full graph_head d-flex justify-content-between align-items-center">
                                             <div class="heading1 margin_0">
                                                 <button style="width: 200px;height: 50px" class="btn btn-primary">
-                                                    <a style="color: black; font-size: 1.2rem " href="#">Tạo hóa đơn</a>
+                                                    <a style="color: black; font-size: 1.2rem " href="#">Xuất hóa đơn</a>
                                                 </button>
                                             </div>
                                         </div>

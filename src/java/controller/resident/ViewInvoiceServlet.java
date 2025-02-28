@@ -65,6 +65,7 @@ public class ViewInvoiceServlet extends HttpServlet {
         InvoiceDAO ivd= new InvoiceDAO();
         List<Invoice> invoiceList = ivd.getByResidentId(rid);
         request.setAttribute("invoiceList", invoiceList);
+        request.getRequestDispatcher("viewinvoice-byresident.jsp").forward(request, response);
     } 
 
     /** 

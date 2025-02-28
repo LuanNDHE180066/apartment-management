@@ -173,7 +173,7 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width: 40%;">Name of service</th>
-                                                            <th style="width: 15%;">Quantity</th>
+                                                            <th style="width: 5%;">Quantity</th>
                                                             <th style="width: 15%;">Unit Price</th>
                                                             <th style="width: 15%;">Unit</th>
                                                             <th style="width: 25%;">Supplier</th>

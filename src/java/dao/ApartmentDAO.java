@@ -36,7 +36,6 @@ public class ApartmentDAO extends DBContext {
         if (!status.equals("")) {
             sql += "and status = " + status;
         }
-        sql += " order by floor";
         List<Apartment> list = new ArrayList<>();
         FloorDAO fdao = new FloorDAO();
         RoomTypeDAO rdao = new RoomTypeDAO();
@@ -79,47 +78,6 @@ public class ApartmentDAO extends DBContext {
         }
         return false;
 
-    }
-
-    public List<Apartment> GetREApartment(String reId) {
-        String sql = "SELECT A.*, RT.*\n"
-                + "FROM AparmentOwner AO\n"
-                + "JOIN Apartment A ON AO.aId = A.Id\n"
-                + "JOIN RoomType RT ON A.rtId = RT.Id\n"
-                + "WHERE AO.rId = ? ";
-
-        RoomTypeDAO rt = new RoomTypeDAO();
-        List<Apartment> list = new ArrayList<>();
-
-        try {
-            PreparedStatement pre = connection.prepareStatement(sql);
-            pre.setString(1, reId);
-            ResultSet rs = pre.executeQuery();
-
-            while (rs.next()) {
-                System.out.println("Number Of Person: " + rs.getInt("NoPerson"));
-                System.out.println("Floor: " + rs.getInt("floor"));
-                System.out.println("Information: " + rs.getString("information"));
-
-                RoomType roomtype = rt.getRoomTypeByApartmentId(rs.getString("id"));
-
-                Floor floor = new Floor();
-                floor.setNumber(rs.getInt("floor"));
-
-                Apartment apartment = new Apartment(rs.getString("Id"),
-                        rs.getInt("NoPerson"),
-                        floor,
-                        rs.getString("information"), roomtype
-                );
-                list.add(apartment);
-            }
-
-            rs.close();
-            pre.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
     }
 
     public Apartment getById(String id) {
@@ -202,47 +160,47 @@ public class ApartmentDAO extends DBContext {
         return false;
     }
 
-//    public List<Apartment> GetREApartment(String reId) {
-//        String sql = "SELECT A.*, RT.*\n"
-//                + "FROM AparmentOwner AO\n"
-//                + "JOIN Apartment A ON AO.aId = A.Id\n"
-//                + "JOIN RoomType RT ON A.rtId = RT.Id\n"
-//                + "WHERE AO.rId = ? ";
-//
-//        RoomTypeDAO rt = new RoomTypeDAO();
-//        List<Apartment> list = new ArrayList<>();
-//
-//        try {
-//            PreparedStatement pre = connection.prepareStatement(sql);
-//            pre.setString(1, reId);
-//            ResultSet rs = pre.executeQuery();
-//
-//            while (rs.next()) {
-//                System.out.println("Number Of Person: " + rs.getInt("NoPerson"));
-//                System.out.println("Floor: " + rs.getInt("floor"));
-//                System.out.println("Information: " + rs.getString("information"));
-//
-//                RoomType roomtype = rt.getRoomTypeByApartmentId(rs.getString("id"));
-//
-//                Floor floor = new Floor();
-//                floor.setNumber(rs.getInt("floor"));
-//
-//                Apartment apartment = new Apartment(rs.getString("Id"),
-//                        rs.getInt("NoPerson"),
-//                        floor,
-//                        rs.getString("information"), roomtype
-//                );
-//                apartment.setRoomtype(roomtype);
-//                list.add(apartment);
-//            }
-//
-//            rs.close();
-//            pre.close();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return list;
-//    }
+    public List<Apartment> GetREApartment(String reId) {
+        String sql = "SELECT A.*, RT.*\n"
+                + "FROM AparmentOwner AO\n"
+                + "JOIN Apartment A ON AO.aId = A.Id\n"
+                + "JOIN RoomType RT ON A.rtId = RT.Id\n"
+                + "WHERE AO.rId = ? ";
+
+        RoomTypeDAO rt = new RoomTypeDAO();
+        List<Apartment> list = new ArrayList<>();
+
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setString(1, reId);
+            ResultSet rs = pre.executeQuery();
+
+            while (rs.next()) {
+                System.out.println("Number Of Person: " + rs.getInt("NoPerson"));
+                System.out.println("Floor: " + rs.getInt("floor"));
+                System.out.println("Information: " + rs.getString("information"));
+
+                RoomType roomtype = rt.getRoomTypeByApartmentId(rs.getString("id"));
+
+                Floor floor = new Floor();
+                floor.setNumber(rs.getInt("floor"));
+
+                Apartment apartment = new Apartment(rs.getString("Id"),
+                        rs.getInt("NoPerson"),
+                        floor,
+                        rs.getString("information"), roomtype
+                );
+                apartment.setRoomtype(roomtype);
+                list.add(apartment);
+            }
+
+            rs.close();
+            pre.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
 
     public boolean updatenoperson(Apartment a) {
         String sql = "update Apartment set NoPerson =? where id=?";
@@ -259,15 +217,44 @@ public class ApartmentDAO extends DBContext {
         return false;
 
     }
-
+    public List<Apartment> getAll(){
+        String sql = "select * from Apartment";
+        List<Apartment> list = new ArrayList<>();
+        RoomTypeDAO rtd = new RoomTypeDAO();
+        FloorDAO fd = new FloorDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int noPerson = rs.getInt("Noperson");
+                Floor floor = fd.getByNumber(rs.getInt("floor"));
+                String information = rs.getString("information");
+                RoomType rt = rtd.getRoomTypeById(rs.getString("rtId"));
+                int status = rs.getInt("status");
+                Apartment a = new Apartment(id, noPerson, floor, information, rt, status);
+                list.add(a);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
         ResidentDAO daoR = new ResidentDAO();
-        RoomType rt = daoRT.getRoomTypeById("4");
-        Apartment a = dao.getById("A001");
-        a.setRoomtype(rt);
-        a.setInfor("Abc");
-        dao.updateApartment(a);
+////        RoomType rt = daoRT.getRoomTypeById("4");
+//        Apartment a = dao.getById("A001");
+//        a.setRoomtype(rt);
+//        a.setInfor("Abc");
+//        dao.updateApartment(a);
+//Apartment a=new Apartment();
+//a.setId("A01_01");
+//a.setNumberOfPerson(4);
+//
+//        System.out.println(dao.updatenoperson(a));
+        System.out.println(dao.getById("A10_04").getFloor().getSquare());
+        System.out.println(dao.getAll().size());
+//        
     }
 }

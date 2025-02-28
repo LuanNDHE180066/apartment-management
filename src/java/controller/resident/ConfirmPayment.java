@@ -59,7 +59,7 @@ public class ConfirmPayment extends HttpServlet {
         String invoiceId = request.getParameter("invoiceId");
         InvoiceDAO ivd = new InvoiceDAO();
         ivd.switchToPaidStatusById(invoiceId);
-        
+        response.sendRedirect("view-invoice-resident");
     } 
 
     /** 

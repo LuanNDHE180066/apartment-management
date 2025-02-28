@@ -58,6 +58,7 @@ public class GenerateInvoice extends HttpServlet {
     throws ServletException, IOException {
         InvoiceDAO ivd = new InvoiceDAO();
         ivd.generateInvoice();
+        response.sendRedirect("view-invoice-staff");
     } 
 
     /** 

@@ -5,54 +5,22 @@
 package dao;
 
 import java.sql.Date;
-import jdbc.DBContext;
-import model.Expenditure;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import jdbc.DBContext;
 import model.Company;
+import model.Expenditure;
 import model.Staff;
+import util.Util;
 
-import java.sql.SQLException;
-import java.sql.SQLException;
-
-import java.sql.SQLException;
-import java.text.SimpleDateFormat;
-
+/**
+ *
+ * @author PC
+ */
 public class ExpenditureDAO extends DBContext {
-
-    public boolean updateExpenditure(Expenditure e) {
-        String sql = "UPDATE [dbo].[Expenditure]\n"
-                + "   SET[amount] = ?\n"
-                + "      ,[Price] =?\n"
-                + "      ,[Approveddate] = ?\n"
-                + "      ,[Paymentdate] = ?\n"
-                + "      ,[note] = ?\n"
-                + "      ,[category] = ?\n"
-                + "      ,[cid] = ?\n"
-                + "      ,[sId] = ?\n"
-                + " WHERE id=?";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
-            st.setInt(1, e.getAmount());
-            st.setFloat(2, e.getPrice());
-            st.setString(3, e.getApproveddate());
-            st.setString(4, e.getPaymentdate());
-            st.setString(5, e.getNote());
-            st.setString(6, e.getCategory());
-            st.setString(7, e.getCid().getId());
-            st.setString(8, e.getSid().getId());
-            st.setString(9, e.getId());
-            st.executeUpdate();
-            return true;
-
-        } catch (SQLException ex) {
-            System.out.println(ex);
-        }
-        return false;
-    }
 
     public List<Expenditure> getAll() {
         List<Expenditure> list = new ArrayList<>();
@@ -73,21 +41,20 @@ public class ExpenditureDAO extends DBContext {
                 Company company = cdao.getById(rs.getString("cid"));
                 Staff staff = sdao.getById(rs.getString("sid"));
                 Expenditure ne = new Expenditure(id, amount, price, approveddate, paymentdate, note, category, company, staff);
-                System.out.println("new =" + ne);
+                System.out.println("new ="+ne);
                 list.add(ne);
             }
         } catch (Exception e) {
         }
         return list;
     }
-
-    public List<String> getListCategory() {
+    public List<String> getListCategory(){
         List<String> list = new ArrayList<>();
         String sql = "select distinct category from Expenditure";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) {     
                 String category = rs.getString("category");
                 list.add(category);
             }
@@ -95,8 +62,8 @@ public class ExpenditureDAO extends DBContext {
         }
         return list;
     }
-
-    public List<Expenditure> getViewExpenditure(String title, String startDate, String endDate, String categories) {
+    
+    public List<Expenditure> getViewExpenditure(String title,String startDate,String endDate, String categories){
         List<Expenditure> list = new ArrayList<>();
         String sql = "select * from Expenditure where id <> '0'";
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -138,5 +105,51 @@ public class ExpenditureDAO extends DBContext {
         } catch (Exception e) {
         }
         return list;
+    }
+
+    public boolean addExpen(Expenditure e) {
+        String sql = "insert into Expenditure (Id,amount, Price, Approveddate, Paymentdate, note, category, cid,sId) values(?,?,?,?,?,?,?,?,?)";
+        Util u = new Util();
+        ExpenditureDAO ed = new ExpenditureDAO();
+        List<Expenditure> listEx = ed.getAll();
+        int lastNum = 0;
+        if (listEx.size() != 0) {
+            lastNum = u.getNumberFromTextOnlyNumber(listEx.get(listEx.size() - 1).getId());
+        }
+        try {
+
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, (lastNum+1)+ "");
+            ps.setInt(2, e.getAmount());
+            ps.setFloat(3, e.getPrice());
+            ps.setString(4, e.getApproveddate());
+            ps.setString(5, e.getPaymentdate());
+            ps.setString(6, e.getNote());
+            ps.setString(7, e.getCategory());
+            ps.setString(8, e.getCid().getId());
+            ps.setString(9, e.getSid().getId());
+            return ps.executeUpdate() > 0;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
+        return false;
+    }
+
+    public static void main(String[] args) {
+        ExpenditureDAO dao = new ExpenditureDAO();
+        StaffDAO std = new StaffDAO();
+        CompanyDAO cpd = new CompanyDAO();
+        Expenditure ex = new Expenditure();
+        ex.setId("2");
+        ex.setAmount(2);
+        ex.setPrice(500);
+        ex.setApproveddate("2025-02-24");
+        ex.setPaymentdate("2025-02-24");
+        ex.setNote("sua ong");
+        ex.setCategory("chi");
+        ex.setCid(cpd.getById("C004"));
+        ex.setSid(std.getById("S1003"));
+        System.out.println(dao.addExpen(ex));
+//        System.out.println(dao.getAll().size());
     }
 }

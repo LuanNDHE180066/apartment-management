@@ -61,6 +61,7 @@ public class ViewApartmentService extends HttpServlet {
     throws ServletException, IOException {
         if(request.getParameter("method")!=null){
             doPost(request, response);
+            return;
         }
         LivingApartmentDAO ld = new LivingApartmentDAO();
         List<String> listApartment = ld.getAllActiveApartment();

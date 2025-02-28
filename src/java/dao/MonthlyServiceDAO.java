@@ -126,7 +126,7 @@ public class MonthlyServiceDAO extends DBContext {
                 st.setString(1, sid);
                 st.setString(2, aid);
                 st.executeUpdate();
-            } catch (Exception e) {
+            } catch (SQLException e) {
             }
         }
     }
