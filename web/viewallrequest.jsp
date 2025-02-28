@@ -172,7 +172,6 @@
                                                                 <th>Detail</th>
                                                                 <th>Date</th>                                               
                                                                 <th>Type</th>
-                                                                <th>Response</th>
                                                                 <th>Status</th>
                                                                 <th>Option</th>
                                                                 <th>Decline</th>
@@ -186,7 +185,6 @@
                                                                     <td>${o.detail}</td>
                                                                     <td>${o.date}</td> 
                                                                     <td>${o.requestType.name}</td>  
-                                                                    <td>${o.response}</td>
                                                                     <td>${o.status}</td> 
                                                                     <td>
 
@@ -285,7 +283,7 @@
                                                             <select class="form-control" name="filterRoles">
                                                                 <option value="">Filter by Roles</option>
                                                                 <c:forEach items="${requestScope.rolelist}" var="o">
-                                                                    <c:if test="${o.id >= 2 and o.id != 3}">
+                                                                    <c:if test="${o.id >= 4}">
                                                                         <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
                                                                     </c:if>
                                                                 </c:forEach>

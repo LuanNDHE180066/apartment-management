@@ -42,4 +42,20 @@ public class CategoryServiceValidation extends DBContext{
         }
         return false;
     }
+    public boolean isValidName(String name){
+        String[] names = name.split("");
+        for(int i=0;i<names.length;i++){
+            if(!names[i].matches("^[a-zA-Z]+$")){
+                return false;
+            }
+        }
+        return true;
+    }
+    
+    
+    public static void main(String[] args) {
+        CategoryServiceValidation c = new CategoryServiceValidation();
+        String name = "lap top 123";
+        System.out.println(""+c.isValidName(name));
+    }
 }

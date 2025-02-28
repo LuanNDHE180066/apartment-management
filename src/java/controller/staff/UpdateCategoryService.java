@@ -81,11 +81,19 @@ public class UpdateCategoryService extends HttpServlet {
         String note = request.getParameter("note");
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CategoryServiceValidation val = new CategoryServiceValidation();
-        CategoryService c = new CategoryService(id, name, note);        
+        name = Util.stringNomalize(name);
+        note = Util.stringNomalize(note);              
         if(name.isBlank()){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
             request.setAttribute("status", false);
             request.setAttribute("error", "Name is not allow blank ");
+            request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
+            return;
+        }                
+        if(!name.matches("^\\s[a-zA-Z0-9]+$")){
+            request.setAttribute("categoryservice", csd.getByCategoryId(id));
+            request.setAttribute("status", false);
+            request.setAttribute("error", "Name is only allow world a-z and 0-9");
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }
@@ -96,6 +104,7 @@ public class UpdateCategoryService extends HttpServlet {
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }     
+        CategoryService c = new CategoryService(id, name, note); 
         csd.updateCategoryService(c);        
         request.setAttribute("categoryservice", c);
         request.setAttribute("status", true);
