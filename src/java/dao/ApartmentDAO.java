@@ -21,6 +21,28 @@ import model.RoomType;
  * @author Lenovo
  */
 public class ApartmentDAO extends DBContext {
+    public List<Apartment> getAll(){
+        String sql = "select * from Apartment";
+        List<Apartment> list = new ArrayList<>();
+        RoomTypeDAO rtd = new RoomTypeDAO();
+        FloorDAO fd = new FloorDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int noPerson = rs.getInt("Noperson");
+                Floor floor = fd.getByNumber(rs.getInt("floor"));
+                String information = rs.getString("information");
+                RoomType rt = rtd.getRoomTypeById(rs.getString("rtId"));
+                int status = rs.getInt("status");
+                Apartment a = new Apartment(id, noPerson, floor, information, rt, status);
+                list.add(a);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
 
     public List<Apartment> getViewApartment(String floor, String type, String status) {
         String sql = "select * from Apartment";
@@ -244,41 +266,7 @@ public class ApartmentDAO extends DBContext {
 //        return list;
 //    }
 
-    public boolean updatenoperson(Apartment a) {
-        String sql = "update Apartment set NoPerson =? where id=?";
-        try {
-            PreparedStatement pre = connection.prepareStatement(sql);
-            pre.setString(1, reId);
-            ResultSet rs = pre.executeQuery();
-
-            while (rs.next()) {
-                System.out.println("Number Of Person: " + rs.getInt("NoPerson"));
-                System.out.println("Floor: " + rs.getInt("floor"));
-                System.out.println("Information: " + rs.getString("information"));
-
-                RoomType roomtype = rt.getRoomTypeByApartmentId(rs.getString("id"));
-
-                Floor floor = new Floor();
-                floor.setNumber(rs.getInt("floor"));
-
-                Apartment apartment = new Apartment(rs.getString("Id"),
-                        rs.getInt("NoPerson"),
-                        floor,
-                        rs.getString("information"), roomtype
-                );
-                apartment.setRoomtype(roomtype);
-                list.add(apartment);
-            }
-
-            rs.close();
-            pre.close();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return list;
-    }
-
-    public boolean updatenoperson(Apartment a) {
+   public boolean updatenoperson(Apartment a) {
         String sql = "update Apartment set NoPerson =? where id=?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -293,6 +281,7 @@ public class ApartmentDAO extends DBContext {
         return false;
 
     }
+
 
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
