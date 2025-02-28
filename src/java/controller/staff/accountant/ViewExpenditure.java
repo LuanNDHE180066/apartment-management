@@ -5,9 +5,11 @@
 
 package controller.staff.accountant;
 
+import dao.CompanyDAO;
 import dao.ContractDAO;
 import dao.ExpenditureDAO;
 import dao.ExpenseCategoryDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,8 +19,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Company;
 import model.Expenditure;
 import model.ExpenseCategory;
+import model.Staff;
 import util.Util;
 
 /**
@@ -67,6 +71,9 @@ public class ViewExpenditure extends HttpServlet {
         Util u = new Util();
         ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
         ExpenditureDAO edao = new ExpenditureDAO();
+  
+        CompanyDAO daoCp = new CompanyDAO();
+        StaffDAO daoSt = new StaffDAO();
         String title = request.getParameter("title");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
@@ -91,6 +98,16 @@ public class ViewExpenditure extends HttpServlet {
         if (page == null) {
             page = "1";
         }
+        
+         List<Company> listCompany = daoCp.getAll();
+        List<ExpenseCategory> listExpenseCategory = daoEc.getAllExpenseCategory();
+        List<Staff> listAccountant = daoSt.getActiveStaffbyRole("3");
+        List<Staff> listAdmin = daoSt.getActiveStaffbyRole("0");
+
+        session.setAttribute("listCompany", listCompany);
+        session.setAttribute("listExpenseCategory", listExpenseCategory);
+        session.setAttribute("listAccountant", listAccountant);
+        session.setAttribute("listAdmin", listAdmin);
         
         System.out.println("list hien ta"+listExpenditure);
         if (listExpenditure.size() != 0) {

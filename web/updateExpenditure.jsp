@@ -129,7 +129,7 @@
                             <div class="container-fluid">
                                 <div class="form-container">
                                     <h1>Update Information</h1>
-                                    <form action="updateInfo" method="post">
+                                    <form action="update-expenditure" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
                                             <div class="two-cols">
@@ -139,10 +139,11 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="totalFees">Total Fees</label>
-                                                    <input type="number" id="totalFees" name="totalFees" placeholder="Enter total fees" value="${expenditure.totalPrice}" required=""/>
+                                                    <input type="number" id="totalFees" min="0"
+                                                           name="totalPrice" step="0.01" placeholder="Enter total fees" value="${expenditure.totalPrice}" required=""/>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </div> 
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
@@ -160,8 +161,8 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="category">Category</label>
                                                     <select id="category" name="category" required="">
-                                                        <c:forEach items="${sessionScope.listCategories}" var="cat">
-                                                            <option value="${cat.id}" ${cat.id == staff.category.id ? 'selected' : ''}>${cat.name}</option>
+                                                        <c:forEach items="${sessionScope.listExpenseCategory}" var="cat">
+                                                            <option value="${cat.id}" ${cat.id == expenditure.category.id ? 'selected' : ''}>${cat.categoryName}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -169,7 +170,7 @@
                                                     <label for="company">Company</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
-                                                            <option value="${cp.id}" ${staff.company.id == cp.id?'selected':''}>${cp.name}</option>
+                                                            <option value="${cp.id}" ${expenditure.company.id == cp.id?'selected':''}>${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -178,14 +179,15 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="invoiceCreator">Invoice Creator</label>
-                                                    <input type="text" id="invoiceCreator" name="invoiceCreator" placeholder="Enter invoice creator" value="${staff.invoiceCreator}" required=""/>
+                                                    <label for="invoiceCreator">Expenditure Creator</label>
+                                                    <input type="text" id="invoiceCreator" name="invoiceCreator" 
+                                                           placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>
                                                     <select id="chiefAccountant" name="chiefAccountant">
-                                                        <c:forEach items="${sessionScope.listAccountants}" var="accountant">
-                                                            <option value="${accountant.id}" ${accountant.id == staff.chiefAccountant.id?'selected':''}>${accountant.name}</option>
+                                                        <c:forEach items="${sessionScope.listAccountant}" var="accountant">
+                                                            <option value="${accountant.id}" ${accountant.id == expenditure.chiefAccountantId.id?'selected':''}>${accountant.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -196,8 +198,8 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="admin">Admin</label>
                                                     <select id="admin" name="admin">
-                                                        <c:forEach items="${sessionScope.listAdmins}" var="admin">
-                                                            <option value="${admin.id}" ${admin.id == staff.admin.id?'selected':''}>${admin.name}</option>
+                                                        <c:forEach items="${sessionScope.listAdmin}" var="admin">
+                                                            <option value="${admin.id}" ${admin.id == expenditure.currentAdmin.id?'selected':''}>${admin.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -205,7 +207,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="note">Note</label>
-                                            <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${staff.note}</textarea>
+                                            <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Update</button>
