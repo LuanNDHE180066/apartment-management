@@ -25,6 +25,7 @@ import java.util.Locale.Category;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ExpenseCategory;
+import model.HistoryExpenditure;
 import util.Util;
 
 public class ExpenditureDAO extends DBContext {
@@ -111,6 +112,63 @@ public class ExpenditureDAO extends DBContext {
         } catch (Exception e) {
         }
         return list;
+    }
+
+    public boolean addExpenditure(HistoryExpenditure he) {
+        String sql = "INSERT INTO [dbo].[Expenditure]\n"
+                + "           ([Id]\n"
+                + "           ,[Approveddate]\n"
+                + "           ,[Paymentdate]\n"
+                + "           ,[note]\n"
+                + "           ,[cid]\n"
+                + "           ,[sId]\n"
+                + "           ,[chiefAccountantId]\n"
+                + "           ,[currentAdminId]\n"
+                + "           ,[totalPrice]\n"
+                + "           ,[title]\n"
+                + "           ,[CategoryId]\n"
+                + "           ,[accountantChiefApprove]\n"
+                + "           ,[adminApprove]\n"
+                + "           ,[createdDate])\n"
+                + "     VALUES\n"
+                + "           (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, he.getId());
+            ps.setString(2, he.getApproveddate());
+            ps.setString(3, he.getPaymentdate());
+            ps.setString(4, he.getNote());
+            ps.setString(5, he.getCompany().getId());
+            ps.setString(6, he.getCreatedStaff().getId());
+            ps.setString(7, he.getChiefAccountantId().getId());
+            ps.setString(8, he.getCurrentAdmin().getId());
+            ps.setFloat(9, he.getTotalPrice());
+            ps.setString(10, he.getTitle());
+            ps.setInt(11, he.getCategory().getId());
+            ps.setInt(12, he.getChiefAccountantApproveStatus());
+            ps.setInt(13, he.getCurrentAdminApproveStatus());
+            ps.setString(14, he.getCreatedDate());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public boolean checkExistId(String id) {
+        String sql = "select * from expenditure where id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public int getLargestId() {
@@ -235,7 +293,32 @@ public class ExpenditureDAO extends DBContext {
     public static void main(String[] args) {
         ExpenditureDAO dao = new ExpenditureDAO();
         CompanyDAO cp = new CompanyDAO();
+        HistoryExpenditureDAO daoHe = new HistoryExpenditureDAO();
+        ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
+        CompanyDAO daoC = new CompanyDAO();
+        StaffDAO daoSt = new StaffDAO();
 
-        System.out.println(dao.generateExpenditureId());
+        HistoryExpenditure he = new HistoryExpenditure(
+                // heid
+                "e004", // id
+                "Travel Expenses", // title
+                1, // chiefAccountantApproveStatus
+                1, // currentAdminApproveStatus
+                "2023-01-01", // approveddate
+                "2023-01-10", // paymentdate
+                2500.0f, // totalPrice
+                "Business trip to Paris", // note
+                daoEc.getExpenseCategoryById(1), // category
+                daoC.getById("C002"), // company
+                daoSt.getById("S1014"), // createdStaff
+                daoSt.getById("S1014"), // chiefAccountantId
+                daoSt.getById("S1017"), // currentAdmin
+                "Insert", // action
+                "2023-01-01", // modifiedDate
+                daoSt.getById("S1014"), // modifiedBy
+                "2023-01-01" // createdDate
+        );
+
+        System.out.println(dao.addExpenditure(he));
     }
 }

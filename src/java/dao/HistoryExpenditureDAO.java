@@ -131,8 +131,41 @@ public class HistoryExpenditureDAO extends DBContext {
         return list;
     }
 
+    public boolean updateApproveStatus(String id, String role) {
+        String sql = "";
+        if (role.equalsIgnoreCase("3")) {
+            sql = "update ExpenditureHistory set accountantChiefApprove = 1 where historyId = ?";
+        } else {
+            sql = "update ExpenditureHistory set adminApprove = 1 where historyId = ?";
+        }
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+//    public boolean updateApproveStatus(String id, String role) {
+//        String sql = "update ExpenditureHistory set adminApprove = ?, accountantChiefApprove = ? where historyId = ?";
+//        boolean isAccountantChief = role.equalsIgnoreCase("3");
+//
+//        try (PreparedStatement ps = connection.prepareStatement(sql)) {
+//            ps.setInt(1, isAccountantChief ? 0 : 1); // adminApprove
+//            ps.setInt(2, isAccountantChief ? 1 : 0); // accountantChiefApprove
+//            ps.setString(3, id);
+//
+//            return ps.executeUpdate() > 0;
+//        } catch (SQLException ex) {
+//            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+//        }
+//        return false;
+//    }
     public HistoryExpenditure getExpenditureById(String hid) {
-        String sql = "select * from HistoryExpenditure where historyid = '" + hid + "'";
+        String sql = "select * from ExpenditureHistory where historyid = '" + hid + "'";
         ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
         PreparedStatement ps;
         try {
@@ -263,7 +296,7 @@ public class HistoryExpenditureDAO extends DBContext {
         return list;
     }
 
-    public List<HistoryExpenditure> getListWaitingExpenditureByStaffId(String staffId ) {
+    public List<HistoryExpenditure> getListWaitingExpenditureByStaffId(String staffId) {
         String sql = "select * from ExpenditureHIstory where (accountantChiefApprove =0  or adminApprove = 0) \n"
                 + "and accountantChiefApprove >= 0 and adminApprove >= 0 and (sId = ? \n"
                 + "or modifiedby = ? or chiefaccountantid = ? or currentadminid = ?) ";
@@ -310,6 +343,19 @@ public class HistoryExpenditureDAO extends DBContext {
         return list;
     }
 
+    public boolean updateEidAfterInsert(HistoryExpenditure he) {
+        String sql = "Update ExpenditureHistory set expenditureid = ? where historyid = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, he.getId());
+            ps.setInt(2, he.getHeid());
+          return  ps.executeUpdate() >0;
+        } catch (SQLException ex) {
+            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public static void main(String[] args) {
         HistoryExpenditureDAO dao = new HistoryExpenditureDAO();
         ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
@@ -337,7 +383,7 @@ public class HistoryExpenditureDAO extends DBContext {
                 "2023-01-01" // createdDate
         );
 
-        System.out.println(dao.getListWaitingExpenditureByStaffId("s1014").size());
+        System.out.println(dao.updateEidAfterInsert(he));
 
     }
 }

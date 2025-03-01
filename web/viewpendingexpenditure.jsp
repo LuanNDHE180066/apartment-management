@@ -48,11 +48,11 @@
                 margin: 0 5px;
             }
             .approval-link {
-            font-size: 20px;
-            margin: 0 5px; 
-            color: inherit; 
-            text-decoration: none; 
-        }
+                font-size: 20px;
+                margin: 0 5px;
+                color: inherit;
+                text-decoration: none;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -112,22 +112,35 @@
                                                             <td>${expenditure.chiefAccountantId.name}</td>
                                                             <td>${expenditure.currentAdmin.name}</td>
                                                             <td>
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId}">
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 0}">
                                                                     <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
                                                                         <i class="fa-solid fa-check"></i>
                                                                     </a>
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=0">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
                                                                         <i class="fa-solid fa-xmark"></i>
                                                                     </a>
                                                                 </c:if>
 
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId}">
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == -1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
                                                                     <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
                                                                         <i class="fa-solid fa-check"></i>
                                                                     </a>
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=0">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
                                                                         <i class="fa-solid fa-xmark"></i>
                                                                     </a>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == -1}">
+                                                                    <span style="color: green">Accept</span>
                                                                 </c:if>
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
