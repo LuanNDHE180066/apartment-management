@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author quang
@@ -14,15 +16,21 @@ public class Feedback {
     private String detail, date;
     private Resident resident;
     private RequestType requestType;
+    private int rate;
+    private List<String> img;
 
-    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType) {
+    public Feedback() {
+    }
+
+    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img) {
         this.id = id;
         this.detail = detail;
         this.date = date;
         this.resident = resident;
         this.requestType = requestType;
+        this.rate = rate;
+        this.img = img;
     }
-
     public String getId() {
         return id;
     }
@@ -62,5 +70,26 @@ public class Feedback {
     public void setRequestType(RequestType requestType) {
         this.requestType = requestType;
     }
+
+    public int getRate() {
+        return rate;
+    }
+
+    public void setRate(int rate) {
+        this.rate = rate;
+    }
+
+    public List<String> getImg() {
+        return img;
+    }
+
+    public void setImg(List<String> img) {
+        this.img = img;
+    }
+
+    
+   
+
+   
 
 }

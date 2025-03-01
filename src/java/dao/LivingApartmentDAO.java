@@ -190,6 +190,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
+    
 
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
