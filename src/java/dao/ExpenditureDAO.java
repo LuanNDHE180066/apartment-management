@@ -20,10 +20,12 @@ import java.sql.SQLException;
 
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Locale.Category;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.ExpenseCategory;
+import util.Util;
 
 public class ExpenditureDAO extends DBContext {
 
@@ -57,7 +59,6 @@ public class ExpenditureDAO extends DBContext {
 //        }
 //        return false;
 //    }
-    
 //    public boolean updateExpenditure(Expenditure e){
 //        
 //    }  
@@ -85,10 +86,10 @@ public class ExpenditureDAO extends DBContext {
                 Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
                 Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
                 String createdDate = rs.getString("createdDate");
-                Expenditure ne = new Expenditure(id, title, 
-                        accountChiefApprove, 
-                        currentAdminApprove, approveddate, paymentdate, 
-                        totalPrice, note, category, company, createdStaff, chiefAccountant, 
+                Expenditure ne = new Expenditure(id, title,
+                        accountChiefApprove,
+                        currentAdminApprove, approveddate, paymentdate,
+                        totalPrice, note, category, company, createdStaff, chiefAccountant,
                         currentAdminId, createdDate);
                 list.add(ne);
             }
@@ -110,6 +111,34 @@ public class ExpenditureDAO extends DBContext {
         } catch (Exception e) {
         }
         return list;
+    }
+
+    public int getLargestId() {
+        List<Integer> list = new ArrayList<>();
+        String sql = "select id from Expenditure";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            Util u = new Util();
+            while (rs.next()) {
+                list.add(u.getNumberFromText(rs.getString(1)));
+            }
+            if (list.size() == 0) {
+                return 1;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return Collections.max(list) + 1;
+    }
+
+    public String generateExpenditureId() {
+        int newNumberId = this.getLargestId();
+        String newId = "";
+        if (newNumberId < 10) {
+            return newId += "e00" + newNumberId;
+        }
+        return newId += "e0" + newNumberId;
     }
 
     public List<Expenditure> getViewExpenditure(String title, String startDate, String endDate, String categories) {
@@ -154,10 +183,10 @@ public class ExpenditureDAO extends DBContext {
                 Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
                 Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
                 String createdDate = rs.getString("createdDate");
-                Expenditure ne = new Expenditure(id, titleE, 
-                        accountChiefApprove, 
-                        currentAdminApprove, approveddate, paymentdate, 
-                        totalPrice, note, category, company, createdStaff, chiefAccountant, 
+                Expenditure ne = new Expenditure(id, titleE,
+                        accountChiefApprove,
+                        currentAdminApprove, approveddate, paymentdate,
+                        totalPrice, note, category, company, createdStaff, chiefAccountant,
                         currentAdminId, createdDate);
                 list.add(ne);
             }
@@ -190,10 +219,10 @@ public class ExpenditureDAO extends DBContext {
                 Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
                 Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
                 String createdDate = rs.getString("createdDate");
-                Expenditure ne = new Expenditure(id, titleE, 
-                        accountChiefApprove, 
-                        currentAdminApprove, approveddate, paymentdate, 
-                        totalPrice, note, category, company, createdStaff, chiefAccountant, 
+                Expenditure ne = new Expenditure(id, titleE,
+                        accountChiefApprove,
+                        currentAdminApprove, approveddate, paymentdate,
+                        totalPrice, note, category, company, createdStaff, chiefAccountant,
                         currentAdminId, createdDate);
                 return ne;
             }
@@ -207,6 +236,6 @@ public class ExpenditureDAO extends DBContext {
         ExpenditureDAO dao = new ExpenditureDAO();
         CompanyDAO cp = new CompanyDAO();
 
-        System.out.println(dao.getViewExpenditure("", "", "", "").size());
+        System.out.println(dao.generateExpenditureId());
     }
 }

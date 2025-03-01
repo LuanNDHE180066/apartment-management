@@ -129,7 +129,7 @@
                             <div class="container-fluid">
                                 <div class="form-container">
                                     <h1>Add Expenditure</h1>
-                                    <form action="update-expenditure" method="post">
+                                    <form action="add-expenditure" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
                                             <div class="two-cols">
@@ -170,7 +170,7 @@
                                                     <label for="company">Company</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
-                                                            <option value="${cp.id}" ${expenditure.company.id == cp.id?'selected':''}>${cp.name}</option>
+                                                            <option value="${cp.id}">${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -189,7 +189,7 @@
                                                     <label for="chiefAccountant">Chief Accountant</label>
                                                     <select id="chiefAccountant" name="chiefAccountant">
                                                         <c:forEach items="${sessionScope.listAccountant}" var="accountant">
-                                                            <option value="${accountant.id}" ${accountant.id == expenditure.chiefAccountantId.id?'selected':''}>${accountant.name}</option>
+                                                            <option value="${accountant.id}" >${accountant.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -201,7 +201,7 @@
                                                     <label for="admin">Admin</label>
                                                     <select id="admin" name="admin">
                                                         <c:forEach items="${sessionScope.listAdmin}" var="admin">
-                                                            <option value="${admin.id}" ${admin.id == expenditure.currentAdmin.id?'selected':''}>${admin.name}</option>
+                                                            <option value="${admin.id}" >${admin.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>

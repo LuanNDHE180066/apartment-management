@@ -27,7 +27,6 @@ public class HistoryExpenditure {
     private String action;
     private String modifiedDate;
     private Staff modifiedBy;
-    private int chiefAccountantApprove, currentAdminApprove;
     private String createdDate;
 
     public String getCreatedDate() {
@@ -62,23 +61,7 @@ public class HistoryExpenditure {
         this.modifiedBy = modifiedBy;
     }
 
-    public int getChiefAccountantApprove() {
-        return chiefAccountantApprove;
-    }
-
-    public void setChiefAccountantApprove(int chiefAccountantApprove) {
-        this.chiefAccountantApprove = chiefAccountantApprove;
-    }
-
-    public int getCurrentAdminApprove() {
-        return currentAdminApprove;
-    }
-
-    public void setCurrentAdminApprove(int currentAdminApprove) {
-        this.currentAdminApprove = currentAdminApprove;
-    }
-
-    public HistoryExpenditure(int heid, String id, String title, int chiefAccountantApproveStatus, int currentAdminApproveStatus, String approveddate, String paymentdate, float totalPrice, String note, ExpenseCategory category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin, String action, String modifiedDate, Staff modifiedBy, int chiefAccountantApprove, int currentAdminApprove, String createdDate) {
+    public HistoryExpenditure(int heid, String id, String title, int chiefAccountantApproveStatus, int currentAdminApproveStatus, String approveddate, String paymentdate, float totalPrice, String note, ExpenseCategory category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin, String action, String modifiedDate, Staff modifiedBy, String createdDate) {
         this.heid = heid;
         this.id = id;
         this.title = title;
@@ -96,15 +79,28 @@ public class HistoryExpenditure {
         this.action = action;
         this.modifiedDate = modifiedDate;
         this.modifiedBy = modifiedBy;
-        this.chiefAccountantApprove = chiefAccountantApprove;
-        this.currentAdminApprove = currentAdminApprove;
         this.createdDate = createdDate;
     }
 
-    
-
-   
-
+    public HistoryExpenditure(String id, String title, int chiefAccountantApproveStatus, int currentAdminApproveStatus, String approveddate, String paymentdate, float totalPrice, String note, ExpenseCategory category, Company company, Staff createdStaff, Staff chiefAccountantId, Staff currentAdmin, String action, String modifiedDate, Staff modifiedBy, String createdDate) {
+        this.id = id;
+        this.title = title;
+        this.chiefAccountantApproveStatus = chiefAccountantApproveStatus;
+        this.currentAdminApproveStatus = currentAdminApproveStatus;
+        this.approveddate = approveddate;
+        this.paymentdate = paymentdate;
+        this.totalPrice = totalPrice;
+        this.note = note;
+        this.category = category;
+        this.company = company;
+        this.createdStaff = createdStaff;
+        this.chiefAccountantId = chiefAccountantId;
+        this.currentAdmin = currentAdmin;
+        this.action = action;
+        this.modifiedDate = modifiedDate;
+        this.modifiedBy = modifiedBy;
+        this.createdDate = createdDate;
+    }
 
 
     public int getHeid() {

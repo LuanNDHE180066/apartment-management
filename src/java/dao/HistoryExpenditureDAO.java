@@ -60,14 +60,10 @@ public class HistoryExpenditureDAO extends DBContext {
                 String action = rs.getString("actiontype");
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
-                int accountantChiefApprove = rs.getInt("accountantChiefApprove");
-                int adminApprove = rs.getInt("adminApprove");
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
-                        accountantChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
-                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy,
-                        accountantChiefApprove, currentAdminApprove, createdDate);
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
 
                 list.add(ne);
             }
@@ -121,14 +117,10 @@ public class HistoryExpenditureDAO extends DBContext {
                 String action = rs.getString("actiontype");
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
-                int accountantChiefApprove = rs.getInt("accountantChiefApprove");
-                int adminApprove = rs.getInt("adminApprove");
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
-                        accountantChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
-                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy,
-                        accountantChiefApprove, currentAdminApprove, createdDate);
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
 
                 list.add(ne);
             }
@@ -164,15 +156,10 @@ public class HistoryExpenditureDAO extends DBContext {
                 String action = rs.getString("actiontype");
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
-                int accountantChiefApprove = rs.getInt("accountantChiefApprove");
-                int adminApprove = rs.getInt("adminApprove");
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
-                        accountantChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
-                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy,
-                        accountantChiefApprove, currentAdminApprove, createdDate);
-
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
                 return ne;
             }
         } catch (SQLException ex) {
@@ -185,26 +172,26 @@ public class HistoryExpenditureDAO extends DBContext {
 //        this.modifiedBy = modifiedBy;
 
     public boolean addNewHistoryExpenditure(HistoryExpenditure he) {
-        String sql = "INSERT INTO [dbo].[ExpenditureHistory]\n" +
-"           ([ExpenditureId]\n" +
-"           ,[ApprovedDate]\n" +
-"           ,[PaymentDate]\n" +
-"           ,[Note]\n" +
-"           ,[Cid]\n" +
-"           ,[sId]\n" +
-"           ,[ChiefAccountantId]\n" +
-"           ,[CurrentAdminId]\n" +
-"           ,[TotalPrice]\n" +
-"           ,[Title]\n" +
-"           ,[CategoryId]\n" +
-"           ,[ActionType]\n" +
-"           ,[ModifiedDate]\n" +
-"           ,[ModifiedBy]\n" +
-"           ,[accountantChiefApprove]\n" +
-"           ,[adminApprove]\n" +
-"           ,[createdDate])\n" +
-"     VALUES\n" +
-"           (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)";
+        String sql = "INSERT INTO [dbo].[ExpenditureHistory]\n"
+                + "           ([ExpenditureId]\n"
+                + "           ,[ApprovedDate]\n"
+                + "           ,[PaymentDate]\n"
+                + "           ,[Note]\n"
+                + "           ,[Cid]\n"
+                + "           ,[sId]\n"
+                + "           ,[ChiefAccountantId]\n"
+                + "           ,[CurrentAdminId]\n"
+                + "           ,[TotalPrice]\n"
+                + "           ,[Title]\n"
+                + "           ,[CategoryId]\n"
+                + "           ,[ActionType]\n"
+                + "           ,[ModifiedDate]\n"
+                + "           ,[ModifiedBy]\n"
+                + "           ,[accountantChiefApprove]\n"
+                + "           ,[adminApprove]\n"
+                + "           ,[createdDate])\n"
+                + "     VALUES\n"
+                + "           (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0, 0, ?)";
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -233,6 +220,32 @@ public class HistoryExpenditureDAO extends DBContext {
 
     public static void main(String[] args) {
         HistoryExpenditureDAO dao = new HistoryExpenditureDAO();
-        System.out.println(dao.getAll().size());
+        ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
+        CompanyDAO daoC = new CompanyDAO();
+        StaffDAO daoSt = new StaffDAO();
+
+        HistoryExpenditure he = new HistoryExpenditure(
+                // heid
+                "e011", // id
+                "Travel Expenses", // title
+                1, // chiefAccountantApproveStatus
+                1, // currentAdminApproveStatus
+                "2023-01-01", // approveddate
+                "2023-01-10", // paymentdate
+                2500.0f, // totalPrice
+                "Business trip to Paris", // note
+                daoEc.getExpenseCategoryById(1), // category
+                daoC.getById("C002"), // company
+                daoSt.getById("S1014"), // createdStaff
+                daoSt.getById("S1014"), // chiefAccountantId
+                daoSt.getById("S1017"), // currentAdmin
+                "Insert", // action
+                "2023-01-01", // modifiedDate
+                daoSt.getById("S1014"), // modifiedBy
+                "2023-01-01" // createdDate
+        );
+
+        System.out.println(dao.addNewHistoryExpenditure(he));
+
     }
 }
