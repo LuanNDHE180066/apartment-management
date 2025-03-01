@@ -137,7 +137,6 @@
                                                 </div>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" id="staffID" name="staffID" value="" hidden=""/>
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="gender">Gender</label>
@@ -164,7 +163,7 @@
                                                     value="${param.address}"
                                                     required=""
                                                     />
-<!--                                                <span style="color: red">${requestScope.nameerror}</span>-->
+                                                <span style="color: red">${requestScope.addresserror}</span>
                                             </div>
                                         </div>
                                         <div class="form-group">
