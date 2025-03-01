@@ -142,6 +142,7 @@ public class ViewAllRequest extends HttpServlet {
         waitting_list = rd.getPageByNumber(waitting_list, Integer.parseInt(page_waiting), numberPerPage);
         inprocess_list = rd.getPageByNumber(inprocess_list, Integer.parseInt(page_inprocess), numberPerPage);
         done_list = rd.getPageByNumber(done_list, Integer.parseInt(page_done), numberPerPage);
+        request.setAttribute("error_staff", request.getAttribute("error_staff"));
         request.setAttribute("waiting_requestes", waitting_list);
         request.setAttribute("inprocess_requestes", inprocess_list);
         request.setAttribute("done_requestes", done_list);

@@ -17,9 +17,23 @@ public class Request {
     private String date;
     private String responseDate;
     private String status;
+    private String shift;
     private RequestType requestType;
 
     public Request() {
+    }
+
+    public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, String shift, RequestType requestType) {
+        this.id = id;
+        this.residentId = residentId;
+        this.staffId = staffId;
+        this.detail = detail;
+        this.response = response;
+        this.date = date;
+        this.responseDate = responseDate;
+        this.status = status;
+        this.shift = shift;
+        this.requestType = requestType;
     }
 
     public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, RequestType requestType) {
@@ -104,6 +118,14 @@ public class Request {
 
     public void setRequestType(RequestType requestType) {
         this.requestType = requestType;
+    }
+
+    public String getShift() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
     }
     
 }

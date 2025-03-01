@@ -225,9 +225,18 @@
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
-                                                                                                            <td>${request.address}</td>                                             
+                                                                                                            <td>${request.address}</td>   
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
+                                                                                                                <select id="shift" name="shift">
+                                                                                                                        <option value="1" data-time-start="8" data-time-end="10">8:00 - 10:00</option>
+                                                                                                                        <option value="2" data-time-start="13" data-time-end="15">13:00 - 15:00</option>
+                                                                                                                        <option value="3" data-time-start="15" data-time-end="17">15:00 - 17:00</option>
+                                                                                                                        <option value="4" data-time-start="18" data-time-end="20">18:00 - 20:00</option>
+                                                                                                                    </select>
+                                                                                                            </td>
+                                                                                                            <td>
+                                                                                                                
                                                                                                                     <input type="hidden" name="requestid" value="${o.id}">
                                                                                                                     <input type="hidden" name="staffid" value="${staff.id}">
                                                                                                                     <button type="submit">Assign</button>
@@ -277,27 +286,27 @@
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
-                                                <form action="view-all-request" method="GET">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-2">
-                                                            <select class="form-control" name="filterRoles">
-                                                                <option value="">Filter by Roles</option>
-                                                                <c:forEach items="${requestScope.rolelist}" var="o">
-                                                                    <c:if test="${o.id >= 4}">
-                                                                        <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
-                                                                    </c:if>
-                                                                </c:forEach>
-                                                            </select>
-                                                        </div>
-                                                        <div class="col-md-4 d-flex">
-                                                            <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        </div>
+                                            <form action="view-all-request" method="GET">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <select class="form-control" name="filterRoles">
+                                                            <option value="">Filter by Roles</option>
+                                                            <c:forEach items="${requestScope.rolelist}" var="o">
+                                                                <c:if test="${o.id >= 4}">
+                                                                    <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
+                                                                </c:if>
+                                                            </c:forEach>
+                                                        </select>
                                                     </div>
-                                                </form>
-                                            </div>
+                                                    <div class="col-md-4 d-flex">
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
-
+                                                <div><h5 style="background-color: red">${requestScope.error_staff}</h5></div>
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
@@ -307,6 +316,7 @@
                                                             <th>Date</th>                                               
                                                             <th>Type</th>
                                                             <th>Status</th>
+                                                            <th>Shift</th>
                                                             <th>Reception Staff</th>
                                                             <th>Option</th>
                                                         </tr>
@@ -320,6 +330,7 @@
                                                                 <td>${o.date}</td> 
                                                                 <td>${o.requestType.name}</td>                                             
                                                                 <td>${o.status}</td>
+                                                                <td>${o.shift}</td>
                                                                 <td>${o.staffId.name}</td> 
                                                                 <c:if test="${sessionScope.account.roleId!=2}">
                                                                     <td>
@@ -346,6 +357,7 @@
                                                                                                         <th>Email</th>
                                                                                                         <th>Phone</th>                                               
                                                                                                         <th>Address</th>
+                                                                                                        <th>Shift</th>
                                                                                                         <th>Option</th>
                                                                                                     </tr>
                                                                                                 </thead>
@@ -365,14 +377,22 @@
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
-                                                                                                            <td>${request.address}</td>                                             
+                                                                                                            <td>${request.address}</td>
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
-                                                                                                                    <input type="hidden" name="requestid" value="${o.id}">
-                                                                                                                    <input type="hidden" name="staffid" value="${staff.id}">
-                                                                                                                    <button type="submit">Assign</button>
+                                                                                                                    <select id="shift" name="shift">
+                                                                                                                        <option value="1" data-time-start="8" data-time-end="10">8:00 - 10:00</option>
+                                                                                                                        <option value="2" data-time-start="13" data-time-end="15">13:00 - 15:00</option>
+                                                                                                                        <option value="3" data-time-start="15" data-time-end="17">15:00 - 17:00</option>
+                                                                                                                        <option value="4" data-time-start="18" data-time-end="20">18:00 - 20:00</option>
+                                                                                                                    </select>
+                                                                                                            </td>
+                                                                                                            <td><input type="hidden" name="destination" value="${status.index}">
+                                                                                                                <input type="hidden" name="requestid" value="${o.id}">
+                                                                                                                <input type="hidden" name="staffid" value="${staff.id}">
+                                                                                                                <button type="submit">Assign</button>
                                                                                                                 </form>
-                                                                                                            </td>   
+                                                                                                            </td>  
                                                                                                         </tr>
                                                                                                     </c:forEach>
                                                                                                 </tbody>
@@ -424,6 +444,7 @@
                                                             <th>Date</th>                                               
                                                             <th>Type</th>
                                                             <th>Status</th>
+                                                            <th>Shift</th>
                                                             <th>Reception Staff</th>
                                                         </tr>
                                                     </thead>
@@ -436,6 +457,7 @@
                                                                 <td>${o.date}</td> 
                                                                 <td>${o.requestType.name}</td>                                             
                                                                 <td>${o.status}</td>
+                                                                <td>${o.shift}</td>
                                                                 <td>${o.status != 'No response' ? o.staffId.name : ''}</td>                           
                                                             </tr>
                                                         </c:forEach>
@@ -477,6 +499,29 @@
         </div>
 
         <!-- jQuery -->
+<!--        <script>
+            function updateOptionsByTime() {
+                const currentHour = new Date().getHours(); // Lấy giờ hiện tại
+                const options = document.querySelectorAll("#shift option");
+
+                options.forEach(option => {
+                    const startHour = parseInt(option.getAttribute("data-time-start"));
+                    const endHour = parseInt(option.getAttribute("data-time-end"));
+
+                    if (currentHour >= startHour && currentHour < endHour) {
+                        option.hidden = false; // Hiển thị option
+                    } else {
+                        option.hidden = true; // Ẩn option
+                    }
+                });
+            }
+
+            // Gọi hàm khi trang load
+            updateOptionsByTime();
+
+            // Cập nhật mỗi phút để kiểm tra lại điều kiện
+            setInterval(updateOptionsByTime, 60000);
+        </script>-->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
