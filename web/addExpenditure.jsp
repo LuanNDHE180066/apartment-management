@@ -128,7 +128,7 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Update Information</h1>
+                                    <h1>Add Expenditure</h1>
                                     <form action="update-expenditure" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
@@ -180,8 +180,10 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="invoiceCreator">Expenditure Creator</label>
-                                                    <input type="text" id="invoiceCreator" name="invoiceCreator" 
-                                                           placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
+                                                    <input type="text" id="invoiceCreator" 
+                                                           placeholder="Enter invoice creator" value="${staff.name}" readonly="" required=""/>
+                                                    <input type="text" id="invoiceCreator" name="createdBy" 
+                                                           placeholder="Enter invoice creator" value="${staff.id}" hidden="" readonly="" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>
@@ -210,7 +212,7 @@
                                             <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Update</button>
+                                            <button type="submit">Add</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>
