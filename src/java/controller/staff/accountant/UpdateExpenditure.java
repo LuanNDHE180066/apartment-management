@@ -18,10 +18,15 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+import model.Account;
 import model.Company;
 import model.ExpenseCategory;
+import model.HistoryExpenditure;
+import model.SendEmail;
 import model.Staff;
 
 /**
@@ -76,7 +81,6 @@ public class UpdateExpenditure extends HttpServlet {
         CompanyDAO daoCp = new CompanyDAO();
         StaffDAO daoSt = new StaffDAO();
 
-       
         request.setAttribute("expenditure", daoE.getExpenditureById(id));
         request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
     }
@@ -93,6 +97,8 @@ public class UpdateExpenditure extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         //id, totalPrice, title, approveDate, paymentDate, category,company, chiefAccountant, admin, note
+        HttpSession session = request.getSession();
+        Account a = (Account) session.getAttribute("account");
         String eid = request.getParameter("id");
         String totalPrice_raw = request.getParameter("totalPrice");
         String title = request.getParameter("title");
@@ -101,13 +107,19 @@ public class UpdateExpenditure extends HttpServlet {
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
         String chiefAccountantId = request.getParameter("chiefAccountant");
-        String AdminId = request.getParameter("Admin");
+        String AdminId = request.getParameter("admin");
         String note = request.getParameter("note");
+        String createdStaffId = request.getParameter("createdStaff");
 
         HistoryExpenditureDAO daoE = new HistoryExpenditureDAO();
         ExpenseCategoryDAO daoEx = new ExpenseCategoryDAO();
         CompanyDAO daoCp = new CompanyDAO();
         StaffDAO daoSt = new StaffDAO();
+        ExpenditureDAO daoExpen = new ExpenditureDAO();
+
+        LocalDateTime lc = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDate = lc.format(format);
 
         if (title.trim().isBlank()) {
             request.setAttribute("message", "Title can not be blank");
@@ -124,7 +136,7 @@ public class UpdateExpenditure extends HttpServlet {
             request.getRequestDispatcher("updateExpenditure").forward(request, response);
             return;
         }
-        
+
         if (note.trim().isBlank()) {
             request.setAttribute("message", "Note can not be blank");
             request.setAttribute("status", "false");
@@ -132,11 +144,32 @@ public class UpdateExpenditure extends HttpServlet {
             request.getRequestDispatcher("updateExpenditure").forward(request, response);
             return;
         }
-        
-        try{
+
+        try {
             float totalPrice = Float.parseFloat(totalPrice_raw);
-            
-        }catch(NumberFormatException e){
+            HistoryExpenditure he = new HistoryExpenditure(eid, title, 0, 0, approveDate_raw, paymentDate_raw,
+                    totalPrice, note, daoEx.getExpenseCategoryById(Integer.parseInt(categoryId)),
+                    daoCp.getById(companyId), daoSt.getById(createdStaffId), daoSt.getById(chiefAccountantId),
+                    daoSt.getById(AdminId),
+                    "Update", formattedDate, daoSt.getById(a.getpId()), daoExpen.getExpenditureById(eid).getCreatedDate());
+             if (!daoE.addNewHistoryExpenditure(he)) {
+                request.setAttribute("message", "Can not create update expenditure request");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
+                return;
+            } else {
+                SendEmail send = new SendEmail();
+                send.sendEmail(he.getChiefAccountantId().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has updated an expenditure " + he.getTitle(),
+                        "Please check and confirm the expenditure" + he.getTitle());
+                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has updated an expenditure " + he.getTitle(),
+                        "Please check and confirm the expenditure : " + he.getTitle());
+                request.setAttribute("message", "Your update expenditure request has been successfully saved to the waiting list.");
+                request.setAttribute("status", "true");
+                request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
+                return;
+            }
+
+        } catch (NumberFormatException e) {
             System.out.println(e);
         }
 

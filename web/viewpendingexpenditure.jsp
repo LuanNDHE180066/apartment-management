@@ -155,21 +155,7 @@
                             </div>
                         </div>
                     </div>
-                    <form method="get" action="view-expenditure" style="display: flex; align-items: center; gap: 10px;">
-                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                        <input type="text" name="title" value="${param.title}" hidden="">
-                        <input type="text" name="category" value="${param.category}" hidden="">
-                        <input type="date" name="startDate" value="${param.startDate}" hidden="">
-                        <input type="date" name="endDate"  value="${param.endDate}" hidden="">
-                        <select id="page" name="page" onchange="this.form.submit()" 
-                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                                    ${page}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </form>
+                   
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>

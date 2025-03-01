@@ -131,12 +131,12 @@ public class HistoryExpenditureDAO extends DBContext {
         return list;
     }
 
-    public boolean updateApproveStatus(String id, String role) {
+    public boolean updateApproveStatus(String id, String role, String approve) {
         String sql = "";
         if (role.equalsIgnoreCase("3")) {
-            sql = "update ExpenditureHistory set accountantChiefApprove = 1 where historyId = ?";
+            sql = "update ExpenditureHistory set accountantChiefApprove = " + approve + " where historyId = ?";
         } else {
-            sql = "update ExpenditureHistory set adminApprove = 1 where historyId = ?";
+            sql = "update ExpenditureHistory set adminApprove = " + approve + " where historyId = ?";
         }
 
         try {
@@ -349,7 +349,7 @@ public class HistoryExpenditureDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, he.getId());
             ps.setInt(2, he.getHeid());
-          return  ps.executeUpdate() >0;
+            return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
         }

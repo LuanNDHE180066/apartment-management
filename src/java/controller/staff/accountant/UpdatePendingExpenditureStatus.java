@@ -6,6 +6,7 @@ package controller.staff.accountant;
 
 import dao.ExpenditureDAO;
 import dao.HistoryExpenditureDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,6 +18,7 @@ import jakarta.servlet.http.HttpSession;
 import model.Account;
 import model.Expenditure;
 import model.HistoryExpenditure;
+import model.SendEmail;
 
 /**
  *
@@ -68,19 +70,47 @@ public class UpdatePendingExpenditureStatus extends HttpServlet {
         String id = request.getParameter("id");
         String approve = request.getParameter("approve");
         HistoryExpenditureDAO daoHe = new HistoryExpenditureDAO();
-        daoHe.updateApproveStatus(id, a.getRoleId() + "");
+        StaffDAO daoSt = new StaffDAO();
+        daoHe.updateApproveStatus(id, a.getRoleId() + "", approve);
 
         HistoryExpenditure he = daoHe.getExpenditureById(id);
         ExpenditureDAO daoE = new ExpenditureDAO();
-        if(daoE.checkExistId(he.getId()) && he.getAction().equalsIgnoreCase("insert")){
+        if (daoE.checkExistId(he.getId()) && he.getAction().equalsIgnoreCase("insert")) {
             response.sendRedirect("index.jsp");
             return;
         }
-        if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus()== 1) {
+        
+        
+        if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("update")) {
             String newId = daoE.generateExpenditureId();
+            SendEmail send = new SendEmail();
+            send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure has been accepted an expenditure " + he.getTitle(),
+                    "Please check and confirm the expenditure" + he.getTitle());
+            daoE.updateExpenditure(he);
+        } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
+            SendEmail send = new SendEmail();
+            if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
+                send.sendEmail(he.getModifiedBy().getEmail(), "Your update expenditure request has been deny expenditure: " + he.getTitle(),
+                        "Please check and review the update expenditure request: " + he.getTitle());
+            }
+        }
+
+      
+
+        if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("insert")) {
+            String newId = daoE.generateExpenditureId();
+            SendEmail send = new SendEmail();
+            send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure has been accepted an expenditure " + he.getTitle(),
+                    "Please check and confirm the expenditure" + he.getTitle());
             he.setId(newId);
             daoHe.updateEidAfterInsert(he);
             daoE.addExpenditure(he);
+        } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
+            SendEmail send = new SendEmail();
+            if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
+                send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure request has been deny expenditure: " + he.getTitle(),
+                        "Please check and review the expenditure" + he.getTitle());
+            }
         }
 
         request.setAttribute("staffId", a.getpId());

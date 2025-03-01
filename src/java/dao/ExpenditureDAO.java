@@ -156,6 +156,31 @@ public class ExpenditureDAO extends DBContext {
         return false;
     }
 
+    public boolean updateExpenditure(HistoryExpenditure he) {
+        String sql = "UPDATE dbo.Expenditure SET Approveddate = ?, Paymentdate = ?, "
+                + "note = ?, cid = ?, totalPrice = ?, title = ?, "
+                + "CategoryId = ?, accountantChiefApprove = ?, "
+                + "adminApprove = ? where id = ? ";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, he.getApproveddate());
+            ps.setString(2, he.getPaymentdate());
+            ps.setString(3, he.getNote());
+            ps.setString(4, he.getCompany().getId());
+            ps.setFloat(5, he.getTotalPrice());
+            ps.setString(6, he.getTitle());
+            ps.setInt(7, he.getCategory().getId());
+            ps.setInt(8, 1);
+            ps.setInt(9, 1);
+            ps.setString(10, he.getId());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public boolean checkExistId(String id) {
         String sql = "select * from expenditure where id = ?";
         try {
@@ -319,6 +344,6 @@ public class ExpenditureDAO extends DBContext {
                 "2023-01-01" // createdDate
         );
 
-        System.out.println(dao.addExpenditure(he));
+        System.out.println(dao.updateExpenditure(he));
     }
 }

@@ -136,6 +136,7 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="title">Title</label>
                                                     <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
+                                                    <input type="text" id="title" hidden="" name="id" placeholder="Enter title" value="${expenditure.id}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="totalFees">Total Fees</label>
@@ -182,6 +183,7 @@
                                                     <label for="invoiceCreator">Expenditure Creator</label>
                                                     <input type="text" id="invoiceCreator" name="invoiceCreator" 
                                                            placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
+                                                    <input type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>

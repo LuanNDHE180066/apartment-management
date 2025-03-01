@@ -24,6 +24,7 @@ import model.Account;
 import model.Company;
 import model.ExpenseCategory;
 import model.HistoryExpenditure;
+import model.SendEmail;
 import model.Staff;
 
 /**
@@ -142,7 +143,7 @@ public class AddExpenditure extends HttpServlet {
             String action = "Insert";
             String modifiedDate = formattedDate;
             String createdDate = formattedDate;
-  
+
 //            out.print(currentAdmin.getName() + " " + AdminId + " " + chiefAccountantId + createdById + categoryId_raw);
             HistoryExpenditure he = new HistoryExpenditure(eid, title, 0,
                     0, approveDate_raw, paymentDate_raw, totalPrice, note,
@@ -156,6 +157,11 @@ public class AddExpenditure extends HttpServlet {
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
                 return;
             } else {
+                SendEmail send = new SendEmail();
+                send.sendEmail(he.getChiefAccountantId().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
+                        "Please check and confirm the expenditure" + he.getTitle());
+                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
+                        "Please check and confirm the expenditure : " + he.getTitle());
                 request.setAttribute("message", "Your expenditure has been successfully saved to the waiting list.");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
