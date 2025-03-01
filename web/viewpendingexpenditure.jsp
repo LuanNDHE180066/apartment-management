@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="css/responsive.css" />
         <link rel="stylesheet" href="css/custom.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             body {
                 /* Style body n?u c?n */
@@ -39,6 +40,19 @@
             .graph_head {
                 margin-bottom: 20px; /* Gi?m kho?ng cách d??i tiêu ?? */
             }
+            button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 24px;
+                margin: 0 5px;
+            }
+            .approval-link {
+            font-size: 20px;
+            margin: 0 5px; 
+            color: inherit; 
+            text-decoration: none; 
+        }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -59,44 +73,9 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
-                                        <div class="full graph_head">
-                                            <div class="heading1 margin_0">
-                                                <h2>Expenditure Table Information</h2>
-                                            </div>
-                                            <br> <hr><!-- comment -->
-                                            <div>
-                                                <form action="view-expenditure" method="get">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-8">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-2">
-                                                                    <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
-                                                                </div>
-                                                                <div class="col-md-2.5">
-                                                                    <select class="form-control" name="category">
-                                                                        <option value="">Select category</option>
-                                                                        <c:forEach items="${requestScope.categorylist}" var="ca">
-                                                                            <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-2 d-flex">
-                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <span class="btn btn-primary" style="display: inline-block"><a style="color: white" href="add-expenditure">Add</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
-                                                                </div>
-                                                               
-                                                            </div>
-                                                        </div>
-                                                </form>
-                                            </div>
+
+                                        <div class="heading1 margin_0">
+                                            <h2>Pending Expenditure Information</h2>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -133,7 +112,23 @@
                                                             <td>${expenditure.chiefAccountantId.name}</td>
                                                             <td>${expenditure.currentAdmin.name}</td>
                                                             <td>
-                                                                <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId}">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                        <i class="fa-solid fa-check"></i>
+                                                                    </a>
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=0">
+                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </a>
+                                                                </c:if>
+
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId}">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                        <i class="fa-solid fa-check"></i>
+                                                                    </a>
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=0">
+                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </a>
+                                                                </c:if>
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>

@@ -41,8 +41,8 @@ public class HistoryExpenditureDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                int heid = rs.getInt("[HistoryId]");
-                String id = rs.getString("id");
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
                 String titleE = rs.getString("title");
                 float totalPrice = rs.getFloat("totalPrice");
                 int accountChiefApprove = rs.getInt("accountantChiefApprove");
@@ -61,7 +61,8 @@ public class HistoryExpenditureDAO extends DBContext {
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
                         chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
 
@@ -98,8 +99,8 @@ public class HistoryExpenditureDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                int heid = rs.getInt("[HistoryId]");
-                String id = rs.getString("id");
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
                 String titleE = rs.getString("title");
                 float totalPrice = rs.getFloat("totalPrice");
                 int accountChiefApprove = rs.getInt("accountantChiefApprove");
@@ -118,7 +119,8 @@ public class HistoryExpenditureDAO extends DBContext {
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
                         chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
 
@@ -137,8 +139,8 @@ public class HistoryExpenditureDAO extends DBContext {
             ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                int heid = rs.getInt("[HistoryId]");
-                String id = rs.getString("id");
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
                 String titleE = rs.getString("title");
                 float totalPrice = rs.getFloat("totalPrice");
                 int accountChiefApprove = rs.getInt("accountantChiefApprove");
@@ -157,7 +159,8 @@ public class HistoryExpenditureDAO extends DBContext {
                 String modifiedDate = rs.getString("modifiedDate");
                 Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
                 String createdDate = rs.getString("createdDate");
-                HistoryExpenditure ne = new HistoryExpenditure(id, titleE, accountChiefApprove, currentAdminApprove,
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
                         approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
                         chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
                 return ne;
@@ -218,6 +221,95 @@ public class HistoryExpenditureDAO extends DBContext {
         return false;
     }
 
+    public List<HistoryExpenditure> getListWaitingExpenditure() {
+        String sql = "select * from ExpenditureHIstory where (accountantChiefApprove =0  or adminApprove = 0) \n"
+                + "and accountantChiefApprove >= 0 and adminApprove >= 0";
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
+        List<HistoryExpenditure> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
+                String titleE = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
+                int accountChiefApprove = rs.getInt("accountantChiefApprove");
+                int currentAdminApprove = rs.getInt("adminApprove");
+                String approveddate = rs.getString("approveddate");
+                String paymentdate = rs.getString("paymentdate");
+                String note = rs.getString("note");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
+                CompanyDAO cdao = new CompanyDAO();
+                StaffDAO sdao = new StaffDAO();
+                Company company = cdao.getById(rs.getString("cid"));
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                String action = rs.getString("actiontype");
+                String modifiedDate = rs.getString("modifiedDate");
+                Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
+                String createdDate = rs.getString("createdDate");
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
+                        approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
+
+                list.add(ne);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
+    public List<HistoryExpenditure> getListWaitingExpenditureByStaffId(String staffId ) {
+        String sql = "select * from ExpenditureHIstory where (accountantChiefApprove =0  or adminApprove = 0) \n"
+                + "and accountantChiefApprove >= 0 and adminApprove >= 0 and (sId = ? \n"
+                + "or modifiedby = ? or chiefaccountantid = ? or currentadminid = ?) ";
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
+        List<HistoryExpenditure> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, staffId);
+            st.setString(2, staffId);
+            st.setString(3, staffId);
+            st.setString(4, staffId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
+                String titleE = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
+                int accountChiefApprove = rs.getInt("accountantChiefApprove");
+                int currentAdminApprove = rs.getInt("adminApprove");
+                String approveddate = rs.getString("approveddate");
+                String paymentdate = rs.getString("paymentdate");
+                String note = rs.getString("note");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
+                CompanyDAO cdao = new CompanyDAO();
+                StaffDAO sdao = new StaffDAO();
+                Company company = cdao.getById(rs.getString("cid"));
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                String action = rs.getString("actiontype");
+                String modifiedDate = rs.getString("modifiedDate");
+                Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
+                String createdDate = rs.getString("createdDate");
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
+                        approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
+
+                list.add(ne);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         HistoryExpenditureDAO dao = new HistoryExpenditureDAO();
         ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
@@ -245,7 +337,7 @@ public class HistoryExpenditureDAO extends DBContext {
                 "2023-01-01" // createdDate
         );
 
-        System.out.println(dao.addNewHistoryExpenditure(he));
+        System.out.println(dao.getListWaitingExpenditureByStaffId("s1014").size());
 
     }
 }

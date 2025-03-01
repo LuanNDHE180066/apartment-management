@@ -132,7 +132,7 @@ public class AddExpenditure extends HttpServlet {
         String formattedDate = lc.format(format);
         try {
             int categoryId = Integer.parseInt(categoryId_raw);
-            String eid = daoE.generateExpenditureId();
+            String eid = null;
             float totalPrice = Float.parseFloat(totalPrice_raw);
             Company company = daoCp.getById(companyId);
             Staff chiefAccountant = daoSt.getById(chiefAccountantId);
