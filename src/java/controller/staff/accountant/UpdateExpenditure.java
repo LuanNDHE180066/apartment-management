@@ -28,6 +28,7 @@ import model.ExpenseCategory;
 import model.HistoryExpenditure;
 import model.SendEmail;
 import model.Staff;
+import util.Util;
 
 /**
  *
@@ -116,6 +117,7 @@ public class UpdateExpenditure extends HttpServlet {
         CompanyDAO daoCp = new CompanyDAO();
         StaffDAO daoSt = new StaffDAO();
         ExpenditureDAO daoExpen = new ExpenditureDAO();
+        Util u = new Util();
 
         LocalDateTime lc = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -145,6 +147,8 @@ public class UpdateExpenditure extends HttpServlet {
             return;
         }
 
+        note = u.stringNomalize(note);
+        title = u.stringNomalize(title);
         try {
             float totalPrice = Float.parseFloat(totalPrice_raw);
             HistoryExpenditure he = new HistoryExpenditure(eid, title, 0, 0, approveDate_raw, paymentDate_raw,
@@ -152,7 +156,7 @@ public class UpdateExpenditure extends HttpServlet {
                     daoCp.getById(companyId), daoSt.getById(createdStaffId), daoSt.getById(chiefAccountantId),
                     daoSt.getById(AdminId),
                     "Update", formattedDate, daoSt.getById(a.getpId()), daoExpen.getExpenditureById(eid).getCreatedDate());
-             if (!daoE.addNewHistoryExpenditure(he)) {
+            if (!daoE.addNewHistoryExpenditure(he)) {
                 request.setAttribute("message", "Can not create update expenditure request");
                 request.setAttribute("status", "false");
                 request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);

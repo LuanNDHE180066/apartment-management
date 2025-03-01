@@ -164,6 +164,47 @@ public class HistoryExpenditureDAO extends DBContext {
 //        }
 //        return false;
 //    }
+    public List<HistoryExpenditure> getExpenditureHistoryChangeById(String eid) {
+        String sql = "select * from ExpenditureHistory where expenditureid = ?  order by modifiedDate desc";
+        List<HistoryExpenditure> list = new ArrayList<>();
+        ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, eid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int heid = rs.getInt("HistoryId");
+                String id = rs.getString("expenditureid");
+                String titleE = rs.getString("title");
+                float totalPrice = rs.getFloat("totalPrice");
+                int accountChiefApprove = rs.getInt("accountantChiefApprove");
+                int currentAdminApprove = rs.getInt("adminApprove");
+                String approveddate = rs.getString("approveddate");
+                String paymentdate = rs.getString("paymentdate");
+                String note = rs.getString("note");
+                ExpenseCategory category = dao.getExpenseCategoryById(rs.getInt("categoryid"));
+                CompanyDAO cdao = new CompanyDAO();
+                StaffDAO sdao = new StaffDAO();
+                Company company = cdao.getById(rs.getString("cid"));
+                Staff createdStaff = sdao.getById(rs.getString("sid"));
+                Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
+                Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
+                String action = rs.getString("actiontype");
+                String modifiedDate = rs.getString("modifiedDate");
+                Staff modifiedBy = sdao.getById(rs.getString("ModifiedBy"));
+                String createdDate = rs.getString("createdDate");
+                HistoryExpenditure ne = new HistoryExpenditure(heid, id, titleE,
+                        accountChiefApprove, currentAdminApprove,
+                        approveddate, paymentdate, totalPrice, note, category, company, createdStaff,
+                        chiefAccountant, currentAdminId, action, modifiedDate, modifiedBy, createdDate);
+                list.add(ne);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(HistoryExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public HistoryExpenditure getExpenditureById(String hid) {
         String sql = "select * from ExpenditureHistory where historyid = '" + hid + "'";
         ExpenseCategoryDAO dao = new ExpenseCategoryDAO();
@@ -383,7 +424,7 @@ public class HistoryExpenditureDAO extends DBContext {
                 "2023-01-01" // createdDate
         );
 
-        System.out.println(dao.updateEidAfterInsert(he));
+        System.out.println(dao.getExpenditureHistoryChangeById("e001").size());
 
     }
 }

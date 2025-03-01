@@ -26,6 +26,7 @@ import model.ExpenseCategory;
 import model.HistoryExpenditure;
 import model.SendEmail;
 import model.Staff;
+import util.Util;
 
 /**
  *
@@ -99,6 +100,7 @@ public class AddExpenditure extends HttpServlet {
         String AdminId = request.getParameter("admin");
         String note = request.getParameter("note");
         String createdById = request.getParameter("createdBy");
+        Util u = new Util();
 
         HistoryExpenditureDAO daoHe = new HistoryExpenditureDAO();
         ExpenseCategoryDAO daoEx = new ExpenseCategoryDAO();
@@ -113,6 +115,8 @@ public class AddExpenditure extends HttpServlet {
             return;
         }
 
+        title = u.stringNomalize(title);
+
         if (approveDate_raw.isBlank() || paymentDate_raw.isBlank()) {
             request.setAttribute("message", "Approve date and payment date can not be blank");
             request.setAttribute("status", "false");
@@ -126,6 +130,8 @@ public class AddExpenditure extends HttpServlet {
             request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
             return;
         }
+
+        note = u.stringNomalize(note);
 //        PrintWriter out = response.getWriter();
 //        out.print(" admin:" + AdminId + "  chief:" + chiefAccountantId +"Staff creat"+ createdById +  "cate: "+categoryId_raw);
         LocalDateTime lc = LocalDateTime.now();

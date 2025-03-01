@@ -53,6 +53,11 @@
                 color: inherit;
                 text-decoration: none;
             }
+            .table th {
+                text-align: center;
+                background-color: #6B90DA;
+                color: black;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -80,7 +85,7 @@
 
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
-                                                <table class="table w-100" id="table-infor">
+                                                <table class="table w-100 " id="table-infor">
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
@@ -155,7 +160,7 @@
                             </div>
                         </div>
                     </div>
-                   
+
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
