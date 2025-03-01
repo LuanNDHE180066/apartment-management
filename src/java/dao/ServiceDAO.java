@@ -10,6 +10,8 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.ZoneId;
+import java.util.Arrays;
 import java.util.Date;
 import jdbc.DBContext;
 import model.CategoryService;
@@ -209,9 +211,76 @@ public class ServiceDAO extends DBContext {
             System.out.println(e);
         }
     }
-  
+    public int getNumberUsedServiceId(String id){
+        String sql ="select count(*) as no from MonthlyInvoice where sid =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            ResultSet rs= st.executeQuery();
+            if(rs.next()){
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+    public float getPercentOfUsingService(String sid){
+        LivingApartmentDAO ld = new LivingApartmentDAO();
+        return (float)this.getNumberUsedServiceId(sid)/ld.getNumberLivingResident()*100;
+    }
+    public int getNumberUsedByTime(int year,int month,String sid){
+        String sql ="select count(*) as no from InvoiceDetail id join Invoice i on id.invoiceId=i.id "
+                + "where year(i.invoicedate)=? "
+                + "and month(i.invoicedate)=?"
+                + " and id.serviceId=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, year);
+            st.setInt(2, month);
+            st.setString(3, sid);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+    public List<Integer> getNumberUsedAllMonth(int year,String sid){
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i <=11; i++) {
+            int num = this.getNumberUsedByTime(year, i+1, sid);
+            list.add(num);
+        }
+        return list;
+    }
+    public List<Float> getPercentUsedAllMonth(int year,String sid){
+        List<Float> list = new ArrayList<>();
+        LivingApartmentDAO ld = new LivingApartmentDAO();
+        for (int i = 0; i <=11; i++) {
+            if(i+1 > LocalDate.now().getMonthValue()){
+                break;
+            }
+            float percent = (this.getNumberUsedByTime(year, i+1, sid)/(float)ld.getNumberLivingByTime(i+1, year))*100;
+            list.add(percent);
+        }
+        return list;
+    }
+    public Date getLastInvoice(){
+        String sql="select * from invoice order by invoicedate desc";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if(rs.next()){
+                return rs.getDate("invoicedate");
+            }
+        } catch (SQLException e) {
+        }
+        return null;
+    }
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
-        List<Service> list = sd.getAll();
+        System.out.println(sd.getNumberUsedByTime(2025, 1, "SVC1"));
+        System.out.println(Arrays.toString(sd.getPercentUsedAllMonth(2025, "SV001").toArray()));
     }
 }

@@ -134,6 +134,9 @@
                     <li>
                         <a  href="view-invoice-staff"><i class="fa fa-dashboard"></i><span>Xem tình trạng hóa đơn của dân</span></a>
                     </li>
+                    <li>
+                        <a  href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Thống kê hóa đơn, dịch vụ</span></a>
+                    </li>
                     
 
                     <!--                    <li>
