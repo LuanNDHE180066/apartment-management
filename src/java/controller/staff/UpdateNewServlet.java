@@ -122,8 +122,7 @@ public class UpdateNewServlet extends HttpServlet {
             LocalDate currentDate = format.parse(news.getDate()).toInstant().atZone(zone).toLocalDate();
 
             if (inputDate.isBefore(currentDate)) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "The time must be after the date of the update check.");
+                request.setAttribute("dateError", "The time must be after the date of the update check.");
                 request.setAttribute("news", news);
                 request.getRequestDispatcher("updatenews.jsp").forward(request, response);
                 return;
@@ -133,21 +132,25 @@ public class UpdateNewServlet extends HttpServlet {
         }
         StaffDAO sdao = new StaffDAO();
         News anew = new News(id, title, content, source, category, image, sdao.getById(auther), date);
-        if (title.trim().isEmpty() || title.trim() == "") {
-            request.setAttribute("status", "false");
-            request.setAttribute("message", "Title can not be empty.");
+        if (title.trim().isEmpty()) {
+            request.setAttribute("titleerror", "Title can not be empty.");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
         }
-
-        if (content.trim().isEmpty() || content.trim() == "") {
-            request.setAttribute("status", "false");
-            request.setAttribute("message", "Content can not be empty.");
+        if (content.trim().isEmpty()) {
+            request.setAttribute("contenterror", "Content can not be empty.");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
-        } else {
+        }
+        if(source.trim().isEmpty()){
+            request.setAttribute("sourceerror", "Source can not be empty.");
+            request.setAttribute("news", news);
+            request.getRequestDispatcher("updatenews.jsp").forward(request, response);
+            return;
+        }
+        else {
             if (ndao.updateNews(anew)) {
                 request.setAttribute("status", "true");
                 request.setAttribute("message", "News updated successfully!");

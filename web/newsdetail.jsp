@@ -105,7 +105,7 @@
                                         Update News
                                     </btn></c:if>
                                 <h2 class="news-title" style="color: #004175;">${requestScope.news.title}</h2>
-                                <p class="news-date">Date: ${requestScope.news.date}, Post by: Phùng Nhật Quang</p>
+                                <p class="news-date">Date: ${requestScope.news.date}, Post by: ${requestScope.news.staff.name}</p>
                                 <p class="news-content">
                                     ${requestScope.news.content}
                                 </p>

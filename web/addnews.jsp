@@ -131,19 +131,22 @@
                                         <div class="form-group">
                                             <label for="title">Title</label>
                                             <input type="text" id="title" name="title" placeholder="Enter new title" required />
+                                            <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="content">Content</label>
                                             <textarea value="" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required></textarea>
+                                            <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="date">Date</label>
                                             <input type="date" id="date" name="date" required />
-                                            <span id="date-error" style="color: red">${requestScope.error}</span>
+                                            <span  style="color: red">${requestScope.dateError}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="source">Source</label>
                                             <input type="text" id="source" name="source" placeholder="Enter content" required />
+                                            <span style="color: red">${requestScope.sourceerror}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="category">Category</label>

@@ -103,8 +103,21 @@ public class AddNewsServlet extends HttpServlet {
         StaffDAO sdao = new StaffDAO();
         News anew = new News(title, content, source, category, image, sdao.getById(auther), date);
         try{
+            if(title.trim().isEmpty()){
+                request.setAttribute("titleerror", "Title is not empty");
+                doGet(request, response);
+                return;
+            }if(content.trim().isEmpty()){
+                request.setAttribute("contenterror", "Content is not empty");
+                doGet(request, response);
+                return;
+            }if(source.trim().isEmpty()){
+                request.setAttribute("sourceerror", "Source is not empty");
+                doGet(request, response);
+                return;
+            }
             if(!CommonValidation.isValidNewsDate(date)){
-                request.setAttribute("error", "Date need to later current date");
+                request.setAttribute("dateError", "Date need to later current date");
                 doGet(request, response);
                 return;
             }
