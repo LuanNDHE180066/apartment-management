@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="css/responsive.css" />
         <link rel="stylesheet" href="css/custom.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
         <style>
             body {
                 /* Style body n?u c?n */
@@ -38,6 +39,19 @@
             }
             .graph_head {
                 margin-bottom: 20px; /* Gi?m kho?ng cách d??i tiêu ?? */
+            }
+            button {
+                background: none;
+                border: none;
+                cursor: pointer;
+                font-size: 24px;
+                margin: 0 5px;
+            }
+            .approval-link {
+                font-size: 20px;
+                margin: 0 5px;
+                color: inherit;
+                text-decoration: none;
             }
             .table th {
                 text-align: center;
@@ -64,49 +78,14 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
-                                        <div class="full graph_head">
-                                            <div class="heading1 margin_0">
-                                                <h2>Expenditure Table Information</h2>
-                                            </div>
-                                            <br> <hr><!-- comment -->
-                                            <div>
-                                                <form action="view-expenditure" method="get">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-8">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-2">
-                                                                    <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
-                                                                </div>
-                                                                <div class="col-md-2.5">
-                                                                    <select class="form-control" name="category">
-                                                                        <option value="">Select category</option>
-                                                                        <c:forEach items="${requestScope.categorylist}" var="ca">
-                                                                            <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-2 d-flex">
-                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <span class="btn btn-primary" style="display: inline-block"><a style="color: white" href="add-expenditure">Add</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
-                                                                </div>
 
-                                                            </div>
-                                                        </div>
-                                                </form>
-                                            </div>
+                                        <div class="heading1 margin_0">
+                                            <h2>Pending Expenditure Information</h2>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
-                                                <table class="table w-100" id="table-infor">
+                                                <table class="table w-100 " id="table-infor">
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
@@ -138,9 +117,36 @@
                                                             <td>${expenditure.chiefAccountantId.name}</td>
                                                             <td>${expenditure.currentAdmin.name}</td>
                                                             <td>
-                                                                <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                                <a href="view-expenditure-change-history?id=${expenditure.id}" 
-                                                                   style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 0}">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                        <i class="fa-solid fa-check"></i>
+                                                                    </a>
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
+                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </a>
+                                                                </c:if>
+
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == -1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                        <i class="fa-solid fa-check"></i>
+                                                                    </a>
+                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
+                                                                        <i class="fa-solid fa-xmark"></i>
+                                                                    </a>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == -1}">
+                                                                    <span style="color: green">Accept</span>
+                                                                </c:if>
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
@@ -154,21 +160,7 @@
                             </div>
                         </div>
                     </div>
-                    <form method="get" action="view-expenditure" style="display: flex; align-items: center; gap: 10px;">
-                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                        <input type="text" name="title" value="${param.title}" hidden="">
-                        <input type="text" name="category" value="${param.category}" hidden="">
-                        <input type="date" name="startDate" value="${param.startDate}" hidden="">
-                        <input type="date" name="endDate"  value="${param.endDate}" hidden="">
-                        <select id="page" name="page" onchange="this.form.submit()" 
-                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                                    ${page}
-                                </option>
-                            </c:forEach>
-                        </select>
-                    </form>
+
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>

@@ -128,14 +128,15 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Add Expenditure</h1>
-                                    <form action="add-expenditure" method="post">
+                                    <h1>Update Information</h1>
+                                    <form action="update-expenditure" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="title">Title</label>
                                                     <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
+                                                    <input type="text" id="title" hidden="" name="id" placeholder="Enter title" value="${expenditure.id}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="totalFees">Total Fees</label>
@@ -170,7 +171,7 @@
                                                     <label for="company">Company</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
-                                                            <option value="${cp.id}">${cp.name}</option>
+                                                            <option value="${cp.id}" ${expenditure.company.id == cp.id?'selected':''}>${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -180,16 +181,15 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="invoiceCreator">Expenditure Creator</label>
-                                                    <input type="text" id="invoiceCreator" 
-                                                           placeholder="Enter invoice creator" value="${staff.name}" readonly="" required=""/>
-                                                    <input type="text" id="invoiceCreator" name="createdBy" 
-                                                           placeholder="Enter invoice creator" value="${staff.id}" hidden="" readonly="" required=""/>
+                                                    <input type="text" id="invoiceCreator" name="invoiceCreator" 
+                                                           placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
+                                                    <input type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>
                                                     <select id="chiefAccountant" name="chiefAccountant">
                                                         <c:forEach items="${sessionScope.listAccountant}" var="accountant">
-                                                            <option value="${accountant.id}" >${accountant.name}</option>
+                                                            <option value="${accountant.id}" ${accountant.id == expenditure.chiefAccountantId.id?'selected':''}>${accountant.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -201,7 +201,7 @@
                                                     <label for="admin">Admin</label>
                                                     <select id="admin" name="admin">
                                                         <c:forEach items="${sessionScope.listAdmin}" var="admin">
-                                                            <option value="${admin.id}" >${admin.name}</option>
+                                                            <option value="${admin.id}" ${admin.id == expenditure.currentAdmin.id?'selected':''}>${admin.name}</option>
                                                         </c:forEach>
                                                     </select>
                                                 </div>
@@ -212,7 +212,7 @@
                                             <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Add</button>
+                                            <button type="submit">Update</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>
