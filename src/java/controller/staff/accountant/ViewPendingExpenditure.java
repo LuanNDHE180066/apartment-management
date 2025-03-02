@@ -2,54 +2,56 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+package controller.staff.accountant;
 
-package controller.admin;
-
-import dao.ApartmentDAO;
-import dao.LivingApartmentDAO;
-import dao.OwnerApartmentDAO;
+import dao.HistoryExpenditureDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
+import model.Account;
+import model.HistoryExpenditure;
 
 /**
  *
- * @author thanh
+ * @author quang
  */
-@WebServlet(name="ViewDetailApartmentServlet", urlPatterns={"/viewdetailapartment-admin"})
-public class ViewDetailApartmentServlet extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+public class ViewPendingExpenditure extends HttpServlet {
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewDetailApartmentServlet</title>");  
+            out.println("<title>Servlet ViewPendingExpenditure</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewDetailApartmentServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ViewPendingExpenditure at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -57,19 +59,20 @@ public class ViewDetailApartmentServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        String aid = request.getParameter("apartmentId");
-        ApartmentDAO ad= new ApartmentDAO();
-        LivingApartmentDAO ld = new LivingApartmentDAO();
-        OwnerApartmentDAO od = new OwnerApartmentDAO();
-        request.setAttribute("historyOfLiving", ld.getByApartmentID(aid));
-        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
-        request.setAttribute("apartmentDetail", ad.getById(aid));
-        request.getRequestDispatcher("apartmentdetail.jsp").forward(request, response);
-    } 
+            throws ServletException, IOException {
+        HistoryExpenditureDAO daoHe = new HistoryExpenditureDAO();
+        HttpSession session = request.getSession();
+        Account a = (Account) session.getAttribute("account");
+        List<HistoryExpenditure> listHe = daoHe.getListWaitingExpenditureByStaffId(a.getpId());
+        request.setAttribute("listExpenditure", listHe);
+        request.setAttribute("staffId", a.getpId());
+        request.getRequestDispatcher("viewpendingexpenditure.jsp").forward(request, response);
 
-    /** 
+    }
+
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -77,12 +80,13 @@ public class ViewDetailApartmentServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         processRequest(request, response);
     }
 
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

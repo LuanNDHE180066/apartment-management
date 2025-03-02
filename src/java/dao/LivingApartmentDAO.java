@@ -192,8 +192,58 @@ public class LivingApartmentDAO extends DBContext {
     }
     
 
+    public int getNumberLivingResident() {
+        String sql = "select  count(*) as no from LivingAparment where status =1 ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+
+    public int getNumberLivingByTime(int month, int year) {
+        String sql = "DECLARE @month INT = ?;  -- Tháng cần kiểm tra\n"
+                + "DECLARE @year INT = ?; -- Năm cần kiểm tra\n"
+                + "\n"
+                + "DECLARE @date DATETIME = DATEFROMPARTS(@year, @month, 1);\n"
+                + "\n"
+                + "SELECT count(*) as no \n"
+                + "FROM LivingAparment\n"
+                + "WHERE @date >= startdate \n"
+                + "      AND (@date <= enddate OR enddate IS NULL);";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, month);
+            st.setInt(2, year);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
+        ResidentDAO daoR = new ResidentDAO();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate now = LocalDate.now();
+        String date = now.format(formatter);
+        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
+        Resident ownerResident = daoR.getById("P102");
+        oa.setRid(ownerResident);
+        oa.setEndDate(date);
+        oa.setStatus(0);
+
+        oa.setStatus(1);
+        oa.setEndDate(null);
+        oa.setStartDate(date);
+        System.out.println(dao.getByApartmentID("A001").size());
 //        ResidentDAO daoR = new ResidentDAO();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //        LocalDate now = LocalDate.now();
@@ -208,7 +258,8 @@ public class LivingApartmentDAO extends DBContext {
 //        oa.setEndDate(null);
 //        oa.setStartDate(date);
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
-        System.out.println(dao.getApartmentsByResidentId("P101").size());
-        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
+//        System.out.println(dao.getApartmentsByResidentId("P101").size());
+//        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
+        System.out.println(dao.getNumberLivingByTime(2, 2025));
     }
 }

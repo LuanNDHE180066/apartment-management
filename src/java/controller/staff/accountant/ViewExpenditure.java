@@ -3,10 +3,13 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller.staff.accountant;
 
-import dao.ApartmentDAO;
-import dao.RoomTypeDAO;
+import dao.CompanyDAO;
+import dao.ContractDAO;
+import dao.ExpenditureDAO;
+import dao.ExpenseCategoryDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,17 +17,20 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Apartment;
-import model.RoomType;
+import model.Company;
+import model.Expenditure;
+import model.ExpenseCategory;
+import model.Staff;
 import util.Util;
 
 /**
  *
  * @author PC
  */
-@WebServlet(name="ViewApartmantAdmin", urlPatterns={"/view-apartment-admin"})
-public class ViewApartmantAdmin extends HttpServlet {
+@WebServlet(name="ViewExpenditure", urlPatterns={"/view-expenditure"})
+public class ViewExpenditure extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +47,10 @@ public class ViewApartmantAdmin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewApartmantAdmin</title>");  
+            out.println("<title>Servlet ViewExpenditure</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewApartmantAdmin at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ViewExpenditure at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,45 +67,64 @@ public class ViewApartmantAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String floor = request.getParameter("floor");
-        String filterType = request.getParameter("filterType");
-        String filterStatus = request.getParameter("filterStatus");
-        if (floor == null || floor.trim().isEmpty()) {
-            floor = "";
+        HttpSession session = request.getSession();
+        Util u = new Util();
+        ExpenseCategoryDAO daoEc = new ExpenseCategoryDAO();
+        ExpenditureDAO edao = new ExpenditureDAO();
+  
+        CompanyDAO daoCp = new CompanyDAO();
+        StaffDAO daoSt = new StaffDAO();
+        String title = request.getParameter("title");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
+        String category = request.getParameter("category");
+        List<ExpenseCategory> categorylist = daoEc.getAllExpenseCategory();
+        request.setAttribute("categorylist", categorylist);
+        if (title == null) {
+            title = "";
         }
-        if (filterType == null || filterType.trim().isEmpty()) {
-            filterType = "";
+        title = u.stringNomalize(title);
+        if (startDate == null) {
+            startDate = "";
         }
-        if (filterStatus == null || filterStatus.trim().isEmpty()) {
-            filterStatus = "";
+        if (endDate == null) {
+            endDate = "";
         }
-        RoomTypeDAO rdao = new RoomTypeDAO();
-        List<RoomType> types = rdao.getAll();
-        ApartmentDAO dao = new ApartmentDAO();
-        List<Apartment> apartmentes = dao.getViewApartment(floor, filterType, filterStatus);
-        request.setAttribute("floor", floor);
-        request.setAttribute("filterType", filterType);
-        request.setAttribute("filterStatus", filterStatus);
-        request.setAttribute("types", types);
+        if(category == null){
+            category ="";
+        }
+        List<Expenditure> listExpenditure = edao.getViewExpenditure(title, startDate, endDate, category);
         String page = request.getParameter("page");
         if (page == null) {
             page = "1";
         }
-        Util u = new Util();
-        int totalPage = u.getTotalPage(apartmentes, 10);
+        
+         List<Company> listCompany = daoCp.getAll();
+        List<ExpenseCategory> listExpenseCategory = daoEc.getAllExpenseCategory();
+        List<Staff> listAccountant = daoSt.getActiveStaffbyRole("3");
+        List<Staff> listAdmin = daoSt.getActiveStaffbyRole("0");
 
-        if (apartmentes.size() != 0) {
-            apartmentes = u.getListPerPage(apartmentes, 10, page);
-            request.setAttribute("apartmentes", apartmentes);
+        session.setAttribute("listCompany", listCompany);
+        session.setAttribute("listExpenseCategory", listExpenseCategory);
+        session.setAttribute("listAccountant", listAccountant);
+        session.setAttribute("listAdmin", listAdmin);
+        
+        System.out.println("list hien ta"+listExpenditure);
+        if (listExpenditure.size() != 0) {
+            int totalPage = u.getTotalPage(listExpenditure, 3);
+            listExpenditure = u.getListPerPage(listExpenditure, 3, page);
             request.setAttribute("totalPage", totalPage);
             request.setAttribute("currentPage", Integer.parseInt(page));
-            request.setAttribute("isFilter", "true");
+            request.setAttribute("listExpenditure", listExpenditure);
+            request.getRequestDispatcher("viewallexpenditure.jsp").forward(request, response);
+            return;
         } else {
             request.setAttribute("totalPage", 1);
             request.setAttribute("currentPage", 1);
+            request.setAttribute("listExpenditure", null);
             request.setAttribute("message", "No result");
-        }        
-        request.getRequestDispatcher("viewapartmentadmin.jsp").forward(request, response);
+            request.getRequestDispatcher("viewallexpenditure.jsp").forward(request, response);
+        }
     } 
 
     /** 

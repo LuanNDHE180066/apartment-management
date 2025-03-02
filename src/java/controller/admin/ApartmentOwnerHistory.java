@@ -3,8 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.staff;
+package controller.admin;
 
+import dao.LivingApartmentDAO;
+import dao.OwnerApartmentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,13 +14,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.LivingApartment;
+import model.OwnerApartment;
 
 /**
  *
- * @author Lenovo
+ * @author quang
  */
-@WebServlet(name="UpdateExpenditure", urlPatterns={"/update-expenditure"})
-public class UpdateExpenditure extends HttpServlet {
+@WebServlet(name="ApartmentOwnerHistory", urlPatterns={"/apartment-owner-history"})
+public class ApartmentOwnerHistory extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -35,10 +40,10 @@ public class UpdateExpenditure extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet UpdateExpenditure</title>");  
+            out.println("<title>Servlet ApartmentOwnerHistory</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet UpdateExpenditure at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ApartmentOwnerHistory at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -55,7 +60,11 @@ public class UpdateExpenditure extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-      
+        String aid = request.getParameter("aid");
+        OwnerApartmentDAO od = new OwnerApartmentDAO();
+        List<OwnerApartment> historyOfOwner = od.getByApartmentID(aid);
+        request.setAttribute("historyOfOwner", historyOfOwner);
+        request.getRequestDispatcher("historyownerapartment.jsp").forward(request, response);
     } 
 
     /** 
