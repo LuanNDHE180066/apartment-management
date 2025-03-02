@@ -11,6 +11,7 @@ package model;
 public class ExpenseCategory {
     private int id;
     private String categoryName, categoryDescription;
+    private int status;
 
     public ExpenseCategory(int id, String categoryName, String categoryDescription) {
         this.id = id;
@@ -20,6 +21,13 @@ public class ExpenseCategory {
 
     public int getId() {
         return id;
+    }
+
+    public ExpenseCategory(int id, String categoryName, String categoryDescription, int status) {
+        this.id = id;
+        this.categoryName = categoryName;
+        this.categoryDescription = categoryDescription;
+        this.status = status;
     }
 
     public void setId(int id) {
@@ -40,6 +48,14 @@ public class ExpenseCategory {
 
     public void setCategoryDescription(String categoryDescription) {
         this.categoryDescription = categoryDescription;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
     
     

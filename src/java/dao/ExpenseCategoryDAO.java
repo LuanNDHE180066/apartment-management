@@ -33,7 +33,7 @@ import java.util.logging.Logger;
 public class ExpenseCategoryDAO extends DBContext {
 
     public List<ExpenseCategory> getAllExpenseCategory() {
-        String sql = "select * from ExpenseCategory";
+        String sql = "select * from ExpenseCategory where status = 1";
         List<ExpenseCategory> list = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -42,8 +42,9 @@ public class ExpenseCategoryDAO extends DBContext {
                 int id = rs.getInt("ExpenseCategoryId");
                 String categoryName = rs.getString("categoryName");
                 String categoryDescription = rs.getString("categoryDescription");
+                int status  = rs.getInt("status");
 
-                ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription);
+                ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription, status);
                 list.add(e);
             }
         } catch (SQLException ex) {
@@ -61,8 +62,9 @@ public class ExpenseCategoryDAO extends DBContext {
                 int cid = rs.getInt("ExpenseCategoryId");
                 String categoryName = rs.getString("categoryName");
                 String categoryDescription = rs.getString("categoryDescription");
+                int status  = rs.getInt("status");
 
-                ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription);
+                ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription, status);
                 return e;
             }
 
