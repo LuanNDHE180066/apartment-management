@@ -3,10 +3,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller.staff.accountant;
 
-import dao.ContractDAO;
-import dao.ExpenditureDAO;
+import dao.HistoryExpenditureDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,17 +13,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Expenditure;
-import util.Util;
+import model.HistoryExpenditure;
 
 /**
  *
- * @author PC
+ * @author quang
  */
-@WebServlet(name="ViewExpenditure", urlPatterns={"/view-expenditure"})
-public class ViewExpenditure extends HttpServlet {
+@WebServlet(name="ViewExpenditureChangeHistory", urlPatterns={"/view-expenditure-change-history"})
+public class ViewExpenditureChangeHistory extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +38,10 @@ public class ViewExpenditure extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewExpenditure</title>");  
+            out.println("<title>Servlet ViewExpenditureChangeHistory</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewExpenditure at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet ViewExpenditureChangeHistory at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,51 +58,12 @@ public class ViewExpenditure extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Util u = new Util();
-        ExpenditureDAO edao = new ExpenditureDAO();
-        String title = request.getParameter("title");
-        String startDate = request.getParameter("startDate");
-        String endDate = request.getParameter("endDate");
-        String category = request.getParameter("category");
-        List<String> categorylist = edao.getListCategory();
-        System.out.println("catelist:"+categorylist+"cate:"+category);
-        request.setAttribute("categorylist", categorylist);
-        if (title == null) {
-            title = "";
-        }
-        title = u.stringNomalize(title);
-        if (startDate == null) {
-            startDate = "";
-        }
-        if (endDate == null) {
-            endDate = "";
-        }
-        if(category == null){
-            category ="";
-        }
-        List<Expenditure> listExpenditure = edao.getViewExpenditure(title, startDate, endDate, category);
-        String page = request.getParameter("page");
-        if (page == null) {
-            page = "1";
-        }
+        String id  = request.getParameter("id");
+        HistoryExpenditureDAO dao = new HistoryExpenditureDAO();
         
-        System.out.println("list hien ta"+listExpenditure);
-        if (listExpenditure.size() != 0) {
-            int totalPage = u.getTotalPage(listExpenditure, 3);
-            listExpenditure = u.getListPerPage(listExpenditure, 3, page);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", Integer.parseInt(page));
-            request.setAttribute("listExpenditure", listExpenditure);
-            request.getRequestDispatcher("viewallexpenditure.jsp").forward(request, response);
-            return;
-        } else {
-            request.setAttribute("totalPage", 1);
-            request.setAttribute("currentPage", 1);
-            request.setAttribute("listExpenditure", null);
-            request.setAttribute("message", "No result");
-            request.getRequestDispatcher("viewallexpenditure.jsp").forward(request, response);
-        }
+        List<HistoryExpenditure> list = dao.getExpenditureHistoryChangeById(id);
+        request.setAttribute("listExpenditure", list);
+        request.getRequestDispatcher("viewexpenditurechangehistory.jsp").forward(request, response);
     } 
 
     /** 

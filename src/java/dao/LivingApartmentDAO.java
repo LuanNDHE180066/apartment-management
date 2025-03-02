@@ -193,6 +193,20 @@ public class LivingApartmentDAO extends DBContext {
 
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
+        ResidentDAO daoR = new ResidentDAO();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate now = LocalDate.now();
+        String date = now.format(formatter);
+        LivingApartment oa = dao.getLivingResidentByApartmentID("A001");
+        Resident ownerResident = daoR.getById("P102");
+        oa.setRid(ownerResident);
+        oa.setEndDate(date);
+        oa.setStatus(0);
+
+        oa.setStatus(1);
+        oa.setEndDate(null);
+        oa.setStartDate(date);
+        System.out.println(dao.getByApartmentID("A001").size());
 //        ResidentDAO daoR = new ResidentDAO();
 //        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 //        LocalDate now = LocalDate.now();
