@@ -253,7 +253,7 @@
                                                                 </td>
                                                                 <td class="action-column">
                                                                     <div class="dropdown-content">
-                                                                        <a href="editfeedback?id=${feedback.id}">✏ Edit</a>
+                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
                                                                         <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                     </div>
                                                                 </td>
