@@ -128,8 +128,8 @@ public class FeedbackDAO extends DBContext {
         return -1;
     }
 
-    public List<Feedback> getAllFeedbackUser(String residentID) {
-        String sql = "SELECT * FROM Feedback WHERE rId = ?  order by Date desc";
+    public List<Feedback> getAllFeedbackUser(String residentID, int page, int pageSize) {
+        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY id desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         List<Feedback> list = new ArrayList<>();
@@ -137,6 +137,8 @@ public class FeedbackDAO extends DBContext {
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, residentID);
+            ps.setInt(2, (page - 1) * pageSize);
+            ps.setInt(3, pageSize);
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
@@ -156,7 +158,24 @@ public class FeedbackDAO extends DBContext {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        return new ArrayList<>();
+        return null;
+    }
+
+    public int getTotalFeedbackCount(String residentId) {
+        String sql = "SELECT COUNT(*) FROM Feedback WHERE rId = ?";
+        int count = 0;
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, residentId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return count;
     }
 
     public List<Feedback> getByResidentName(List<Feedback> listFeedback, String name) {
@@ -406,19 +425,38 @@ public class FeedbackDAO extends DBContext {
         }
         return false;
     }
+    public Feedback getById(String id){
+     String sql="Select * from Feedback where id=?";
+        ResidentDAO daoR = new ResidentDAO();
+        RequestTypeDAO daoRT = new RequestTypeDAO();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                List<String> img = getFeedbackImgs(rs.getString("id"));
+                Feedback f=new Feedback(
+                        rs.getString("id"),
+                        rs.getString("detail"),
+                        rs.getString("date"),
+                        daoR.getById(rs.getString("rid")),
+                        daoRT.getById(rs.getString("tid")),
+                        rs.getInt("rate"),
+                        img
+                );
+                return f;
+            }
+            
+        } catch (SQLException ex) {
+            Logger.getLogger(FeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    
+    
+     return null;
+    }
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-//        System.out.println(dao.filterFeedback("quang", "", "", "", "2").size());
-        // Define the date format
-        List<String> list = new ArrayList<>();
-        list.add("caccac");
-        list.add("concec");
-        
-        System.out.println(dao.insertImgFeedback(list, "F10"));
-       
-      
-    
-        }
+        System.out.println(dao.getAllFeedbackUser("P113", 1, 5).size());
     }
-
+}
