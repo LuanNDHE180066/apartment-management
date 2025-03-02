@@ -37,7 +37,7 @@
                                             <form action="all-services" method="post">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input id="searchInput" type="text" class="form-control" placeholder="Search by Name">
+                                                        <input id="searchInput" name="name" type="text" class="form-control" placeholder="Search by Name">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="status">
@@ -64,7 +64,7 @@
                                                     </div>
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary me-2">Filter</button>
-                                                        <a href="add-new-staff" class="btn btn-primary">Add New</a>
+                                                        <a href="add-service-staff" class="btn btn-primary">Add New Service</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -77,10 +77,13 @@
                                                         <tr>
                                                             <th>Services Name</th>
                                                             <th>Unit Price</th>
+                                                            <th>Unit</th>
                                                             <th>Description</th>
                                                             <th>Category</th>
                                                             <th>Supplier</th>
                                                             <th>Status</th>
+                                                            <th>Start</th>
+                                                            <th>End</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -89,11 +92,14 @@
                                                             <tr>
                                                                 <td>${list.name}</td>
                                                                 <td>${list.unitPrice}</td>
+                                                                <td>${list.unit}</td>
                                                                 <td>${list.description}</td>
                                                                 <td>${list.categoryService.name}</td>
                                                                 <td>${list.company.name}</td>
                                                                 <td>${list.status==1?'Active':'Inactive'}</td>
-                                                                <td><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                                                                <td>${list.startDate}</td>
+                                                                <td>${list.endDate}</td>
+                                                                <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>
@@ -108,52 +114,8 @@
                 </div>
             </div>
         </div>
-
         <!-- jQuery & Bootstrap -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
-
-        <script>
-            $(document).ready(function () {
-                $('#searchInput').on('input', function () {
-                    var searchTerm = $(this).val().trim();
-
-                    $.ajax({
-                        url: 'search-services',
-                        type: 'GET',
-                        data: {searchName: searchTerm},
-                        dataType: 'json',
-                        success: function (response) {
-                            updateTable(response);
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error: " + error);
-                        }
-                    });
-                });
-
-                function updateTable(data) {
-                    var tbody = $('table tbody');
-                    tbody.empty();
-
-                    if (Array.isArray(data) && data.length > 0) {
-                        data.forEach(function (service) {
-                            var row = `<tr>
-                                <td>${service.name}</td>
-                                <td>${service.unitPrice}</td>
-                                <td>${service.description}</td>
-                                <td>${service.categoryService.name}</td>
-                                <td>${service.company.name}</td>
-                                <td>${service.status == 1 ? 'Active' : 'Inactive'}</td>
-                                <td><a href="#"><i class="fa-solid fa-pen-to-square"></i></a></td>
-                            </tr>`;
-                            tbody.append(row);
-                        });
-                    } else {
-                        tbody.append("<tr><td colspan='7' class='text-center'>No results found</td></tr>");
-                    }
-                }
-            });
-        </script>
     </body>
 </html>

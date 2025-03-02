@@ -2,10 +2,11 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.admin;
+package controller.staff;
 
 import dao.CategoryServiceDAO;
 import dao.CompanyDAO;
+import dao.MonthlyServiceDAO;
 import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -14,20 +15,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-import model.CategoryService;
-import model.Company;
 import model.Service;
-import util.Util;
 
 /**
  *
- * @author Lenovo
+ * @author thanh
  */
-@WebServlet(name = "ViewAllServices", urlPatterns = {"/all-services"})
-public class ViewAllServices extends HttpServlet {
+@WebServlet(name = "UpdateService", urlPatterns = {"/update-service-staff"})
+public class UpdateService extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -46,10 +41,10 @@ public class ViewAllServices extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewAllServices</title>");
+            out.println("<title>Servlet UpdateService</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewAllServices at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateService at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -67,17 +62,15 @@ public class ViewAllServices extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ServiceDAO sd = new ServiceDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-        List<Company> listCompany = cd.getAll();
-        List<Service> listServices = sd.getAll();
-        List<CategoryService> listCategory = csd.getAll();
-
-        request.setAttribute("listServices", listServices);
-        request.setAttribute("listCategories", listCategory);
-        request.setAttribute("listCompanies", listCompany);
-        request.getRequestDispatcher("viewallservices.jsp").forward(request, response);
+        ServiceDAO sd = new ServiceDAO();
+        String id = request.getParameter("id");
+        Service s = sd.getById(id);
+        request.setAttribute("service", s);
+        request.setAttribute("types", csd.getAll());
+        request.setAttribute("companies", cd.getAll());
+        request.getRequestDispatcher("updateservice.jsp").forward(request, response);
     }
 
     /**
@@ -91,39 +84,42 @@ public class ViewAllServices extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String name = request.getParameter("name");
-        String status = request.getParameter("status");
-        String category = request.getParameter("category");
-        String company = request.getParameter("company");
-
-        if (name == null) {
-            name = "";
-        }
-        if (status == null) {
-            status = "";
-        }
-        if (category == null) {
-            category = "";
-        }
-        if (company == null) {
-            company = "";
-        }
-
-        ServiceDAO sd = new ServiceDAO();
+        String unit = request.getParameter("unit");
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-
-        List<Service> listServices = sd.filterByNameAndCompanyAndCategoryAndStatus(Util.stringNomalize(name), category, company, status);
-
-        HttpSession session = request.getSession();
-        session.setAttribute("status", status.isEmpty() ? null : status);
-        session.setAttribute("category", category.isEmpty() ? null : category);
-        session.setAttribute("company", company.isEmpty() ? null : company);
-
-        request.setAttribute("listServices", listServices);
-        request.setAttribute("listCategories", csd.getAll());
-        request.setAttribute("listCompanies", cd.getAll());
-        request.getRequestDispatcher("viewallservices.jsp").forward(request, response);
+        String id = request.getParameter("id");
+        String name = request.getParameter("name");
+        float price = Float.parseFloat(request.getParameter("price"));
+        String des = request.getParameter("des");
+        if (name.trim().isBlank() || des.trim().isBlank()) {
+            request.setAttribute("error", "Name or description is not a blank");
+            request.setAttribute("companies", cd.getAll());
+            request.setAttribute("types", csd.getAll());
+            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+            return;
+        }
+        ServiceDAO sd = new ServiceDAO();
+        String categoryId = request.getParameter("category");
+        String companyId = request.getParameter("company");
+        int status = Integer.parseInt(request.getParameter("status"));
+        
+        if (status != sd.getById(id).getStatus()) {//trường hợp đổi status
+            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
+                sd.addService(name, price, des, categoryId, companyId, status,unit);
+            }
+            else{ //từ hoạt động xuống dừng thì chỉ đổi status và enddate
+                sd.turnToInActive(id);
+                MonthlyServiceDAO md = new MonthlyServiceDAO();
+                md.deleteWhenTurnOffService(id);//tắt các nơi đã đki dịch vụ
+            }
+        }
+        else{//nếu như status không đổi mà chỉ đổi các thuộc tính khác
+            String newServiceId =sd.addService(name, price, des, categoryId, companyId, status,unit);//tạo mới
+            sd.turnToInActive(id);//off cũ
+            MonthlyServiceDAO md = new MonthlyServiceDAO();
+            md.switchService(newServiceId, id);//đổi cũ sang mới
+        }
+        response.sendRedirect("all-services");
     }
 
     /**
