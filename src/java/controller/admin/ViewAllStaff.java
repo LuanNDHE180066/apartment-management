@@ -72,13 +72,10 @@ public class ViewAllStaff extends HttpServlet {
         List<Staff> list = sd.getAll();
         HttpSession session = request.getSession();
         Util u = new Util();
-        if(session.getAttribute("staffs")==null){
+        
             list = sd.getAll();
             session.setAttribute("staffs", list);
-        }
-        else{
-            list = (List<Staff>) session.getAttribute("staffs");
-        }
+        
         String filterStatus_raw = request.getParameter("filterStatus");
         String searchName = request.getParameter("searchName");
 //        if(!(filterStatus_raw==null && searchName==null)){

@@ -15,8 +15,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.Date;
 import java.util.List;
 import model.Company;
 import model.Role;
@@ -112,79 +114,149 @@ public class UpdateStaffInfor extends HttpServlet {
         StaffDAO daoSt = new StaffDAO();
         CompanyDAO daoCp = new CompanyDAO();
         RoleDAO daoR = new RoleDAO();
-
+        Staff staff = daoSt.getById(id);
         try {
-            int status = Integer.parseInt(status_raw);
-            int salary = Integer.parseInt(salary_raw);
-
-            if (name.isBlank()) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "Name is not blank");
-                request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                return;
-            }
-            // Validate Phone (11 digits)
-            if (!phone.matches("\\d{10}")) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "Phone number must be exactly 10 digits.");
-                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                return;
-            }
-
-            // Validate CCCD (12 digits)
-            if (!cccd.matches("\\d{12}")) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "CCCD must be exactly 12 digits.");
-                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                return;
-            }
-
-            // Validate Age (Must be 18 or older)
-            LocalDate birthDate = LocalDate.parse(dob);
-            LocalDate today = LocalDate.now();
-            if (Period.between(birthDate, today).getYears() < 18) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "Staff must be at least 18 years old.");
-                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                return;
-            }
-
-            // Validate Salary (Must be > 0)
-            if (salary <= 0) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "Salary must be greater than 0.");
-                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                return;
-            }
-
-            // Validate End Date (Must be after Start Date)
-            if (endDate != null && !endDate.isEmpty()) {
-                LocalDate start = LocalDate.parse(startDate);
-                LocalDate end = LocalDate.parse(endDate);
-                if (!end.isAfter(start)) {
-                    request.setAttribute("status", "false");
-                    request.setAttribute("message", "End date must be after start date.");
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+            Date today = new Date();
+            today = sdf.parse(sdf.format(today));
+            Date startD = sdf.parse(startDate);
+            if (!startDate.equals(staff.getStartDate())) {
+                if (startD.before(today)) {
+                    request.setAttribute("startdatemessage", "Start date must be today or later");
+                    request.setAttribute("staff", staff);
                     request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
                     return;
                 }
             }
-            
-            Staff staff = new Staff(
-                    id, name, dob, email, phone, address, cccd, salary,
-                    education, bank, status, daoR.getById(role), daoCp.getById(companyId),
-                    startDate, (endDate == null || endDate.isEmpty()) ? null : endDate
-            );
-
-            daoSt.updateStaffInfor(staff);
-            HttpSession session = request.getSession();
-            session.setAttribute("staffs", daoSt.getAll());
-            response.sendRedirect("view-all-staff");
-
-        } catch (NumberFormatException e) {
-            request.setAttribute("status", "false");
-            request.setAttribute("message", "Invalid salary format.");
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            if (endDate != null && !endDate.trim().isEmpty()) {
+                Date endD = sdf.parse(endDate);
+                if (endD.before(today)) {
+                    request.setAttribute("enddatemessage", "End date must be today or later");
+                    request.setAttribute("staff", staff);
+                    request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+                    return;
+                }
+                if (endD.before(startD)) {
+                    request.setAttribute("enddatemessage", "End date must be after start date");
+                    request.setAttribute("staff", staff);
+                    request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+                    return;
+                }
+            }
+            LocalDate birthDate = LocalDate.parse(dob);
+            LocalDate todayage = LocalDate.now();
+            if (Period.between(birthDate, todayage).getYears() < 18) {
+                request.setAttribute("dobmessage", "Staff must be at least 18 years old.");
+                request.setAttribute("staff", staff);
+                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        if (name.trim().isEmpty()) {
+            request.setAttribute("namemessage", "Name not empty");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (address.trim().isEmpty()) {
+            request.setAttribute("addressmessage", "Address not empty");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!phone.matches("0[0-9]{9}")) {
+            request.setAttribute("phonemessage", "Phone number must be exactly 10 digits.");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!staff.getPhone().equals(phone) && daoSt.checkDuplicatePhone(phone)) {
+            request.setAttribute("phonemessage", "Phone number exist");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (email.trim().isEmpty()) {
+            request.setAttribute("emailmessage", "Email is not empty");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!staff.getEmail().equals(email) && daoSt.checkDupEmail(email)) {
+            request.setAttribute("emailmessage", "Email number exist");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!cccd.matches("[0-9]{12}")) {
+            request.setAttribute("cccdmessage", "CCCD must be exactly 12 digits.");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!staff.getCccd().equals(cccd) && daoSt.checkDuplicateID(cccd)) {
+            request.setAttribute("cccdmessage", "CCCD exist");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (education.trim().isEmpty()) {
+            request.setAttribute("edumessage", "Education is not empty");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (bank.trim().isEmpty()) {
+            request.setAttribute("bankmessage", "Bank is not empty");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        if (!staff.getBank().equals(bank) && daoSt.checkDuplicateBank(bank)) {
+            request.setAttribute("bankmessage", "Bank exist");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        int salary = Integer.parseInt(salary_raw);
+        int status = Integer.parseInt(status_raw);
+        if (salary <= 0) {
+            request.setAttribute("salaryerror", "Salary must be greater than 0.");
+            request.setAttribute("staff", staff);
+            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
+            return;
+        }
+        Staff st = new Staff();
+        st.setId(id);
+        st.setAddress(address);
+        st.setBank(bank);
+        st.setBod(dob);
+        st.setCccd(cccd);
+        st.setCompany(daoCp.getById(companyId));
+        st.setEducation(education);
+        st.setEmail(email);
+        st.setEndDate((endDate == null || endDate.isEmpty()) ? null : endDate);
+        st.setName(name);
+        st.setPhone(phone);
+        st.setRole(daoR.getById(role));
+        st.setSalary(salary);
+        if (startDate == null || startDate.trim().isEmpty()) {
+            startDate = staff.getStartDate();
+        }
+        st.setStartDate(startDate);
+        st.setStatus(status);
+        if (daoSt.updateStaffInfor(st)) {
+            request.setAttribute("status", "true");
+            request.setAttribute("message", "News staff successfully!");
+        } else {
+            request.setAttribute("status", "false");
+            request.setAttribute("message", "Failed to update staff.");
+        }
+        staff = daoSt.getById(id);
+        request.setAttribute("staff", staff);
+        request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
     }
 
     /**

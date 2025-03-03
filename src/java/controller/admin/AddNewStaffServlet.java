@@ -158,7 +158,9 @@ public class AddNewStaffServlet extends HttpServlet {
                         request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
                         return;
                     }
-
+                    Date start=format.parse(startDate);
+                    Date today=new Date();
+                    today= format.parse(format.format(today));
                     Date dateOfBirth = format.parse(dob);
                     LocalDate birthDate = dateOfBirth.toInstant().atZone(zone).toLocalDate();
                     LocalDate currentDate = LocalDate.now();
@@ -219,6 +221,10 @@ public class AddNewStaffServlet extends HttpServlet {
                     }
                     if (st.getBank().equals(s.getBank())) {
                         request.setAttribute("bankerror", "Bank already exists.");
+                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
+                        return;
+                    }if(start.before(today)){
+                        request.setAttribute("startdateerror", "Start date from today onwards!");
                         request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
                         return;
                     }

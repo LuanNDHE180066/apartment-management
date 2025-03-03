@@ -269,6 +269,7 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="startDate">Start Date</label>
                                                     <input type="date" id="startDate" name="startDate" value="${param.startDate}"/>
+                                                    <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="role">Role</label>

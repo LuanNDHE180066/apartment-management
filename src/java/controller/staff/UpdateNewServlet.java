@@ -104,16 +104,13 @@ public class UpdateNewServlet extends HttpServlet {
         String date = request.getParameter("date");
         String category = request.getParameter("category");
         String auther = request.getParameter("auther");
-
-        Part fileImage = request.getPart("file");
         String image = "";
-        if (fileImage != null && fileImage.getSize() > 0) {
-            image = "images/avatar/" + fileImage.getSubmittedFileName();
+        if(null != request.getPart("file")){
+            Part fileImage = request.getPart("file");
+            image = "images/news/" + fileImage.getSubmittedFileName();
         }
-
         NewDAO ndao = new NewDAO();
         News news = ndao.getNewById(id);
-        PrintWriter out = response.getWriter();
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             ZoneId zone = ZoneId.systemDefault();

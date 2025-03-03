@@ -10,7 +10,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <!-- site metas -->
-<title>Apartment management</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <title>Apartment management</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <!-- site css -->
@@ -76,7 +76,7 @@
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
                                                             <option value="-1">Filter by Status</option>
-                                                             <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
+                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
                                                             <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
                                                         </select>
                                                     </div>
@@ -127,8 +127,11 @@
                                                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                                     </div>
                                                                     <div class="modal-body" style="display: flex ">
-                                                                        <div style="width: 50%;text-align: center;">
-                                                                            <img style="margin-left: 1%;margin-right: 1%;" class="img-responsive  " src="${staff.image == null ?'images/logo/person.jpg': staff.image}" alt="alt"/>
+                                                                        <div style="width: 200px; height: 200px; text-align: center; border-radius: 50%; overflow: hidden; display: inline-block;">
+                                                                            <img style="width: 100%; height: 100%; object-fit: cover;" 
+                                                                                 class="img-responsive" 
+                                                                                 src="${staff.image == null ? 'images/logo/person.jpg' : staff.image}" 
+                                                                                 alt="alt"/>
                                                                         </div>
                                                                         <div style="width: 50%;margin-left: 5%;">
                                                                             <p><strong>ID:</strong> ${staff.id}</p>
@@ -139,7 +142,7 @@
                                                                             <p><strong>Address:</strong> ${staff.address}</p>
                                                                             <p><strong>CCCD:</strong> ${staff.cccd}</p>
                                                                             <p><strong>Salary:</strong> ${staff.salary} VND</p>
-                                                                                <p><strong>Education: </strong> ${staff.education}</p>
+                                                                            <p><strong>Education: </strong> ${staff.education}</p>
                                                                             <p><strong>Bank: </strong> ${staff.bank}</p>
                                                                             <p><strong>Start date :</strong> ${staff.startDate}</p>
                                                                             <p><strong>End date :</strong> ${staff.endDate}</p>

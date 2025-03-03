@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.lang.model.util.Types;
 import jdbc.DBContext;
 import model.Account;
 import model.Company;
@@ -57,7 +58,7 @@ public class StaffDAO extends DBContext {
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,image);
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -100,9 +101,8 @@ public class StaffDAO extends DBContext {
         }
         return list;
     }
-    
-    
-     public List<Staff> getActiveStaffbyRole(String role) {
+
+    public List<Staff> getActiveStaffbyRole(String role) {
         CompanyDAO sd = new CompanyDAO();
         RoleDAO rd = new RoleDAO();
         String sql = "select * from Staff where roleid=? and status = 1";
@@ -137,8 +137,7 @@ public class StaffDAO extends DBContext {
         }
         return list;
     }
-    
-    
+
     public List<Staff> getAdminAndAdministrative() {
         CompanyDAO sd = new CompanyDAO();
         RoleDAO rd = new RoleDAO();
@@ -250,7 +249,7 @@ public class StaffDAO extends DBContext {
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,image);
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
                 return s;
             }
         } catch (Exception e) {
@@ -292,8 +291,8 @@ public class StaffDAO extends DBContext {
     public boolean updateStaffInfor(Staff s) {
         String sql = "Update staff set name = ?, bod = ? ,email = ? , phone = ?, address = ? , cccd = ? , salary = ? , education = ? , bank = ?"
                 + ", status = ? ,roleid = ? ,cID = ?, startdate = ?, enddate = ? where id = ? ";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+            
             st.setString(1, s.getName());
             st.setString(2, s.getBod());
             st.setString(3, s.getEmail());
@@ -307,7 +306,11 @@ public class StaffDAO extends DBContext {
             st.setString(11, s.getRole().getId());
             st.setString(12, s.getCompany().getId());
             st.setString(13, s.getStartDate());
-            st.setString(14, s.getEndDate());
+            if (s.getEndDate() == null || s.getEndDate().isEmpty()) {
+                st.setString(14, null);
+            } else {
+                st.setString(14, s.getEndDate());
+            }
             st.setString(15, s.getId());
             st.executeUpdate();
             return true;
@@ -356,7 +359,7 @@ public class StaffDAO extends DBContext {
             ps.setString(15, s.getCompany().getId());
             ps.setString(16, s.getStartDate());
             ps.setString(17, s.getGender());
-            ps.setString(18,"images/avatar/person.jpg");
+            ps.setString(18, "images/avatar/person.jpg");
             return ps.executeUpdate() > 0;
 
         } catch (SQLException ex) {
@@ -376,7 +379,7 @@ public class StaffDAO extends DBContext {
     }
 
     public List<Staff> getBySearchNameAndStatus(int status, String name) {
-        List<Staff> list  =new ArrayList<>();
+        List<Staff> list = new ArrayList<>();
         Util util = new Util();
         CompanyDAO sd = new CompanyDAO();
         RoleDAO rd = new RoleDAO();
@@ -386,13 +389,13 @@ public class StaffDAO extends DBContext {
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             if (!name.isBlank()) {
-                sql += " and name like '%"+name+"%'";
+                sql += " and name like '%" + name + "%'";
             }
             if (status != -1) {
-                sql += " and status = "+status;
+                sql += " and status = " + status;
             }
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
+            while (rs.next()) {
                 String id = rs.getString("id");
                 String n = rs.getString("Name");
                 String bod = rs.getDate("bod").toString();
@@ -470,8 +473,8 @@ public class StaffDAO extends DBContext {
                 String startDate = resultSet.getString("startdate");
                 String enddate = resultSet.getString("enddate");
                 String gender = resultSet.getString("gender");
-                String image  = resultSet.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,image);
+                String image = resultSet.getString("image");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
                 rs.add(s);
             }
         } catch (SQLException e) {
@@ -490,19 +493,21 @@ public class StaffDAO extends DBContext {
         return false;
 
     }
-    public boolean checkDupEmail(String email){
-        String sql="select * from staff where Email=?";
+
+    public boolean checkDupEmail(String email) {
+        String sql = "select * from staff where Email=?";
         try {
-            PreparedStatement pre= connection.prepareStatement(sql);
+            PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, email);
             ResultSet rs = pre.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return true;
             }
         } catch (Exception e) {
         }
         return false;
     }
+
     public boolean checkDuplicateEmail(String email) {
         List<Staff> list = getAll();
         for (Staff staff : list) {
@@ -513,7 +518,6 @@ public class StaffDAO extends DBContext {
         return false;
 
     }
-    
 
     public boolean checkDuplicateID(String id) {
         List<Staff> list = getAll();
@@ -536,7 +540,8 @@ public class StaffDAO extends DBContext {
         return false;
 
     }
-     public boolean checkDuplicateBank(String bank) {
+
+    public boolean checkDuplicateBank(String bank) {
         List<Staff> list = getAll();
         for (Staff staff : list) {
             if (staff.getBank().equals(bank)) {
@@ -550,9 +555,9 @@ public class StaffDAO extends DBContext {
     public static void main(String[] args) {
 
         StaffDAO staffDAO = new StaffDAO();
-        Staff s1 = new Staff("S1013", "Guard Company", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", 1, "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
-        Staff s = new Staff("S1013", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
-        System.out.println(staffDAO.getStaffbyRole("3"));
+//        Staff s1 = new Staff("S1013", "Guard Company", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", 1, "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
+//        Staff s = new Staff("S1013", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
+        System.out.println(staffDAO.checkDupEmail("tranthib@example.com"));
 
     }
 
