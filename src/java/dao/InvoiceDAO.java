@@ -16,6 +16,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -199,10 +200,45 @@ public class InvoiceDAO extends DBContext{
             System.out.println(e);
         }
     }
+    public List<Integer> getMonthlyRevenueByYear(int year){
+        String sql="select MONTH(invoicedate) as month, sum(total) as sum from invoice where year(invoicedate) = ? and status =1 group by month(invoicedate) order by month";
+        float[] array  =new float[12];
+        Arrays.fill(array, 0);
+        try {
+            PreparedStatement st= connection.prepareStatement(sql);
+            st.setInt(1, year);
+            ResultSet rs=st.executeQuery();
+            while(rs.next()){
+                int index = rs.getInt("month");
+                float val = rs.getFloat("sum");
+                array[index-1]=val;
+            }
+        } catch (SQLException e) {
+        }
+        List<Integer> list = new ArrayList<Integer>();
+        for (int i = 0; i < array.length; i++) {
+            list.add((int)array[i]);
+        }
+        return list;
+    }
+    public float getRevenueByYear(int year){
+        String sql ="select sum(total) as sum from invoice where year(invoicedate) =? and status=1";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, year);
+            ResultSet rs =st.executeQuery();
+            if(rs.next()){
+                return rs.getFloat("sum");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
         System.out.println(id.getByResidentId("P101").size());
         System.out.println(id.getNonPaidInvoice().size());
         System.out.println(id.searchByYearAndApartment(2025, "A10_04").size());
+        System.out.println(id.getMonthlyRevenueByYear(2025).get(1));
     }
 }

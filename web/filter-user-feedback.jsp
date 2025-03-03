@@ -253,7 +253,7 @@
                                                                 </td>
                                                                 <td class="action-column">
                                                                     <div class="dropdown-content">
-                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
+                                                                        <a href="editfeedback?id=${feedback.id}">✏ Edit</a>
                                                                         <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                     </div>
                                                                 </td>
@@ -280,16 +280,18 @@
                                             </div>
                                             <div class="pagination">
                                                 <c:if test="${currentPage > 1}">
-                                                    <a href="?page=${currentPage - 1}" class="btn btn-primary">Previous</a>
+                                                    <a href="?page=${currentPage - 1}&from=${param.from}&to=${param.to}&typeRequest=${param.typeRequest}" class="btn btn-primary">Previous</a>
                                                 </c:if>
 
                                                 <span>Page ${currentPage} of ${totalPages}</span>
 
                                                 <c:if test="${currentPage < totalPages}">
-                                                    <a href="?page=${currentPage + 1}" class="btn btn-primary">Next</a>
+                                                    <a href="?page=${currentPage + 1}&from=${param.from}&to=${param.to}&typeRequest=${param.typeRequest}" class="btn btn-primary">Next</a>
                                                 </c:if>
                                             </div>
-                                         
+
+
+
 
 
 

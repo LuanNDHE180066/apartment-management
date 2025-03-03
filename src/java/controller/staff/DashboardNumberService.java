@@ -2,11 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.resident;
+package controller.staff;
 
-import dao.FeedbackDAO;
-import dao.RequestTypeDAO;
 import dao.ResidentDAO;
+import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,20 +13,19 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.util.List;
-import model.Account;
-import model.Feedback;
-import model.RequestType;
-import model.Resident;
+import java.time.LocalDate;
 
 /**
  *
- * @author pc
+ * @author thanh
  */
-@WebServlet(name = "ViewFeedbackUserServlet", urlPatterns = {"/view-feed-back-user"})
-public class ViewFeedbackUserServlet extends HttpServlet {
+@WebServlet(name = "DashboardNumberService", urlPatterns = {"/dashboard-number-service"})
+public class DashboardNumberService extends HttpServlet {
 
+    /**
+     *
+     * @author quang
+     */
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -45,10 +43,13 @@ public class ViewFeedbackUserServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewFeedbackUserServlet</title>");
+            out.println("<title>Servlet DashboardNumberService</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewFeedbackUserServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet DashboardNumberService at " + request.getContextPath() + "</h1>");
+            out.println("</head>");
+            out.println("<body>");
+            out.println("<h1>Servlet ApartmentOwnerHistory at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -66,46 +67,13 @@ public class ViewFeedbackUserServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession();
-        Account account = (Account) session.getAttribute("account");
-
-        if (account == null) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
         ResidentDAO rd = new ResidentDAO();
-        Resident resident = rd.getById(account.getpId());
-
-        RequestTypeDAO rtd = new RequestTypeDAO();
-        List<RequestType> listTypeRquest = rtd.getAll();
-
-        // Get pagination parameters
-        int page = 1;
-        int pageSize = 5; // Show 5 feedbacks per page
-
-        if (request.getParameter("page") != null) {
-            try {
-                page = Integer.parseInt(request.getParameter("page"));
-            } catch (NumberFormatException e) {
-                page = 1;
-            }
-        }
-
-        FeedbackDAO daoF = new FeedbackDAO();
-        List<Feedback> listFeedbackU = daoF.getAllFeedbackUser(resident.getpId(), page, pageSize);
-
-        // Get total feedback count for pagination
-        int totalFeedback = daoF.getTotalFeedbackCount(resident.getpId());
-        int totalPages = (int) Math.ceil((double) totalFeedback / pageSize);
-
-        request.setAttribute("listFeedbackU", listFeedbackU);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
-        request.setAttribute("listTypeRequest", listTypeRquest);
-
-        request.getRequestDispatcher("viewallfeedbackuser.jsp").forward(request, response);
+        request.setAttribute("startYear", rd.getStartYear());
+        request.setAttribute("endYear", LocalDate.now().getYear());
+        ServiceDAO sd = new ServiceDAO();
+        request.setAttribute("sv", sd.getAll());
+        request.setAttribute("screen", 3);
+        request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     }
 
     /**
@@ -119,7 +87,16 @@ public class ViewFeedbackUserServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        int year = Integer.parseInt(request.getParameter("year"));
+        String serviceId = request.getParameter("serviceId");
+        ResidentDAO rd = new ResidentDAO();
+        request.setAttribute("startYear", rd.getStartYear());
+        request.setAttribute("endYear", LocalDate.now().getYear());
+        ServiceDAO sd = new ServiceDAO();
+        request.setAttribute("sv", sd.getAll());
+        request.setAttribute("screen", 3);
+        request.setAttribute("data", sd.getNumberUsedAllMonth(year, serviceId));
+        request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     }
 
     /**

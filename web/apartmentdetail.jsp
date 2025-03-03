@@ -107,7 +107,7 @@
                         </div>
                         <div class="container-fluid">
                             <div class="footer">
-                                <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
+                                <p>Copyright ï¿½ 2018 Designed by html.design. All rights reserved.</p>
                             </div>
                         </div>
                     </div>
@@ -137,6 +137,7 @@
                             </div>
                         </div>
                     </div>
+                    <!-- end dashboard inner -->
                 </div>
             </div>
 

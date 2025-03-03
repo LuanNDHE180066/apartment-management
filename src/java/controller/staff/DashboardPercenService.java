@@ -3,10 +3,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.admin;
+package controller.staff;
 
-import dao.ApartmentDAO;
-import dao.RoomTypeDAO;
+import dao.ResidentDAO;
+import dao.ServiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,17 +14,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.Apartment;
-import model.RoomType;
-import util.Util;
+import java.time.LocalDate;
 
 /**
  *
- * @author PC
+ * @author thanh
  */
-@WebServlet(name="ViewApartmantAdmin", urlPatterns={"/view-apartment-admin"})
-public class ViewApartmantAdmin extends HttpServlet {
+@WebServlet(name="DashboardPercenService", urlPatterns={"/dashboard-percent-service"})
+public class DashboardPercenService extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -41,10 +38,10 @@ public class ViewApartmantAdmin extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewApartmantAdmin</title>");  
+            out.println("<title>Servlet DashboardPercenService</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewApartmantAdmin at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet DashboardPercenService at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,45 +58,13 @@ public class ViewApartmantAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String floor = request.getParameter("floor");
-        String filterType = request.getParameter("filterType");
-        String filterStatus = request.getParameter("filterStatus");
-        if (floor == null || floor.trim().isEmpty()) {
-            floor = "";
-        }
-        if (filterType == null || filterType.trim().isEmpty()) {
-            filterType = "";
-        }
-        if (filterStatus == null || filterStatus.trim().isEmpty()) {
-            filterStatus = "";
-        }
-        RoomTypeDAO rdao = new RoomTypeDAO();
-        List<RoomType> types = rdao.getAll();
-        ApartmentDAO dao = new ApartmentDAO();
-        List<Apartment> apartmentes = dao.getViewApartment(floor, filterType, filterStatus);
-        request.setAttribute("floor", floor);
-        request.setAttribute("filterType", filterType);
-        request.setAttribute("filterStatus", filterStatus);
-        request.setAttribute("types", types);
-        String page = request.getParameter("page");
-        if (page == null) {
-            page = "1";
-        }
-        Util u = new Util();
-        int totalPage = u.getTotalPage(apartmentes, 10);
-
-        if (apartmentes.size() != 0) {
-            apartmentes = u.getListPerPage(apartmentes, 10, page);
-            request.setAttribute("apartmentes", apartmentes);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", Integer.parseInt(page));
-            request.setAttribute("isFilter", "true");
-        } else {
-            request.setAttribute("totalPage", 1);
-            request.setAttribute("currentPage", 1);
-            request.setAttribute("message", "No result");
-        }        
-        request.getRequestDispatcher("viewapartmentadmin.jsp").forward(request, response);
+        ResidentDAO rd = new ResidentDAO();
+        request.setAttribute("startYear", rd.getStartYear());
+        request.setAttribute("endYear", LocalDate.now().getYear());
+        ServiceDAO sd = new ServiceDAO();
+        request.setAttribute("sv", sd.getAll());
+        request.setAttribute("screen", 2);
+        request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     } 
 
     /** 
@@ -112,7 +77,16 @@ public class ViewApartmantAdmin extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        int year = Integer.parseInt(request.getParameter("year"));
+        String serviceId = request.getParameter("serviceId");
+         ResidentDAO rd = new ResidentDAO();
+        request.setAttribute("startYear", rd.getStartYear());
+        request.setAttribute("endYear", LocalDate.now().getYear());
+        ServiceDAO sd = new ServiceDAO();
+        request.setAttribute("sv", sd.getAll());
+        request.setAttribute("screen", 2);
+        request.setAttribute("data", sd.getPercentUsedAllMonth(year, serviceId));
+        request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     }
 
     /** 

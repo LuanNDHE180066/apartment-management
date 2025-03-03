@@ -6,11 +6,9 @@ package controller.resident;
 
 import dao.FeedbackDAO;
 import dao.RequestTypeDAO;
-import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
-import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,21 +22,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 import model.Account;
+import model.Feedback;
 import model.RequestType;
-import model.SendEmail;
-import model.Staff;
 
 /**
  *
- * @author NCPC
+ * @author Lenovo
  */
-@MultipartConfig(
-        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
-        maxFileSize = 1024 * 1024 * 10, // 10MB per file
-        maxRequestSize = 1024 * 1024 * 50 // 50MB total
-)
-@WebServlet(name = "SendFeedback", urlPatterns = {"/sendfeedback"})
-public class SendFeedback extends HttpServlet {
+@WebServlet(name = "UpdateFeedback", urlPatterns = {"/update-feed-back"})
+public class UpdateFeedback extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -57,10 +49,10 @@ public class SendFeedback extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SendFeedback</title>");
+            out.println("<title>Servlet UpdateFeedback</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SendFeedback at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet UpdateFeedback at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -83,9 +75,15 @@ public class SendFeedback extends HttpServlet {
         Account account = (Account) session.getAttribute("account");
         List<RequestType> listTypeOfRequest = rt.getAll();
         String rID = account.getpId();
+
+        String id = request.getParameter("id");
+        FeedbackDAO fd = new FeedbackDAO();
+        Feedback f = fd.getById(id);
         request.setAttribute("listOfTypeRequest", listTypeOfRequest);
         request.setAttribute("rID", rID);
-        request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
+        request.setAttribute("feedback", f);
+        request.getRequestDispatcher("editFeedback.jsp").forward(request, response);
+
     }
 
     /**
@@ -97,10 +95,8 @@ public class SendFeedback extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
         // Fetch form fields
         String rID = request.getParameter("rID");
         String tID = request.getParameter("typeOfRequest");
@@ -164,10 +160,15 @@ public class SendFeedback extends HttpServlet {
         // Redirect after successful submission
         response.sendRedirect("view-feed-back-user");
     }
-}
 
     /**
      * Returns a short description of the servlet.
      *
      * @return a String containing servlet description
      */
+    @Override
+    public String getServletInfo() {
+        return "Short description";
+    }// </editor-fold>
+
+}

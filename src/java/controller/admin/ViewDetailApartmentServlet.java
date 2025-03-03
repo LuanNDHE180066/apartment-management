@@ -8,7 +8,6 @@ package controller.admin;
 import dao.ApartmentDAO;
 import dao.LivingApartmentDAO;
 import dao.OwnerApartmentDAO;
-import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -16,9 +15,6 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.util.List;
-import model.LivingApartment;
-import model.OwnerApartment;
 
 /**
  *
@@ -66,17 +62,8 @@ public class ViewDetailApartmentServlet extends HttpServlet {
         ApartmentDAO ad= new ApartmentDAO();
         LivingApartmentDAO ld = new LivingApartmentDAO();
         OwnerApartmentDAO od = new OwnerApartmentDAO();
-        ResidentDAO rd = new ResidentDAO();
-        List<OwnerApartment> historyOwnerApartment = od.getByApartmentID(aid);
-        List<LivingApartment> historyOfLiving = ld.getByApartmentID(aid);
-        if(historyOwnerApartment.size() != 0){
-            request.setAttribute("apartmentOwner", od.getOwnerByApartmentID(aid).getRid());
-        }
-        if(historyOfLiving.size() != 0){
-            request.setAttribute("livingPerson", ld.getLivingResidentByApartmentID(aid).getRid());
-        }
-        request.setAttribute("historyOfLiving", historyOfLiving);
-        request.setAttribute("historyOfOwner", historyOwnerApartment);
+        request.setAttribute("historyOfLiving", ld.getByApartmentID(aid));
+        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
         request.setAttribute("apartmentDetail", ad.getById(aid));
         request.getRequestDispatcher("apartmentdetail.jsp").forward(request, response);
     } 
