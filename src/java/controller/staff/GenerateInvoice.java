@@ -13,6 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Date;
+import java.time.LocalDate;
+import java.time.YearMonth;
 
 /**
  *
@@ -57,6 +60,12 @@ public class GenerateInvoice extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         InvoiceDAO ivd = new InvoiceDAO();
+          YearMonth yearMonth = YearMonth.now();
+        LocalDate date = yearMonth.atEndOfMonth();
+        if(!LocalDate.now().equals(date) || ivd.isCreatedInvoice(Date.valueOf(LocalDate.now()))){
+            response.sendRedirect("view-apartmentservice-staff");
+            return;
+        }
         ivd.generateInvoice();
         response.sendRedirect("view-invoice-staff");
     } 
