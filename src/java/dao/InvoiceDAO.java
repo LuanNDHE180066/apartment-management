@@ -234,6 +234,17 @@ public class InvoiceDAO extends DBContext{
         }
         return 0;
     }
+    public boolean isCreatedInvoice(Date date){
+        String sql = "select * from invoice where invoicedate =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setDate(1, date);
+            ResultSet rs =st.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+        }
+        return false;
+    }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
         System.out.println(id.getByResidentId("P101").size());
