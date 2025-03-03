@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -31,6 +33,7 @@ public class Feedback {
         this.rate = rate;
         this.img = img;
     }
+
     public String getId() {
         return id;
     }
@@ -48,7 +51,19 @@ public class Feedback {
     }
 
     public String getDate() {
-        return date;
+        try {
+            // Convert the stored date string to SQL Timestamp
+            Timestamp timestamp = Timestamp.valueOf(date);
+
+            // Define the desired date format
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+            // Convert and return formatted date
+            return sdf.format(timestamp);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error parsing date: " + e);
+            return date; // Return the original date if there's an error
+        }
     }
 
     public void setDate(String date) {
@@ -86,10 +101,5 @@ public class Feedback {
     public void setImg(List<String> img) {
         this.img = img;
     }
-
-    
-   
-
-   
 
 }
