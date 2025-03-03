@@ -42,7 +42,7 @@ public class ExpenseCategoryDAO extends DBContext {
                 int id = rs.getInt("ExpenseCategoryId");
                 String categoryName = rs.getString("categoryName");
                 String categoryDescription = rs.getString("categoryDescription");
-                int status  = rs.getInt("status");
+                int status = rs.getInt("status");
 
                 ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription, status);
                 list.add(e);
@@ -51,6 +51,37 @@ public class ExpenseCategoryDAO extends DBContext {
             Logger.getLogger(ExpenseCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return list;
+    }
+
+    public boolean addExpenseCategory(ExpenseCategory e) {
+        String sql = "Insert into ExpenseCategory(categoryname, categorydescription,status) values(?,?,?)";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, e.getCategoryName());
+            ps.setString(2, e.getCategoryDescription());
+            ps.setInt(3, 0);
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenseCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+    
+    
+      public boolean updateExpenseCategory(ExpenseCategory e) {
+        String sql = "update ExpenseCategory set CategoryName = ?, CategoryDescription = ?, status = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, e.getCategoryName());
+            ps.setString(2, e.getCategoryDescription());
+            ps.setInt(3, e.getStatus());
+
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenseCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
     }
 
     public ExpenseCategory getExpenseCategoryById(int id) {
@@ -62,7 +93,7 @@ public class ExpenseCategoryDAO extends DBContext {
                 int cid = rs.getInt("ExpenseCategoryId");
                 String categoryName = rs.getString("categoryName");
                 String categoryDescription = rs.getString("categoryDescription");
-                int status  = rs.getInt("status");
+                int status = rs.getInt("status");
 
                 ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription, status);
                 return e;
