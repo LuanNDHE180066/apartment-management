@@ -23,6 +23,12 @@ public class ExpenseCategory {
         return id;
     }
 
+    public ExpenseCategory(String categoryName, String categoryDescription, int status) {
+        this.categoryName = categoryName;
+        this.categoryDescription = categoryDescription;
+        this.status = status;
+    }
+
     public ExpenseCategory(int id, String categoryName, String categoryDescription, int status) {
         this.id = id;
         this.categoryName = categoryName;

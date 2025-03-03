@@ -99,6 +99,8 @@
                                                                     <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
                                                                     <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
                                                                         <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
+                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                        <a style="color: white" href="view-expense-category">View expense cateogry</a></span>
                                                                 </div>
 
                                                             </div>
