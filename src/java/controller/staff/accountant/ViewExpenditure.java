@@ -19,6 +19,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Account;
 import model.Company;
 import model.Expenditure;
 import model.ExpenseCategory;
@@ -110,6 +111,9 @@ public class ViewExpenditure extends HttpServlet {
         session.setAttribute("listAdmin", listAdmin);
         
         System.out.println("list hien ta"+listExpenditure);
+        Account a = (Account) session.getAttribute("account");
+        
+        request.setAttribute("roleId", a.getRoleId());
         if (listExpenditure.size() != 0) {
             int totalPage = u.getTotalPage(listExpenditure, 3);
             listExpenditure = u.getListPerPage(listExpenditure, 3, page);

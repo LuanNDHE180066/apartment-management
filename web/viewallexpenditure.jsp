@@ -44,6 +44,9 @@
                 background-color: #6B90DA;
                 color: black;
             }
+            .display-none{
+                display: none;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -93,7 +96,7 @@
                                                                 </div>
                                                                 <div class="col-md-2 d-flex">
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <span class="btn btn-primary" style="display: inline-block"><a style="color: white" href="add-expenditure">Add</a></span>
+                                                                    <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
                                                                     <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
                                                                         <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
                                                                 </div>
