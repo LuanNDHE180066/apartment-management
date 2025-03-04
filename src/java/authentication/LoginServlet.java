@@ -88,8 +88,7 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
-        if (user.equals(ac.getUsername()) && Util.isCorrectPassword(pass, ac.getPassword())) {
-            ac.setpId(dao.getIdByUsernameAndRole(user, checkrole));
+        if (Util.isCorrectPassword(pass, ac.getPassword())) {
             session.setAttribute("account", ac);
             String remember = request.getParameter("remember");
             if ("on".equals(remember)) {
@@ -107,7 +106,6 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(cookieRemember);
                 response.addCookie(cookieRole);
             } else {
-                // Clear both cookies by setting max age to 0
                 Cookie cookieUser = new Cookie("rememberedUser", user);
                 Cookie cookiePass = new Cookie("rememberedPass", pass);
                 Cookie cookieRemember = new Cookie("remembered", "remember");
@@ -121,7 +119,6 @@ public class LoginServlet extends HttpServlet {
                 response.addCookie(cookieRemember);
                 response.addCookie(cookieRole);
             }
-
             if (ac.getActive() == 2) {
                 response.sendRedirect("changepassword.jsp");
 
@@ -142,7 +139,6 @@ public class LoginServlet extends HttpServlet {
             Staff staff = sd.getById(ac.getpId());
             session.setAttribute("person", staff);
         }
-        //////////
     }
 
     /**
