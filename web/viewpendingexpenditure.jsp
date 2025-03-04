@@ -124,6 +124,9 @@
                                                                     <a style="text-align: center" title="Decline" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
                                                                         <i class="fa-solid fa-xmark"></i>
                                                                     </a>
+                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                        <i class="fa-solid fa-eye"></i> 
+                                                                    </a>
                                                                 </c:if>
 
                                                                 <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
@@ -132,7 +135,7 @@
                                                                         <i class="fa-solid fa-eye"></i> 
                                                                     </a>
                                                                 </c:if>
-                                             
+
 
                                                                 <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
                                                                     <a style="text-align: center" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">

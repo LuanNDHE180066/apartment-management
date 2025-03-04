@@ -129,18 +129,18 @@
                             <div class="container-fluid">
                                 <div class="form-container">
                                     <h1>Expenditure Detail</h1>
-                                    <form action="update-expenditure" method="post">
+                                    <form action="view-pending-expenditure" method="get">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="title">Title</label>
-                                                    <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
-                                                    <input type="text" id="title" hidden="" name="id" placeholder="Enter title" value="${expenditure.id}" required=""/>
+                                                    <input readonly="" type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
+                                                    <input readonly="" type="text" id="title" hidden="" name="id" placeholder="Enter title" value="${expenditure.id}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="totalFees">Total Fees</label>
-                                                    <input type="number" id="totalFees" min="0"
+                                                    <input readonly="" type="number" id="totalFees" min="0"
                                                            name="totalPrice" step="0.01" placeholder="Enter total fees" value="${expenditure.totalPrice}" required=""/>
                                                 </div>
                                             </div>
@@ -149,11 +149,11 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="approveDate">Approval Date</label>
-                                                    <input type="date" id="approveDate" name="approveDate" value="${expenditure.approveddate}" required=""/>
+                                                    <input readonly="" type="date" id="approveDate" name="approveDate" value="${expenditure.approveddate}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="paymentDate">Payment Date</label>
-                                                    <input type="date" id="paymentDate" name="paymentDate" value="${expenditure.paymentdate}" required=""/>
+                                                    <input readonly="" type="date" id="paymentDate" name="paymentDate" value="${expenditure.paymentdate}" required=""/>
                                                 </div>
                                             </div>
                                         </div>
@@ -161,7 +161,7 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="category">Category</label>
-                                                    <select id="category" name="category" required="">
+                                                    <select disabled id="category" name="category" >
                                                         <c:forEach items="${sessionScope.listExpenseCategory}" var="cat">
                                                             <option value="${cat.id}" ${cat.id == expenditure.category.id ? 'selected' : ''}>${cat.categoryName}</option>
                                                         </c:forEach>
@@ -169,7 +169,7 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="company">Company</label>
-                                                    <select id="company" name="company">
+                                                    <select disabled id="company" name="company" readonly="">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
                                                             <option value="${cp.id}" ${expenditure.company.id == cp.id?'selected':''}>${cp.name}</option>
                                                         </c:forEach>
@@ -181,13 +181,13 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="invoiceCreator">Expenditure Creator</label>
-                                                    <input type="text" id="invoiceCreator" name="invoiceCreator" 
+                                                    <input readonly="" type="text" id="invoiceCreator" name="invoiceCreator" 
                                                            placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
                                                     <input hidden="" type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>
-                                                    <select id="chiefAccountant" name="chiefAccountant">
+                                                    <select disabled="" id="chiefAccountant" name="chiefAccountant">
                                                         <c:forEach items="${sessionScope.listAccountant}" var="accountant">
                                                             <option value="${accountant.id}" ${accountant.id == expenditure.chiefAccountantId.id?'selected':''}>${accountant.name}</option>
                                                         </c:forEach>
@@ -199,7 +199,7 @@
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="admin">Admin</label>
-                                                    <select id="admin" name="admin">
+                                                    <select disabled="" id="admin" name="admin">
                                                         <c:forEach items="${sessionScope.listAdmin}" var="admin">
                                                             <option value="${admin.id}" ${admin.id == expenditure.currentAdmin.id?'selected':''}>${admin.name}</option>
                                                         </c:forEach>
@@ -209,10 +209,10 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="note">Note</label>
-                                            <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
+                                            <textarea readonly="" id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Update</button>
+                                            <button type="submit">Back</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>

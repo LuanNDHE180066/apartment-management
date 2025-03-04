@@ -147,9 +147,7 @@
                                                                 <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" 
                                                                    style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
-                                                                <a style="text-align: center" class="approval-link" href="view-detail?id=${expenditure.id}">
-                                                                    <i class="fa-solid fa-eye"></i> 
-                                                                </a>
+
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
