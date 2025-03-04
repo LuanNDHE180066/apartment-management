@@ -64,14 +64,19 @@ public class AssignRequest extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
+        String shift = request.getParameter("shift");
         String requestid = request.getParameter("requestid");
         String staffid = request.getParameter("staffid");
         RequestDAO rd = new RequestDAO();
-        SendEmail send = new SendEmail();
         StaffDAO daoSt = new StaffDAO();
-        Staff s = daoSt.getById(staffid);
-        send.sendEmail(s.getEmail(), "Assign Request From Resident", "You have a technical request in room A001");
-        rd.AssignRequest(requestid, staffid);
+        Staff s = daoSt.getById(staffid);  
+        if(rd.checkShiftStaff(staffid, shift)){              
+            request.setAttribute("error_staff", s.getName() +" already has a assign in "+(shift.equals("1")? "8:00 - 10:00":shift.equals("2")?"13:00 - 15:00":shift.equals("3")?"15:00 - 17:00":"18:00-20:00"));            
+        }else{
+            SendEmail send = new SendEmail();
+            send.sendEmail(s.getEmail(), "Assign Request From Resident", "You have a request in"+(shift.equals("1")? "8:00 - 10:00":shift.equals("2")?"13:00 - 15:00":shift.equals("3")?"15:00 - 17:00":"18:00-20:00"));
+            rd.AssignRequest(requestid, staffid,shift);           
+        }  
         request.getRequestDispatcher("view-all-request").forward(request, response);
     }
 

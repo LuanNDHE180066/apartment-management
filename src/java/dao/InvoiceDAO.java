@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import jdbc.DBContext;
 import java.util.List;
 import jdbc.DBContext;
@@ -25,8 +26,10 @@ import model.Floor;
 import model.Invoice;
 import model.LivingApartment;
 import model.MonthlyService;
+import model.News;
 import model.Resident;
 import model.Service;
+import model.Staff;
 import util.Util;
 /**
  *
@@ -233,6 +236,41 @@ public class InvoiceDAO extends DBContext{
         } catch (SQLException e) {
         }
         return 0;
+    }
+    public boolean isCreatedInvoice(Date date){
+        String sql = "select * from invoice where invoicedate =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setDate(1, date);
+            ResultSet rs =st.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+        }
+        return false;
+    }
+    public List<EmailInvoice> getEmailInvoiceDebt(){
+        List<Invoice> listInvoice = this.getNonPaidInvoice();
+        List<EmailInvoice> rs = new ArrayList<>();
+        for (int i = 0; i < listInvoice.size(); i++) {
+            Apartment a = listInvoice.get(i).getApartment();
+            String email = listInvoice.get(i).getResident().getEmail();
+            EmailInvoice ei = new EmailInvoice(email, email);
+            rs.add(ei);
+        }
+        return rs;
+    }
+    public boolean createNewsNotifyInvoice(String staffId){
+        int month =LocalDate.now().getMonthValue();
+        String tittle = "Hóa đơn tháng " + month;
+        String content= "Hóa đơn tháng "+ month +" đã được phát hành";
+        Date date = Date.valueOf(LocalDate.now());
+        String img ="/images/logo/notify.jpg";
+        String category = "Dịch vụ tháng";
+        NewDAO nd  = new NewDAO();
+        StaffDAO sd = new StaffDAO();
+        Staff staff = sd.getById(staffId);
+        News n = new News(tittle, content, "", category, img, staff, date.toString());
+         return nd.insertNews(n);
     }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();

@@ -2,12 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.staff;
+package controller.staff.accountant;
 
-import dao.CategoryServiceDAO;
-import dao.CompanyDAO;
-import dao.MonthlyServiceDAO;
-import dao.ServiceDAO;
+import dao.ExpenseCategoryDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,13 +12,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import model.ExpenseCategory;
+import util.Util;
 
 /**
  *
- * @author thanh
+ * @author quang
  */
-@WebServlet(name = "AddNewServiceServlet", urlPatterns = {"/add-service-staff"})
-public class AddNewServiceServlet extends HttpServlet {
+@WebServlet(name = "AddExpenseCategory", urlPatterns = {"/add-expense-category"})
+public class AddExpenseCategory extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +39,10 @@ public class AddNewServiceServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddNewServiceServlet</title>");
+            out.println("<title>Servlet AddExpenseCategory</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddNewServiceServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddExpenseCategory at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,11 +60,7 @@ public class AddNewServiceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        CategoryServiceDAO csd = new CategoryServiceDAO();
-        CompanyDAO cd = new CompanyDAO();
-        request.setAttribute("companies", cd.getAll());
-        request.setAttribute("types", csd.getAll());
-        request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+        request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
     }
 
     /**
@@ -79,38 +74,39 @@ public class AddNewServiceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String unit = request.getParameter("unit");
-        CategoryServiceDAO csd = new CategoryServiceDAO();
-        CompanyDAO cd = new CompanyDAO();
-        String name = request.getParameter("name");
-        String price_raw = request.getParameter("price");
-        price_raw = price_raw.replace(".", "");
-        int price = Integer.parseInt(price_raw);
-        String des = request.getParameter("des");
-        if (name.trim().isBlank() || des.trim().isBlank()) {
-            request.setAttribute("error", "Name or description is not a blank");
-            request.setAttribute("companies", cd.getAll());
-            request.setAttribute("types", csd.getAll());
-            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+        ExpenseCategoryDAO daoEx = new ExpenseCategoryDAO();
+        Util u = new Util();
+
+        String categoryName = request.getParameter("categoryName");
+        String categoryDescription = request.getParameter("categoryDescription");
+
+        if (categoryName.trim().isBlank()) {
+            request.setAttribute("message", "Category name can not be empty");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
             return;
         }
-        ServiceDAO sd = new ServiceDAO();
-        if (sd.isExistName(name)) {
-            request.setAttribute("error", "Name is existed");
-            request.setAttribute("companies", cd.getAll());
-            request.setAttribute("types", csd.getAll());
-            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+
+        if (categoryDescription.trim().isBlank()) {
+            request.setAttribute("message", "Category description can not be empty");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
             return;
         }
-        String categoryId = request.getParameter("category");
-        String companyId = request.getParameter("company");
-        int status = Integer.parseInt(request.getParameter("status"));
-        String newServiceID =sd.addService(name, price, des, categoryId, companyId, status,unit);
-        if(categoryId.equals("SV001")){//khi thêm 1 service bắt buộc mới thì tất các phòng sẽ tự động thêm
-            MonthlyServiceDAO md = new MonthlyServiceDAO();
-            md.addServiceToAllApartment(newServiceID);
+
+        categoryDescription = u.stringNomalize(categoryDescription);
+        categoryName = u.stringNomalize(categoryName);
+
+        ExpenseCategory e = new ExpenseCategory(categoryName, categoryDescription, 1);
+        if (daoEx.addExpenseCategory(e)) {
+            request.setAttribute("message", "Add successfull");
+            request.setAttribute("status", "true");
+            request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
+        } else {
+            request.setAttribute("message", "Failed to add");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
         }
-        response.sendRedirect("all-services");
     }
 
     /**

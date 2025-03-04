@@ -20,6 +20,26 @@
         <filter-name>AdminFilter</filter-name>
         <filter-class>filter.AdminFilter</filter-class>
     </filter>
+    <filter>
+        <filter-name>AccountantFilter</filter-name>
+        <filter-class>filter.AccountantFilter</filter-class>
+    </filter>
+    <!--    <filter-mapping>
+        <filter-name>AdministrativeFilter</filter-name>
+        <url-pattern>/view-all-request</url-pattern>
+        <url-pattern>/viewallrequest.jsp</url-pattern>
+    </filter-mapping>-->
+    <!--    Accountant Filter-->
+    <!--    <filter-mapping>
+        <filter-name>AdminFilter</filter-name>
+        <url-pattern>/delete-room-type</url-pattern>
+    </filter-mapping>-->
+    <filter>
+        <filter-name>AccountantAndAdminFilter</filter-name>
+        <filter-class>filter.AccountantAndAdminFilter</filter-class>
+    </filter>
+    <!--Accountant Filter -->
+
     <filter-mapping>
         <filter-name>AuthorizedFilter</filter-name>
         <url-pattern>/*</url-pattern>
@@ -27,37 +47,30 @@
     <filter-mapping>
         <filter-name>StaffFilter</filter-name>
         <url-pattern>/view-profile-staff</url-pattern>
-        <url-pattern>/profile.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>StaffFilter</filter-name>
         <url-pattern>/editprofileSTServlet</url-pattern>
-        <url-pattern>/editprofileST.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/view-profile-resident</url-pattern>
-        <url-pattern>/profile.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/editprofileREServlet</url-pattern>
-        <url-pattern>/editprofileRE.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/viewrequest_history</url-pattern>
-        <url-pattern>/view_request_history.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/view-feed-back-user</url-pattern>
-        <url-pattern>/viewallfeedbackuser.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/sendfeedback</url-pattern>
-        <url-pattern>/sendfeedback.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
@@ -70,22 +83,14 @@
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/resident-add-request</url-pattern>
-        <url-pattern>/addrequest.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/view-rule-resident</url-pattern>
-        <url-pattern>/viewrule-resident.jsp</url-pattern>
     </filter-mapping>
-    <!--    <filter-mapping>
-        <filter-name>AdministrativeFilter</filter-name>
-        <url-pattern>/view-all-request</url-pattern>
-        <url-pattern>/viewallrequest.jsp</url-pattern>
-    </filter-mapping>-->
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
         <url-pattern>/update-news</url-pattern>
-        <url-pattern>/updatenews.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
@@ -98,82 +103,66 @@
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
         <url-pattern>/view-all-feedback</url-pattern>
-        <url-pattern>/viewallfeedback.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
         <url-pattern>/view-rule-admin</url-pattern>
-        <url-pattern>/viewrule-admin.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
         <url-pattern>/add-new-rule</url-pattern>
-        <url-pattern>/addnewrule.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-resident</url-pattern>
-        <url-pattern>/viewallresident.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-all-staff</url-pattern>
-        <url-pattern>/viewallstaff.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-all-company</url-pattern>
-        <url-pattern>/viewallcompany.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/addNewResident</url-pattern>
-        <url-pattern>/addnewresident.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-staff</url-pattern>
-        <url-pattern>/addnewstaff.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-company</url-pattern>
-        <url-pattern>/addnewcompany.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-rule-admin</url-pattern>
-        <url-pattern>/viewrule-admin.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-rule</url-pattern>
-        <url-pattern>/addnewrule.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-categoryservice-staff</url-pattern>
-        <url-pattern>/viewallcategoryservice.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-floor-staff</url-pattern>
-        <url-pattern>/floorinformation.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-roomtype</url-pattern>
-        <url-pattern>/viewroomtype.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/updateroomtype.jsp</url-pattern>
-        <url-pattern>/update-room-type</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-room-type</url-pattern>
-        <url-pattern>/addnewroomtype.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
@@ -182,8 +171,51 @@
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/update-apartment</url-pattern>
-        <url-pattern>/updateapartment.jsp</url-pattern>
     </filter-mapping>
+    
+    <!--    AccountantFilter-->
+    <filter-mapping>
+        <filter-name>AccountantFilter</filter-name>
+        <url-pattern>/view</url-pattern>
+    </filter-mapping>
+    
+    <filter-mapping>
+        <filter-name>AccountantAndAdminFilter</filter-name>
+        <url-pattern>/view-expenditure</url-pattern>
+        <url-pattern>/viewallexpenditure.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AccountantAndAdminFilter</filter-name>
+        <url-pattern>/view-expenditure-change-history</url-pattern>
+       <url-pattern>/viewexpenditurechangehistory.jsp</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>AccountantAndAdminFilter</filter-name>
+        <url-pattern>/view-pending-expenditure</url-pattern>
+         <url-pattern>/viewpendingexpenditure.jsp</url-pattern>
+    </filter-mapping>
+    
+    
+    <filter-mapping>
+        <filter-name>AccountantAndAdminFilter</filter-name>
+        <url-pattern>/update-pending-expenditure</url-pattern>
+    </filter-mapping>
+    
+      <filter-mapping>
+        <filter-name>AccountantFilter</filter-name>
+        <url-pattern>/update-expenditure</url-pattern>
+        <url-pattern>/updateExpenditure.jsp</url-pattern>
+    </filter-mapping>
+    
+      <filter-mapping>
+        <filter-name>AccountantFilter</filter-name>
+        <url-pattern>/add-expenditure</url-pattern>
+        <url-pattern>/addExpenditure.jsp</url-pattern>
+    </filter-mapping>
+    
+    
+    
+
     <servlet>
         <servlet-name>login</servlet-name>
         <servlet-class>authentication.LoginServlet</servlet-class>
