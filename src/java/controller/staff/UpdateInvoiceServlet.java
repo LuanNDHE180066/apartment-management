@@ -6,7 +6,6 @@
 package controller.staff;
 
 import dao.InvoiceDAO;
-import dao.LivingApartmentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,19 +13,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import model.Account;
-import model.SendEmail;
 
 /**
  *
  * @author thanh
  */
-@WebServlet(name="GenerateInvoice", urlPatterns={"/generate-invoice-staff"})
-public class GenerateInvoice extends HttpServlet {
+@WebServlet(name="UpdateInvoiceServlet", urlPatterns={"/update-invoice-staff"})
+public class UpdateInvoiceServlet extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -43,10 +36,10 @@ public class GenerateInvoice extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GenerateInvoice</title>");  
+            out.println("<title>Servlet UpdateInvoiceServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GenerateInvoice at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateInvoiceServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,25 +56,9 @@ public class GenerateInvoice extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        if(request.getParameter("method")!=null){
-            this.doPost(request, response);
-            return;
-        }
+        String id = request.getParameter("invoiceId");
         InvoiceDAO ivd = new InvoiceDAO();
-//          YearMonth yearMonth = YearMonth.now();
-//        LocalDate date = yearMonth.atEndOfMonth();
-//        if(!LocalDate.now().equals(date) || ivd.isCreatedInvoice(Date.valueOf(LocalDate.now()))){
-//            response.sendRedirect("view-apartmentservice-staff");
-//            return;
-//        }
-        LivingApartmentDAO ld = new LivingApartmentDAO();
-        SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmailInvoiceToAll(ld.getEmailInvoicesActiveResident());
-        HttpSession session = request.getSession();
-        if(!ivd.createNewsNotifyInvoice(((Account)session.getAttribute("account")).getpId())){
-            return;
-        }
-        ivd.generateInvoice();
+        ivd.switchToPaidStatusById(id);
         response.sendRedirect("view-invoice-staff");
     } 
 
@@ -95,10 +72,7 @@ public class GenerateInvoice extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        InvoiceDAO ivd = new InvoiceDAO();
-        SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmailInvoiceDebtToAll(ivd.getEmailInvoiceDebt());
-        response.sendRedirect("view-invoice-staff");
+        processRequest(request, response);
     }
 
     /** 
