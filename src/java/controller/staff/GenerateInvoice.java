@@ -61,6 +61,10 @@ public class GenerateInvoice extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        if(request.getParameter("method")!=null){
+            this.doPost(request, response);
+            return;
+        }
         InvoiceDAO ivd = new InvoiceDAO();
 //          YearMonth yearMonth = YearMonth.now();
 //        LocalDate date = yearMonth.atEndOfMonth();
@@ -85,7 +89,10 @@ public class GenerateInvoice extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        InvoiceDAO ivd = new InvoiceDAO();
+        SendEmail sendEmail = new SendEmail();
+        sendEmail.sendEmailInvoiceDebtToAll(ivd.getEmailInvoiceDebt());
+        response.sendRedirect("view-invoice-staff");
     }
 
     /** 

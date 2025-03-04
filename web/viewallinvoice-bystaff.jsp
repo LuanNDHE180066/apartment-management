@@ -95,6 +95,11 @@
                                                     <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
                                                         Hóa đơn chưa thanh toán
                                                     </h3>
+                                                    <div class="heading1 margin_0">
+                                                        <button style="width: 300px;height: 50px" class="btn btn-primary">
+                                                            <a style="color: black; font-size: 1.2rem" href="generate-invoice-staff?method=post">Gửi thông báo nhắc nhở</a>
+                                                        </button>
+                                                    </div>
 
                                                     <table class="table w-100">
                                                         <thead>
@@ -122,7 +127,7 @@
                                                                         <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                     </td>
                                                                     <td style="text-align: center   ">
-                                                                        <a href="#" class="fa-solid fa-bell"></a>
+                                                                        <a href="#" class="fa-solid fa-check"></a>
                                                                     </td>
 
                                                                 </tr>
