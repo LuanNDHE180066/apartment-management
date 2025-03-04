@@ -83,7 +83,9 @@ public class AddNewServiceServlet extends HttpServlet {
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
         String name = request.getParameter("name");
-        int price = Integer.parseInt(request.getParameter("price"));
+        String price_raw = request.getParameter("price");
+        price_raw = price_raw.replace(".", "");
+        int price = Integer.parseInt(price_raw);
         String des = request.getParameter("des");
         if (name.trim().isBlank() || des.trim().isBlank()) {
             request.setAttribute("error", "Name or description is not a blank");
