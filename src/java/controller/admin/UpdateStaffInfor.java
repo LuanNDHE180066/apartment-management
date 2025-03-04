@@ -249,7 +249,7 @@ public class UpdateStaffInfor extends HttpServlet {
         st.setStatus(status);
         if (daoSt.updateStaffInfor(st)) {
             request.setAttribute("status", "true");
-            request.setAttribute("message", "News staff successfully!");
+            request.setAttribute("message", "Staff updated successfully!");
         } else {
             request.setAttribute("status", "false");
             request.setAttribute("message", "Failed to update staff.");

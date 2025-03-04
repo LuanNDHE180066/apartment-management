@@ -109,10 +109,14 @@
                                 <p class="news-content">
                                     ${requestScope.news.content}
                                 </p>
+                                <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
+                                    <a href="${requestScope.news.source}" target="_blank">Read more <i class="fas fa-external-link-alt"></i></a>
+                                </c:if>
+                                <img src="${requestScope.news.image}" width="350"/>                       
                                 <div class="related-links">
                                     <ul>
-                                        <li style="font-weight: bold; text-decoration: underline">Related Articles<li>
-                                            <c:forEach items="${requestScope.listOtherNews}" var="n">
+                                        <h4>Related Articles</h4>
+                                        <c:forEach items="${requestScope.listOtherNews}" var="n">
                                             <li>- <a href="news-detail?id=${n.id}">${n.title}</a></li>
                                             </c:forEach>
                                         <li><btn id="btn" onclick="window.location = 'view-news';" class="btn btn-success">Back to News List</btn></li>

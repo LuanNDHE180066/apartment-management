@@ -162,7 +162,8 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="file">Image</label>
-                                            <input value="${requestScope.news.image}" style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept="images/logo/*">
+                                            <input value="${requestScope.news.image}" style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                            <span style="color: red">${requestScope.fileerror}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="auther">Author</label>

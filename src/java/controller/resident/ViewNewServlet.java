@@ -67,9 +67,7 @@ public class ViewNewServlet extends HttpServlet {
         String endDate = request.getParameter("endDate");
         String title = request.getParameter("title");
         Util u = new Util();
-
         title = u.stringNomalize(title);
-
         if (startDate == null || startDate.trim().isEmpty()) {
             startDate = "";
         }
@@ -96,8 +94,6 @@ public class ViewNewServlet extends HttpServlet {
             request.setAttribute("message", "No result");
             request.getRequestDispatcher("viewallnews.jsp").forward(request, response);
         }
-
-
     }
 
     /**

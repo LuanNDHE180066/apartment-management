@@ -128,62 +128,77 @@
                                 <div class="form-container">
                                     <h1>Add New Contract</h1>
                                     <form action="add-new-contract" method="post" enctype="multipart/form-data">
-
                                         <div class="form-group">
                                             <label for="title">Title</label>
-                                            <input type="text" id="title" name="title" placeholder="Enter contract title" required />
+                                            <input type="text" id="title" name="title" value="${param.title}" placeholder="Enter contract title" required />
+                                            <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
                                         <div class="form-group">
                                             <label for="description">Description</label>
-                                            <input type="text" id="description" name="description" placeholder="Enter description" required />
+                                            <input type="text" id="description" name="description" value="${param.description}" placeholder="Enter description" required />
+                                            <span style="color: red">${requestScope.deserror}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="startDate">Start Date</label>
-                                            <input type="date" id="startDate" name="startDate" required />
+                                            <div class="two-cols">
+                                                <div class="col">
+                                                    <label for="startDate">Start Date</label>
+                                                    <input type="date" id="startDate" value="${param.startDate}" name="startDate" required />
+                                                </div>
+                                                <div class="col">
+                                                    <label for="endDate">End Date</label>
+                                                    <input type="date" id="endDate" value="${param.endDate}" name="endDate" required />
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="endDate">End Date</label>
-                                            <input type="date" id="endDate" name="endDate" required />
+                                            <div class="two-cols">
+                                                <div class="col">
+                                                    <label for="paydate">Payment Date</label>
+                                                    <input type="date" id="paydate" value="${param.paymentTems}" name="paydate" required />
+                                                </div>
+                                                <div class="col">
+                                                    <label for="date">Sign Date</label>
+                                                    <input type="date" id="signdate" value="${param.signDate}" name="signdate" required />
+                                                </div>
+                                            </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="paydate">Payment Date</label>
-                                            <input type="date" id="paydate" name="paydate" required />
+                                            <div class="two-cols">
+                                                <div class="col" style="padding: 0; margin-right: 5px">
+                                                    <label for="company">Company</label>
+                                                    <select id="company" name="company">
+                                                        <c:forEach items="${sessionScope.listcompany}" var="cp">
+                                                            <option value="${cp.id}">${cp.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="col" style="padding: 0; margin-right: 5px">
+                                                    <label for="admin">Admin</label>
+                                                    <select id="admin" name="admin">
+                                                        <c:forEach items="${sessionScope.listadmin}" var="cp">
+                                                            <option value="${cp.id}">${cp.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                                <div class="col" style="padding: 0; margin-right: 5px">
+                                                    <label for="accountant">Accountant</label>
+                                                    <select id="accountant" name="accountant">
+                                                        <c:forEach items="${sessionScope.listaccountant}" var="cp">
+                                                            <option value="${cp.id}">${cp.name}</option>
+                                                        </c:forEach>
+                                                    </select>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="date">Sign Date</label>
-                                            <input type="date" id="signdate" name="signdate" required />
-                                        </div>
-                                        <div class="col" style="padding: 0; margin-right: 5px">
-                                            <label for="company">Company</label>
-                                            <select id="company" name="company">
-                                                <c:forEach items="${sessionScope.listcompany}" var="cp">
-                                                    <option value="${cp.id}">${cp.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                        <div class="col" style="padding: 0; margin-right: 5px">
-                                            <label for="admin">Admin</label>
-                                            <select id="admin" name="admin">
-                                                <c:forEach items="${sessionScope.listadmin}" var="cp">
-                                                    <option value="${cp.id}">${cp.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
-                                        <div class="col" style="padding: 0; margin-right: 5px">
-                                            <label for="accountant">Accountant</label>
-                                            <select id="accountant" name="accountant">
-                                                <c:forEach items="${sessionScope.listaccountant}" var="cp">
-                                                    <option value="${cp.id}">${cp.name}</option>
-                                                </c:forEach>
-                                            </select>
-                                        </div>
+
                                         <div class="form-group">
                                             <label for="sid">SID</label>
                                             <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" />
                                         </div>
                                         <div class="form-group">
                                             <label for="file">Image</label>
-                                            <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept="image/*">
+                                            <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                            <span style="color: red">${requestScope.fileerror}</span>
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Add Contract</button>

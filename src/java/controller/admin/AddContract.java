@@ -18,6 +18,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
 import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.util.List;
 import model.Company;
 import model.Contract;
@@ -106,15 +109,33 @@ public class AddContract extends HttpServlet {
         String admin = request.getParameter("admin");
         String accountant = request.getParameter("accountant");
         String sid = request.getParameter("sid");
-        String image = "";
-
-        if (null != request.getPart("file")) {
-            Part fileImage = request.getPart("file");
-            String imagePath = getServletContext().getRealPath("/") + "images/avatar/" + fileImage.getSubmittedFileName();
-            fileImage.write(imagePath);
-            image = "images/avatar/" + fileImage.getSubmittedFileName();
+        Part filePart=request.getPart("file");
+        String image="";
+        if(filePart!=null && filePart.getSize()>0){
+            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+            if(!fileExtention.matches("jpg|jpeg")){
+                request.setAttribute("fileerror", "Only jpg");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            String uploadpath=getServletContext().getRealPath("/")+"images/contract";
+            File uploadDir=new File(uploadpath);
+            if(!uploadDir.exists()){
+                uploadDir.mkdirs();
+            }
+            File file= new File(uploadDir, filename);
+            try(InputStream fileContent=filePart.getInputStream();
+                    FileOutputStream outputStream=new FileOutputStream(file)) {
+                byte[] buffer=new byte[1024];
+                int byteread;
+                while((byteread=fileContent.read(buffer))!= -1){
+                    outputStream.write(buffer, 0, byteread);
+                }
+                
+            }
+            image = "images/contract/" + filename;           
         }
-
         CompanyDAO cpd = new CompanyDAO();
         StaffDAO std = new StaffDAO();
         Contract contract = new Contract(std.getById(sid), cpd.getById(company), startDate, endDate, paydate, signdate, title, description, std.getById(accountant), std.getById(admin), image);
