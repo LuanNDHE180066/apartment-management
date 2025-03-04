@@ -155,6 +155,48 @@ public class AddExpenditure extends HttpServlet {
                     0, approveDate_raw, paymentDate_raw, totalPrice, note,
                     ex, company, createBy, chiefAccountant, currentAdmin, action,
                     modifiedDate, createBy, createdDate);
+            
+
+                String emailContentInsert = "<html>"
+                + "<head>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }"
+                + "h2 { color: #333; }"
+                + "table { border-collapse: collapse; width: 100%; background-color: #ffffff; }"
+                + "th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }"
+                + "th { background-color: #4CAF50; color: white; }"
+                + "tr:nth-child(even) { background-color: #f2f2f2; }"
+                + "tr:hover { background-color: #ddd; }"
+                + "p { color: #555; font-size: 14px; }"
+                + "</style>"
+                + "</head>"
+                + "<body>"
+                + "<h2>Thông báo về chi phí</h2>"
+                + "<table>"
+                + "<tr>"
+                + "<th>Thông tin</th>"
+                + "<th>Chi tiết</th>"
+                + "</tr>"
+                + "<tr><td>ID</td>"
+                + "<td>" + he.getId() + "</td></tr>"
+                + "<tr><td>Tiêu đề</td>"
+                + "<td>" + he.getTitle() + "</td></tr>"
+                + "<tr><td>Trạng thái phê duyệt Kế toán trưởng</td>"
+                + "<td>" + (he.getChiefAccountantApproveStatus() == 0 ? "Đang xử lý" : "Đã từ chối") + "</td></tr>"
+                + "<tr><td>Tổng giá</td>"
+                + "<td>" + he.getTotalPrice() + "</td></tr>"
+                + "<tr><td>Ghi chú</td>"
+                + "<td>" + he.getNote() + "</td></tr>"
+                + "<tr><td>Danh mục chi phí</td>"
+                + "<td>" + he.getCategory().getCategoryName() + "</td></tr>"
+                + "<tr><td>Công ty</td>"
+                + "<td>" + he.getCompany().getName() + "</td></tr>"
+                + "<tr><td>Ngày tạo</td>"
+                + "<td>" + he.getCreatedDate() + "</td></tr>"
+                + "</table>"
+                + "<p>Vui lòng kiểm tra và xác nhận chi phí này.</p>"
+                + "</body>"
+                + "</html>";
 
 //            out.print(currentAdmin.getName() + " " + AdminId + " " + chiefAccountantId + createdById + categoryId_raw);
             if (!daoHe.addNewHistoryExpenditure(he)) {
@@ -164,8 +206,7 @@ public class AddExpenditure extends HttpServlet {
                 return;
             } else {
                 SendEmail send = new SendEmail();
-                send.sendEmail(he.getChiefAccountantId().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
-                        "Please check and confirm the expenditure" + he.getTitle());
+                send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
                 send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
                         "Please check and confirm the expenditure : " + he.getTitle());
                 request.setAttribute("message", "Your expenditure has been successfully saved to the waiting list.");
