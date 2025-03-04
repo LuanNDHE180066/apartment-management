@@ -26,8 +26,10 @@ import model.Floor;
 import model.Invoice;
 import model.LivingApartment;
 import model.MonthlyService;
+import model.News;
 import model.Resident;
 import model.Service;
+import model.Staff;
 import util.Util;
 /**
  *
@@ -256,6 +258,19 @@ public class InvoiceDAO extends DBContext{
             rs.add(ei);
         }
         return rs;
+    }
+    public boolean createNewsNotifyInvoice(String staffId){
+        int month =LocalDate.now().getMonthValue();
+        String tittle = "Hóa đơn tháng " + month;
+        String content= "Hóa đơn tháng "+ month +" đã được phát hành";
+        Date date = Date.valueOf(LocalDate.now());
+        String img ="/images/logo/notify.jpg";
+        String category = "Dịch vụ tháng";
+        NewDAO nd  = new NewDAO();
+        StaffDAO sd = new StaffDAO();
+        Staff staff = sd.getById(staffId);
+        News n = new News(tittle, content, "", category, img, staff, date.toString());
+         return nd.insertNews(n);
     }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
