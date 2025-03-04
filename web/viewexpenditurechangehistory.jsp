@@ -95,7 +95,7 @@
                                                             <th>Payment Date</th>
                                                             <th>Category</th>
                                                             <th>Company</th>
-                                                            
+
                                                             <th>Chief Acountant</th>
                                                             <th>Responsible Person</th>
                                                             <th>Modiefed Person</th>
@@ -108,18 +108,18 @@
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
                                                         <tr>
-                                                            <td>${expenditure.id}</td>
-                                                            <td>${expenditure.title}</td>
-                                                            <td>${expenditure.totalPrice}</td>
-                                                            <td>${expenditure.approveddate}</td>
-                                                            <td>${expenditure.paymentdate}</td>
-                                                            <td>${expenditure.category.categoryName}</td>
-                                                            <td>${expenditure.company.name}</td>
-                                                            
-                                                            <td>${expenditure.chiefAccountantId.name}</td>
-                                                            <td>${expenditure.currentAdmin.name}</td>
-                                                            <td>${expenditure.modifiedBy.name}</td>
-                                                            <td>${expenditure.modifiedDate}</td>
+                                                            <td style="text-align: center">${expenditure.id}</td>
+                                                            <td style="text-align: center">${expenditure.title}</td>
+                                                            <td style="text-align: center">${expenditure.totalPrice}</td>
+                                                            <td style="text-align: center">${expenditure.approveddate}</td>
+                                                            <td style="text-align: center">${expenditure.paymentdate}</td>
+                                                            <td style="text-align: center">${expenditure.category.categoryName}</td>
+                                                            <td style="text-align: center">${expenditure.company.name}</td>
+
+                                                            <td style="text-align: center">${expenditure.chiefAccountantId.name}</td>
+                                                            <td style="text-align: center">${expenditure.currentAdmin.name}</td>
+                                                            <td style="text-align: center">${expenditure.modifiedBy.name}</td>
+                                                            <td style="text-align: center">${expenditure.modifiedDate}</td>
                                                             <td>
                                                                 <c:if test="${expenditure.chiefAccountantApproveStatus == 1 && expenditure.currentAdminApproveStatus == 1}">
                                                                     <span style="color: green">Approved</span>
@@ -127,7 +127,9 @@
                                                                 <c:if test="${expenditure.chiefAccountantApproveStatus == -1 || expenditure.currentAdminApproveStatus == -1}">
                                                                     <span style="color: red">Rejected</span>
                                                                 </c:if>
-
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>

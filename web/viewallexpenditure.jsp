@@ -47,6 +47,10 @@
             .display-none{
                 display: none;
             }
+            
+            .tbody td{
+                text-align: center;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -114,21 +118,19 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
-                                                            <th>Expense</th>
-                                                            <th>Total fees</th>
-                                                            <th>Approve Date</th>
-                                                            <th>Payment Date</th>
-                                                            <th>Category</th>
-                                                            <th>Company</th>
-                                                            <th>Staff Create</th>
-                                                            <th>Chief Acountant</th>
-                                                            <th>Responsible Person</th>
-                                                            <th>Option</th>
-                                                            <!--       <th>Note</th> -->
+                                                            <th style="text-align: center">ID</th>
+                                                            <th style="text-align: center">Expense</th>
+                                                            <th style="text-align: center">Total fees</th>
+                                                            <th style="text-align: center">Approve Date</th>
+                                                            <th style="text-align: center">Category</th>
+                                                            <th style="text-align: center">Company</th>
+                                                            <th style="text-align: center">Staff Create</th>
+                                                            <th style="text-align: center">Chief Accountant</th>
+                                                            <th style="text-align: center">Responsible Person</th>
+                                                            <th  style="text-align: center">Option</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="tbody">
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
                                                         <tr>
@@ -136,7 +138,6 @@
                                                             <td>${expenditure.title}</td>
                                                             <td>${expenditure.totalPrice}</td>
                                                             <td>${expenditure.approveddate}</td>
-                                                            <td>${expenditure.paymentdate}</td>
                                                             <td>${expenditure.category.categoryName}</td>
                                                             <td>${expenditure.company.name}</td>
                                                             <td>${expenditure.createdStaff.name}</td>
@@ -146,6 +147,9 @@
                                                                 <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" 
                                                                    style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
+                                                                <a style="text-align: center" class="approval-link" href="view-detail?id=${expenditure.id}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>

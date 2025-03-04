@@ -128,7 +128,7 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Update Information</h1>
+                                    <h1>Expenditure Detail</h1>
                                     <form action="update-expenditure" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
