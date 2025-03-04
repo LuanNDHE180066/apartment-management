@@ -95,10 +95,8 @@ public class AddRequestServlet extends HttpServlet {
         StaffDAO sd = new StaffDAO();
         SendEmail email = new SendEmail();
 
-        //get type request
         RequestType typeRequest = rtd.getById(typeRequestId);
-        //find staff by role which is destination in type request
-        List<Staff> staffs = sd.getStaffbyRole(rtd.getById(typeRequestId).getDestination().getId());
+        List<Staff> staffs = sd.getStaffbyRole("2");
         //add new request to db
         int addRequest = rd.addRequest(rid, detail, typeRequest);
         ///send email for staffs just found

@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import jdbc.DBContext;
 import java.util.List;
 import jdbc.DBContext;
@@ -244,6 +245,17 @@ public class InvoiceDAO extends DBContext{
         } catch (SQLException e) {
         }
         return false;
+    }
+    public List<EmailInvoice> getEmailInvoiceDebt(){
+        List<Invoice> listInvoice = this.getNonPaidInvoice();
+        List<EmailInvoice> rs = new ArrayList<>();
+        for (int i = 0; i < listInvoice.size(); i++) {
+            Apartment a = listInvoice.get(i).getApartment();
+            String email = listInvoice.get(i).getResident().getEmail();
+            EmailInvoice ei = new EmailInvoice(email, email);
+            rs.add(ei);
+        }
+        return rs;
     }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();

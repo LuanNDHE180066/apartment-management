@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import jdbc.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -162,7 +163,23 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
+    public List<EmailInvoice> getEmailInvoicesActiveResident(){
+        String sql ="select * from LivingAparment la join Resident r on la.rId=r.Id where status =1";
+        List<EmailInvoice> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                String aid = rs.getString("aid");
+                String email = rs.getString("email");
+                EmailInvoice ei = new EmailInvoice(aid, email);
+                list.add(ei);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public List<LivingApartment> getAllActiveLivingApartmentObejct() {
         String sql = "select * from LivingAparment where status =1";
         List<LivingApartment> list = new ArrayList<>();

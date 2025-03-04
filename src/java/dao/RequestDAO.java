@@ -11,6 +11,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.util.List;
 import model.Request;
@@ -48,8 +49,9 @@ public class RequestDAO extends DBContext {
                     responseDate = rs.getDate("responseDate").toString();
                 }
                 String status = rs.getString("status");
+                String shift = rs.getString("shift");
                 RequestType rt = rtd.getById(rs.getString("tid"));
-                Request rq = new Request(id, r, s, detail, response, date, responseDate, status, rt);
+                Request rq = new Request(id, r, s, detail, response, date, responseDate, status,shift, rt);
                 list.add(rq);
             }
         } catch (SQLException e) {
@@ -83,8 +85,9 @@ public class RequestDAO extends DBContext {
                     responseDate = rs.getDate("responseDate").toString();
                 }
                 String status = rs.getString("status");
+                String shift = rs.getString("shift");
                 RequestType rt = rtd.getById(rs.getString("tid"));
-                Request rq = new Request(id, r, s, detail, response, date, responseDate, status, rt);
+                Request rq = new Request(id, r, s, detail, response, date, responseDate, status,shift, rt);
                 list.add(rq);
 
             }
@@ -118,8 +121,9 @@ public class RequestDAO extends DBContext {
                         responseDate = rs.getDate("responseDate").toString();
                     }
                     String status = rs.getString("status");
+                    String shift = rs.getString("shift");
                     RequestType rt = rtd.getById(rs.getString("tid"));
-                    Request rq = new Request(id, r, s, detail, response, date, responseDate, status, rt);
+                    Request rq = new Request(id, r, s, detail, response, date, responseDate, status,shift, rt);
                     list.add(rq);
                 }
             }
@@ -153,8 +157,9 @@ public class RequestDAO extends DBContext {
                     responseDate = rs.getDate("responseDate").toString();
                 }
                 String status = rs.getString("status");
+                String shift = rs.getString("shift");
                 RequestType rt = rtd.getById(rs.getString("tid"));
-                Request rq = new Request(id, r, s, detail, response, date, responseDate, status, rt);
+                Request rq = new Request(id, r, s, detail, response, date, responseDate, status,shift, rt);
                 list.add(rq);
             }
         } catch (SQLException e) {
@@ -163,14 +168,26 @@ public class RequestDAO extends DBContext {
         return list;
     }
 
+    
+   public String getNewestIdRequest(){
+       String sql = "select top 1 id from Request order by id desc";
+       try(PreparedStatement st = connection.prepareStatement(sql);) {
+           ResultSet rs = st.executeQuery();
+           while(rs.next()) return rs.getString("id");
+       }
+       catch (SQLException e){
+           System.out.println(e);
+       }
+       return "";
+   }
     public int addRequest(String rId, String detail, RequestType rt) {
         StaffDAO sd = new StaffDAO();
-        List<Request> list = this.getAll();
+        String nid = getNewestIdRequest();
         Util util = new Util();
         String sql = "insert into request(id,rid,sid,detail,date,status,tid) values(?,?,?,?,?,?,?)";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, "R" + util.getNumberFromTextPlusOne(list.get(list.size() - 1).getId()));
+            st.setString(1, "R" + util.getNumberFromTextPlusOne(nid));
             st.setString(2, rId);
             st.setString(3, sd.getByRequestType(rt).getId());
             st.setString(4, detail);
@@ -185,6 +202,21 @@ public class RequestDAO extends DBContext {
         }
     }
     
+    
+    public boolean checkShiftStaff(String staffid,String shift){
+        Date dates = Date.valueOf(LocalDate.now());
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String formatDate = format.format(dates);
+        String sql = "Select * from Request where sid='"+staffid+"' and shift='"+shift+"' and date ='" + formatDate + "'";
+        try(PreparedStatement st = connection.prepareStatement(sql)){
+            ResultSet rs = st.executeQuery();
+            while(rs.next()) return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    
     public void deleteRequest(String id){
         String sql = "delete from Request where id ="+"'"+id+"'";
         try(PreparedStatement st = connection.prepareStatement(sql)){
@@ -194,12 +226,13 @@ public class RequestDAO extends DBContext {
         }
     }
 
-    public void AssignRequest(String requestid, String staffid) {
-        String sql = "update Request set sid = ? , Status = 'In process' , Response = 'In process' where id = ?";
+    public void AssignRequest(String requestid, String staffid,String shift) {
+        String sql = "update Request set sid = ? , Status = 'In process' , Response = 'In process', Shift = ? where id = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, staffid);
-            st.setString(2, requestid);
+            st.setString(2, shift);
+            st.setString(3, requestid);
             st.executeUpdate();
         } catch (SQLException e) {
             System.out.println(e);
