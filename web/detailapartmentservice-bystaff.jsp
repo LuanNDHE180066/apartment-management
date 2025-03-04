@@ -71,13 +71,6 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
-                                        <div style="text-align: right" class="full graph_head d-flex justify-content-between align-items-center">
-                                            <div class="heading1 margin_0">
-                                                <button style="width: 200px;height: 50px" class="btn btn-primary">
-                                                    <a style="color: black; font-size: 1.2rem " href="#">Xuất hóa đơn</a>
-                                                </button>
-                                            </div>
-                                        </div>
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
                                                 <div>
