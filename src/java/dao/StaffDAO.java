@@ -66,14 +66,56 @@ public class StaffDAO extends DBContext {
         return list;
     }
 
-    public List<Staff> getStaffbyRole(String role) {
+    public List<Staff> getWorkingStaff(String role) {
+        List<Staff> working = this.getStaffbyStatus();
+        List<Staff> staffs = new ArrayList<>();
+        String sql = "select * from Staff where id not in (";
+        for (int i = 0;i <working.size();i++) {
+            sql +="'"+working.get(i).getId()+"',";
+            if(i == working.size()-1){
+                sql +="'"+working.get(i).getId()+"')";
+            }
+        }
+        sql += " and status = 1 and roleid = ?";
+        RoleDAO rd = new RoleDAO();
+        CompanyDAO sd = new CompanyDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1,role);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("Name");
+                String bod = rs.getDate("bod").toString();
+                String Email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                String cccd = rs.getString("cccd");
+                int salary = rs.getInt("salary");
+                String education = rs.getString("education");
+                String bank = rs.getString("bank");
+                int status = rs.getInt("status");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Role r = rd.getById(rs.getString("roleid"));
+                Company cp = sd.getById(rs.getString("cid"));
+                String startDate = rs.getString("startdate");
+                String enddate = rs.getString("enddate");
+                String gender = rs.getString("gender");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                staffs.add(s);
+            }
+        } catch (Exception e) {
+        }
+        return staffs;
+     }   
+    public List<Staff> getStaffbyStatus() {
         CompanyDAO sd = new CompanyDAO();
         RoleDAO rd = new RoleDAO();
-        String sql = "select * from Staff where roleid=?";
+        String sql = "select distinct Staff.* from Request right join Staff on Request.sId = Staff.Id where Request.Status = '1'";
         List<Staff> list = new ArrayList<>();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1, role);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
@@ -554,11 +596,24 @@ public class StaffDAO extends DBContext {
 
     public static void main(String[] args) {
 
-        StaffDAO staffDAO = new StaffDAO();
-//        Staff s1 = new Staff("S1013", "Guard Company", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", 1, "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
-//        Staff s = new Staff("S1013", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
-        System.out.println(staffDAO.checkDupEmail("tranthib@example.com"));
-
+        StaffDAO dao = new StaffDAO();
+        //Staff s1 = new Staff("S1013", "Guard Company", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", 1, "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
+        //Staff s = new Staff("S1013", "2000-05-05", "na3m@gmail.com", "0226013325", "Ha Noi", "11232231", 500, "VO Hoc", "1234564898723", "sa1das", "4578", new Role("4", "name", ""), new Company("C001"), "2025-02-01", "F");
+        System.out.println("working bảng");
+        List<Staff> l = dao.getStaffbyStatus();
+        for (Staff staff : l) {
+            System.out.println("id:"+staff.getId()+"name:"+staff.getName());
+        }
+        System.out.println("full bảng");
+        List<Staff> l1 = dao.getActiveStaffbyRole("5");
+        for (Staff staff : l1) {
+            System.out.println("id:"+staff.getId()+"name:"+staff.getName());
+        }
+        System.out.println("regex bảng");
+        l1.removeAll(l);
+        for (Staff staff : l1) {
+            System.out.println("id:"+staff.getId()+"name:"+staff.getName());
+        }
     }
 
 }

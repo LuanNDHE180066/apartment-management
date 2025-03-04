@@ -154,13 +154,21 @@ public class ResidentDAO extends DBContext {
     }
 
     public void EditProfileRe(Resident r) {
-        String sql = "update Resident set Email=?, Phone=?, [Address]=? where id=?";
+        String sql = "UPDATE [dbo].[Resident]\n"
+                + "   SET\n"
+                + "      [Email] = ?,\n"
+                + "      [Phone] = ?,\n"
+                + "      [Address] = ?,\n"
+                + "      [image] = ?\n"
+                + " WHERE id=?";
+
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, r.getEmail());
             pre.setString(2, r.getPhone());
             pre.setString(3, r.getAddress());
-            pre.setString(4, r.getpId());
+            pre.setString(4, r.getImage());
+            pre.setString(5, r.getpId());
             pre.executeUpdate();
         } catch (Exception e) {
         }
@@ -370,67 +378,79 @@ public class ResidentDAO extends DBContext {
         System.out.println(dao.editResidentStatus("P113", "2"));
 
     }
-    public int getNumberLivingPerson(){
-        String sql="select sum(NoPerson) as noperson from Apartment";
+
+    public int getNumberLivingPerson() {
+        String sql = "select sum(NoPerson) as noperson from Apartment";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("noperson");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("noperson");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNumberUsingRoom(){
-        String sql="select count(Id) as nousingroom  from Apartment where NoPerson > 0";
+
+    public int getNumberUsingRoom() {
+        String sql = "select count(Id) as nousingroom  from Apartment where NoPerson > 0";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("nousingroom");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("nousingroom");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNumberNotUsingRoom(){
-        String sql="select count(Id) as notusingroom  from Apartment where NoPerson = 0";
+
+    public int getNumberNotUsingRoom() {
+        String sql = "select count(Id) as notusingroom  from Apartment where NoPerson = 0";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("notusingroom");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("notusingroom");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNoUsingRoomByMonthAndYear(int month,int year){
+
+    public int getNoUsingRoomByMonthAndYear(int month, int year) {
         String sql = "select count(distinct(aid)) as no from LivingAparment where (year(Startdate) =?  and MONTH(Startdate) <=? )and (MONTH(Enddate) >= ? or Enddate is null)";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, year);
             st.setInt(2, month);
             st.setInt(3, month);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("no");
             }
         } catch (Exception e) {
         }
         return 0;
     }
-    public List<Integer> getNoUsingRoomByYear(int year){
+
+    public List<Integer> getNoUsingRoomByYear(int year) {
         List<Integer> list = new ArrayList<>();
-        for (int i = 1; i <=12; i++) {
+        for (int i = 1; i <= 12; i++) {
             list.add(getNoUsingRoomByMonthAndYear(i, year));
         }
         return list;
     }
-    public int getStartYear(){
+
+    public int getStartYear() {
         String sql = "select min(year(Startdate)) as year from LivingAparment";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("year");
             }
         } catch (SQLException e) {

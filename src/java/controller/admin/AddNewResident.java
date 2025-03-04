@@ -89,7 +89,6 @@ public class AddNewResident extends HttpServlet {
             request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
             return;
         }
-
         if (!id.matches("\\d{12}")) {
             request.setAttribute("error", "ID must be exactly 12 digits.");
             request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
@@ -104,7 +103,6 @@ public class AddNewResident extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         password = encryptPassword(password);
         rd.insertNewResident(name, address, email, phone, dob, id, username, password);
-
         response.sendRedirect("view-resident");
     }
 

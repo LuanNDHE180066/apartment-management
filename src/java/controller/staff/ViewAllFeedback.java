@@ -72,6 +72,8 @@ public class ViewAllFeedback extends HttpServlet {
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
         listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
+
+        // Get filter parameters
         String searchName = request.getParameter("searchName");
         String serviceType = request.getParameter("serviceType");
         String startDate = request.getParameter("startDate");
@@ -79,42 +81,39 @@ public class ViewAllFeedback extends HttpServlet {
         Util u = new Util();
 
         searchName = u.stringNomalize(searchName);
+        serviceType = (serviceType == null || serviceType.trim().isEmpty()) ? "" : serviceType;
+        startDate = (startDate == null || startDate.trim().isEmpty()) ? "" : startDate;
+        endDate = (endDate == null || endDate.trim().isEmpty()) ? "" : endDate;
 
-        if (serviceType == null || serviceType.trim().isEmpty()) {
-            serviceType = "";
-        }
-
-        if (startDate == null || startDate.trim().isEmpty()) {
-            startDate = "";
-        }
-        if (endDate == null || endDate.trim().isEmpty()) {
-            endDate = "";
-        }
-
+        // Apply filtering
         listFeedback = daoF.filterFeedback(searchName, serviceType, startDate, endDate, String.valueOf(acc.getRoleId()));
 
-        String page = request.getParameter("page");
-        if (page == null) {
-            page = "1";
-        }
+        // Get current page
+        String pageParam = request.getParameter("page");
+        int currentPage = (pageParam == null) ? 1 : Integer.parseInt(pageParam);
+
+        // Calculate total pages
+        int totalPage = u.getTotalPage(listFeedback, 5);
         List<RequestType> listRequestType = daoRT.getAll();
-        int totalPage = u.getTotalPage(listFeedback, 3);
-        if (listFeedback.size() != 0) {
-            listFeedback = u.getListPerPage(listFeedback, 3, page);
-            session.setAttribute("listRequestType", listRequestType);
-            session.setAttribute("listFeedback", listFeedback);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", Integer.parseInt(page));
-            request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
+
+        if (!listFeedback.isEmpty()) {
+            listFeedback = u.getListPerPage(listFeedback, 5, String.valueOf(currentPage));
         } else {
-            request.setAttribute("totalPage", 1);
-            request.setAttribute("currentPage", 1);
-            session.setAttribute("listRequestType", listRequestType);
-            session.setAttribute("listFeedback", listFeedback);
-            request.setAttribute("message", "No result");
-            request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
+            totalPage = 1; // Ensure at least 1 page exists
         }
 
+        // Set attributes for JSP
+        session.setAttribute("listRequestType", listRequestType);
+        session.setAttribute("listFeedback", listFeedback);
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("currentPage", currentPage);
+
+        // If no feedback found, show message
+        if (listFeedback.isEmpty()) {
+            request.setAttribute("message", "No results found");
+        }
+
+        request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
     }
 
     /**

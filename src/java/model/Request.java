@@ -17,9 +17,23 @@ public class Request {
     private String date;
     private String responseDate;
     private String status;
+    private String shift;
     private RequestType requestType;
 
     public Request() {
+    }
+
+    public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, String shift, RequestType requestType) {
+        this.id = id;
+        this.residentId = residentId;
+        this.staffId = staffId;
+        this.detail = detail;
+        this.response = response;
+        this.date = date;
+        this.responseDate = responseDate;
+        this.status = status;
+        this.shift = shift;
+        this.requestType = requestType;
     }
 
     public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, RequestType requestType) {
@@ -90,8 +104,15 @@ public class Request {
         this.responseDate = responseDate;
     }
 
-    public String getStatus() {
+    public String getStatu() {
         return status;
+    }
+    public String getStatus() {
+        if(this.getStatu().equals("0")){
+            return "Waiting";
+        }else if(this.getStatu().equals("1")){
+            return "In process";
+        }else return "Done";        
     }
 
     public void setStatus(String status) {
@@ -105,5 +126,25 @@ public class Request {
     public void setRequestType(RequestType requestType) {
         this.requestType = requestType;
     }
-    
+
+    public String getShif() {
+        return shift;
+    }
+
+    public void setShift(String shift) {
+        this.shift = shift;
+    }
+    public String getShift() {
+        if(this.getShif().equals("1")){
+            return "8:00 - 10:00";
+        }
+        else if(this.getShif().equals("1")){
+            return "13:00 - 15:00";
+        }
+        else if(this.getShif().equals("1")){
+            return "15:00 - 17:00";
+        }else{
+            return "18:00-20:00";
+        }
+    }
 }

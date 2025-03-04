@@ -89,7 +89,9 @@ public class UpdateService extends HttpServlet {
         CompanyDAO cd = new CompanyDAO();
         String id = request.getParameter("id");
         String name = request.getParameter("name");
-        float price = Float.parseFloat(request.getParameter("price"));
+          String price_raw = request.getParameter("price");
+        price_raw = price_raw.replace(".", "");
+        float price = Float.parseFloat(price_raw);
         String des = request.getParameter("des");
         if (name.trim().isBlank() || des.trim().isBlank()) {
             request.setAttribute("error", "Name or description is not a blank");

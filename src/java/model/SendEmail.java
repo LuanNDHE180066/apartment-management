@@ -1,13 +1,17 @@
 package model;
 
+import dto.response.EmailInvoice;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Properties;
 import java.util.UUID;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -40,7 +44,76 @@ public class SendEmail {
     public boolean isExpired(LocalDateTime time) {
         return LocalDateTime.now().isAfter(time);
     }
+    public void sendEmailInvoiceToAll(List<EmailInvoice> list){
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        
+        for (EmailInvoice ei : list) {
+            executor.execute(() -> sendEmailInvoiceToOne(ei));
+        }
+        executor.shutdown(); // Đóng ExecutorService sau khi gửi xong
+    }
+    public void sendEmailInvoiceToOne(EmailInvoice emailInvoice){
+         try {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
 
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(from, password);
+                }
+            });
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailInvoice.getEmail()));
+            message.setSubject("Hóa đơn dịch vụ chung cư","UTF-8");
+            String dataText = "Bạn có hóa đơn phòng "+emailInvoice.getAid()+" cần thanh toán, xem chi tiết tại ứng dụng";
+            message.setText(dataText,"UTF-8");
+
+            Transport.send(message);
+            System.out.println("Đã gửi email đến: " + emailInvoice.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+     public void sendEmailInvoiceDebtToAll(List<EmailInvoice> list){
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        
+        for (EmailInvoice ei : list) {
+            executor.execute(() -> sendEmailInvoiceDebtToOne(ei));
+        }
+        executor.shutdown(); // Đóng ExecutorService sau khi gửi xong
+    }
+    public void sendEmailInvoiceDebtToOne(EmailInvoice emailInvoice){
+         try {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(from, password);
+                }
+            });
+
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailInvoice.getEmail()));
+            message.setSubject("Hóa đơn dịch vụ chung cư","UTF-8");
+            String dataText = "Bạn có hóa đơn phòng "+emailInvoice.getAid()+" chưa thanh toán, xem chi tiết tại ứng dụng";
+            message.setText(dataText,"UTF-8");
+
+            Transport.send(message);
+            System.out.println("Đã gửi email đến: " + emailInvoice.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
     public boolean sendEmail(String to, String subject, String content) {
         // Kiểm tra xem địa chỉ email có tồn tại không trước khi gửi\
 
@@ -231,10 +304,10 @@ public class SendEmail {
      */
     public static void main(String[] args) {
         SendEmail emailSender = new SendEmail();
-        String emailToSend = "example@gmail.com"; // Địa chỉ email cần gửi
+        String emailToSend = "phanvanhoainam04@gmail.com"; // Địa chỉ email cần gửi
         String subject = "Xác nhận đơn hàng"; // Chủ đề email
         String content = "<h1>Cảm ơn bạn đã đặt hàng!</h1>"; // Nội dung email
-
-        emailSender.sendFeedbackEmail("kophaithanhhui@gmail.com", "1", "cac");
+        emailSender.sendEmail(emailToSend, "LA sao", "CHay nha");
+        //emailSender.sendFeedbackEmail("kophaithanhhui@gmail.com", "1", "cac ban oi");
     }
 }

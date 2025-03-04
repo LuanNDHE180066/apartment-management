@@ -81,6 +81,7 @@
                                                    transition: background-color 0.3s ease, transform 0.2s ease;">
                                                     Tạo hóa đơn tháng này
                                                 </a>
+                                                <span>Hóa đơn chỉ được tạo 01 lần vào cuối tháng</span>
                                             </div>
 
                                             <div class="table-responsive-sm">

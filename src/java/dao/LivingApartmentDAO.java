@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import jdbc.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -162,7 +163,23 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
+    public List<EmailInvoice> getEmailInvoicesActiveResident(){
+        String sql ="select * from LivingAparment la join Resident r on la.rId=r.Id where status =1";
+        List<EmailInvoice> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                String aid = rs.getString("aid");
+                String email = rs.getString("email");
+                EmailInvoice ei = new EmailInvoice(aid, email);
+                list.add(ei);
+            }
+        } catch (SQLException e) {
+        }
+        return list;
+    }
     public List<LivingApartment> getAllActiveLivingApartmentObejct() {
         String sql = "select * from LivingAparment where status =1";
         List<LivingApartment> list = new ArrayList<>();
@@ -189,6 +206,43 @@ public class LivingApartmentDAO extends DBContext {
         } catch (SQLException e) {
         }
         return list;
+    }
+    
+
+    public int getNumberLivingResident() {
+        String sql = "select  count(*) as no from LivingAparment where status =1 ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+
+    public int getNumberLivingByTime(int month, int year) {
+        String sql = "DECLARE @month INT = ?;  -- Tháng cần kiểm tra\n"
+                + "DECLARE @year INT = ?; -- Năm cần kiểm tra\n"
+                + "\n"
+                + "DECLARE @date DATETIME = DATEFROMPARTS(@year, @month, 1);\n"
+                + "\n"
+                + "SELECT count(*) as no \n"
+                + "FROM LivingAparment\n"
+                + "WHERE @date >= startdate \n"
+                + "      AND (@date <= enddate OR enddate IS NULL);";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, month);
+            st.setInt(2, year);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
     }
 
     public static void main(String[] args) {
@@ -221,7 +275,8 @@ public class LivingApartmentDAO extends DBContext {
 //        oa.setEndDate(null);
 //        oa.setStartDate(date);
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
-        System.out.println(dao.getApartmentsByResidentId("P101").size());
-        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
+//        System.out.println(dao.getApartmentsByResidentId("P101").size());
+//        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
+        System.out.println(dao.getNumberLivingByTime(2, 2025));
     }
 }

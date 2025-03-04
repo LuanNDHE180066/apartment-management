@@ -5,15 +5,16 @@
 package dao;
 
 import java.sql.Date;
-import jdbc.DBContext;
-import model.Expenditure;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import jdbc.DBContext;
 import model.Company;
+import model.Expenditure;
 import model.Staff;
+import util.Util;
 
 import java.sql.SQLException;
 import java.sql.SQLException;
@@ -98,14 +99,13 @@ public class ExpenditureDAO extends DBContext {
         }
         return list;
     }
-
-    public List<String> getListCategory() {
+    public List<String> getListCategory(){
         List<String> list = new ArrayList<>();
         String sql = "select distinct category from Expenditure";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {
+            while (rs.next()) {     
                 String category = rs.getString("category");
                 list.add(category);
             }

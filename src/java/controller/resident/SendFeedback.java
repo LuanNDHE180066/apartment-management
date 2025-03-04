@@ -10,12 +10,19 @@ import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import model.Account;
 import model.RequestType;
 import model.SendEmail;
@@ -25,6 +32,11 @@ import model.Staff;
  *
  * @author NCPC
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB per file
+        maxRequestSize = 1024 * 1024 * 50 // 50MB total
+)
 @WebServlet(name = "SendFeedback", urlPatterns = {"/sendfeedback"})
 public class SendFeedback extends HttpServlet {
 
@@ -85,37 +97,77 @@ public class SendFeedback extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
+
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+
+        // Fetch form fields
         String rID = request.getParameter("rID");
         String tID = request.getParameter("typeOfRequest");
-        
-        SendEmail email=new SendEmail();
-        StaffDAO sd = new StaffDAO();
-        RequestTypeDAO rtd = new RequestTypeDAO();
-        
-        RequestType requestType = rtd.getById(tID);
-        List<Staff> staffs = sd.getStaffbyRole(requestType.getDestination().getId());
-
         String detail = request.getParameter("content");
-        FeedbackDAO fd = new FeedbackDAO();
-        fd.sendFeedback(detail, rID, tID);
-        for (Staff staff : staffs) {
-            email.sendFeedbackEmail(staff.getEmail(), requestType.getName(), detail);
+        String rate_raw = request.getParameter("rate");
+        int rate = 0;
+        try {
+            rate = Integer.parseInt(rate_raw);
+        } catch (NumberFormatException e) {
+            System.out.println("Error parsing rate: " + e);
         }
-        
-        response.sendRedirect("view-feed-back-user");
 
+        // Define the upload directory correctly (inside deployed app folder)
+        String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
+
+        File uploadDir = new File(uploadPath);
+
+        // Ensure directory exists
+        if (!uploadDir.exists()) {
+            boolean dirCreated = uploadDir.mkdirs();
+        }
+
+        // List to store image paths
+        List<String> imagePaths = new ArrayList<>();
+        boolean hasUploadedImages = false;
+
+        // Retrieve uploaded images
+        Collection<Part> parts = request.getParts();
+        for (Part part : parts) {
+            // Check if the part is a file (it should have content and be from the correct field)
+            if (part.getName().equals("images[]") && part.getSize() > 0) {
+                String originalFileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+
+                // Ensure unique filename
+                String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
+                String filePath = uploadPath + File.separator + fileName;
+
+                // Save file safely
+                try {
+                    part.write(filePath);
+                    imagePaths.add("uploads/" + fileName); // Store relative path for database
+                    hasUploadedImages = true;
+                    System.out.println("Saved file: " + filePath);
+                } catch (IOException e) {
+                    System.out.println("Error saving file: " + e.getMessage());
+                }
+            }
+        }
+
+        // Debugging: Print final image paths
+        System.out.println("Final image paths: " + imagePaths);
+
+        // Save feedback and image paths to the database
+        FeedbackDAO fd = new FeedbackDAO();
+        if (hasUploadedImages) {
+            fd.sendFeedback(detail, rID, tID, rate, imagePaths);
+        } else {
+            fd.sendFeedback(detail, rID, tID, rate, null);
+        }
+
+        // Redirect after successful submission
+        response.sendRedirect("view-feed-back-user");
     }
+}
 
     /**
      * Returns a short description of the servlet.
      *
      * @return a String containing servlet description
      */
-    @Override
-    public String getServletInfo() {
-        return "Short description";
-    }// </editor-fold>
-
-}

@@ -210,8 +210,8 @@
                                                 <label for="balcony">Status of request</label>
                                                 <select name="status">
                                                     <!--<option value="Wating">Waiting</option>-->
-                                                    <option value="In process">In process</option>
-                                                    <option value="Done">Done</option>
+                                                    <option value="1">In process</option>
+                                                    <option value="2">Done</option>
                                                 </select>
                                             </div>
                                         </div>
