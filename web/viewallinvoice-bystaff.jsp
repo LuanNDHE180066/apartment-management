@@ -127,7 +127,7 @@
                                                                         <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                     </td>
                                                                     <td style="text-align: center   ">
-                                                                        <a href="#" class="fa-solid fa-check"></a>
+                                                                        <a href="update-invoice-staff?invoiceId=${item.id}" class="fa-solid fa-check"></a>
                                                                     </td>
 
                                                                 </tr>
