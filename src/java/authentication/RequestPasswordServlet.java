@@ -79,17 +79,8 @@ public class RequestPasswordServlet extends HttpServlet {
         try {
             AccountDAO dao = new AccountDAO();
             String username = request.getParameter("username");
-//            String email = daoA.getEmailByUsername(username);
-//            String fullName = daoA.getFullNameByUsername(username);
-//            SendEmail send = new SendEmail();
-//            send.sendEmail(email, " RETRIEVE OLD PASSWORD ", "Hello " + fullName + ", your old password is: " + daoA.getAccountByUsername(username).getPassword());
-//            request.setAttribute("message", "Your password has been sent to your email!");
-//            request.setAttribute("status", "true");
-//            request.getRequestDispatcher("login.jsp").forward(request, response);
-//            return;
             Account a = dao.getAccountByUsername(username);
             String email = a.getEmail();
-
             if (email == null) {
                 throw new Exception();
             }

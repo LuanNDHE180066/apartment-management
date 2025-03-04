@@ -61,9 +61,9 @@ public class RequestDAO extends DBContext {
     }
 
     public List<Request> getRequestByRolesAndPid(int role, String pId) {
-        String sql = "select Request.Id as id,rId,sid,detail,Response,date,responsedate,Request.Status as status, tId ,roleId "
+        String sql = "select Request.Id as id,rId,sid,detail,Response,date,responsedate,Request.Status as status, tId ,roleId ,shift "
                 + "from Request join Staff on Request.[sId]=Staff.Id ";
-        sql += " where Staff.id = "+"'"+pId+"'"+" and Staff.roleid = "+role+"  order by date desc";
+        sql += " where Staff.id = "+"'"+pId+"'"+" and Staff.roleid = '"+role+"'  order by date desc";
         List<Request> list = new ArrayList<>();
         ResidentDAO rd = new ResidentDAO();
         StaffDAO sd = new StaffDAO();
@@ -98,7 +98,7 @@ public class RequestDAO extends DBContext {
     }
     
     public List<Request> getRequestByRoles(int role) {
-        String sql = "select Request.Id as id,rId,sid,detail,Response,date,responsedate,Request.Status as status, tId ,roleId from Request join Staff on Request.[sId]=Staff.Id  ";
+        String sql = "select Request.Id as id,rId,sid,detail,Response,date,responsedate,Request.Status as status, tId ,roleId,shift from Request join Staff on Request.[sId]=Staff.Id  ";
         List<Request> list = new ArrayList<>();
         ResidentDAO rd = new ResidentDAO();
         StaffDAO sd = new StaffDAO();
@@ -170,15 +170,27 @@ public class RequestDAO extends DBContext {
 
     
    public String getNewestIdRequest(){
-       String sql = "select top 1 id from Request order by id desc";
+       String sql = "select id from Request";
+       List<String> list = new ArrayList<>();
        try(PreparedStatement st = connection.prepareStatement(sql);) {
            ResultSet rs = st.executeQuery();
-           while(rs.next()) return rs.getString("id");
+           while(rs.next()){ list.add(rs.getString("id"));}
+           return newID(list);
        }
        catch (SQLException e){
            System.out.println(e);
        }
        return "";
+   }
+   public String newID(List<String> list){
+       List<Integer> lt = new ArrayList<>();
+       int id = 0;
+       for (String s : list) {
+           if(Integer.parseInt(s.substring(1)) > id){
+               id = Integer.parseInt(s.substring(1));
+           }          
+       }
+       return "R"+id;
    }
     public int addRequest(String rId, String detail, RequestType rt) {
         StaffDAO sd = new StaffDAO();
@@ -189,10 +201,10 @@ public class RequestDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, "R" + util.getNumberFromTextPlusOne(nid));
             st.setString(2, rId);
-            st.setString(3, sd.getByRequestType(rt).getId());
+            st.setString(3, sd.getActiveStaffbyRole("2").get(0).getId());
             st.setString(4, detail);
             st.setDate(5, new java.sql.Date(System.currentTimeMillis()));
-            st.setString(6, "Waiting");
+            st.setInt(6, 0);
             st.setString(7, rt.getId());
             st.executeUpdate();
             return 1;
@@ -227,7 +239,7 @@ public class RequestDAO extends DBContext {
     }
 
     public void AssignRequest(String requestid, String staffid,String shift) {
-        String sql = "update Request set sid = ? , Status = 'In process' , Response = 'In process', Shift = ? where id = ?";
+        String sql = "update Request set sid = ? , Status = 1 , Shift = ? where id = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, staffid);
@@ -479,5 +491,7 @@ public class RequestDAO extends DBContext {
 //r.setDetail("hehe");
 //r.setRequestType(rd.getById("R003"));
 //System.out.println(dao.Editrequest(r));
+Util util = new Util();
+System.out.println(""+dao.getRequestByRolesAndPid(4, "S1005"));
     }
 }

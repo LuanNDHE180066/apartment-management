@@ -1,10 +1,5 @@
 package model;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.time.LocalDateTime;
 import java.util.Properties;
 import java.util.UUID;
@@ -231,10 +226,10 @@ public class SendEmail {
      */
     public static void main(String[] args) {
         SendEmail emailSender = new SendEmail();
-        String emailToSend = "example@gmail.com"; // Địa chỉ email cần gửi
+        String emailToSend = "phanvanhoainam04@gmail.com"; // Địa chỉ email cần gửi
         String subject = "Xác nhận đơn hàng"; // Chủ đề email
         String content = "<h1>Cảm ơn bạn đã đặt hàng!</h1>"; // Nội dung email
-
-        emailSender.sendFeedbackEmail("kophaithanhhui@gmail.com", "1", "cac");
+        emailSender.sendEmail(emailToSend, "LA sao", "CHay nha");
+        //emailSender.sendFeedbackEmail("kophaithanhhui@gmail.com", "1", "cac ban oi");
     }
 }
