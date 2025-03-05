@@ -88,7 +88,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Tables</h2>
+                                        <h2></h2>
                                     </div>
                                 </div>
                             </div>
@@ -122,7 +122,9 @@
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>
+  
                                                 </table>
+                                                <span><a href="viewdetailapartment-admin?apartmentId=${param.aid}">Back</a></span>
                                             </div>
                                         </div>
                                     </div>
