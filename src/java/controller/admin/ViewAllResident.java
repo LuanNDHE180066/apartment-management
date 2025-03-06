@@ -76,10 +76,10 @@ public class ViewAllResident extends HttpServlet {
         if (page == null) {
             page = "1";
         }
-        int totalPage = u.getTotalPage(listResident, 3);
+        int totalPage = u.getTotalPage(listResident, 5);
 
         if (listResident.size() != 0) {
-            listResident = u.getListPerPage(listResident, 3, page);
+            listResident = u.getListPerPage(listResident, 5, page);
             request.setAttribute("listResident", listResident);
             for (int i = 0; i < listResident.size(); i++) {
                 System.out.println(listResident.get(i).getImage());

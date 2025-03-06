@@ -19,12 +19,13 @@ public class Feedback {
     private Resident resident;
     private RequestType requestType;
     private int rate;
+    private int status;
     private List<String> img;
 
     public Feedback() {
     }
 
-    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img) {
+    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img,int status) {
         this.id = id;
         this.detail = detail;
         this.date = date;
@@ -32,8 +33,16 @@ public class Feedback {
         this.requestType = requestType;
         this.rate = rate;
         this.img = img;
+        this.status=status;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
     public String getId() {
         return id;
     }

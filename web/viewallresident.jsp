@@ -127,6 +127,7 @@
                                                             <option value="">Filter by Status</option>
                                                             <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
                                                             <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
+                                                            <option value="2" ${param.filterStatus == '2' ? 'selected' : ''}>Pending</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex">
@@ -164,6 +165,7 @@
                                                                     <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
                                                                         <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Active</option>
                                                                         <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Inactive</option>
+                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''}>Pending</option>
                                                                     </select>
                                                                 </form>
                                                             </td>
@@ -171,7 +173,15 @@
                                                                 <a href="#" data-toggle="modal" data-target="#residentDetail${resident.pId}">
                                                                     <i class="fa fa-user" aria-hidden="true"></i>
                                                                 </a>
+                                                                <c:if test="${resident.status == 2}">
+                                                                    <a href="deleteRe?id=${resident.pId}" 
+                                                                       onclick="confirmDelete(this, event)">
+                                                                        <i class="fa-solid fa-delete-left"></i>
+                                                                    </a>
+
+                                                                </c:if>
                                                             </td>
+
                                                         </tr>
 
                                                         <!-- Modal for resident details -->
@@ -200,6 +210,8 @@
                                                                                 <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
                                                                                     <option value="1" class="status-active" <c:if test="${resident.status == '1'}">selected</c:if>>Active</option>
                                                                                     <option value="0" class="status-inactive" <c:if test="${resident.status == '0'}">selected</c:if>>Inactive</option>
+
+
                                                                                     </select>
                                                                                 </form>
                                                                                 </p>
@@ -246,22 +258,33 @@
 
 
 
-            <script>
-                function confirmStatusChange(select) {
-                    var form = select.closest(".status-form");
-                    var selectedValue = select.value;
-                    var confirmationMessage = selectedValue === "0" ? "Are you sure you want to change the status to Inactive?" : "Are you sure you want to change the status to Active?";
 
-                    if (confirm(confirmationMessage)) {
-                        form.submit();
-                    } else {
-                        select.value = selectedValue === "1" ? "0" : "1"; // Revert selection if canceled
-                    }
-                }
-            </script>
+
             <script src="js/jquery.min.js"></script>
             <script src="js/popper.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
             <script src="js/custom.js"></script>
+            <script>
+                                function confirmStatusChange(select) {
+                                    var form = select.closest(".status-form");
+                                    var selectedValue = select.value;
+                                    var confirmationMessage = selectedValue === "0" ? "Are you sure you want to change the status to Inactive?" : "Are you sure you want to change the status to Active?";
+
+                                    if (confirm(confirmationMessage)) {
+                                        form.submit();
+                                    } else {
+                                        select.value = selectedValue === "1" ? "0" : "1"; // Revert selection if canceled
+                                    }
+                                }
+                                function confirmDelete(link, event) {
+                                    event.preventDefault(); // Prevents immediate navigation
+
+                                    if (confirm("Are you sure you want to delete this resident?")) {
+                                        window.location.href = link.href; // Proceed with deletion
+                                    }
+                                }
+
+            </script>
+
     </body>
 </html>

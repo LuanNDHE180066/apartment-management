@@ -211,8 +211,16 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td class="action-column">
+                                                                <c:if test="${feedback.date <= oneDayAgo}">
+                                                                    <a href="request-update-feedback?id=${feedback.id}" 
+                                                                       class="btn btn-primary request-update-btn">
+                                                                        Yêu cầu cập nhật 
+                                                                    </a>
 
+                                                                </c:if>
                                                             </td>
+
+
                                                         </tr>
 
                                                         <!-- Feedback Detail Row -->
@@ -316,7 +324,25 @@
                                                                 document.getElementById("paginationForm").submit();  // Submit form
                                                             }
                                                         }
+
                 </script>
+                <script>
+                    document.addEventListener("DOMContentLoaded", function () {
+                        document.querySelectorAll(".request-update-btn").forEach(function (button) {
+                            button.addEventListener("click", function () {
+                                let feedbackId = this.getAttribute("data-feedback-id");
+
+                                // Show confirmation dialog
+                                let confirmUpdate = confirm("Bạn có chắc chắn muốn yêu cầu cư dân cập nhật phản hồi không?");
+                                if (confirmUpdate) {
+                                    // Redirect to the request update feedback URL
+                                    window.location.href = "request-update-feedback?id=" + feedbackId;
+                                }
+                            });
+                        });
+                    });
+                </script>
+
 
 
                 <!-- Toggle Details & Image Modal -->

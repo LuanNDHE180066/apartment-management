@@ -5,6 +5,7 @@
 package controller.admin;
 
 import dao.ResidentDAO;
+import dao.RoleDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,6 +13,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Account;
+import model.Resident;
 import model.SendEmail;
 import util.Util;
 import static util.Util.encryptPassword;
@@ -61,7 +65,7 @@ public class AddNewResident extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
+        request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
     }
 
     /**
@@ -75,13 +79,17 @@ public class AddNewResident extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-         String name = request.getParameter("name");
+        HttpSession session = request.getSession();
+        Account acc = (Account) session.getAttribute("account");
+
+        String name = request.getParameter("name");
         String dob = request.getParameter("dob");
         String address = request.getParameter("address");
         String phone = request.getParameter("phone");
         String email = request.getParameter("email");
         String id = request.getParameter("id");
         String username = request.getParameter("username");
+        String gender = request.getParameter("gender");
 
         // Validate phone number (11 digits) and ID (12 digits)
         if (!phone.matches("\\d{10}")) {
@@ -102,8 +110,20 @@ public class AddNewResident extends HttpServlet {
         e.sendEmail(email, name, username, password);
         //insert to database with encryted password
         ResidentDAO rd = new ResidentDAO();
+        RoleDAO roleD = new RoleDAO();
         password = encryptPassword(password);
-        rd.insertNewResident(name, address, email, phone, dob, id, username, password);
+        Resident r = new Resident();
+        r.setName(name);
+        r.setBod(dob);
+        r.setAddress(address);
+        r.setPhone(phone);
+        r.setEmail(email);
+        r.setCccd(id);
+        r.setRole(roleD.getById("1"));
+        r.setUsername(username);
+        r.setPassword(password);
+        r.setGender(gender);
+        rd.insertNewResident(r);
 
         response.sendRedirect("view-resident");
     }
