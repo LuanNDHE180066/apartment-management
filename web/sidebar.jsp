@@ -122,23 +122,23 @@
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
                     </li>
-                    <li>
-                        <a  href="view-service-resident"><i class="fa fa-dashboard"></i><span>Service resident</span></a>
+                    <li class="${sessionScope.account.roleId != 1? 'display-none':''}">
+                        <a  href="view-service-resident"><i class="fa fa-headset"></i><span>Sử dụng dịch vụ</span></a>
                     </li>
-                    <li>
-                        <a  href="all-services"><i class="fa fa-dashboard"></i><span>Service staff</span></a>
+                    <li class="${sessionScope.account.roleId != 2? 'display-none':''}">
+                        <a href="all-services"><i class="fa fa-headset"></i><span>Quản lí dịch vụ</span></a>
                     </li>
-                    <li>
-                        <a  href="view-apartmentservice-staff"><i class="fa fa-dashboard"></i><span>admin service quản lí dân</span></a>
+                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
+                        <a href="view-apartmentservice-staff"><i class="fa fa-headset"></i><span>Theo dõi sử dụng dịch vụ</span></a>
                     </li>
-                    <li>
-                        <a  href="view-invoice-resident"><i class="fa fa-dashboard"></i><span>Xem hóa đơn của phòng mình</span></a>
+                    <li class="${sessionScope.account.roleId != 1? 'display-none':''}">
+                        <a href="view-invoice-resident"><i class="fa fa-money-bill-wave"></i><span>Invoice</span></a>
                     </li>
-                    <li>
-                        <a  href="view-invoice-staff"><i class="fa fa-dashboard"></i><span>Xem tình trạng hóa đơn của dân</span></a>
+                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
+                        <a href="view-invoice-staff"><i class="fa fa-money-bill-wave"></i><span>Invoice</span></a>
                     </li>
-                    <li>
-                        <a  href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Thống kê hóa đơn, dịch vụ</span></a>
+                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
+                        <a href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Chart</span></a>
                     </li>
                     
 

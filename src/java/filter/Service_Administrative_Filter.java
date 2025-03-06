@@ -24,15 +24,16 @@ import model.Account;
  *
  * @author thanh
  */
-@WebFilter(filterName = "Service_Resident_Filter", urlPatterns = {"/confirm-payment-resident",
-    "/delete-service-resident",
-    "/pay-invoice-resident",
-    "/view-invoice-resident",
-    "/view-service-resident",
-    "/update-service-resident",
-    "/viewinvoice-byresident.jsp",
-    "/viewservice-resident.jsp"})
-public class Service_Resident_Filter implements Filter {
+@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
+            "/floorinformation.jsp",
+            "/updateservice.jsp",
+            "/viewallservices.jsp",
+            "/add-service-staff",
+            "/update-service-staff",
+            "/view-apartmentservice-staff",
+            "/view-floor-staff",
+            "/all-services"})
+public class Service_Administrative_Filter implements Filter {
 
     private static final boolean debug = true;
 
@@ -41,13 +42,13 @@ public class Service_Resident_Filter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public Service_Resident_Filter() {
+    public Service_Administrative_Filter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Resident_Filter:DoBeforeProcessing");
+            log("Service_Administrative_Filter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -75,7 +76,7 @@ public class Service_Resident_Filter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Resident_Filter:DoAfterProcessing");
+            log("Service_Administrative_Filter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -111,22 +112,21 @@ public class Service_Resident_Filter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("Service_Resident_Filter:doFilter()");
+            log("Service_Administrative_Filter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
 
-        doBeforeProcessing(request, response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 1) {
+        if (a.getRoleId() != 2) {
             res.sendRedirect("401_error.jsp");
             return;
-        }
-
+        } 
+        
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -182,7 +182,7 @@ public class Service_Resident_Filter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("Service_Resident_Filter:Initializing filter");
+                log("Service_Administrative_Filter:Initializing filter");
             }
         }
     }
@@ -193,9 +193,9 @@ public class Service_Resident_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Resident_Filter()");
+            return ("Service_Administrative_Filter()");
         }
-        StringBuffer sb = new StringBuffer("Service_Resident_Filter(");
+        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
