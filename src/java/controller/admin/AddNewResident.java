@@ -97,7 +97,6 @@ public class AddNewResident extends HttpServlet {
             request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
             return;
         }
-
         if (!id.matches("\\d{12}")) {
             request.setAttribute("error", "ID must be exactly 12 digits.");
             request.getRequestDispatcher("addnewresident.jsp").forward(request, response);

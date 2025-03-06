@@ -92,7 +92,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="note">Note</label>
-                                            <input style="width: 100%;height: 300px" type="text" id="note" name="note" value="${requestScope.categoryservice.detail}" required />
+                                            <textarea value="" style="width: 100%" id="note" name="note" placeholder="Enter note" rows="5" cols="50" required>${requestScope.categoryservice.detail}</textarea>
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Update</button>

@@ -96,13 +96,13 @@ public class AddRequestServlet extends HttpServlet {
         SendEmail email = new SendEmail();
 
         RequestType typeRequest = rtd.getById(typeRequestId);
-        List<Staff> staffs = sd.getStaffbyRole("2");
+        List<Staff> staffs = sd.getActiveStaffbyRole("2");
         //add new request to db
         int addRequest = rd.addRequest(rid, detail, typeRequest);
-        ///send email for staffs just found
-        for (Staff staff : staffs) {
-            email.sendRequestEmail(staff.getEmail(), account.getUsername(), typeRequest.getName(), detail);
-        }
+        //send email for staffs just found
+//        for (Staff staff : staffs) {
+//            email.sendRequestEmail(staff.getEmail(), account.getUsername(), typeRequest.getName(), detail);
+//        }
         response.sendRedirect("viewrequest_history");
     }
 

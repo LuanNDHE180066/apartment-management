@@ -163,7 +163,7 @@
                                             </div>                  
                                             <div class="table_section padding_infor_info">
                                                 <div class="table-responsive-sm">
-
+                                                    <div><h5 style="color: red">${requestScope.error_staff}</h5></div>
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
@@ -172,7 +172,6 @@
                                                                 <th>Detail</th>
                                                                 <th>Date</th>                                               
                                                                 <th>Type</th>
-                                                                <th>Response</th>
                                                                 <th>Status</th>
                                                                 <th>Option</th>
                                                                 <th>Decline</th>
@@ -186,7 +185,6 @@
                                                                     <td>${o.detail}</td>
                                                                     <td>${o.date}</td> 
                                                                     <td>${o.requestType.name}</td>  
-                                                                    <td>${o.response}</td>
                                                                     <td>${o.status}</td> 
                                                                     <td>
 
@@ -230,7 +228,7 @@
                                                                                                             <td>${request.address}</td>   
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
-                                                                                                                <select id="shift" name="shift">
+                                                                                                                    <select id="shift" name="shift">
                                                                                                                         <option value="1" data-time-start="8" data-time-end="10">8:00 - 10:00</option>
                                                                                                                         <option value="2" data-time-start="13" data-time-end="15">13:00 - 15:00</option>
                                                                                                                         <option value="3" data-time-start="15" data-time-end="17">15:00 - 17:00</option>
@@ -238,10 +236,10 @@
                                                                                                                     </select>
                                                                                                             </td>
                                                                                                             <td>
-                                                                                                                
-                                                                                                                    <input type="hidden" name="requestid" value="${o.id}">
-                                                                                                                    <input type="hidden" name="staffid" value="${staff.id}">
-                                                                                                                    <button type="submit">Assign</button>
+
+                                                                                                                <input type="hidden" name="requestid" value="${o.id}">
+                                                                                                                <input type="hidden" name="staffid" value="${staff.id}">
+                                                                                                                <button type="submit">Assign</button>
                                                                                                                 </form>
                                                                                                             </td>   
                                                                                                         </tr>
@@ -308,7 +306,7 @@
                                         </div>
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
-                                                <div><h5 style="background-color: red">${requestScope.error_staff}</h5></div>
+                                                <div><h5 style="color: red">${requestScope.error_staff}</h5></div>
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
@@ -383,10 +381,10 @@
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
-                                                                                                                        <option value="1" data-time-start="8" data-time-end="10">8:00 - 10:00</option>
-                                                                                                                        <option value="2" data-time-start="13" data-time-end="15">13:00 - 15:00</option>
-                                                                                                                        <option value="3" data-time-start="15" data-time-end="17">15:00 - 17:00</option>
-                                                                                                                        <option value="4" data-time-start="18" data-time-end="20">18:00 - 20:00</option>
+                                                                                                                        <option value="1" data-time-end="10">8:00 - 10:00</option>
+                                                                                                                        <option value="2" data-time-end="15">13:00 - 15:00</option>
+                                                                                                                        <option value="3" data-time-end="17">15:00 - 17:00</option>
+                                                                                                                        <option value="4" data-time-end="20">18:00 - 20:00</option>
                                                                                                                     </select>
                                                                                                             </td>
                                                                                                             <td><input type="hidden" name="destination" value="${status.index}">
@@ -501,29 +499,25 @@
         </div>
 
         <!-- jQuery -->
-<!--        <script>
+        <script>
             function updateOptionsByTime() {
                 const currentHour = new Date().getHours(); // Lấy giờ hiện tại
                 const options = document.querySelectorAll("#shift option");
 
                 options.forEach(option => {
-                    const startHour = parseInt(option.getAttribute("data-time-start"));
                     const endHour = parseInt(option.getAttribute("data-time-end"));
-
-                    if (currentHour >= startHour && currentHour < endHour) {
+                    if (currentHour < endHour) {
                         option.hidden = false; // Hiển thị option
                     } else {
                         option.hidden = true; // Ẩn option
                     }
                 });
             }
-
             // Gọi hàm khi trang load
             updateOptionsByTime();
-
             // Cập nhật mỗi phút để kiểm tra lại điều kiện
             setInterval(updateOptionsByTime, 60000);
-        </script>-->
+        </script>
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>

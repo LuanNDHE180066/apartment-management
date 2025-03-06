@@ -113,6 +113,13 @@ public class AuthorizedFilter implements Filter {
 
         String uri = req.getServletPath();
         Account a = (Account) session.getAttribute("account");
+        // Thêm điều kiện kiểm tra tài nguyên tĩnh
+        if (uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".gif") || uri.endsWith(".jpeg") || uri.endsWith(".svg")) {
+            // Bỏ qua Filter cho tài nguyên tĩnh
+            chain.doFilter(request, response);
+            return;
+        }
+
         if (!uri.contains("login.jsp") && !uri.contains("requestpassword.jsp") && !uri.contains("reset-password") && a == null && !uri.contains("request-password")
                 && !uri.contains("login-google")
                 && !uri.contains("login")
@@ -122,7 +129,6 @@ public class AuthorizedFilter implements Filter {
             res.sendRedirect("401_error.jsp");
             return;
         }
-
         Throwable problem = null;
         try {
             chain.doFilter(request, response);

@@ -70,8 +70,8 @@ public class ViewAllRequest extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         StaffDAO sd = new StaffDAO();
-        List<Staff> list4 = sd.getStaffbyRole("4");
-        List<Staff> list5 = sd.getStaffbyRole("5");
+        List<Staff> list4 = sd.getWorkingStaff("4");
+        List<Staff> list5 = sd.getWorkingStaff("5");
         request.setAttribute("engineer", list4);
         request.setAttribute("environmental", list5);
         RequestDAO rd = new RequestDAO();
@@ -86,22 +86,16 @@ public class ViewAllRequest extends HttpServlet {
             list = rd.getAll();
         } else if (ac.getRoleId() > 2) {
             list = rd.getRequestByRolesAndPid(ac.getRoleId(),ac.getpId());
-        }
-        session.setAttribute("requestes", list);
-        if (ac.getRoleId() == 2) {
-            if (null != filterRoles_raw && !filterRoles_raw.isBlank()) {
-                int filterRoles = Integer.parseInt(filterRoles_raw);
-                list = rd.getByRoles(list, filterRoles);
-                if (list.size() == 0) {
-                    request.getRequestDispatcher("viewallrequest.jsp").forward(request, response);
-                    return;
-                }
-                session.setAttribute("requestes", list);
-            }
-        }
+        }       
         List<Request> waitting_list = rd.getWaitingTable(list);
         List<Request> inprocess_list = rd.getInProcessgTable(list);
         List<Request> done_list = rd.getDoneTable(list);
+        if (ac.getRoleId() == 2) {
+            if (null != filterRoles_raw && !filterRoles_raw.isBlank()) {
+                int filterRoles = Integer.parseInt(filterRoles_raw);
+                inprocess_list = rd.getByRoles(inprocess_list, filterRoles);
+            }
+        }
         String page_waiting = request.getParameter("page_waiting");
         String page_inprocess = request.getParameter("page_inprocess");
         String page_done = request.getParameter("page_done");
@@ -119,31 +113,25 @@ public class ViewAllRequest extends HttpServlet {
         request.setAttribute("filterRoles", filterRoles_raw);
         if (!waitting_list.isEmpty()) {
             int totalPage_waiting = u.getTotalPage(waitting_list, numberPerPage);
-            System.out.println(""+totalPage_waiting+" number page of totalPage_waiting");
             request.setAttribute("totalPage_waiting", totalPage_waiting);
             request.setAttribute("currentPage_waiting", Integer.parseInt(page_waiting));
         } else {
-            System.out.println(""+" number page of totalPage_done");
             request.setAttribute("totalPage_waiting", 1);
             request.setAttribute("currentPage_waiting", 1);
         }
         if (!inprocess_list.isEmpty()) {
             int totalPage_inprocess = u.getTotalPage(inprocess_list, numberPerPage);
-            System.out.println(""+totalPage_inprocess+" number page of inprocess "+inprocess_list);
             request.setAttribute("totalPage_inprocess", totalPage_inprocess);
             request.setAttribute("currentPage_inprocess", Integer.parseInt(page_inprocess));
         } else {
-            System.out.println(""+" number page of totalPage_done");
             request.setAttribute("totalPage_inprocess", 1);
             request.setAttribute("currentPage_inprocess", 1);
         }
         if (!done_list.isEmpty()) {
             int totalPage_done = u.getTotalPage(done_list, numberPerPage);
-            System.out.println(""+totalPage_done+" number page of totalPage_done");
             request.setAttribute("totalPage_done", totalPage_done);
             request.setAttribute("currentPage_done", Integer.parseInt(page_done));
         } else {
-            System.out.println(""+" number page of totalPage_done");
             request.setAttribute("totalPage_done", 1);
             request.setAttribute("currentPage_done", 1);
         }
