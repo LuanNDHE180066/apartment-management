@@ -100,9 +100,9 @@ public class AddRequestServlet extends HttpServlet {
         //add new request to db
         int addRequest = rd.addRequest(rid, detail, typeRequest);
         //send email for staffs just found
-        for (Staff staff : staffs) {
-            email.sendRequestEmail(staff.getEmail(), account.getUsername(), typeRequest.getName(), detail);
-        }
+//        for (Staff staff : staffs) {
+//            email.sendRequestEmail(staff.getEmail(), account.getUsername(), typeRequest.getName(), detail);
+//        }
         response.sendRedirect("viewrequest_history");
     }
 
