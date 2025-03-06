@@ -237,7 +237,6 @@ public class AddNewStaffServlet extends HttpServlet {
             if (!s.getPhone().matches("0[0-9]{9}")) {
                 request.setAttribute("phoneerror", "Please enter a valid phone number: 10 digits starting with 0!");
                 request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-
                 return;
             }
             if (!s.getCccd().matches("[0-9]{12}")) {
@@ -252,7 +251,6 @@ public class AddNewStaffServlet extends HttpServlet {
             request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
             return;
         }
-
         if (stDao.insertStaff(s)) {
             session.setAttribute("staffs", stDao.getAll());
             request.setAttribute("status", "true");

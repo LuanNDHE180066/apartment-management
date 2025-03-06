@@ -138,30 +138,36 @@
                                             <input type="text" id="description" name="description" value="${param.description}" placeholder="Enter description" required />
                                             <span style="color: red">${requestScope.deserror}</span>
                                         </div>
+                                        
+                                        <div class="form-group">
+                                            <div class="two-cols">
+                                                <div class="col">
+                                                    <label for="date">Sign Date</label>
+                                                    <input type="date" id="signdate" value="${param.signDate}" name="signdate" required />
+                                                    <span style="color: red">${requestScope.signdateerror}</span>
+                                                </div>
+                                                <div class="col">
+                                                    <label for="paydate">Payment Date</label>
+                                                    <input type="date" id="paydate" value="${param.paymentTems}" name="paydate" required />
+                                                    <span style="color: red">${requestScope.paydateerror}</span>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col">
                                                     <label for="startDate">Start Date</label>
                                                     <input type="date" id="startDate" value="${param.startDate}" name="startDate" required />
+                                                    <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col">
                                                     <label for="endDate">End Date</label>
                                                     <input type="date" id="endDate" value="${param.endDate}" name="endDate" required />
+                                                    <span style="color: red">${requestScope.enddateerror}</span>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="two-cols">
-                                                <div class="col">
-                                                    <label for="paydate">Payment Date</label>
-                                                    <input type="date" id="paydate" value="${param.paymentTems}" name="paydate" required />
-                                                </div>
-                                                <div class="col">
-                                                    <label for="date">Sign Date</label>
-                                                    <input type="date" id="signdate" value="${param.signDate}" name="signdate" required />
-                                                </div>
-                                            </div>
-                                        </div>
+                                        </div>        
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
@@ -171,6 +177,7 @@
                                                             <option value="${cp.id}">${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
+                                                    <span style="color: red">${requestScope.companyerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="admin">Admin</label>
@@ -179,6 +186,7 @@
                                                             <option value="${cp.id}">${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
+                                                    <span style="color: red">${requestScope.adminerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="accountant">Accountant</label>
@@ -187,6 +195,7 @@
                                                             <option value="${cp.id}">${cp.name}</option>
                                                         </c:forEach>
                                                     </select>
+                                                    <span style="color: red">${requestScope.accountanterror}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,7 +211,7 @@
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Add Contract</button>
-                                            <h5 style="color:${status=="true"?"green":"red"};text-align:center">${requestScope.message}</h5>
+                                            <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
                                         </div>
                                     </form>

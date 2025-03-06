@@ -21,10 +21,12 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import model.Company;
 import model.Contract;
 import model.Staff;
+import validation.CommonValidation;
 
 /**
  *
@@ -80,8 +82,8 @@ public class AddContract extends HttpServlet {
         CompanyDAO cpd = new CompanyDAO();
         StaffDAO std = new StaffDAO();
         List<Company> listcompany = cpd.getAll();
-        List<Staff> listaccountant = std.getStaffbyRole("3");
-        List<Staff> listadmin = std.getStaffbyRole("0");
+        List<Staff> listaccountant = std.getActiveStaffbyRole("3");
+        List<Staff> listadmin = std.getActiveStaffbyRole("0");
         session.setAttribute("listcompany", listcompany);
         session.setAttribute("listaccountant", listaccountant);
         session.setAttribute("listadmin", listadmin);
@@ -109,32 +111,85 @@ public class AddContract extends HttpServlet {
         String admin = request.getParameter("admin");
         String accountant = request.getParameter("accountant");
         String sid = request.getParameter("sid");
-        Part filePart=request.getPart("file");
-        String image="";
-        if(filePart!=null && filePart.getSize()>0){
-            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-            if(!fileExtention.matches("jpg|jpeg")){
+        Part filePart = request.getPart("file");
+        String image = "";
+        if (filePart != null && filePart.getSize() > 0) {
+            String filename = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileExtention = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+            if (!fileExtention.matches("jpg|jpeg")) {
                 request.setAttribute("fileerror", "Only jpg");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
-            String uploadpath=getServletContext().getRealPath("/")+"images/contract";
-            File uploadDir=new File(uploadpath);
-            if(!uploadDir.exists()){
+            String uploadpath = getServletContext().getRealPath("/") + "images/contract";
+            File uploadDir = new File(uploadpath);
+            if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            File file= new File(uploadDir, filename);
-            try(InputStream fileContent=filePart.getInputStream();
-                    FileOutputStream outputStream=new FileOutputStream(file)) {
-                byte[] buffer=new byte[1024];
+            File file = new File(uploadDir, filename);
+            try (InputStream fileContent = filePart.getInputStream(); FileOutputStream outputStream = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
                 int byteread;
-                while((byteread=fileContent.read(buffer))!= -1){
+                while ((byteread = fileContent.read(buffer)) != -1) {
                     outputStream.write(buffer, 0, byteread);
                 }
-                
+
             }
-            image = "images/contract/" + filename;           
+            image = "images/contract/" + filename;
+        }
+        if (company == null) {
+            request.setAttribute("companyerror", "Company not found");
+            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+            return;
+        }
+        if (admin == null) {
+            request.setAttribute("adminerror", "Admin not found");
+            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+            return;
+        }
+        if (accountant == null) {
+            request.setAttribute("accountanterror", "Accountant not found");
+            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+            return;
+        }
+        try {
+            if (!CommonValidation.isValidNewsDate(signdate)) {
+                request.setAttribute("signdateerror", "Signdate need to later current date");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if(!CommonValidation.validendateafterstartdate(paydate, signdate)){
+                request.setAttribute("paydateerror", "Paydate need to later signdate");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if (!CommonValidation.isValidNewsDate(paydate)) {
+                request.setAttribute("paydateerror", "Paydate need to later current date");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if(!CommonValidation.validendateafterstartdate(startDate, signdate)){
+                request.setAttribute("startdateerror", "Startdate need to later signdate");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if (!CommonValidation.isValidNewsDate(startDate)) {
+                request.setAttribute("startdateerror", "Startdate need to later current date");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if (!CommonValidation.isValidNewsDate(endDate)) {
+                request.setAttribute("enddateerror", "Enddate need to later current date");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+            if (!CommonValidation.validendateafterstartdate(endDate, startDate)) {
+                request.setAttribute("enddateerror", "Enddate need to later startdate");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         CompanyDAO cpd = new CompanyDAO();
         StaffDAO std = new StaffDAO();
