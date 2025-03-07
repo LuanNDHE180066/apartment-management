@@ -154,13 +154,21 @@ public class ResidentDAO extends DBContext {
     }
 
     public void EditProfileRe(Resident r) {
-        String sql = "update Resident set Email=?, Phone=?, [Address]=? where id=?";
+        String sql = "UPDATE [dbo].[Resident]\n"
+                + "   SET\n"
+                + "      [Email] = ?,\n"
+                + "      [Phone] = ?,\n"
+                + "      [Address] = ?,\n"
+                + "      [image] = ?\n"
+                + " WHERE id=?";
+
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, r.getEmail());
             pre.setString(2, r.getPhone());
             pre.setString(3, r.getAddress());
-            pre.setString(4, r.getpId());
+            pre.setString(4, r.getImage());
+            pre.setString(5, r.getpId());
             pre.executeUpdate();
         } catch (Exception e) {
         }
@@ -210,7 +218,7 @@ public class ResidentDAO extends DBContext {
         }
     }
 
-    public int insertNewResident(String name, String address, String email, String phone, String bod, String id, String username, String password) {
+    public int insertNewResident(Resident r) {
         String sql = "INSERT INTO [dbo].[Resident]\n"
                 + "           ([Id]\n"
                 + "           ,[Name]\n"
@@ -220,29 +228,31 @@ public class ResidentDAO extends DBContext {
                 + "           ,[Address]\n"
                 + "           ,[CCCD]\n"
                 + "           ,[username]\n"
-                + "           ,[password]\n"
+                + "            ,[password]\n"
                 + "           ,[roleId]\n"
                 + "           ,[active]\n"
+                + "           ,[gender]\n"
                 + "           ,[image])\n"
                 + "     VALUES\n"
-                + "           (?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "           (?,?,?,?,?,?,?,?,?,?,?,?,?)";
         Util u = new Util();
         List<Resident> listResident = getAll();
         int lastID = u.getNumberFromText(listResident.get(listResident.size() - 1).getpId());
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, "P" + (lastID + 1));
-            st.setString(2, name);
-            st.setString(3, bod);
-            st.setString(4, email);
-            st.setString(5, phone);
-            st.setString(6, address);
-            st.setString(7, id);
-            st.setString(8, username);
-            st.setString(9, password);
-            st.setInt(10, 1);
+            st.setString(2, r.getName());
+            st.setString(3, r.getBod());
+            st.setString(4, r.getEmail());
+            st.setString(5, r.getPhone());
+            st.setString(6, r.getAddress());
+            st.setString(7, r.getCccd());
+            st.setString(8, r.getUsername());
+            st.setString(9, r.getPassword());
+            st.setString(10, r.getRole().getId());
             st.setInt(11, 2);
-            st.setString(12, "images/avatar/person.jpg");
+            st.setString(12, r.getGender());
+            st.setString(13, "images/avatar/person.jpg");
             st.executeUpdate();
             return 0;
 
@@ -311,15 +321,17 @@ public class ResidentDAO extends DBContext {
     }
 
     public List<Resident> filterListResident(String name, String status) {
-        String sql = "select * from Resident where 1=1 ";
-        int count = 0;
+        String sql = "SELECT * FROM resident WHERE 1=1 ";
 
-        if (name != "") {
-            sql += "and name like N'%" + name + "%' ";
+        if ( name!=null && !name.isEmpty()) {
+            sql += "AND name LIKE N'%" + name + "%' ";
         }
-        if (status != "") {
-            sql += "and active = " + status + " ";
+        if (status!=null && !status.isEmpty()) {
+            sql += "AND active = " + status + " ";
         }
+
+        sql += "ORDER BY id DESC";
+
         try {
             List<Resident> list = new ArrayList<>();
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -339,6 +351,7 @@ public class ResidentDAO extends DBContext {
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address, username, password, st, name, role, image);
+                resident.setGender(gender);
                 list.add(resident);
             }
             return list;
@@ -367,74 +380,87 @@ public class ResidentDAO extends DBContext {
 
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-        System.out.println(dao.editResidentStatus("P113", "2"));
+        System.out.println(dao.filterListResident(null, null));
 
     }
-    public int getNumberLivingPerson(){
-        String sql="select sum(NoPerson) as noperson from Apartment";
+
+    public int getNumberLivingPerson() {
+        String sql = "select sum(NoPerson) as noperson from Apartment";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("noperson");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("noperson");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNumberUsingRoom(){
-        String sql="select count(Id) as nousingroom  from Apartment where NoPerson > 0";
+
+    public int getNumberUsingRoom() {
+        String sql = "select count(Id) as nousingroom  from Apartment where NoPerson > 0";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("nousingroom");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("nousingroom");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNumberNotUsingRoom(){
-        String sql="select count(Id) as notusingroom  from Apartment where NoPerson = 0";
+
+    public int getNumberNotUsingRoom() {
+        String sql = "select count(Id) as notusingroom  from Apartment where NoPerson = 0";
         try {
-            PreparedStatement st= connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getInt("notusingroom");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getInt("notusingroom");
+            }
         } catch (Exception e) {
             System.out.println(e);
         }
         return 0;
     }
-    public int getNoUsingRoomByMonthAndYear(int month,int year){
+
+    public int getNoUsingRoomByMonthAndYear(int month, int year) {
         String sql = "select count(distinct(aid)) as no from LivingAparment where (year(Startdate) =?  and MONTH(Startdate) <=? )and (MONTH(Enddate) >= ? or Enddate is null)";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, year);
             st.setInt(2, month);
             st.setInt(3, month);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("no");
             }
         } catch (Exception e) {
         }
         return 0;
     }
-    public List<Integer> getNoUsingRoomByYear(int year){
+
+    public List<Integer> getNoUsingRoomByYear(int year) {
         List<Integer> list = new ArrayList<>();
-        for (int i = 1; i <=12; i++) {
+        for (int i = 1; i <= 12; i++) {
             list.add(getNoUsingRoomByMonthAndYear(i, year));
         }
         return list;
     }
-    public int getStartYear(){
+
+    public int getStartYear() {
         String sql = "select min(year(Startdate)) as year from LivingAparment";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
+            PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("year");
             }
         } catch (SQLException e) {
         }
         return 0;
     }
+
 }

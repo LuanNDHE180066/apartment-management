@@ -21,30 +21,12 @@ import util.Util;
  */
 public class AccountDAO extends DBContext {
 
-    public String getcheckTable(String user, int roleId) {
-        String check_table_1 = null;
-        String check_table_2 = null;
-        check_table_1 = "SELECT * FROM Resident WHERE [username]=? and [roleId]=?";
-        check_table_2 = "SELECT * FROM Staff WHERE [username]=? and [roleId]=?";
-        String table = null;
-        try {
-            PreparedStatement pre_1 = connection.prepareStatement(check_table_1);
-            pre_1.setString(1, user);
-            pre_1.setInt(2, roleId);
-            ResultSet rs_1 = pre_1.executeQuery();
-            PreparedStatement pre_2 = connection.prepareStatement(check_table_2);
-            pre_2.setString(1, user);
-            pre_2.setInt(2, roleId);
-            ResultSet rs_2 = pre_2.executeQuery();
-            if (rs_2.next()) {
-                table = "Staff";
-            } else if (rs_1.next()) {
-                table = "Resident";
-            } else {
-                table = "Empty";
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+    public String getcheckTable(int roleId) {
+        String table = "Empty";
+        if(roleId == 1){
+            table = "Resident";
+        }else{
+            table = "Staff";
         }
         return table;
     }
@@ -54,7 +36,7 @@ public class AccountDAO extends DBContext {
         Account s = null;
         AccountDAO dao = new AccountDAO();
         String table = null;
-        table = dao.getcheckTable(user, roleId);
+        table = dao.getcheckTable(roleId);
         if (table.equals("Empty")) {
             return s;
 //        } else if (table.equals("Resident")) {
@@ -184,7 +166,7 @@ public class AccountDAO extends DBContext {
     
     public static void main(String[] args) {
         AccountDAO dao = new AccountDAO();
-        System.out.println(""+dao.getAccountByUsernameandRole("bob", 1));
+        System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
     }
 
 }

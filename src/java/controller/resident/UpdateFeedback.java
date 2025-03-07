@@ -6,9 +6,11 @@ package controller.resident;
 
 import dao.FeedbackDAO;
 import dao.RequestTypeDAO;
+import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -24,11 +26,17 @@ import java.util.UUID;
 import model.Account;
 import model.Feedback;
 import model.RequestType;
+import java.sql.Timestamp;
 
 /**
  *
  * @author Lenovo
  */
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10, // 10MB per file
+        maxRequestSize = 1024 * 1024 * 50 // 50MB total
+)
 @WebServlet(name = "UpdateFeedback", urlPatterns = {"/update-feed-back"})
 public class UpdateFeedback extends HttpServlet {
 
@@ -95,13 +103,28 @@ public class UpdateFeedback extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        // Fetch form fields
-        String rID = request.getParameter("rID");
-        String tID = request.getParameter("typeOfRequest");
-        String detail = request.getParameter("content");
-        String rate_raw = request.getParameter("rate");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = null, tID = null, detail = null, rate_raw = null;
+
+        // Retrieve text fields from form data using Part
+        for (Part part : request.getParts()) {
+            switch (part.getName()) {
+                case "fID":
+                    id = new String(part.getInputStream().readAllBytes()).trim();
+                    break;
+                case "typeOfRequest":
+                    tID = new String(part.getInputStream().readAllBytes()).trim();
+                    break;
+                case "content":
+                    detail = new String(part.getInputStream().readAllBytes()).trim();
+                    break;
+                case "rate":
+                    rate_raw = new String(part.getInputStream().readAllBytes()).trim();
+                    break;
+            }
+        }
+
+        // Parse the rating value
         int rate = 0;
         try {
             rate = Integer.parseInt(rate_raw);
@@ -109,55 +132,69 @@ public class UpdateFeedback extends HttpServlet {
             System.out.println("Error parsing rate: " + e);
         }
 
-        // Define the upload directory correctly (inside deployed app folder)
+        // Directory to save uploaded files
         String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
-
         File uploadDir = new File(uploadPath);
-
-        // Ensure directory exists
         if (!uploadDir.exists()) {
-            boolean dirCreated = uploadDir.mkdirs();
+            uploadDir.mkdirs();
         }
 
-        // List to store image paths
-        List<String> imagePaths = new ArrayList<>();
-        boolean hasUploadedImages = false;
+        // Retrieve existing images from database
+        FeedbackDAO fd = new FeedbackDAO();
+        RequestTypeDAO rtd = new RequestTypeDAO();
+        List<String> existingImages = fd.getFeedbackImgs(id);
 
-        // Retrieve uploaded images
-        Collection<Part> parts = request.getParts();
-        for (Part part : parts) {
-            // Check if the part is a file (it should have content and be from the correct field)
-            if (part.getName().equals("images[]") && part.getSize() > 0) {
-                String originalFileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
+        // List to store new uploaded images
+        List<String> newImagePaths = new ArrayList<>();
 
-                // Ensure unique filename
-                String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
+        // Process new images
+        for (Part part : request.getParts()) {
+            if ("newImages[]".equals(part.getName()) && part.getSize() > 0) {
+                String fileName = UUID.randomUUID().toString() + "_" + Paths.get(part.getSubmittedFileName()).getFileName().toString();
                 String filePath = uploadPath + File.separator + fileName;
+                part.write(filePath);
+                newImagePaths.add("uploads/" + fileName);
+            }
+        }
 
-                // Save file safely
-                try {
-                    part.write(filePath);
-                    imagePaths.add("uploads/" + fileName); // Store relative path for database
-                    hasUploadedImages = true;
-                    System.out.println("Saved file: " + filePath);
-                } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+        // Retrieve existing images that were kept (not deleted by the user)
+        List<String> keptImages = new ArrayList<>();
+        for (Part part : request.getParts()) {
+            if ("existingImages[]".equals(part.getName()) && part.getSize() > 0) {
+                keptImages.add(new String(part.getInputStream().readAllBytes()).trim());
+            }
+        }
+
+        // Final image list (kept + new images)
+        List<String> finalImageList = new ArrayList<>(keptImages);
+        finalImageList.addAll(newImagePaths);
+
+        // Update database images
+        fd.deleteFBImg(id);
+        if (!finalImageList.isEmpty()) {
+            fd.insertImgFeedback(finalImageList, id);
+        }
+
+        // Remove deleted images from server storage
+        if (existingImages != null) {
+            for (String imgPath : existingImages) {
+                if (!keptImages.contains(imgPath)) {
+                    File file = new File(request.getServletContext().getRealPath("/") + imgPath);
+                    if (file.exists()) {
+                        file.delete();
+                    }
                 }
             }
         }
 
-        // Debugging: Print final image paths
-        System.out.println("Final image paths: " + imagePaths);
+        // Update feedback details
+        Feedback feedback = fd.getById(id);
+        feedback.setRequestType(rtd.getById(tID));
+        feedback.setDetail(detail);
+        feedback.setRate(rate);
+        feedback.setStatus(0);
+        fd.editFeedback(feedback);
 
-        // Save feedback and image paths to the database
-        FeedbackDAO fd = new FeedbackDAO();
-        if (hasUploadedImages) {
-            fd.sendFeedback(detail, rID, tID, rate, imagePaths);
-        } else {
-            fd.sendFeedback(detail, rID, tID, rate, null);
-        }
-
-        // Redirect after successful submission
         response.sendRedirect("view-feed-back-user");
     }
 

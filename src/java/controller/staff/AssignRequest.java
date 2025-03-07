@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
+import model.Request;
 import model.SendEmail;
 import model.Staff;
 
@@ -69,14 +70,21 @@ public class AssignRequest extends HttpServlet {
         String staffid = request.getParameter("staffid");
         RequestDAO rd = new RequestDAO();
         StaffDAO daoSt = new StaffDAO();
-        Staff s = daoSt.getById(staffid);  
-        if(rd.checkShiftStaff(staffid, shift)){              
-            request.setAttribute("error_staff", s.getName() +" already has a assign in "+(shift.equals("1")? "8:00 - 10:00":shift.equals("2")?"13:00 - 15:00":shift.equals("3")?"15:00 - 17:00":"18:00-20:00"));            
-        }else{
+        Staff s = daoSt.getById(staffid);
+        if (shift.equals("")) {
+            request.setAttribute("error_staff", "Need choose shift for Employee");
+            request.getRequestDispatcher("view-all-request").forward(request, response);
+            return;
+        }
+        Request rq = new Request();
+        rq.setShift(shift);
+        if (rd.checkShiftStaff(staffid, shift)) {
+            request.setAttribute("error_staff", s.getName() + " already has a assign in " + rq.getShift());
+        } else {
             SendEmail send = new SendEmail();
-            send.sendEmail(s.getEmail(), "Assign Request From Resident", "You have a request in"+(shift.equals("1")? "8:00 - 10:00":shift.equals("2")?"13:00 - 15:00":shift.equals("3")?"15:00 - 17:00":"18:00-20:00"));
-            rd.AssignRequest(requestid, staffid,shift);           
-        }  
+            send.sendEmail(s.getEmail(), "Assign Request From Resident", "You have a request in" + rq.getShift());
+            rd.AssignRequest(requestid, staffid, shift);
+        }
         request.getRequestDispatcher("view-all-request").forward(request, response);
     }
 

@@ -159,6 +159,15 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
+            .red-dot {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                border-radius: 50%;
+                margin-left: 5px;
+            }
+
 
 
 
@@ -196,6 +205,7 @@
                                         <div class="full graph_head d-flex justify-content-between align-items-center">
                                             <div class="heading1 margin_0">
                                                 <h2>Feedback Table</h2>
+                                                <h1>${cac}</h1>
                                             </div>
                                             <button class="btn btn-primary" onclick="location.href = 'sendfeedback'">Send New Feedback</button>
                                         </div>
@@ -231,6 +241,7 @@
                                                         <tr>
                                                             <th style="width: 15%;">Người tạo đơn</th>
                                                             <th style="width: 20%;">Tên dịch vụ</th>
+                                                            <th style="width: 10%;">Thời Gian</th>
                                                             <th style="width: 10%;">Mức độ hài lòng</th>
                                                             <th style="width: 10%;" class="action-column">Hành động</th>
                                                         </tr>
@@ -239,8 +250,11 @@
                                                         <c:forEach items="${requestScope.listFeedbackU}" var="feedback" varStatus="loop">
                                                             <!-- First row: Author with blue background and rounded corners -->
                                                             <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}" >
-                                                                <td>${feedback.resident.name}</td>
+                                                                <td>${feedback.resident.name}<c:if test="${feedback.status == 1}">
+                                                                        <span class="red-dot"></span>
+                                                                    </c:if></td>
                                                                 <td>${feedback.requestType.name}</td>
+                                                                <td>${feedback.date}</td>
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
@@ -253,17 +267,19 @@
                                                                 </td>
                                                                 <td class="action-column">
                                                                     <div class="dropdown-content">
-                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
+                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit  </a>
                                                                         <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                     </div>
                                                                 </td>
+
+
                                                             </tr>
 
                                                             <!-- Second row: Details with white background -->
                                                             <tr id="feedbackDetail${loop.index}" style="display: none;">
                                                                 <td colspan="4">
                                                                     <div class="card card-body">
-                                                                        <p><strong>Chi tiết:</strong> ${feedback.detail}</p>
+                                                                        <p><span style="font-weight: bold">Chi tiết:</span> ${feedback.detail}</p>
                                                                         <c:if test="${not empty feedback.img}">
                                                                             <div class="image-gallery">
                                                                                 <c:forEach var="imageUrl" items="${feedback.img}">
@@ -289,7 +305,7 @@
                                                     <a href="?page=${currentPage + 1}" class="btn btn-primary">Next</a>
                                                 </c:if>
                                             </div>
-                                         
+
 
 
 
@@ -330,7 +346,9 @@
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/custom.js"></script>
+
         <script>
+
                                                                             document.addEventListener("DOMContentLoaded", function () {
                                                                                 document.querySelectorAll(".accordion-toggle").forEach(function (row) {
                                                                                     row.addEventListener("click", function () {

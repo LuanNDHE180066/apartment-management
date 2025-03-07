@@ -119,14 +119,13 @@
                         <div class="card shadow-sm p-4">
                             <h4 class="mb-4 text-center">Submit Your Feedback</h4>
                             <form action="update-feed-back" method="post" enctype="multipart/form-data">
-                                <input type="hidden" name="rID" value="${rID}">
-
+                                <input type="text" name="fID" value="${feedback.id}">
                                 <div class="form-group">
                                     <label for="typeOfRequest" class="font-weight-bold">Type of Request</label>
                                     <select id="typeOfRequest" name="typeOfRequest" class="form-control" required>
                                         <option value="" disabled selected>-- Select type --</option>
                                         <c:forEach items="${requestScope.listOfTypeRequest}" var="tr">
-                                            <option value="${tr.id}" <c:if test="${feedback.requestType.name != null && feedback.requestType.name == tr.name}">selected</c:if>>${tr.name}</option>
+                                            <option value="${tr.id}" <c:if test="${feedback.requestType.id != null && feedback.requestType.id == tr.id}">selected</c:if>>${tr.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -154,7 +153,7 @@
                                         <label class="font-weight-bold">Upload Images (Optional)</label>
                                         <div id="uploadContainer" class="upload-container">
                                             <!-- Pre-existing images -->
-                                        <c:forEach items="${feedback.img}" var="image" varStatus="loop">
+                                        <c:forEach items="${feedback.img}" var="image">
                                             <div class="upload-area existing-image" data-image-url="${image}">
                                                 <div class="upload-preview" style="display: block;">
                                                     <img src="${image}" class="preview-img" alt="Uploaded Image">
@@ -168,6 +167,10 @@
                                     <small class="form-text text-muted">You can add multiple upload areas and select multiple images.</small>
                                 </div>
 
+                                <!-- Hidden input to store deleted images -->
+                                <input type="hidden" id="deletedImages" name="deletedImages">
+
+
                                 <div class="text-center">
                                     <button type="submit" class="btn btn-primary btn-lg">Submit Feedback</button>
                                 </div>
@@ -180,76 +183,100 @@
 
         <script>
             $(document).ready(function () {
-                let uploadIndex = 0;
+                let uploadIndex = 1;
+                let deletedImages = [];
 
-                // Add new upload area
-                $("#addUpload").on("click", function () {
-                    const newUpload = `
-                        <div class="upload-area new-upload" data-index="${uploadIndex}">
-                            <div class="upload-content">
-                                <div class="upload-icon">+</div>
-                                <p>Click or Drag an Image</p>
-                            </div>
-                            <input type="file" class="file-input" name="newImages[]" accept="image/*">
-                            <div class="upload-preview"></div>
-                        </div>
-                    `;
-                    $("#uploadContainer").append(newUpload);
-                    uploadIndex++;
+                // Load existing images on page load
+                $(".existing-image").each(function () {
+                    let uploadArea = $(this);
+                    let previewContainer = uploadArea.find(".upload-preview");
+                    let imageUrl = uploadArea.data("image-url");
+
+                    if (imageUrl) {
+                        let img = $('<img>', {src: imageUrl, class: "preview-img", alt: "Uploaded Image"});
+                        let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
+                        previewContainer.append(img).append(deleteBtn);
+                        previewContainer.show();
+                    }
                 });
 
-                // Handle file input change for new uploads
+                // Handle file input change: show preview and disable pointer events on the file input.
                 $(document).on("change", ".file-input", function () {
                     let uploadArea = $(this).closest(".upload-area");
                     let previewContainer = uploadArea.find(".upload-preview");
                     let contentEl = uploadArea.find(".upload-content");
-                    previewContainer.empty(); // Clear previous preview
 
+                    previewContainer.empty();
                     let files = this.files;
-                    if (!files || files.length === 0)
-                        return;
-
-                    let file = files[0]; // Take the first file
-                    if (!file.type.startsWith("image/")) {
-                        alert(`"${file.name}" is not an image.`);
+                    if (!files || files.length === 0) {
+                        previewContainer.hide();
+                        contentEl.show();
+                        $(this).css("pointer-events", "auto");
                         return;
                     }
 
-                    let reader = new FileReader();
-                    reader.onload = function (e) {
-                        let img = $('<img>', {
-                            src: e.target.result,
-                            class: "preview-img",
-                            alt: "Preview"
-                        });
-                        let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
-                        previewContainer.append(img).append(deleteBtn);
-                        previewContainer.show();
-                        contentEl.hide();
-                    };
-                    reader.readAsDataURL(file);
+                    let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
+                    previewContainer.append(deleteBtn);
+
+                    Array.from(files).forEach((file, index) => {
+                        if (!file.type.startsWith("image/")) {
+                            alert(`"${file.name}" is not an image.`);
+                            return;
+                        }
+                        let reader = new FileReader();
+                        reader.onload = function (e) {
+                            let img = $('<img>', {src: e.target.result, class: "preview-img", alt: `Preview ${index + 1}`});
+                            previewContainer.append(img);
+                        };
+                        reader.readAsDataURL(file);
+                    });
+
+                    contentEl.hide();
+                    previewContainer.show();
+                    $(this).css("pointer-events", "none");
                 });
 
-                // Handle delete button clicks
+                // Delete button click: clear preview and re-enable the file input.
                 $(document).on("click", ".delete-btn", function (e) {
                     e.stopPropagation();
                     let uploadArea = $(this).closest(".upload-area");
+                    let fileInput = uploadArea.find(".file-input");
+                    fileInput.val('');
+                    let previewContainer = uploadArea.find(".upload-preview");
+                    previewContainer.empty().hide();
+                    uploadArea.find(".upload-content").show();
+                    fileInput.css("pointer-events", "auto");
 
+                    // Track deleted existing images
                     if (uploadArea.hasClass("existing-image")) {
-                        // Remove existing image area completely
+                        let imageUrl = uploadArea.data("image-url");
+                        if (imageUrl) {
+                            deletedImages.push(imageUrl);
+                        }
                         uploadArea.remove();
-                    } else if (uploadArea.hasClass("new-upload")) {
-                        // Reset new upload area
-                        let fileInput = uploadArea.find(".file-input");
-                        let previewContainer = uploadArea.find(".upload-preview");
-                        let contentEl = uploadArea.find(".upload-content");
-
-                        fileInput.val(""); // Clear the file input
-                        previewContainer.empty().hide(); // Clear and hide preview
-                        contentEl.show(); // Show the placeholder content
                     }
+
+                    // Update hidden input field for deleted images
+                    $("#deletedImages").val(JSON.stringify(deletedImages));
+                });
+
+                // Append new upload area on clicking the "add" button.
+                $("#addUpload").on("click", function () {
+                    const newUpload = `
+            <div class="upload-area new-upload" data-index="${uploadIndex}">
+                <div class="upload-content">
+                    <div class="upload-icon">+</div>
+                    <p>Click or Drag an Image</p>
+                </div>
+                <input type="file" class="file-input" name="newImages[]" accept="image/*">
+                <div class="upload-preview"></div>
+            </div>
+        `;
+                    $("#uploadContainer").append(newUpload);
+                    uploadIndex++;
                 });
             });
+
         </script>
     </body>
 </html>
