@@ -135,7 +135,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="content">Content</label>
-                                            <textarea value="${param.content}" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required></textarea>
+                                            <textarea value="" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required>${param.content}</textarea>
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
                                         <div class="form-group">

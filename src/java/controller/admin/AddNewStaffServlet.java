@@ -131,20 +131,18 @@ public class AddNewStaffServlet extends HttpServlet {
         //insert to database with encryted password
         password = encryptPassword(password);
         Staff s = null;
-
+        boolean hasError = false;
         try {
             int salary = Integer.parseInt(salary_raw);
             if (salary <= 0) {
                 request.setAttribute("salaryerror", "Salary must be greater than 0.");
-                request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             Role role = daoR.getById(roleId);
 
             if (role == null) {
                 request.setAttribute("roleerror", "Invalid role selected.");
-                request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             s = new Staff(name, dob, email, phone, address, cccd, salary, education, bank, username, password, role,
                     daoCp.getById(company), startDate, gender);
@@ -155,8 +153,7 @@ public class AddNewStaffServlet extends HttpServlet {
                 try {
                     if (st.getCccd().equals(s.getCccd())) {
                         request.setAttribute("cccderror", "CCCD already exists.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     Date start=format.parse(startDate);
                     Date today=new Date();
@@ -171,87 +168,82 @@ public class AddNewStaffServlet extends HttpServlet {
                     }
                     if (name.trim().isEmpty()) {
                         request.setAttribute("nameerror", "Name is not empty");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if (age <= 18) {
                         request.setAttribute("ageerror", "Staff must be older than 18.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if(dob.trim().isEmpty()){
                         request.setAttribute("ageerror", "Date of birth not empty");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if(address.trim().isEmpty()){
                         request.setAttribute("addresserror", "Address not empty");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if (st.getPhone().equals(s.getPhone())) {
                         request.setAttribute("phoneerror", "Phone number already exists.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if(email.trim().isEmpty()){
                         request.setAttribute("emailerror", "Email not empty.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if (st.getEmail().equals(s.getEmail())) {
                         request.setAttribute("emailerror", "Email already exists.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if(username.trim().isEmpty()){
                         request.setAttribute("usernameerror", "Username not empty");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if (st.getUsername().equals(s.getUsername())) {
                         request.setAttribute("usernameerror", "Username already exists.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if(bank.trim().isEmpty()){
                         request.setAttribute("bankerror", "Bank not empty");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }
                     if (st.getBank().equals(s.getBank())) {
                         request.setAttribute("bankerror", "Bank already exists.");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
                     }if(start.before(today)){
                         request.setAttribute("startdateerror", "Start date from today onwards!");
-                        request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                        return;
+                        hasError = true;
+                    }if(company==null){
+                        request.setAttribute("companyrror", "Company not empty");
+                        hasError = true;
                     }
                 } catch (ParseException ex) {
                     request.setAttribute("ageerror", "Invalid date format.");
-                    request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                    return;
+                    hasError = true;
                 }
             }
             if (!s.getPhone().matches("0[0-9]{9}")) {
                 request.setAttribute("phoneerror", "Please enter a valid phone number: 10 digits starting with 0!");
-                request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!s.getCccd().matches("[0-9]{12}")) {
                 request.setAttribute("cccderror", "Please enter a valid CCCD number: 12 digits!");
-                request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
-            SendEmail e = new SendEmail();
-            e.sendEmailStaff(email, name, username, password2);
+            
         } catch (NumberFormatException st) {
             request.setAttribute("salaryerror", "Invalid salary format.");
+            hasError = true;
+        }
+
+        if (hasError) {
             request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
             return;
         }
+        
         if (stDao.insertStaff(s)) {
+            
+            SendEmail e = new SendEmail();
+            e.sendEmailStaff(email, name, username, password2);
             session.setAttribute("staffs", stDao.getAll());
             request.setAttribute("status", "true");
             request.setAttribute("message", "Staff added successfully!");

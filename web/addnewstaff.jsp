@@ -219,7 +219,7 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="salary">Salary</label>
-                                                    <input
+                                                    <input class="format-number"
                                                         type="text"
                                                         id="salary"
                                                         name="salary"

@@ -98,13 +98,13 @@ public class AddNewsServlet extends HttpServlet {
         String source = request.getParameter("source");    
         Part filePart=request.getPart("file");
         String image="";
+        boolean hasError = false;
         if(filePart!=null && filePart.getSize()>0){
             String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
             if(!fileExtention.matches("jpg|jpeg")){
                 request.setAttribute("fileerror", "Only jpg");
-                request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             String uploadpath=getServletContext().getRealPath("/")+"images/news";
             File uploadDir=new File(uploadpath);
@@ -119,7 +119,6 @@ public class AddNewsServlet extends HttpServlet {
                 while((byteread=fileContent.read(buffer))!= -1){
                     outputStream.write(buffer, 0, byteread);
                 }
-                
             }
             image = "images/news/" + filename;           
         }
@@ -132,24 +131,24 @@ public class AddNewsServlet extends HttpServlet {
         try{
             if(title.trim().isEmpty()){
                 request.setAttribute("titleerror", "Title is not empty");
-                request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }if(content.trim().isEmpty()){
                 request.setAttribute("contenterror", "Content is not empty");
-                request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }if(source.trim().isEmpty()){
                 request.setAttribute("sourceerror", "Source is not empty");
-                request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if(!CommonValidation.isValidNewsDate(date)){
                 request.setAttribute("dateError", "Date need to later current date");
-                request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
         }catch(ParseException e){
             System.out.println(""+e);
+        }
+        if (hasError) {
+            request.getRequestDispatcher("addnews.jsp").forward(request, response);
+                return;
         }
         if (ndao.insertNews(anew)) {
             request.setAttribute("status", "true");
