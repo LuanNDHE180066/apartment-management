@@ -68,7 +68,7 @@
                                     <div class="col-md-4">
                                         <select name="year" style="width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px; font-family: 'Roboto', sans-serif;">
                                             <c:forEach begin="${requestScope.startYear}" end="${requestScope.endYear}" var="year">
-                                                <option value="${year}">${year}</option>
+                                                <option ${requestScope.currentYear== year?'selected':''} value="${year}">${year}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
@@ -79,13 +79,12 @@
 
                     <c:when test="${requestScope.screen == 2}">
                         <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 15px; background-color: #e1f5fe; border: 2px solid #ddd; border-radius: 8px; font-family: 'Roboto', sans-serif;">
-                            <div style="font-size: 24px; font-weight: bold; color: black; flex: 1; min-width: 250px;">Tỉ lệ trung bình: ${requestScope.total} VNĐ</div>
                             <form action="dashboard-percent-service" method="post" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; flex: 2; justify-content: flex-end;">
                                 <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px;">
                                     <label for="year">Năm:</label>
                                     <select name="year" id="year" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach begin="${requestScope.startYear}" end="${requestScope.endYear}" var="year">
-                                            <option value="${year}">${year}</option>
+                                            <option ${requestScope.currentYear== year?'selected':''} value="${year}">${year}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -93,7 +92,7 @@
                                     <label for="serviceId">Dịch vụ:</label>
                                     <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option value="${item.id}">${item.name}(${item.id})</option>
+                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.id}">${item.name}(${item.id})</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -105,13 +104,12 @@
 
                     <c:when test="${requestScope.screen == 3}">
                         <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; padding: 15px; background-color: #e1f5fe; border: 2px solid #ddd; border-radius: 8px; font-family: 'Roboto', sans-serif;">
-                            <div style="font-size: 24px; font-weight: bold; color: black; flex: 1; min-width: 250px;">Tỉ lệ trung bình: ${requestScope.total} VNĐ</div>
-                            <form action="dashboard-percent-service" method="post" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; flex: 2; justify-content: flex-end;">
+                            <form action="dashboard-number-service" method="post" style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap; flex: 2; justify-content: flex-end;">
                                 <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 200px;">
                                     <label for="year">Năm:</label>
                                     <select name="year" id="year" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach begin="${requestScope.startYear}" end="${requestScope.endYear}" var="year">
-                                            <option value="${year}">${year}</option>
+                                            <option ${requestScope.currentYear== year?'selected':''} value="${year}">${year}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -119,7 +117,7 @@
                                     <label for="serviceId">Dịch vụ:</label>
                                     <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option value="${item.id}">${item.name}(${item.id})</option>
+                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.id}">${item.name}(${item.id})</option>
                                         </c:forEach>
                                     </select>
                                 </div>
