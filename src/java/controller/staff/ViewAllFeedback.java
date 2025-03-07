@@ -14,7 +14,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import model.Account;
 import model.Feedback;
@@ -136,6 +135,7 @@ public class ViewAllFeedback extends HttpServlet {
         List<Feedback> listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
         request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
         session.setAttribute("listFeedback", listFeedback);
+      
         request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
     }
 
@@ -149,4 +149,7 @@ public class ViewAllFeedback extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+   
 }
+
+
