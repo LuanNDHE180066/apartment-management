@@ -163,14 +163,14 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-    
-    public List<EmailInvoice> getEmailInvoicesActiveResident(){
-        String sql ="select * from LivingAparment la join Resident r on la.rId=r.Id where status =1";
+
+    public List<EmailInvoice> getEmailInvoicesActiveResident() {
+        String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1";
         List<EmailInvoice> list = new ArrayList<>();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            ResultSet rs =st.executeQuery();
-            while(rs.next()){
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
                 String aid = rs.getString("aid");
                 String email = rs.getString("email");
                 EmailInvoice ei = new EmailInvoice(aid, email);
@@ -180,6 +180,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
+
     public List<LivingApartment> getAllActiveLivingApartmentObejct() {
         String sql = "select * from LivingAparment where status =1";
         List<LivingApartment> list = new ArrayList<>();
@@ -207,7 +208,6 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-    
 
     public int getNumberLivingResident() {
         String sql = "select  count(*) as no from LivingAparment where status =1 ";
@@ -223,15 +223,13 @@ public class LivingApartmentDAO extends DBContext {
     }
 
     public int getNumberLivingByTime(int month, int year) {
-        String sql = "DECLARE @month INT = ?;  -- Tháng cần kiểm tra\n"
-                + "DECLARE @year INT = ?; -- Năm cần kiểm tra\n"
-                + "\n"
-                + "DECLARE @date DATETIME = DATEFROMPARTS(@year, @month, 1);\n"
-                + "\n"
-                + "SELECT count(*) as no \n"
-                + "FROM LivingAparment\n"
-                + "WHERE @date >= startdate \n"
-                + "      AND (@date <= enddate OR enddate IS NULL);";
+        String sql = "		DECLARE @month INT = ?;  -- Tháng cần kiểm tra\\n\"\n"
+                + "                DECLARE @year INT = ?; -- Năm cần kiểm tra\\n\"\n"
+                + "                DECLARE @date DATETIME = DATEFROMPARTS(@year, @month, 1);\n"
+                + "                SELECT count(*) as no \n"
+                + "                FROM LivingAparment\n"
+                + "                WHERE @date >= startdate\n"
+                + "                AND (@date <= enddate OR enddate IS NULL);";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, month);
