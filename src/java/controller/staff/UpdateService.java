@@ -98,14 +98,24 @@ public class UpdateService extends HttpServlet {
             request.setAttribute("error", "Name or description is not a blank");
             request.setAttribute("companies", cd.getAll());
             request.setAttribute("types", csd.getAll());
-            request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
+            request.getRequestDispatcher("updateservice.jsp").forward(request, response);
             return;
         }
         ServiceDAO sd = new ServiceDAO();
+        Service sv = sd.getById(id);
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
+        Service input = new Service(id, name, price, des, csd.getByCategoryId(categoryId), cd.getById(companyId), 0, sv.getStartDate(), sv.getEndDate(), unit);
+        if(input.equals(sv)){
+            request.setAttribute("error", "You doesn't change anything");
+            request.setAttribute("service", sv);
+            request.setAttribute("companies", cd.getAll());
+            request.setAttribute("types", csd.getAll());
+            request.getRequestDispatcher("updateservice.jsp").forward(request, response);
+            return;
+        }
         int status = Integer.parseInt(request.getParameter("status"));
-            if (status != sd.getById(id).getStatus()) {//trường hợp đổi status
+            if (status != sv.getStatus()) {//trường hợp đổi status
             if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
                 sd.addService(name, price, des, categoryId, companyId, status,unit);
             }

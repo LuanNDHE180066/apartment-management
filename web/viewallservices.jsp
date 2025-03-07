@@ -13,6 +13,71 @@
         <link rel="stylesheet" href="style.css" />
         <link rel="stylesheet" href="css/custom.css" />
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
+        <style>
+            .graph_head h2 {
+        text-align: center;
+        font-size: 24px;
+        font-weight: bold;
+        margin-bottom: 20px;
+    }
+
+    form {
+        padding: 15px 0;
+    }
+
+    .align-items-center .form-control {
+        height: 38px;
+        font-size: 14px;
+    }
+
+    .align-items-center .btn {
+        height: 38px;
+        font-size: 14px;
+    }
+
+    .table_section {
+        padding: 20px;
+    }
+
+    .table th, .table td {
+        text-align: center;
+        vertical-align: middle;
+        padding: 12px;
+    }
+
+    .table thead {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .table tbody tr:nth-child(even) {
+        background-color: #f9f9f9;
+    }
+
+    .table tbody tr:hover {
+        background-color: #f1f1f1;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+        border-color: #004494;
+    }
+
+    .d-flex {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .col-md-4.d-flex {
+        justify-content: flex-start;
+    }
+        </style>
     </head>
     <body class="inner_page tables_page">
         <div class="full_container">
@@ -100,7 +165,7 @@
                                                                 <td>${list.company.name}</td>
                                                                 <td>${list.status==1?'Active':'Inactive'}</td>
                                                                 <td>
-                                                                    <fmt:formatDate value="${list.startDate}" pattern="dd-MM-yyyy"></fmt:formatDate>
+                                                                    ${list.startDate}
                                                                 </td>
                                                                 <td>${list.endDate}</td>
                                                                 <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
