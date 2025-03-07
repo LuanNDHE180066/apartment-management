@@ -381,7 +381,6 @@
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
-                                                                                                                        <option value="">Choose shift</option>
                                                                                                                         <option value="1" data-time-end="10">8:00 - 10:00</option>
                                                                                                                         <option value="2" data-time-end="15">13:00 - 15:00</option>
                                                                                                                         <option value="3" data-time-end="17">15:00 - 17:00</option>

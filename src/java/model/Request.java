@@ -138,10 +138,10 @@ public class Request {
         if(this.getShif().equals("1")){
             return "8:00 - 10:00";
         }
-        else if(this.getShif().equals("1")){
+        else if(this.getShif().equals("2")){
             return "13:00 - 15:00";
         }
-        else if(this.getShif().equals("1")){
+        else if(this.getShif().equals("3")){
             return "15:00 - 17:00";
         }else{
             return "18:00-20:00";

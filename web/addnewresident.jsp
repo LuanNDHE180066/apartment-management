@@ -10,7 +10,7 @@
             <meta name="viewport" content="width=device-width, initial-scale=1" />
             <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
             <!-- site metas -->
-<title>Apartment management</title>            <link rel="icon" href="images/fevicon.png" type="image/png" />
+            <title>Apartment management</title>            <link rel="icon" href="images/fevicon.png" type="image/png" />
             <!-- bootstrap css -->
             <link rel="stylesheet" href="css/bootstrap.min.css" />
             <!-- site css -->
@@ -35,64 +35,81 @@
             <![endif]-->
             <style>
                 .form-container {
-                    width: 100%;
                     max-width: 900px;
                     margin: 50px auto;
-                    background: #ffffff;
                     padding: 40px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+                    background: #ffffff;
                     border-radius: 8px;
+                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
                     border: 1px solid #e3e3e3;
                 }
-                .form-container h1 {
-                    text-align: center;
-                    margin-bottom: 30px;
-                    font-size: 28px;
-                    color: #333;
-                }
+
                 .form-group {
                     margin-bottom: 20px;
-                    width: 100%;
                 }
-                .form-group label {
-                    display: block;
+
+                label {
                     font-weight: 600;
-                    margin-bottom: 8px;
-                    color: #666;
+                    margin-bottom: 5px;
+                    display: block;
                 }
-                .form-group input {
+
+                input {
                     width: 100%;
-                    padding: 15px;
+                    padding: 12px;
                     border: 1px solid #ccc;
                     border-radius: 6px;
                     font-size: 16px;
-                    color: #333;
                 }
-                .form-group input:focus {
+
+                input:focus {
                     border-color: #4a90e2;
                     outline: none;
                     box-shadow: 0 0 4px rgba(74, 144, 226, 0.5);
                 }
-                .two-cols {
+
+                /* Structuring input fields */
+                .one-col {
                     display: flex;
-                    justify-content: space-between;
+                    flex-direction: column;
                 }
-                .two-cols .col {
-                    width: 48%;
-                }
+
+                .two-cols,
                 .three-cols {
                     display: flex;
                     justify-content: space-between;
+                    gap: 15px;
                 }
+
+                .two-cols .col {
+                    width: 48%;
+                }
+
                 .three-cols .col {
                     width: 32%;
                 }
+
+                /* Gender options displayed horizontally */
+                .gender-options {
+                    display: flex;
+                    gap: 15px;
+                    margin-top: 5px;
+                }
+
+                .gender-options label {
+                    display: flex;
+                    align-items: center;
+                    gap: 5px;
+                }
+
+                /* Submit button styling */
                 .form-button {
                     text-align: center;
-                    margin-top: 30px;
+                    margin-top: 20px;
                 }
+
                 .form-button button {
-                    padding: 15px 30px;
+                    padding: 12px 30px;
                     font-size: 18px;
                     border: none;
                     border-radius: 6px;
@@ -101,9 +118,19 @@
                     cursor: pointer;
                     transition: background-color 0.3s;
                 }
+
                 .form-button button:hover {
                     background-color: #357ab8;
                 }
+
+                /* Error messages */
+                .error-message {
+                    color: red;
+                    font-size: 14px;
+                    margin-top: 5px;
+                    display: block;
+                }
+
             </style>
         </head>
         <body class="inner_page tables_page">
@@ -120,98 +147,80 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Add New Resident</h1>
+                                    <h1 style="font-weight: bold">Add New Resident</h1>
                                     <form action="addNewResident" method="post">
                                         <div class="form-group">
-                                            <div class="two-cols">
+                                            <div class="three-cols">
                                                 <div class="col">
                                                     <label for="name">Name</label>
-                                                    <input
-                                                        type="text"
-                                                        id="name"
-                                                        name="name"
-                                                        placeholder="Enter full name"
-                                                        required
-                                                        />
+                                                    <input type="text" id="name" name="name" placeholder="Enter full name" required />
                                                 </div>
                                                 <div class="col">
                                                     <label for="dob">Date of Birth</label>
                                                     <input type="date" id="dob" name="dob" required />
                                                 </div>
+                                                <div class="col">
+                                                    <label>Gender</label>
+                                                    <div class="gender-options">
+                                                        <label for="male">
+                                                            <input type="radio" id="male" name="gender" value="M" required />
+                                                            Male
+                                                        </label>
+                                                        <label for="female">
+                                                            <input type="radio" id="female" name="gender" value="F" required />
+                                                            Female
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <div class="one-col">
                                                 <label for="address">Address</label>
-                                                <input
-                                                    type="text"
-                                                    id="address"
-                                                    name="address"
-                                                    placeholder="Enter address"
-                                                    required
-                                                    />
+                                                <input type="text" id="address" name="address" placeholder="Enter address" required />
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col">
                                                     <label for="phone">Phone</label>
-                                                    <input
-                                                        type="number"
-                                                        id="phone"
-                                                        name="phone"
-                                                        placeholder="Enter phone number"
-                                                        required
-                                                        />
-                                                    <span id="phone-error" style="color: red"></span>
+                                                    <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required />
+                                                    <span id="phone-error" class="error-message"></span>
                                                 </div>
                                                 <div class="col">
                                                     <label for="email">Email</label>
-                                                    <input
-                                                        type="email"
-                                                        id="email"
-                                                        name="email"
-                                                        placeholder="Enter email"
-                                                        required
-                                                        />
-                                                    <span id="email-error" style="color: red"></span>
+                                                    <input type="email" id="email" name="email" placeholder="Enter email" required />
+                                                    <span id="email-error" class="error-message"></span>
                                                 </div>
                                             </div>
                                         </div>
+
                                         <div class="form-group">
                                             <div class="three-cols">
                                                 <div class="col">
                                                     <label for="id">ID</label>
-                                                    <input
-                                                        type="number"
-                                                        id="id"
-                                                        name="id"
-                                                        placeholder="Enter ID"
-                                                        required
-                                                        />
-                                                    <span id="id-error" style="color: red"></span>
+                                                    <input type="number" id="id" name="id" placeholder="Enter ID" required />
+                                                    <span id="id-error" class="error-message"></span>
                                                 </div>
                                                 <div class="col">
                                                     <label for="username">Username</label>
-                                                    <input
-                                                        type="text"
-                                                        id="username"
-                                                        name="username"
-                                                        placeholder="Enter username"
-                                                        required
-                                                        />
-                                                    <span id="username-error" style="color: red"></span>
+                                                    <input type="text" id="username" name="username" placeholder="Enter username" required />
+                                                    <span id="username-error" class="error-message"></span>
                                                 </div>
-                                              
                                             </div>
                                         </div>
+
                                         <div class="form-button">
                                             <button type="submit">Add Resident</button>
                                         </div>
+
                                     </form>
                                 </div>
                             </div>
                         </div>
+
                         <!-- end dashboard inner -->
                     </div>
                 </div>

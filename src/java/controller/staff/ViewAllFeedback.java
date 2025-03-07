@@ -20,6 +20,7 @@ import model.Account;
 import model.Feedback;
 import model.RequestType;
 import util.Util;
+import java.sql.Timestamp;
 
 /**
  *
@@ -107,6 +108,7 @@ public class ViewAllFeedback extends HttpServlet {
         session.setAttribute("listFeedback", listFeedback);
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentPage", currentPage);
+        request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
 
         // If no feedback found, show message
         if (listFeedback.isEmpty()) {
@@ -130,7 +132,9 @@ public class ViewAllFeedback extends HttpServlet {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
+
         List<Feedback> listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
+        request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
         session.setAttribute("listFeedback", listFeedback);
         request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
     }

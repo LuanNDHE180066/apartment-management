@@ -159,6 +159,15 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
+            .red-dot {
+                display: inline-block;
+                width: 10px;
+                height: 10px;
+                background-color: red;
+                border-radius: 50%;
+                margin-left: 5px;
+            }
+
 
 
 
@@ -241,7 +250,9 @@
                                                         <c:forEach items="${requestScope.listFeedbackU}" var="feedback" varStatus="loop">
                                                             <!-- First row: Author with blue background and rounded corners -->
                                                             <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}" >
-                                                                <td>${feedback.resident.name}</td>
+                                                                <td>${feedback.resident.name}<c:if test="${feedback.status == 1}">
+                                                                        <span class="red-dot"></span>
+                                                                    </c:if></td>
                                                                 <td>${feedback.requestType.name}</td>
                                                                 <td>${feedback.date}</td>
                                                                 <td>
@@ -256,10 +267,12 @@
                                                                 </td>
                                                                 <td class="action-column">
                                                                     <div class="dropdown-content">
-                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
+                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit  </a>
                                                                         <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                     </div>
                                                                 </td>
+
+
                                                             </tr>
 
                                                             <!-- Second row: Details with white background -->

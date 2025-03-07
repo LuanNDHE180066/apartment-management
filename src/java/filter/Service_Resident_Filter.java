@@ -29,7 +29,9 @@ import model.Account;
     "/pay-invoice-resident",
     "/view-invoice-resident",
     "/view-service-resident",
-    "/update-service-resident"})
+    "/update-service-resident",
+    "/viewinvoice-byresident.jsp",
+    "/viewservice-resident.jsp"})
 public class Service_Resident_Filter implements Filter {
 
     private static final boolean debug = true;
@@ -113,8 +115,8 @@ public class Service_Resident_Filter implements Filter {
         }
 
         doBeforeProcessing(request, response);
-        
-         doBeforeProcessing(request, response);
+
+        doBeforeProcessing(request, response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
@@ -123,7 +125,7 @@ public class Service_Resident_Filter implements Filter {
         if (a.getRoleId() != 1) {
             res.sendRedirect("401_error.jsp");
             return;
-        } 
+        }
 
         Throwable problem = null;
         try {

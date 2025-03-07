@@ -192,7 +192,7 @@ public class UpdateFeedback extends HttpServlet {
         feedback.setRequestType(rtd.getById(tID));
         feedback.setDetail(detail);
         feedback.setRate(rate);
-        feedback.setDate(new Timestamp(System.currentTimeMillis()).toString());
+        feedback.setStatus(0);
         fd.editFeedback(feedback);
 
         response.sendRedirect("view-feed-back-user");

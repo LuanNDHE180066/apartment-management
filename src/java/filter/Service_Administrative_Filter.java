@@ -14,17 +14,26 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
-import org.apache.http.HttpRequest;
 
 /**
  *
- * @author quang
+ * @author thanh
  */
-public class AuthorizedFilter implements Filter {
+@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
+            "/floorinformation.jsp",
+            "/updateservice.jsp",
+            "/viewallservices.jsp",
+            "/add-service-staff",
+            "/update-service-staff",
+            "/view-apartmentservice-staff",
+            "/view-floor-staff",
+            "/all-services"})
+public class Service_Administrative_Filter implements Filter {
 
     private static final boolean debug = true;
 
@@ -33,13 +42,13 @@ public class AuthorizedFilter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public AuthorizedFilter() {
+    public Service_Administrative_Filter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AuthorizedFilter:DoBeforeProcessing");
+            log("Service_Administrative_Filter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -67,7 +76,7 @@ public class AuthorizedFilter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AuthorizedFilter:DoAfterProcessing");
+            log("Service_Administrative_Filter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -103,32 +112,21 @@ public class AuthorizedFilter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("AuthorizedFilter:doFilter()");
+            log("Service_Administrative_Filter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
+
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
-        String uri = req.getServletPath();
         Account a = (Account) session.getAttribute("account");
-        // Thêm điều kiện kiểm tra tài nguyên tĩnh
-        if (uri.endsWith(".css") || uri.endsWith(".js") || uri.endsWith(".jpg") || uri.endsWith(".png") || uri.endsWith(".gif") || uri.endsWith(".jpeg") || uri.endsWith(".svg")) {
-            // Bỏ qua Filter cho tài nguyên tĩnh
-            chain.doFilter(request, response);
-            return;
-        }
-
-        if (!uri.contains("login.jsp") && !uri.contains("requestpassword.jsp") && !uri.contains("reset-password") && a == null && !uri.contains("request-password")
-                && !uri.contains("login-google")
-                && !uri.contains("login")
-                && !uri.contains("logout")
-                && !uri.contains("401_error.jsp")
-                && !uri.contains("404_error.jsp")) {
+        if (a.getRoleId() != 2) {
             res.sendRedirect("401_error.jsp");
             return;
-        }
+        } 
+        
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -184,7 +182,7 @@ public class AuthorizedFilter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("AuthorizedFilter:Initializing filter");
+                log("Service_Administrative_Filter:Initializing filter");
             }
         }
     }
@@ -195,9 +193,9 @@ public class AuthorizedFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("AuthorizedFilter()");
+            return ("Service_Administrative_Filter()");
         }
-        StringBuffer sb = new StringBuffer("AuthorizedFilter(");
+        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

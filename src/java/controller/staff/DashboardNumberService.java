@@ -67,12 +67,26 @@ public class DashboardNumberService extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+         int year;
+        String sid;
+        if(request.getParameter("year")==null && request.getParameter("serviceId") ==null ){
+            year = LocalDate.now().getYear();
+            ServiceDAO sd = new ServiceDAO();
+            sid =sd.getAll().get(0).getId();
+        }
+        else{
+            doPost(request, response);
+            return;
+        }
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
+        request.setAttribute("currentYear", year);
+        request.setAttribute("currentSvId", sid);
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
-        request.setAttribute("screen", 3);
+        request.setAttribute("data", sd.getNumberUsedAllMonth(year, sid));
+        request.setAttribute("screen", 2);
         request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     }
 
@@ -92,6 +106,8 @@ public class DashboardNumberService extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
+        request.setAttribute("currentYear", year);
+        request.setAttribute("currentSvId", serviceId);
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
         request.setAttribute("screen", 3);
