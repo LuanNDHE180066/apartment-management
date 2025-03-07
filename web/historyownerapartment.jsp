@@ -123,6 +123,7 @@
                                                         </c:forEach>
                                                     </tbody>
                                                 </table>
+                                                <span><a href="viewdetailapartment-admin?apartmentId=${param.aid}">Back</a></span>
                                             </div>
                                         </div>
                                     </div>
