@@ -110,7 +110,9 @@ public class ServiceDAO extends DBContext {
                 s.setCompany(cd.getByServiceId(s.getId()));
                 s.setStatus(rs.getInt(7));
                 s.setStartDate(rs.getDate("startdate").toString());
-                s.setEndDate(rs.getDate("enddate").toString());
+                if (rs.getDate("enddate") != null) {
+                    s.setEndDate(rs.getDate("enddate").toString());
+                }
                 s.setUnit(rs.getString("unit"));
                 list.add(s);
             }
@@ -118,7 +120,7 @@ public class ServiceDAO extends DBContext {
         } catch (SQLException e) {
             System.out.println(e);
         }
-        return null;
+        return list;
 
     }
 
@@ -149,11 +151,11 @@ public class ServiceDAO extends DBContext {
         return 0;
     }
 
-    public String addService(String name, float price, String des, String type, String company, int status,String unit) {
+    public String addService(String name, float price, String des, String type, String company, int status, String unit) {
         String sql = "INSERT INTO [dbo].[Service] (Id, Name, UnitPrice, Description, scId, cId, Status,startDate,unit)\n"
                 + "VALUES\n"
                 + "(?, ?, ?, ?, ?, ?, ?,?,?)";
-        String newServiceId= "SVC" + (this.getNumberService() + 1);
+        String newServiceId = "SVC" + (this.getNumberService() + 1);
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, newServiceId);
@@ -172,13 +174,14 @@ public class ServiceDAO extends DBContext {
         }
         return newServiceId;
     }
-    public Service getById(String id){
+
+    public Service getById(String id) {
         String sql = "Select * from Service where id =?";
         CompanyDAO cd = new CompanyDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
-            st.setString(1,id);
+            st.setString(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 String name = rs.getString("name");
@@ -200,8 +203,9 @@ public class ServiceDAO extends DBContext {
         }
         return null;
     }
-    public void turnToInActive(String id){
-        String sql ="update service set status = 0, enddate =? where id=?";
+
+    public void turnToInActive(String id) {
+        String sql = "update service set status = 0, enddate =? where id=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setDate(1, java.sql.Date.valueOf(LocalDate.now()));
@@ -211,25 +215,28 @@ public class ServiceDAO extends DBContext {
             System.out.println(e);
         }
     }
-    public int getNumberUsedServiceId(String id){
-        String sql ="select count(*) as no from MonthlyInvoice where sid =?";
+
+    public int getNumberUsedServiceId(String id) {
+        String sql = "select count(*) as no from MonthlyInvoice where sid =?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()){
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
                 return rs.getInt("no");
             }
         } catch (SQLException e) {
         }
         return 0;
     }
-    public float getPercentOfUsingService(String sid){
+
+    public float getPercentOfUsingService(String sid) {
         LivingApartmentDAO ld = new LivingApartmentDAO();
-        return (float)this.getNumberUsedServiceId(sid)/ld.getNumberLivingResident()*100;
+        return (float) this.getNumberUsedServiceId(sid) / ld.getNumberLivingResident() * 100;
     }
-    public int getNumberUsedByTime(int year,int month,String sid){
-        String sql ="select count(*) as no from InvoiceDetail id join Invoice i on id.invoiceId=i.id "
+
+    public int getNumberUsedByTime(int year, int month, String sid) {
+        String sql = "select count(*) as no from InvoiceDetail id join Invoice i on id.invoiceId=i.id "
                 + "where year(i.invoicedate)=? "
                 + "and month(i.invoicedate)=?"
                 + " and id.serviceId=?";
@@ -239,45 +246,49 @@ public class ServiceDAO extends DBContext {
             st.setInt(2, month);
             st.setString(3, sid);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getInt("no");
             }
         } catch (SQLException e) {
         }
         return 0;
     }
-    public List<Integer> getNumberUsedAllMonth(int year,String sid){
+
+    public List<Integer> getNumberUsedAllMonth(int year, String sid) {
         List<Integer> list = new ArrayList<>();
-        for (int i = 0; i <=11; i++) {
-            int num = this.getNumberUsedByTime(year, i+1, sid);
+        for (int i = 0; i <= 11; i++) {
+            int num = this.getNumberUsedByTime(year, i + 1, sid);
             list.add(num);
         }
         return list;
     }
-    public List<Float> getPercentUsedAllMonth(int year,String sid){
+
+    public List<Float> getPercentUsedAllMonth(int year, String sid) {
         List<Float> list = new ArrayList<>();
         LivingApartmentDAO ld = new LivingApartmentDAO();
-        for (int i = 0; i <=11; i++) {
-            if(i+1 > LocalDate.now().getMonthValue()){
+        for (int i = 0; i <= 11; i++) {
+            if (i + 1 > LocalDate.now().getMonthValue()) {
                 break;
             }
-            float percent = (this.getNumberUsedByTime(year, i+1, sid)/(float)ld.getNumberLivingByTime(i+1, year))*100;
+            float percent = (this.getNumberUsedByTime(year, i + 1, sid) / (float) ld.getNumberLivingByTime(i + 1, year)) * 100;
             list.add(percent);
         }
         return list;
     }
-    public Date getLastInvoice(){
-        String sql="select * from invoice order by invoicedate desc";
+
+    public Date getLastInvoice() {
+        String sql = "select * from invoice order by invoicedate desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            if(rs.next()){
+            if (rs.next()) {
                 return rs.getDate("invoicedate");
             }
         } catch (SQLException e) {
         }
         return null;
     }
+
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
         System.out.println(sd.getNumberUsedByTime(2025, 1, "SVC1"));

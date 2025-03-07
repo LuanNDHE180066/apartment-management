@@ -1,4 +1,6 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <html>
     <head>
@@ -82,7 +84,7 @@
                                                             <th>Category</th>
                                                             <th>Supplier</th>
                                                             <th>Status</th>
-                                                            <th>Start</th>
+                                                            <th style="width: 10%">Start</th>
                                                             <th>End</th>
                                                             <th>Action</th>
                                                         </tr>
@@ -97,7 +99,9 @@
                                                                 <td>${list.categoryService.name}</td>
                                                                 <td>${list.company.name}</td>
                                                                 <td>${list.status==1?'Active':'Inactive'}</td>
-                                                                <td>${list.startDate}</td>
+                                                                <td>
+                                                                    <fmt:formatDate value="${list.startDate}" pattern="dd-MM-yyyy"></fmt:formatDate>
+                                                                </td>
                                                                 <td>${list.endDate}</td>
                                                                 <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>

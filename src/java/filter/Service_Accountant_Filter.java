@@ -34,7 +34,8 @@ import model.Account;
             "/dashboard-percent-service",
             "/generate-invoice-staff",
             "/update-invoice-staff",
-            "/view-invoice-staff"})
+            "/view-invoice-staff",
+            "/view-apartmentservice-staff"})
 public class Service_Accountant_Filter implements Filter {
 
     private static final boolean debug = true;

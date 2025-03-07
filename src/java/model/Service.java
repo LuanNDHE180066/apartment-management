@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo
@@ -40,8 +44,9 @@ public class Service {
         this.unit = unit;
     }
     
-    public String getStartDate() {
-        return startDate;
+    public Date getStartDate() throws ParseException {
+        SimpleDateFormat sd = new SimpleDateFormat("yyyy-MM-dd");
+        return sd.parse(startDate);
     }
 
     public void setStartDate(String startDate) {
