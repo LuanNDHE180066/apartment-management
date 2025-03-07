@@ -27,6 +27,7 @@ import model.Feedback;
 import model.Request;
 import model.RequestType;
 import model.Staff;
+import java.sql.Timestamp;
 import util.Util;
 
 /**
@@ -54,7 +55,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
             return list;
@@ -62,6 +64,22 @@ public class FeedbackDAO extends DBContext {
             Logger.getLogger(FeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public String getLastId() {
+        String sql = "select top 1 id from Feedback order by date desc";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                String lastId = rs.getString("id");
+                return lastId;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+
     }
 
     public List<Feedback> getFeedbackByRole(String role) {
@@ -96,30 +114,27 @@ public class FeedbackDAO extends DBContext {
     public int sendFeedback(String detail, String rID, String tID, int rate, List<String> img) {
         String sql = "INSERT INTO Feedback (Id, Detail, Date, rId, tId, rate) VALUES (?, ?, ?, ?, ?, ?)";
 
-        List<Feedback> list = getAllFeedback();
+        String lastId = getLastId();
 
         Util u = new Util();
-
-        String id = "";
-        if (list == null) {
-            id = "F1";
+        if (lastId == null) {
+            lastId = "F0";
         } else {
-            id = "F" + list.size();
+            lastId = "F" + u.getNumberFromTextPlusOne(lastId);
         }
-        LocalDate currentDate = LocalDate.now();
-        Date sqlDate = Date.valueOf(currentDate);
+        Timestamp currentTime = new Timestamp(System.currentTimeMillis());
 
         try (PreparedStatement st = connection.prepareStatement(sql)) {
-            st.setString(1, id);
+            st.setString(1, lastId);
             st.setString(2, detail);
-            st.setDate(3, sqlDate);
+            st.setTimestamp(3, currentTime);
             st.setString(4, rID);
             st.setString(5, tID);
             st.setInt(6, rate);
 
             st.executeUpdate();
             if (img != null) {
-                insertImgFeedback(img, id); // insert list img to db
+                insertImgFeedback(img, lastId); // insert list img to db
             }
             return 0;
         } catch (SQLException e) {
@@ -150,7 +165,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
 
@@ -195,7 +211,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
             return list;
@@ -233,7 +250,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
             return list;
@@ -260,7 +278,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
             return list;
@@ -271,49 +290,56 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> filterFeedback(String residentName, String serviceId, String startDate, String endDate, String role) {
-        String sql = "select * from Feedback f join Resident r on r.Id = f.rId  where 1 = 1 ";
-        FeedbackDAO dao = new FeedbackDAO();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        if (residentName != null) {
-            sql += " and r.name like '%" + residentName + "%'";
-        }
-        if (serviceId != "") {
-            sql += " and f.tid = '" + serviceId + "'";
-        }
+        StringBuilder sql = new StringBuilder("SELECT * FROM Feedback f JOIN Resident r ON r.Id = f.rId WHERE 1=1 ");
+        List<Object> params = new ArrayList<>();
 
-        if (startDate != "") {
-            Date date = Date.valueOf(startDate);
-            String formatDate = format.format(date);
-            sql += " and f.date >= '" + formatDate + "'";
+        if (residentName != null && !residentName.trim().isEmpty()) {
+            sql.append(" AND r.name LIKE ?");
+            params.add("%" + residentName + "%");
         }
-        if (endDate != "") {
-            Date date = Date.valueOf(endDate);
-            String formatDate = format.format(date);
-            sql += " and f.date <= '" + formatDate + "'";
+        if (serviceId != null && !serviceId.trim().isEmpty()) {
+            sql.append(" AND f.tid = ?");
+            params.add(serviceId);
         }
+        if (startDate != null && !startDate.trim().isEmpty()) {
+            sql.append(" AND f.date >= ?");
+            params.add(Date.valueOf(startDate)); // Safe conversion
+        }
+        if (endDate != null && !endDate.trim().isEmpty()) {
+            sql.append(" AND f.date <= ?");
+            params.add(Date.valueOf(endDate)); // Safe conversion
+        }
+        sql.append(" order by date desc");
+
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                List<String> img = getFeedbackImgs(rs.getString("id"));
-                list.add(new Feedback(
-                        rs.getString("id"),
-                        rs.getString("detail"),
-                        rs.getString("date"),
-                        daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
-                        rs.getInt("rate"),
-                        img
-                ));
+
+        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+            for (int i = 0; i < params.size(); i++) {
+                ps.setObject(i + 1, params.get(i));
             }
-            return dao.getFeebackAfterFilter(list, role);
+
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    List<String> img = getFeedbackImgs(rs.getString("id"));
+                    list.add(new Feedback(
+                            rs.getString(1),
+                            rs.getString(2),
+                            rs.getString(3),
+                            daoR.getById(rs.getString(4)),
+                            daoRT.getById(rs.getString(5)),
+                            rs.getInt(6),
+                            img,
+                            rs.getInt(7)
+                    ));
+                }
+            }
         } catch (SQLException ex) {
             Logger.getLogger(FeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+
+        return getFeebackAfterFilter(list, role);
     }
 
     public List<Feedback> getPageByNumber(List<Feedback> list, int page, int number) {
@@ -332,13 +358,30 @@ public class FeedbackDAO extends DBContext {
     public void deleteFB(String id) {
         try {
             String sql = "delete from [Feedback] where id=?";
+            if (getFeedbackImgs(id) != null) {
+                deleteFBImg(id);
+            }
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, id);
             pre.executeUpdate();
+
         } catch (Exception e) {
             e.printStackTrace();
         }
 
+    }
+
+    public boolean deleteFBImg(String id) {
+        try {
+            String deleteImg = "delete from FeedbackImages where feedbackId=?";
+            PreparedStatement st = connection.prepareStatement(deleteImg);
+            st.setString(1, id);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
     }
 
     public List<Feedback> getByResidentIDAndDateAndTypeRequest(String id, String from, String to, String requestType) {
@@ -378,7 +421,8 @@ public class FeedbackDAO extends DBContext {
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 ));
             }
         } catch (SQLException e) {
@@ -396,7 +440,7 @@ public class FeedbackDAO extends DBContext {
             st.setString(1, id);
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
-                list.add(rs.getString(1));
+                list.add(rs.getString(2));
             }
             return list;
         } catch (SQLException e) {
@@ -405,6 +449,8 @@ public class FeedbackDAO extends DBContext {
         return null;
 
     }
+
+    
 
     public boolean insertImgFeedback(List<String> imgs, String fId) {
         String sql = "INSERT INTO [dbo].[FeedbackImages] ([img], [feedbackId]) VALUES (?, ?)";
@@ -425,8 +471,9 @@ public class FeedbackDAO extends DBContext {
         }
         return false;
     }
-    public Feedback getById(String id){
-     String sql="Select * from Feedback where id=?";
+
+    public Feedback getById(String id) {
+        String sql = "Select * from Feedback where id=?";
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         try {
@@ -435,28 +482,67 @@ public class FeedbackDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 List<String> img = getFeedbackImgs(rs.getString("id"));
-                Feedback f=new Feedback(
+                Feedback f = new Feedback(
                         rs.getString("id"),
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
                         daoRT.getById(rs.getString("tid")),
                         rs.getInt("rate"),
-                        img
+                        img,
+                        rs.getInt("Status")
                 );
                 return f;
             }
-            
+
         } catch (SQLException ex) {
             Logger.getLogger(FeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-    
-    
-     return null;
+
+        return null;
+    }
+
+    public boolean editFeedback(Feedback f) {
+        String sql = "UPDATE [dbo].[Feedback]\n"
+                + "SET \n"
+                + "    Detail=?,\n"
+                + "    [Date]=?,\n"
+                + "    tId=?,\n"
+                + "Status=?\n"
+                + "WHERE id=?;";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, f.getDetail());
+            st.setString(2, f.getDate());
+            st.setString(3, f.getRequestType().getId());
+            st.setInt(4, f.getStatus());
+            st.setString(5, f.getId());
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean deleteOneFeedbackImg(String oldImg) {
+        String sql = "delete from FeedbackImages  where img?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, oldImg);
+            st.executeUpdate();
+            return true;
+        } catch (SQLException e) {
+            System.out.println(e
+            );
+        }
+        return false;
     }
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-        System.out.println(dao.getAllFeedbackUser("P113", 1, 5).size());
+        Feedback f = dao.getById("F0");
+        f.setStatus(0);
+        System.out.println(dao.editFeedback(f));
     }
 }

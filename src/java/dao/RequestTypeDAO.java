@@ -46,6 +46,6 @@ public class RequestTypeDAO extends DBContext {
     }
     public static void main(String[] args) {
         RequestTypeDAO dao = new RequestTypeDAO();
-        System.out.println(dao.getAll().size());
+        System.out.println(dao.getById("R003"));
     }
 }

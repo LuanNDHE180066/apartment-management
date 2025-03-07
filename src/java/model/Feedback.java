@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 /**
@@ -17,12 +19,13 @@ public class Feedback {
     private Resident resident;
     private RequestType requestType;
     private int rate;
+    private int status;
     private List<String> img;
 
     public Feedback() {
     }
 
-    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img) {
+    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img,int status) {
         this.id = id;
         this.detail = detail;
         this.date = date;
@@ -30,6 +33,15 @@ public class Feedback {
         this.requestType = requestType;
         this.rate = rate;
         this.img = img;
+        this.status=status;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
     public String getId() {
         return id;
@@ -48,7 +60,19 @@ public class Feedback {
     }
 
     public String getDate() {
-        return date;
+        try {
+            // Convert the stored date string to SQL Timestamp
+            Timestamp timestamp = Timestamp.valueOf(date);
+
+            // Define the desired date format
+            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+            // Convert and return formatted date
+            return sdf.format(timestamp);
+        } catch (IllegalArgumentException e) {
+            System.out.println("Error parsing date: " + e);
+            return date; // Return the original date if there's an error
+        }
     }
 
     public void setDate(String date) {
@@ -86,10 +110,5 @@ public class Feedback {
     public void setImg(List<String> img) {
         this.img = img;
     }
-
-    
-   
-
-   
 
 }

@@ -115,13 +115,16 @@
             }
 
             .profile_img img {
-                width: 180px;
+                width: 180px; /* Ensure width and height are equal */
                 height: 180px;
-                object-fit: cover;
-                border-radius: 50%;
+                object-fit: cover; /* Ensures the image fills the circle without distortion */
+                border-radius: 50%; /* Makes the image a perfect circle */
                 display: block;
                 margin-bottom: 10px;
+                border: 4px solid #007bff; /* Blue border */
             }
+
+
 
 
 
@@ -160,13 +163,7 @@
                                                     <div class="full dis_flex center_text">
                                                         <div class="profile_img">
                                                             <img width="180" class="img-responsive rounded-circle" src="${sessionScope.person.image}" alt="User Image">
-                                                            <form action="update-image" method="post" enctype="multipart/form-data">
-                                                                <div>
-                                                                    <input style="margin-bottom: 5px; margin-top: 5px;" type="file" name="file" id="file" accept="images/avatar/*">
-                                                                    <button type="submit">Upload</button>
-                                                                    <h6 style="color:${status=="true"?"green":"red"};">${requestScope.message}</h6>
-                                                                </div>
-                                                            </form>
+
                                                         </div>
 
                                                         <div class="profile_contant">
@@ -205,6 +202,10 @@
                 </div>
             </div>
         </div>
+
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
 
     </body>
 

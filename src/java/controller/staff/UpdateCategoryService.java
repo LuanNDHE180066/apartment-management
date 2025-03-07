@@ -81,6 +81,8 @@ public class UpdateCategoryService extends HttpServlet {
         String note = request.getParameter("note");
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CategoryServiceValidation val = new CategoryServiceValidation();
+        name = Util.stringNomalize(name);
+        note = Util.stringNomalize(note);
         CategoryService c = new CategoryService(id, name, note);        
         if(name.isBlank()){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
