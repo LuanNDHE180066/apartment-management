@@ -242,6 +242,19 @@ public class ApartmentDAO extends DBContext {
 
     }
 
+    public void updateRoomType(int oldRoomTypeId, int newRoomTypeId) {
+        String sql = "update Apartment set rtId = ? where rtId = ?";
+        PreparedStatement ps;
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, newRoomTypeId);
+            ps.setInt(2, oldRoomTypeId);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
