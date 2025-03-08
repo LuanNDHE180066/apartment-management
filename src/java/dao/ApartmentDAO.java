@@ -225,12 +225,13 @@ public class ApartmentDAO extends DBContext {
         return list;
     }
 
-    public boolean updatenoperson(Apartment a) {
-        String sql = "update Apartment set NoPerson =? where id=?";
+    public boolean updateApartmentInforamtion(Apartment a) {
+        String sql = "update Apartment set NoPerson =?, information = ?  where id=?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, a.getNumberOfPerson());
-            ps.setString(2, a.getId());
+            ps.setString(2, a.getInfor());
+            ps.setString(3, a.getId());
             int rowsUpdated = ps.executeUpdate();
             if (rowsUpdated > 0) {
                 return true;
@@ -240,7 +241,6 @@ public class ApartmentDAO extends DBContext {
         return false;
 
     }
-
 
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
