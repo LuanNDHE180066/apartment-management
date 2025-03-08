@@ -13,20 +13,17 @@
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
-            body {
-                background-color: #f8f9fa;
-                margin: 0;
-                padding: 0;
-                font-family: 'Roboto', sans-serif;
-            }
             .contract-container {
                 background: #ffffff;
                 padding: 40px;
                 border-radius: 10px;
                 box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
                 margin: 50px auto;
-                max-width: 1200px;
+                max-width: 900px;
+                text-align: center;
             }
+
+            /* Định dạng tiêu đề */
             .contract-title {
                 color: #007bff;
                 font-size: 36px;
@@ -34,38 +31,50 @@
                 text-align: center;
                 margin-bottom: 30px;
             }
-            .row-field {
+
+            /* Dàn layout chi tiết hợp đồng + ảnh */
+            .contract-content {
                 display: flex;
-                align-items: center;
-                margin-bottom: 20px;
+                justify-content: space-between;
+                align-items: flex-start;
+                gap: 20px;
             }
-            .field-label {
+
+            /* Card chi tiết hợp đồng */
+            .contract-details {
                 flex: 1;
-                font-weight: bold;
-                color: #555;
+                text-align: left;
+                padding: 20px;
+                border-radius: 10px;
+                background: #f9f9f9;
+                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             }
-            .field-value {
-                flex: 2;
-                padding: 10px;
-                border: 1px solid #ccc;
-                border-radius: 5px;
-                background-color: #f9f9f9;
-            }
+
+            /* Hình ảnh */
             .contract-image {
-                margin: 0;
+                flex: 1;
                 text-align: center;
             }
+
             .contract-image img {
-                max-width: 100%; /* Ensure image is responsive */
-                height: auto; /* Maintain aspect ratio */
-                border-radius: 8px;
-                box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-                cursor: pointer; /* Indicate clickable */
+                max-width: 100%;
+                height: auto;
+                border-radius: 10px;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                cursor: pointer;
+                transition: transform 0.3s ease-in-out;
             }
+
+            .contract-image img:hover {
+                transform: scale(1.05);
+            }
+
+            /* Nút Back */
             .back-button {
                 text-align: center;
                 margin-top: 30px;
             }
+
             #btn {
                 background-color: #007bff;
                 color: white;
@@ -75,14 +84,24 @@
                 font-size: 18px;
                 transition: background-color 0.3s ease;
             }
+
             #btn:hover {
                 background-color: #0056b3;
             }
-            .modal-body img {
-                width: 100%; /* Full width in the modal */
-                max-height: 80vh; /* Limit height for better visibility */
-                object-fit: contain; /* Keep aspect ratio */
-            }
+            .modal-body {
+    text-align: center;
+    padding: 0;
+}
+
+.modal-body img {
+    width: 100%; /* Đảm bảo ảnh chiếm toàn bộ modal */
+    max-width: 900px; /* Giới hạn kích thước tối đa */
+    height: auto;
+    display: block;
+    margin: auto;
+    border-radius: 10px;
+}
+
         </style>
     </head>
     <body>
@@ -95,47 +114,31 @@
                     <!-- end topbar -->
                     <div class="contract-container">
                         <h2 class="contract-title">${requestScope.contract.title}</h2>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="row-field">
-                                    <div class="field-label">Contract ID:</div>
-                                    <div class="field-value">${requestScope.contract.id}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Staff:</div>
-                                    <div class="field-value">${requestScope.contract.staff.name}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Admin:</div>
-                                    <div class="field-value">${requestScope.contract.admin.name}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Accountant:</div>
-                                    <div class="field-value">${requestScope.contract.accountant.name}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Company:</div>
-                                    <div class="field-value">${requestScope.contract.company.name}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Sign Date:</div>
-                                    <div class="field-value">${requestScope.contract.signDate}</div>
-                                </div>
-                                <div class="row-field">
-                                    <div class="field-label">Description:</div>
-                                    <div class="field-value">${requestScope.contract.description}</div>
-                                </div>
+
+                        <div class="contract-content">
+                            <!-- Contract Details -->
+                            <div class="contract-details">
+                                <h3>Contract Details</h3>
+                                <p><strong>Staff:</strong> ${requestScope.contract.staff.name}</p>
+                                <p><strong>Admin:</strong> ${requestScope.contract.admin.name}</p>
+                                <p><strong>Accountant:</strong> ${requestScope.contract.accountant.name}</p>
+                                <p><strong>Company:</strong> ${requestScope.contract.company.name}</p>
+                                <p><strong>Sign Date:</strong> ${requestScope.contract.signDate}</p>
+                                <p><strong>Description:</strong> ${requestScope.contract.description}</p>
                             </div>
-                            <div class="col-md-6 contract-image">
-                                <strong>Image:</strong>
-                                <br/>
-                                <img src="images/avatar/anh.jpg" alt="Contract Image" data-toggle="modal" data-target="#imageModal" />
+
+                            <!-- Contract Image -->
+                            <div class="contract-image">
+                                <p><strong>Image:</strong></p>
+                                <img src="${requestScope.contract.image}" alt="Contract Image" data-toggle="modal" data-target="#imageModal" />
                             </div>
                         </div>
+
                         <div class="back-button">
                             <button id="btn" onclick="window.location = 'view-all-contract';">Back to Contract List</button>
                         </div>
                     </div>
+
                 </div>
             </div>
         </div>
@@ -151,7 +154,7 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img src="images/avatar/anh.jpg" alt="Contract Image" />
+                        <img src="${requestScope.contract.image}" alt="Contract Image" />
                     </div>
                 </div>
             </div>

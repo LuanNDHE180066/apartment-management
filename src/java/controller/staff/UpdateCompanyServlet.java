@@ -101,36 +101,52 @@ public class UpdateCompanyServlet extends HttpServlet {
 
         CompanyValidation companyValidation = new CompanyValidation(company);
         // Validation errors
-        if (name.isEmpty()) {
+        if (name.trim().isEmpty()) {
             request.setAttribute("nameError", "Name cannot be blank.");
             hasError = true;
         }
-        if (!phone.matches("^\\d{10}$")) {
+        if (!phone.matches("0[0-9]{9}")) {
             request.setAttribute("phoneError", "Phone number must be exactly 10 digits.");
             hasError = true;
         }
-        if (!contactPhone.matches("^\\d{10}$")) {
+        if (!contactPhone.matches("0[0-9]{9}")) {
             request.setAttribute("contactPhoneError", "Contact phone must be exactly 10 digits.");
             hasError = true;
         }
-        if (!fax.matches("^\\d{10}$")) {
+        if (!fax.matches("[0-9]{10}")) {
             request.setAttribute("faxError", "Fax must be exactly 10 digits.");
             hasError = true;
         }
-        if (!taxCode.matches("^\\d{10}$")) {
+        if (!taxCode.matches("[0-9]{10}")) {
             request.setAttribute("taxCodeError", "Tax code must be exactly 10 digits.");
+            hasError = true;
+        }
+        if(email.trim().isEmpty()){
+            request.setAttribute("emailError", "Email must not empty");
             hasError = true;
         }
         if (companyValidation.isExistEmail(email)) {
             request.setAttribute("emailError", "Email is existed");
             hasError = true;
         }
+        if(address.trim().isEmpty()){
+            request.setAttribute("addressError", "address must not empty");
+            hasError = true;
+        }
         if (companyValidation.isExistAddress(address)) {
             request.setAttribute("addressError", "address is existed");
             hasError = true;
         }
+        if(bank.trim().isEmpty()){
+            request.setAttribute("bankError", "Bank must not empty");
+            hasError = true;
+        }
         if (companyValidation.isExistBank(bank)) {
             request.setAttribute("bankError", "Bank is existed");
+            hasError = true;
+        }
+        if(contactEmail.trim().isEmpty()){
+            request.setAttribute("contactEmailError", "ContactEmail must not empty");
             hasError = true;
         }
         if (companyValidation.isExistContactEmail(contactEmail)) {
@@ -157,6 +173,10 @@ public class UpdateCompanyServlet extends HttpServlet {
             request.setAttribute("taxCodeError", "TaxCode is existed");
             hasError = true;
         }
+        if(website.trim().isEmpty()){
+            request.setAttribute("webError", "Web Site must not empty");
+            hasError = true;
+        }
         if (companyValidation.isExistWebsite(website)) {
             request.setAttribute("webError", "Web Site is existed");
             hasError = true;
@@ -168,7 +188,6 @@ public class UpdateCompanyServlet extends HttpServlet {
             request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
             return;
         }
-
         CompanyDAO cd = new CompanyDAO();
         cd.updateCompany(company);
         List<Company> list = cd.getAll();

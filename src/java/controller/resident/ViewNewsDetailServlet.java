@@ -64,7 +64,6 @@ public class ViewNewsDetailServlet extends HttpServlet {
         String id = request.getParameter("id");
         News news = daoN.getNewById(id);
         List<News> listOtherNews = daoN.getOtherNews(id);
-
         request.setAttribute("listOtherNews", listOtherNews);
         request.setAttribute("news", news);
         request.getRequestDispatcher("newsdetail.jsp").forward(request, response);

@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.lang.model.util.Types;
 import jdbc.DBContext;
 import model.Account;
 import model.Company;
@@ -335,8 +336,8 @@ public class StaffDAO extends DBContext {
     public boolean updateStaffInfor(Staff s) {
         String sql = "Update staff set name = ?, bod = ? ,email = ? , phone = ?, address = ? , cccd = ? , salary = ? , education = ? , bank = ?"
                 + ", status = ? ,roleid = ? ,cID = ?, startdate = ?, enddate = ? where id = ? ";
-        try {
-            PreparedStatement st = connection.prepareStatement(sql);
+        try (PreparedStatement st = connection.prepareStatement(sql)){
+            
             st.setString(1, s.getName());
             st.setString(2, s.getBod());
             st.setString(3, s.getEmail());
@@ -350,7 +351,11 @@ public class StaffDAO extends DBContext {
             st.setString(11, s.getRole().getId());
             st.setString(12, s.getCompany().getId());
             st.setString(13, s.getStartDate());
-            st.setString(14, s.getEndDate());
+            if (s.getEndDate() == null || s.getEndDate().isEmpty()) {
+                st.setString(14, null);
+            } else {
+                st.setString(14, s.getEndDate());
+            }
             st.setString(15, s.getId());
             st.executeUpdate();
             return true;

@@ -16,6 +16,10 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -104,16 +108,35 @@ public class UpdateNewServlet extends HttpServlet {
         String date = request.getParameter("date");
         String category = request.getParameter("category");
         String auther = request.getParameter("auther");
-
-        Part fileImage = request.getPart("file");
-        String image = "";
-        if (fileImage != null && fileImage.getSize() > 0) {
-            image = "images/avatar/" + fileImage.getSubmittedFileName();
-        }
-
+        Part filePart=request.getPart("file");
         NewDAO ndao = new NewDAO();
         News news = ndao.getNewById(id);
-        PrintWriter out = response.getWriter();
+        String image=news.getImage();
+        if(filePart!=null && filePart.getSize()>0){
+            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+            if(!fileExtention.matches("jpg|jpeg")){
+                request.setAttribute("fileerror", "Only jpg");
+                request.getRequestDispatcher("updatenews.jsp").forward(request, response);
+                return;
+            }
+            String uploadpath=getServletContext().getRealPath("/")+"images/news";
+            File uploadDir=new File(uploadpath);
+            if(!uploadDir.exists()){
+                uploadDir.mkdirs();
+            }
+            File file= new File(uploadDir, filename);
+            try(InputStream fileContent=filePart.getInputStream();
+                    FileOutputStream outputStream=new FileOutputStream(file)) {
+                byte[] buffer=new byte[1024];
+                int byteread;
+                while((byteread=fileContent.read(buffer))!= -1){
+                    outputStream.write(buffer, 0, byteread);
+                }
+                
+            }
+            image = "images/news/" + filename;           
+        }
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             ZoneId zone = ZoneId.systemDefault();
@@ -122,8 +145,7 @@ public class UpdateNewServlet extends HttpServlet {
             LocalDate currentDate = format.parse(news.getDate()).toInstant().atZone(zone).toLocalDate();
 
             if (inputDate.isBefore(currentDate)) {
-                request.setAttribute("status", "false");
-                request.setAttribute("message", "The time must be after the date of the update check.");
+                request.setAttribute("dateError", "The time must be after the date of the update check.");
                 request.setAttribute("news", news);
                 request.getRequestDispatcher("updatenews.jsp").forward(request, response);
                 return;
@@ -133,21 +155,25 @@ public class UpdateNewServlet extends HttpServlet {
         }
         StaffDAO sdao = new StaffDAO();
         News anew = new News(id, title, content, source, category, image, sdao.getById(auther), date);
-        if (title.trim().isEmpty() || title.trim() == "") {
-            request.setAttribute("status", "false");
-            request.setAttribute("message", "Title can not be empty.");
+        if (title.trim().isEmpty()) {
+            request.setAttribute("titleerror", "Title can not be empty.");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
         }
-
-        if (content.trim().isEmpty() || content.trim() == "") {
-            request.setAttribute("status", "false");
-            request.setAttribute("message", "Content can not be empty.");
+        if (content.trim().isEmpty()) {
+            request.setAttribute("contenterror", "Content can not be empty.");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
-        } else {
+        }
+        if(source.trim().isEmpty()){
+            request.setAttribute("sourceerror", "Source can not be empty.");
+            request.setAttribute("news", news);
+            request.getRequestDispatcher("updatenews.jsp").forward(request, response);
+            return;
+        }
+        else {
             if (ndao.updateNews(anew)) {
                 request.setAttribute("status", "true");
                 request.setAttribute("message", "News updated successfully!");

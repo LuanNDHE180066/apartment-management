@@ -73,6 +73,7 @@ public class DashboardInvoice extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
+        request.setAttribute("currentYear", year);
         request.setAttribute("data", ivd.getMonthlyRevenueByYear(year));
         request.setAttribute("total", (int)ivd.getRevenueByYear(year));
         request.setAttribute("screen", 1);
@@ -95,6 +96,7 @@ public class DashboardInvoice extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
+        request.setAttribute("currentYear", LocalDate.now().getYear());
         request.setAttribute("data", ivd.getMonthlyRevenueByYear(year));
         request.setAttribute("total", (int)ivd.getRevenueByYear(year));
         request.setAttribute("screen", 1);

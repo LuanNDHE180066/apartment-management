@@ -39,12 +39,18 @@ public class CommonValidation {
         
         return !date.after(currentDate);
     }
+    public static boolean validendateafterstartdate(String edatestr, String sdatestr) throws ParseException{
+        SimpleDateFormat sdf= new SimpleDateFormat("yyyy-MM-dd");
+        Date enddate=sdf.parse(edatestr);
+        Date startdate=sdf.parse(sdatestr);
+        return !enddate.before(startdate);
+    }
     public static boolean isValidNewsDate(String dateStr) throws ParseException {
         SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");      
         Date date = df.parse(dateStr);        
         LocalDate cDate = LocalDate.now();
         Date currentDate = df.parse(cDate.toString());        
-        return date.after(currentDate);
+        return !date.before(currentDate);
     }
     public  boolean isValidEmail(String email) {
         String regex = "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";

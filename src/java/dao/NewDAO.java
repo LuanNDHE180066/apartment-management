@@ -137,7 +137,7 @@ public class NewDAO extends DBContext {
         }
     }
     public List<News> filterNews(String title, String startDate, String endDate) {
-        String sql = "select * from News where 1 = 1 and Getdate() > date";
+        String sql = "select * from News where 1 = 1 ";
         FeedbackDAO dao = new FeedbackDAO();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if (title != "") {
