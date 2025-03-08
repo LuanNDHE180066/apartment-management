@@ -30,6 +30,7 @@
         <!-- fancy box js -->
         <link rel="stylesheet" href="css/jquery.fancybox.css" />
         <link rel="stylesheet" href="<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
         <style>
             .table th, .table td {
                 border: 1px solid rgba(0, 0, 0, 0.2);
@@ -45,6 +46,131 @@
             .search-section {
                 margin-bottom: 15px; /* Giảm khoảng cách giữa các phần tử */
             }
+            .modal-content {
+                border-radius: 10px;
+                box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+                background: #fff;
+                padding: 20px;
+            }
+
+            .modal-header {
+                background-color: #6B90DA;
+                color: white;
+                padding: 15px;
+                border-top-left-radius: 10px;
+                border-top-right-radius: 10px;
+            }
+
+            .modal-header h3 {
+                margin: 0;
+                font-size: 20px;
+                font-weight: bold;
+            }
+
+            .modal-body {
+                padding: 20px;
+                display: flex;
+                flex-wrap: wrap;
+                justify-content: space-between;
+            }
+
+            .modal-body p {
+                margin: 5px 0;
+                font-size: 16px;
+            }
+
+            .modal-body strong {
+                color: #333;
+            }
+
+            .close {
+                color: white;
+                font-size: 24px;
+                opacity: 0.8;
+                transition: 0.3s;
+            }
+
+            .close:hover {
+                opacity: 1;
+            }
+
+            .modal-backdrop {
+                background-color: rgba(0, 0, 0, 0.5);
+            }
+            /* Hiệu ứng nền mờ khi mở modal */
+            .modal-backdrop {
+                background-color: rgba(0, 0, 0, 0.6) !important;
+            }
+
+            /* Căn chỉnh modal */
+            .modal-dialog {
+                max-width: 500px;
+                margin: 10% auto;
+                transform: scale(0.9);
+                transition: all 0.3s ease-in-out;
+            }
+
+            .modal.show .modal-dialog {
+                transform: scale(1);
+            }
+
+
+            .modal-content {
+                border-radius: 12px;
+                box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.3);
+                background: #ffffff;
+                padding: 20px;
+                border: none;
+            }
+
+            .modal-header {
+                background-color: #4a90e2;
+                color: white;
+                border-top-left-radius: 12px;
+                border-top-right-radius: 12px;
+                padding: 15px;
+            }
+
+            .modal-header h3 {
+                font-size: 24px;
+                font-weight: bold;
+                margin: 0;
+            }
+
+            .modal-body {
+                padding: 20px;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .info-box {
+                background-color: #f8f9fa; /* Light background for contrast */
+                border: 1px solid #e0e0e0;
+                border-radius: 8px;
+                padding: 10px;
+                margin-bottom: 15px;
+                font-size: 16px;
+                color: #333;
+            }
+
+            .info-box strong {
+                color: #4a90e2; /* Highlight the labels */
+            }
+
+            .close {
+                color: white;
+                font-size: 28px;
+                opacity: 0.9;
+            }
+
+            .close:hover {
+                opacity: 1;
+            }
+
+            .modal-backdrop {
+                background-color: rgba(0, 0, 0, 0.7) !important;
+            }
+
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -82,11 +208,11 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 10%;">Số Phòng</th>
-                                                            <th style="width: 10%;">Số người ở</th>
-                                                            <th style="width: 30%;">Tầng</th>
-                                                            <th style="width: 30%;">Thông tin</th>
-                                                            <th style="width: 5%;">Khác</th>
+                                                            <th style="width: 10%;">Apartment Number</th>
+                                                            <th style="width: 10%;">Number of Person</th>
+                                                            <th style="width: 30%;">Floor</th>
+                                                            <th style="width: 30%;">Information</th>
+                                                            <th style="width: 5%;">Other</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -99,39 +225,54 @@
                                                             <td>${listapartment.floor.number}</td>
                                                             <td>${listapartment.infor}</td>
                                                             <td style="text-align: center">
-                                                                    <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.id}">
-                                                                        <i class="fa fa-home" aria-hidden="true"></i>
-                                                                    </a>
-                                                                   <a href="updatenopersonre?id=${listapartment.id}"><i class="fa-solid fa-pen-to-square"></i></a>   
-                                                                </td>
-                                                                
+                                                                <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.id}">
+                                                                    <i class="fa fa-home" aria-hidden="true"></i>
+                                                                </a>
+                                                                <a href="updatenopersonre?id=${listapartment.id}"><i class="fa-solid fa-pen-to-square"></i></a>   
+                                                            </td>
+
                                                         </tr>
                                                         <div id="apartmentDetail${listapartment.id}" class="modal fade">
-                                                            <div class="modal-dialog" style="max-width: 30%">
+                                                            <div class="modal-dialog">
                                                                 <div class="modal-content">
+                                                                    <!-- Header -->
                                                                     <div class="modal-header">
-                                                                        <h3>Apartment Information</h3>
-                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <h3>
+                                                                            <i class="fa fa-home" aria-hidden="true"></i> Apartment Information
+                                                                        </h3>
+                                                                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
                                                                     </div>
-                                                                    <div class="modal-body" style="display: flex ">
-                                                                        
-                                                                        <div style="width: 50%;margin-left: 5%;">
-                                                                            <p><strong>Loại phòng</strong> ${listapartment.roomtype.name}</p>
-                                                                            <p><strong>Số người tối đa</strong> ${listapartment.roomtype.limitPerson}</p>
-                                                                            <p><strong>Diện tích</strong> ${listapartment.roomtype.square}</p>
-                                                                            <p><strong>Số phòng ngủ</strong> ${listapartment.roomtype.bedroom}</p>
-                                                                            <p><strong>Số phòng khách</strong> ${listapartment.roomtype.livingRoom}</p>
-                                                                            <p><strong>Số phòng tắm</strong> ${listapartment.roomtype.bathRoom}</p>
-                                                                            <p><strong>Số ban công</strong> ${listapartment.roomtype.balcony}</p>
-                                                                            
+                                                                    <!-- Body -->
+                                                                    <div class="modal-body">
+                                                                        <div class="info-box">
+                                                                            <strong>Room Type:</strong> <span>${listapartment.roomtype.name}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Max Persons:</strong> <span>${listapartment.roomtype.limitPerson}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Area:</strong> <span>${listapartment.roomtype.square} m²</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Bedrooms:</strong> <span>${listapartment.roomtype.bedroom}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Living Rooms:</strong> <span>${listapartment.roomtype.livingRoom}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Bathrooms:</strong> <span>${listapartment.roomtype.bathRoom}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Balconies:</strong> <span>${listapartment.roomtype.balcony}</span>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                                            
+
+
                                                     </c:forEach>
-                                                        <h6>A là mã phòng, sau A là số tầng, sau _ là số phòng</h6>
+
 
                                                     <!--                                                    <td>
                                                                                                             <a href="update-room-type?id=${room.id}"><i class="fa-solid fa-pen-to-square"></i></a>
@@ -159,7 +300,7 @@
                     </option>
                     </c:forEach>
                 </select>
-
+    
                 <input type="text" value="${param.searchName}" class="form-control" name="searchName" hidden="">
                 <input type="date"  name="startDate" placeholder="Start Date" value="${param.startDate}" hidden="">
                 <input type="date"  name="endDate" placeholder="End Date" value="${param.endDate}" hidden="">
