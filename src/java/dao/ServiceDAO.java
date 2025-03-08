@@ -275,7 +275,26 @@ public class ServiceDAO extends DBContext {
         }
         return list;
     }
-
+    public String getServiceEVNId(){
+        String sql="select * from service where Name =N'Tiền điện' and status =1";
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            ResultSet rs= st.executeQuery();
+            if(rs.next()) return rs.getString("id");
+        } catch (SQLException e) {
+        }
+        return null;
+    }
+      public String getServiceWVNId(){
+        String sql="select * from service where Name =N'Tiền nước' and status =1";
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            ResultSet rs= st.executeQuery();
+            if(rs.next()) return rs.getString("id");
+        } catch (SQLException e) {
+        }
+        return null;
+    }
     public Date getLastInvoice() {
         String sql = "select * from invoice order by invoicedate desc";
         try {

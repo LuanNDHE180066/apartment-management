@@ -35,7 +35,8 @@ import model.Account;
             "/generate-invoice-staff",
             "/update-invoice-staff",
             "/view-invoice-staff",
-            "/view-apartmentservice-staff"})
+            "/view-apartmentservice-staff",
+            "/synchronous-used-service"})
 public class Service_Accountant_Filter implements Filter {
 
     private static final boolean debug = true;
