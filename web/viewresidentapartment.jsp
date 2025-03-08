@@ -208,9 +208,10 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 10%;">Apartment Number</th>
-                                                            <th style="width: 10%;">Number of Person</th>
-                                                            <th style="width: 30%;">Floor</th>
+                                                            <th style="width: 15%;">Apartment Number</th>
+                                                            <th style="width: 15%;">Number of Person</th>
+                                                            <th style="width: 10%;">Floor</th>
+                                                            <th style="width: 20%;">Living Person</th>
                                                             <th style="width: 30%;">Information</th>
                                                             <th style="width: 5%;">Other</th>
                                                         </tr>
@@ -223,6 +224,11 @@
                                                             <td>${listapartment.id}</td>
                                                             <td>${listapartment.numberOfPerson}</td>
                                                             <td>${listapartment.floor.number}</td>
+                                                            <td>
+                                                                <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.livingPerson.pId}">
+                                                                    ${listapartment.livingPerson.name}
+                                                                </a>
+                                                            </td>
                                                             <td>${listapartment.infor}</td>
                                                             <td style="text-align: center">
                                                                 <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.id}">
@@ -269,6 +275,46 @@
                                                                 </div>
                                                             </div>
                                                         </div>
+
+                                                        <div id="apartmentDetail${listapartment.livingPerson.pId}" class="modal fade">
+                                                            <div class="modal-dialog">
+                                                                <div class="modal-content">
+                                                                    <!-- Header -->
+                                                                    <div class="modal-header">
+                                                                        <h3>
+                                                                            <h3>
+                                                                                <i class="fa fa-user" aria-hidden="true"></i> Living Person Information
+                                                                            </h3>
+                                                                        </h3>
+                                                                        <button type="button" class="close btn-close-modal" data-dismiss="modal">&times;</button>
+                                                                    </div>
+                                                                    <!-- Body -->
+                                                                    <div class="modal-body">
+                                                                        <img src="${listapartment.livingPerson.image}" 
+                                                                             alt="Person Image" class="img-fluid" style="border-radius: 8px; margin-bottom: 15px;">
+                                                                        <div class="info-box">
+                                                                            <strong>Name:</strong> <span>${listapartment.livingPerson.name}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>CCCD:</strong> <span>${listapartment.livingPerson.cccd}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Phone:</strong> <span>${listapartment.livingPerson.phone}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Email:</strong> <span>${listapartment.livingPerson.email}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Date of Birth:</strong> <span>${listapartment.livingPerson.bod}</span>
+                                                                        </div>
+                                                                        <div class="info-box">
+                                                                            <strong>Address:</strong> <span>${listapartment.livingPerson.address}</span>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
 
 
                                                     </c:forEach>

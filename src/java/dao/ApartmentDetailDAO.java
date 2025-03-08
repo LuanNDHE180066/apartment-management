@@ -49,7 +49,7 @@ public class ApartmentDetailDAO extends DBContext {
                 Resident livingPerson = residentDAO.getById(rs.getString("living"));
                 Resident owner = residentDAO.getById(rs.getString("owner"));
                 ApartmentDetail ad = new ApartmentDetail(aid, numberOfPerson, floor,
-                        aid, rt, status, owner, livingPerson);
+                        information, rt, status, owner, livingPerson);
                 list.add(ad);
             }
             return list;
