@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="util.Util,model.Feedback"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html lang="en">
     <head>
         <!-- basic -->
@@ -211,13 +212,27 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td class="action-column">
-                                                                <c:if test="${feedback.date <= oneDayAgo}">
-                                                                    <a href="request-update-feedback?id=${feedback.id}" 
-                                                                       class="btn btn-primary request-update-btn">
-                                                                        Yêu cầu cập nhật 
-                                                                    </a>
+                                                                <%
+                                                                   
+                                                                    Object feedbackObj = pageContext.getAttribute("feedback");
+                                                                    String feedbackDate = null;
+                                                                    if (feedbackObj != null) {
+                                                                        model.Feedback feedback = (model.Feedback) feedbackObj; 
+                                                                        feedbackDate = feedback.getDate(); 
+                                                                    }
 
-                                                                </c:if>
+                                                                    Util u = new Util();
+                                                                    boolean showButton = u.compareFeedbackDateToCurrentTime(feedbackDate);   
+                                                                           
+                                                                    if (showButton) {
+                                                                %>
+                                                                <a href="request-update-feedback?id=${feedback.id}" 
+                                                                   class="btn btn-primary request-update-btn">
+                                                                    Yêu cầu cập nhật
+                                                                </a>
+                                                                <%
+                                                                    }
+                                                                %>
                                                             </td>
 
 

@@ -191,11 +191,7 @@ public class Util {
 
     public  boolean compareFeedbackDateToCurrentTime(String date) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
-
-        // Convert the test string to LocalDateTime
         LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
-
-        // Get the current date and time
         LocalDateTime currentDateTime = LocalDateTime.now();
         LocalDateTime oneDayBefore = currentDateTime.minusDays(1);
 
