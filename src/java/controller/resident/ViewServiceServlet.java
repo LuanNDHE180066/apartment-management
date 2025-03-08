@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
 import model.Account;
 
 /**
@@ -85,10 +86,15 @@ public class ViewServiceServlet extends HttpServlet {
         } else {
             if (!ld.getApartmentsByResidentId(id).isEmpty()) {
                 aid = ld.getApartmentsByResidentId(id).get(0).getId();
+            } else {
+                aid = "";
             }
-            else{
-                aid ="";
-            }
+        }
+        int currentDay = LocalDate.now().getDayOfMonth();
+        if (currentDay > 3) {
+            request.setAttribute("canUpdate", 1/*0*/);
+        } else {
+            request.setAttribute("canUpdate", 1);
         }
         MonthlyServiceDAO md = new MonthlyServiceDAO();
         request.setAttribute("usingServices", md.getByApartmentId(aid));

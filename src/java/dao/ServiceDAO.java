@@ -289,6 +289,7 @@ public class ServiceDAO extends DBContext {
         return null;
     }
 
+
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
         System.out.println(sd.getNumberUsedByTime(2025, 1, "SVC1"));
