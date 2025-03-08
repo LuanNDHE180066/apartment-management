@@ -25,6 +25,7 @@ import java.text.ParseException;
 import java.util.List;
 import model.News;
 import model.Staff;
+import util.Util;
 import validation.CommonValidation;
 
 /**
@@ -93,9 +94,10 @@ public class AddNewsServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String title = request.getParameter("title");
-        String content = request.getParameter("content");
-        String source = request.getParameter("source");    
+        Util u= new Util();
+        String title = u.stringNomalize(request.getParameter("title")) ;
+        String content = u.stringNomalize(request.getParameter("content")) ;
+        String source = u.stringNomalize(request.getParameter("source")) ;    
         Part filePart=request.getPart("file");
         String image="";
         boolean hasError = false;

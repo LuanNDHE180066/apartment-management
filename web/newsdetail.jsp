@@ -19,70 +19,72 @@
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
-            body {
-                background-color: #f8f9fa;
-                margin: 0;
-                padding: 0;
-                font-family: 'Times New Roman', Times, serif; /* Sử dụng font Roboto và các font dự phòng */
-            }
             .news-container {
-                background: #ffffff;
-                padding: 50px;
-                border-radius: 10px;
-                box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-                width: 100%;
-                margin: 50px 0;
-                transition: transform 0.3s;
-            }
-            .news-container:hover {
-                transform: translateY(-5px);
-            }
-            .news-title {
-                text-align: center;
-                margin-bottom: 25px;
-                color: #343a40;
-                font-size: 36px;
-                font-weight: bold;
-                line-height: 1.4;
-            }
-            .news-date {
-                text-align: left; /* Căn lề bên trái */
-                color: #6c757d;
-                margin-bottom: 30px;
-                font-size: 16px; /* Kích thước chữ nhỏ hơn */
-                padding-left: 15px; /* Khoảng cách từ lề bên trái */
-            }
-            .news-content {
-                font-size: 22px;
-                line-height: 1.8;
-                color: #495057;
-                padding: 15px;
-                border-left: 4px solid #007bff;
-                background-color: #f8f9fa;
-                margin-bottom: 30px;
-            }
-            .related-links {
-                margin-top: 30px;
-            }
-            .related-links ul {
-                list-style-type: none;
-                padding: 0;
-            }
-            .related-links li {
-                margin-bottom: 10px;
-                font-weight: bold;
-            }
-            .back-button {
-                margin-bottom: 20px;
-            }
-            #btn {
-                transition: background-color 0.3s ease; /* Smooth transition */
-            }
+    background: #ffffff;
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+}
 
-            #btn:hover {
-                background-color: #FF1C42; /* Change to a different shade or color */
-                color: white; /* Optional: Change text color on hover */
-            }
+.news-title {
+    font-size: 28px;
+    color: #004175;
+}
+
+.news-meta {
+    font-size: 14px;
+    color: #6c757d;
+}
+
+.news-image {
+    max-width: 100%;
+    height: auto;
+    border-radius: 10px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.news-content {
+    font-size: 18px;
+    line-height: 1.6;
+}
+
+.news-source a {
+    font-size: 16px;
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.news-source a:hover {
+    color: #ff6600;
+}
+
+.related-links h4 {
+    color: #333;
+}
+
+.list-group-item a {
+    text-decoration: none;
+    transition: color 0.3s ease;
+}
+
+.list-group-item a:hover {
+    color: #ff6600;
+}
+
+.btn-warning {
+    background-color: #f39c12;
+    border: none;
+}
+
+.btn-primary {
+    background-color: #007bff;
+    border: none;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+}
+
         </style>
     </head>
     <div class="full_container">
@@ -94,39 +96,72 @@
                 <%@ include file="topbar.jsp" %>
                 <!-- end topbar -->
                 <!-- News Detail -->
-                <div class="container-fluid mt-5"> 
+                <div class="container mt-5"> 
+    <div class="row">
+        <div class="col-lg-8 offset-lg-2"> 
+            <div class="news-container p-4 rounded shadow-sm bg-white">
+                
+                <!-- Chỉ admin mới có nút Update -->
+                <c:if test="${sessionScope.account.roleId == 2}">
+                    <button id="btn-update" class="btn btn-warning mb-3" onclick="window.location = 'update-news?id=${param.id}';">
+                        ✏️ Update News
+                    </button>
+                </c:if>
 
-                    <div class="row">
-                        <div class="col-12"> 
+                <!-- Tiêu đề bài viết -->
+                <h1 class="news-title text-dark fw-bold">${requestScope.news.title}</h1>
 
-                            <div class="news-container">
-                                <c:if test="${sessionScope.account.roleId == 2}">
-                                    <btn id="btn" class="btn btn-success" onclick="window.location = 'update-news?id=${param.id}';">
-                                        Update News
-                                    </btn></c:if>
-                                <h2 class="news-title" style="color: #004175;">${requestScope.news.title}</h2>
-                                <p class="news-date">Date: ${requestScope.news.date}, Post by: ${requestScope.news.staff.name}</p>
-                                <p class="news-content">
-                                    ${requestScope.news.content}
-                                </p>
-                                <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
-                                    <a href="${requestScope.news.source}" target="_blank">Read more <i class="fas fa-external-link-alt"></i></a>
-                                </c:if>
-                                <img src="${requestScope.news.image}" width="350"/>                       
-                                <div class="related-links">
-                                    <ul>
-                                        <h4>Related Articles</h4>
-                                        <c:forEach items="${requestScope.listOtherNews}" var="n">
-                                            <li>- <a href="news-detail?id=${n.id}">${n.title}</a></li>
-                                            </c:forEach>
-                                        <li><btn id="btn" onclick="window.location = 'view-news';" class="btn btn-success">Back to News List</btn></li>
-                                    </ul>
+                <!-- Ngày đăng & tác giả -->
+                <p class="news-meta text-muted">
+                    <i class="far fa-calendar-alt"></i> ${requestScope.news.date} &nbsp; | &nbsp;
+                    <i class="fas fa-user"></i> ${requestScope.news.staff.name}
+                </p>
 
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Hình ảnh bài viết -->
+                <div class="text-center mb-4">
+                    <img src="${requestScope.news.image}" class="news-image img-fluid rounded shadow" width="80%"/>
                 </div>
+
+                <!-- Nội dung bài viết -->
+                <p class="news-content text-justify fs-5">
+                    ${requestScope.news.content}
+                </p>
+
+                <!-- Nguồn tin -->
+                <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
+                    <p class="news-source">
+                        📌 <a href="${requestScope.news.source}" target="_blank" class="text-primary fw-bold">
+                            Read more <i class="fas fa-external-link-alt"></i>
+                        </a>
+                    </p>
+                </c:if>
+
+                <!-- Bài viết liên quan -->
+                <div class="related-links mt-4">
+                    <h4 class="fw-bold">📰 Related Articles</h4>
+                    <ul class="list-group">
+                        <c:forEach items="${requestScope.listOtherNews}" var="n">
+                            <li class="list-group-item">
+                                <a href="news-detail?id=${n.id}" class="text-dark fw-semibold">
+                                    ➜ ${n.title}
+                                </a>
+                            </li>
+                        </c:forEach>
+                    </ul>
+                </div>
+
+                <!-- Nút quay lại danh sách -->
+                <div class="mt-4 text-center">
+                    <button class="btn btn-primary" onclick="window.location = 'view-news';">
+                        ⬅️ Back to News List
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
                 <!-- end news detail -->
             </div>
         </div>

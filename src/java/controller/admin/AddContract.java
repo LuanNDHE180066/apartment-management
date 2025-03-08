@@ -26,6 +26,7 @@ import java.util.List;
 import model.Company;
 import model.Contract;
 import model.Staff;
+import util.Util;
 import validation.CommonValidation;
 
 /**
@@ -101,8 +102,9 @@ public class AddContract extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String title = request.getParameter("title");
-        String description = request.getParameter("description");
+        Util u= new Util();
+        String title =u.stringNomalize(request.getParameter("title")) ;
+        String description =u.stringNomalize(request.getParameter("description")) ;
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String paydate = request.getParameter("paydate");

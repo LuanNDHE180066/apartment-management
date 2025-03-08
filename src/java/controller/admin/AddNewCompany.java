@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Company;
+import util.Util;
 import validation.CompanyValidation;
 
 /**
@@ -78,8 +79,9 @@ public class AddNewCompany extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Util u= new Util();
         HttpSession session = request.getSession();
-        String name = request.getParameter("name");
+        String name =u.stringNomalize(request.getParameter("name")) ;
         String phone = request.getParameter("phone");
         String contactPhone = request.getParameter("contactPhone");
         String fax = request.getParameter("fax");
@@ -88,8 +90,8 @@ public class AddNewCompany extends HttpServlet {
         String website = request.getParameter("website");
         String taxCode = request.getParameter("taxCode");
         String bank = request.getParameter("bank");
-        String address = request.getParameter("address");
-        String description = request.getParameter("description");
+        String address =u.stringNomalize(request.getParameter("address")) ;
+        String description =u.stringNomalize(request.getParameter("description")) ;
 
         boolean hasError = false;
         if (hasError) {

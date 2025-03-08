@@ -69,14 +69,15 @@ public class ViewAllContractServlet extends HttpServlet {
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
 
-        if (title == null) {
+        if (title == null || title.trim().isEmpty()) {
             title = "";
+        } else {
+            title = u.stringNomalize(title);
         }
-        title = u.stringNomalize(title);
-        if (startDate == null) {
+        if (startDate == null || startDate.trim().isEmpty()) {
             startDate = "";
         }
-        if (endDate == null) {
+        if (endDate == null || endDate.trim().isEmpty()) {
             endDate = "";
         }
 
@@ -88,21 +89,24 @@ public class ViewAllContractServlet extends HttpServlet {
             page = "1";
         }
 
-        if (listContract.size() != 0) {
-            int totalPage = u.getTotalPage(listContract, 3);
+        int totalPage = u.getTotalPage(listContract, 3);
+        if (!listContract.isEmpty()) {
             listContract = u.getListPerPage(listContract, 3, page);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", Integer.parseInt(page));
-            session.setAttribute("listContract", listContract);
-            request.getRequestDispatcher("viewallcontract.jsp").forward(request, response);
-            return;
-        } else {
-            request.setAttribute("totalPage", 1);
-            request.setAttribute("currentPage", 1);
-            session.setAttribute("listContract", null);
-            request.setAttribute("message", "No result");
-            request.getRequestDispatcher("viewallcontract.jsp").forward(request, response);
         }
+
+        session.setAttribute("listContract", listContract);
+        request.setAttribute("totalPage", totalPage > 0 ? totalPage : 1);
+        request.setAttribute("currentPage", Integer.parseInt(page));
+        request.setAttribute("title", title);
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
+
+        if (listContract.isEmpty()) {
+            request.setAttribute("message", "No result found.");
+        }
+
+        request.getRequestDispatcher("viewallcontract.jsp").forward(request, response);
+
     }
 
     /**
