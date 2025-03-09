@@ -187,12 +187,12 @@
     <filter-mapping>
         <filter-name>AccountantAndAdminFilter</filter-name>
         <url-pattern>/view-expenditure-change-history</url-pattern>
-       <url-pattern>/viewexpenditurechangehistory.jsp</url-pattern>
+        <url-pattern>/viewexpenditurechangehistory.jsp</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AccountantAndAdminFilter</filter-name>
         <url-pattern>/view-pending-expenditure</url-pattern>
-         <url-pattern>/viewpendingexpenditure.jsp</url-pattern>
+        <url-pattern>/viewpendingexpenditure.jsp</url-pattern>
     </filter-mapping>
     
     
@@ -201,13 +201,13 @@
         <url-pattern>/update-pending-expenditure</url-pattern>
     </filter-mapping>
     
-      <filter-mapping>
+    <filter-mapping>
         <filter-name>AccountantFilter</filter-name>
         <url-pattern>/update-expenditure</url-pattern>
         <url-pattern>/updateExpenditure.jsp</url-pattern>
     </filter-mapping>
     
-      <filter-mapping>
+    <filter-mapping>
         <filter-name>AccountantFilter</filter-name>
         <url-pattern>/add-expenditure</url-pattern>
         <url-pattern>/addExpenditure.jsp</url-pattern>
@@ -364,4 +364,6 @@
         <servlet-name>ViewPendingExpenditure</servlet-name>
         <url-pattern>/view-pending-expenditure</url-pattern>
     </servlet-mapping>
+    
+
 </web-app>
