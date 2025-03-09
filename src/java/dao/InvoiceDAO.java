@@ -254,7 +254,7 @@ public class InvoiceDAO extends DBContext{
         for (int i = 0; i < listInvoice.size(); i++) {
             Apartment a = listInvoice.get(i).getApartment();
             String email = listInvoice.get(i).getResident().getEmail();
-            EmailInvoice ei = new EmailInvoice(email, email);
+            EmailInvoice ei = new EmailInvoice(a.getId(), email);
             rs.add(ei);
         }
         return rs;
