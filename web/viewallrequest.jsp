@@ -167,7 +167,6 @@
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
-                                                                <th>ID</th>
                                                                 <th>Resident Name</th>                                                            
                                                                 <th>Detail</th>
                                                                 <th>Date</th>                                               
@@ -180,7 +179,6 @@
                                                         <tbody>
                                                             <c:forEach items="${requestScope.waiting_requestes}" var="o" varStatus="status">
                                                                 <tr>
-                                                                    <td>${o.id}</td>
                                                                     <td>${o.residentId.name}</td>
                                                                     <td>${o.detail}</td>
                                                                     <td>${o.date}</td> 
@@ -310,7 +308,6 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
                                                             <th>Resident Name</th>                                                            
                                                             <th>Detail</th>
                                                             <th>Date</th>                                               
@@ -324,7 +321,6 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.inprocess_requestes}" var="o" varStatus="status">
                                                             <tr>
-                                                                <td>${o.id}</td>
                                                                 <td>${o.residentId.name}</td>
                                                                 <td>${o.detail}</td>
                                                                 <td>${o.date}</td> 
@@ -438,7 +434,6 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
                                                             <th>Resident Name</th>                                                            
                                                             <th>Detail</th>
                                                             <th>Date</th>                                               
@@ -451,7 +446,6 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.done_requestes}" var="o" varStatus="status">
                                                             <tr>
-                                                                <td>${o.id}</td>
                                                                 <td>${o.residentId.name}</td>
                                                                 <td>${o.detail}</td>
                                                                 <td>${o.date}</td> 

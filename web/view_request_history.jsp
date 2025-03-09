@@ -60,26 +60,18 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
                                                         <label for="fromDate">From:</label>
-                                                        <input type="date" class="form-control" id="fromDate" name="from" placeholder="From" value="${sessionScope.from}">
+                                                        <input type="date" class="form-control" id="fromDate" name="from" placeholder="From" value="${requestScope.from}">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="toDate">To:</label>
-                                                        <input type="date" class="form-control" id="toDate" name="to" placeholder="To" value="${sessionScope.to}">
+                                                        <input type="date" class="form-control" id="toDate" name="to" placeholder="To" value="${requestScope.to}">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <label for="typeRequest">Type:</label>
                                                         <select class="form-control" id="typeRequest" name="typeRequest">
-                                                            <c:choose>
-                                                                <c:when test="${sessionScope.selectedType == null}">
-                                                                    <option value="" disabled selected> --Select Type-- </option>
-                                                                </c:when>
-                                                                <c:otherwise>
-                                                                    <option value="${sessionScope.selectedType.id}" selected>${sessionScope.selectedType.name}</option>
-                                                                    <option value="" > --Select Type-- </option>
-                                                                </c:otherwise>
-                                                            </c:choose>
+                                                            <option value="">Selected Type Request</option>
                                                             <c:forEach items="${requestScope.listType}" var="t">
-                                                                <option value="${t.id}">${t.name}</option>
+                                                                <option value="${t.id}" <c:if test="${requestScope.selectedType == t.id}">selected</c:if>>${t.name}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>

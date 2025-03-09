@@ -90,38 +90,12 @@ public class FilterRequest extends HttpServlet {
         String to = request.getParameter("to");
         String typeRequest = request.getParameter("typeRequest");
         Util u = new Util();
-
         List<RequestType> listTypeRequest = rtd.getAll();
-
         List<Request> list = new ArrayList<>();
-
-        if (from != null && !from.isEmpty() && to != null && !to.isEmpty()) {
-            Date fromDate = u.convertStringToDate(from);
-            Date toDate = u.convertStringToDate(to);
-            int compareDate = fromDate.compareTo(toDate);
-
-            if (compareDate >= 0) {
-                list = rd.getByResidentIDAndDate(acc.getpId(), to, from, typeRequest);
-            } else {
-                list = rd.getByResidentIDAndDate(acc.getpId(), from, to, typeRequest);
-            }
-        } else if (typeRequest != null && !typeRequest.isEmpty()) {
-            list = rd.getByResidentIDAndDate(acc.getpId(), null, null, typeRequest);
-            Iterator<RequestType> iterator = listTypeRequest.iterator();
-            while (iterator.hasNext()) {
-                RequestType type = iterator.next();
-                if (type.getId().equals(typeRequest)) {
-                    session.setAttribute("selectedType", type);
-                    iterator.remove(); // Safely remove the element
-                }
-            }
-        } else {
-            list = rd.getByResidentIDAndDate(acc.getpId(), null, null, null);
-            session.removeAttribute("selectedType");
-        }
-
-        session.setAttribute("from", from);
-        session.setAttribute("to", to);
+        list = rd.getByResidentIDAndDate(acc.getpId(), from, to, typeRequest);
+        request.setAttribute("from", from);
+        request.setAttribute("to", to);
+        session.setAttribute("selectedType", typeRequest);
         request.setAttribute("listRequest", list);
         request.setAttribute("listType", listTypeRequest);
         request.getRequestDispatcher("view_request_history.jsp").forward(request, response);

@@ -336,33 +336,24 @@ public class RequestDAO extends DBContext {
     }
 
     public List<Request> getByResidentIDAndDate(String id, String from, String to, String requestType) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM Request WHERE rId = ? order by Date desc");
+        String sql = "SELECT * FROM Request WHERE rId = '"+id+"'";
         List<Request> list = new ArrayList<>();
         ResidentDAO rd = new ResidentDAO();
         StaffDAO sd = new StaffDAO();
         RequestTypeDAO rtd = new RequestTypeDAO();
-
         // Handle optional parameters
-        if (from != null && to != null) {
-            sql.append(" AND (date BETWEEN ? AND ?)");
+        if ((from != null && !from.isBlank()) || !from.isEmpty()) {
+           sql += " and date >= '"+from+"'";
         }
-        if (requestType != null && !requestType.isEmpty()) {
-            sql.append(" AND tId = ?");
+        if ((to != null && !to.isBlank()) || !to.isEmpty()) {
+            sql += " and date <= '"+to+"'";
         }
-
+        if ((requestType != null && !requestType.isBlank()) || !requestType.isEmpty()) {
+            sql += " and tid = '"+requestType+"'";
+        }
+        sql += " order by Date desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql.toString());
-            st.setString(1, id);
-
-            int paramIndex = 2;
-            if (from != null && to != null) {
-                st.setString(paramIndex++, from);
-                st.setString(paramIndex++, to);
-            }
-            if (requestType != null && !requestType.isEmpty()) {
-                st.setString(paramIndex++, requestType);
-            }
-
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 Resident r = rd.getById(id);
