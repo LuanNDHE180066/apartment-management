@@ -15,6 +15,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import util.Util;
 
 /**
  *
@@ -79,14 +80,14 @@ public class AddNewServiceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String unit = request.getParameter("unit");
+        String unit = Util.stringNomalize(request.getParameter("unit"));
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
-        String name = request.getParameter("name");
+        String name = Util.stringNomalize(request.getParameter("name"));
         String price_raw = request.getParameter("price");
         price_raw = price_raw.replace(".", "");
         int price = Integer.parseInt(price_raw);
-        String des = request.getParameter("des");
+        String des = Util.stringNomalize(request.getParameter("des"));
         if (name.trim().isBlank() || des.trim().isBlank()) {
             request.setAttribute("error", "Name or description is not a blank");
             request.setAttribute("companies", cd.getAll());

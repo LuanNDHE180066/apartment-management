@@ -83,6 +83,27 @@
                                                 </a>
                                                 <span>Hóa đơn chỉ được tạo 01 lần vào cuối tháng</span>
                                             </div>
+                                            <div style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; background-color: #f9f9f9; width: 80%; margin: auto;">
+                                                <form action="synchronous-used-service" method="post" enctype="multipart/form-data" 
+                                                      style="display: flex; flex-direction: row; align-items: center; justify-content: space-between; gap: 20px;">
+                                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                                        <h5 style="margin: 0; font-size: 16px; font-weight: bold; color: #2c3e50;">Tiền điện tháng này</h5>
+                                                        <input type="file" name="fileEVN" accept=".xlsx" 
+                                                               style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
+                                                    </div>
+                                                    <div style="display: flex; flex-direction: column; gap: 5px;">
+                                                        <h5 style="margin: 0; font-size: 16px; font-weight: bold; color: #2c3e50;">Tiền nước tháng này</h5>
+                                                        <input type="file" name="fileWVN" accept=".xlsx" 
+                                                               style="padding: 8px; border: 1px solid #ccc; border-radius: 4px; background-color: #fff;">
+                                                    </div>
+                                                    <div>
+                                                        <button type="submit" 
+                                                                style="padding: 10px 20px; font-size: 16px; font-weight: bold; color: white; background-color: #3498db; border: none; border-radius: 4px; cursor: pointer;">
+                                                            Duyệt
+                                                        </button>
+                                                    </div>
+                                                </form>
+                                            </div>
 
                                             <div class="table-responsive-sm">
                                                 <div>

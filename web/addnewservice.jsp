@@ -68,7 +68,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add New Room Type</h1>
+                                    <h1>Add New Service</h1>
                                     <form action="add-service-staff" method="post" style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background: #f9f9f9; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                                         <div class="form-group" style="margin-bottom: 15px;">
                                             <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">Name</label>
