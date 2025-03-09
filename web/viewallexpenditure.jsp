@@ -5,6 +5,9 @@
 --%>
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -47,9 +50,13 @@
             .display-none{
                 display: none;
             }
-            
+
             .tbody td{
                 text-align: center;
+            }
+            
+            .display-none{
+                display: none;
             }
         </style>
     </head>
@@ -136,7 +143,10 @@
                                                         <tr>
                                                             <td>${expenditure.id}</td>
                                                             <td>${expenditure.title}</td>
-                                                            <td>${expenditure.totalPrice}</td>
+                                                            <td>
+                                                                <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                            </td>
                                                             <td>${expenditure.approveddate}</td>
                                                             <td>${expenditure.category.categoryName}</td>
                                                             <td>${expenditure.company.name}</td>
@@ -144,7 +154,7 @@
                                                             <td>${expenditure.chiefAccountantId.name}</td>
                                                             <td>${expenditure.currentAdmin.name}</td>
                                                             <td>
-                                                                <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                                <a class="${sessionScope.account.roleId != 3? 'display-none':''}" href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" 
                                                                    style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
 
@@ -170,7 +180,7 @@
                         <select id="page" name="page" onchange="this.form.submit()" 
                                 style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}"> selected</c:if>>
                                     ${page}
                                 </option>
                             </c:forEach>

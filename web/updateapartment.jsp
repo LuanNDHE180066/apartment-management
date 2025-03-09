@@ -149,7 +149,7 @@
                                         <div class="form-group">
                                             <label for="roomtype">Room Type</label>
                                             <select id="roomtype" name="roomtype" required>
-                                                <c:forEach var="type" items="${roomTypes}">
+                                                <c:forEach var="type" items="${sessionScope.types}">
                                                     <option value="${type.id}" ${type.id == apartment.roomtype.id?'selected':''}>${type.name}</option>
                                                 </c:forEach>
                                             </select>
@@ -182,6 +182,13 @@
 
                                     <div class="form-button">
                                         <button type="submit">Update</button>
+                                        <div>
+                                            <span>
+                                                <a style="color: #357AB8; text-decoration: underline; font-size: 15px" href="view-apartment-admin">
+                                                    <i class="fas fa-arrow-left"></i> Back
+                                                </a>
+                                            </span>
+                                        </div>
                                         <h5>${message}</h5>
                                     </div>
                                 </form>
@@ -298,12 +305,12 @@
             }
 
             function filterResidents() {
-             const id = document.getElementById('residentID').value.toLowerCase().replace(/\s+/g, '');
+                const id = document.getElementById('residentID').value.toLowerCase().replace(/\s+/g, '');
                 const rows = document.querySelectorAll('#residentList .table-row');
 
                 rows.forEach(row => {
                     const cells = row.getElementsByTagName('td');
-                     const rowID = cells[0].innerText.toLowerCase().replace(/\s+/g, '');
+                    const rowID = cells[0].innerText.toLowerCase().replace(/\s+/g, '');
 
 
 

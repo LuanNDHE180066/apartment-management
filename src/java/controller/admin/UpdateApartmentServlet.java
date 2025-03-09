@@ -16,6 +16,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -71,6 +72,7 @@ public class UpdateApartmentServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+//        HttpSession session = request.getSession();
         String id = request.getParameter("id");
         ApartmentDAO dao = new ApartmentDAO();
         LivingApartmentDAO daoLA = new LivingApartmentDAO();
@@ -87,7 +89,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         request.setAttribute("apartment", a);
         request.setAttribute("livingResident", la);
         request.setAttribute("ownerApartment", oa);
-        request.setAttribute("roomTypes", listRoomType);
+//        session.setAttribute("roomTypes", listRoomType);
         request.setAttribute("listResident", listResident);
 
         request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -139,12 +141,23 @@ public class UpdateApartmentServlet extends HttpServlet {
 //        PrintWriter out = response.getWriter();
 //        out.println(ownerId + " " + date + " " + livingId + " " + aid);
         if (infor.trim() == "" || infor.trim().isEmpty()) {
+            request.setAttribute("apartment", a);
             request.setAttribute("status", "false");
             request.setAttribute("message", "Apartment information can not be null");
             request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
             return;
         }
+
+        if (oa == null && ownerResident == null && livingResident != null) {
+            request.setAttribute("apartment", a);
+            request.setAttribute("status", "false");
+            request.setAttribute("message", "Please update owner apartment first!!");
+            request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
+            return;
+        }
+
         if (!dao.updateApartment(a)) {
+            request.setAttribute("apartment", a);
             request.setAttribute("status", "false");
             request.setAttribute("message", "False to update 0");
             request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -154,6 +167,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         if (oa != null || ownerResident != null) {
             if (oa == null && ownerResident != null) {
                 if (!daoAO.insertOwnerApartment(ownerId, aid, date)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 2");
                     request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -161,6 +175,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                 }
             } else if (!oa.getRid().getpId().equals(ownerResident.getpId())) {
                 if (!daoAO.updateEndOwnerApartment(aid, date)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 3");
                     request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -168,6 +183,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                 }
 
                 if (!daoAO.insertOwnerApartment(ownerId, aid, date)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 4");
                     request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -179,6 +195,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         if (la != null || livingResident != null) {
             if (la == null && livingResident != null) {
                 if (!daoLA.insertLivingApartment(livingId, aid, date)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 5");
                     request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
@@ -186,6 +203,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                 }
             } else if (!la.getRid().getpId().equals(livingResident.getpId())) {
                 if (!daoLA.updateEndLivingApartment(date, aid)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 6 ");
 //                out.println(ownerId + " " + date + " " + livingId + " " + aid);
@@ -193,6 +211,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                     return;
                 }
                 if (!daoLA.insertLivingApartment(livingId, aid, date)) {
+                    request.setAttribute("apartment", a);
                     request.setAttribute("status", "false");
                     request.setAttribute("message", "Failed to update 7");
                     request.getRequestDispatcher("updateapartment.jsp").forward(request, response);

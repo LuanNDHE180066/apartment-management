@@ -40,7 +40,7 @@ public class ViewDetailApartmentServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewDetailApartmentServlet</title>");            
+            out.println("<title>Servlet ViewDetailApartmentServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ViewDetailApartmentServlet at " + request.getContextPath() + "</h1>");
@@ -63,17 +63,22 @@ public class ViewDetailApartmentServlet extends HttpServlet {
             throws ServletException, IOException {
         String aid = request.getParameter("apartmentId");
         ApartmentDAO ad = new ApartmentDAO();
-        
+
         LivingApartmentDAO ld = new LivingApartmentDAO();
         OwnerApartmentDAO od = new OwnerApartmentDAO();
         ResidentDAO residentDAO = new ResidentDAO();
-        
+
         request.setAttribute("apartmentId", aid);
         request.setAttribute("historyOfLiving", ld.getByApartmentID(aid));
         request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
         request.setAttribute("apartmentDetail", ad.getById(aid));
-        request.setAttribute("livingPerson", residentDAO.getById(ld.getLivingResidentByApartmentID(aid).getRid().getpId()));
-        request.setAttribute("apartmentOwner", residentDAO.getById(od.getOwnerByApartmentID(aid).getRid().getpId()));
+        if (ld.getLivingResidentByApartmentID(aid) != null) {
+            request.setAttribute("livingPerson", residentDAO.getById(ld.getLivingResidentByApartmentID(aid).getRid().getpId()));
+        }
+        if (od.getOwnerByApartmentID(aid) != null) {
+            request.setAttribute("apartmentOwner", residentDAO.getById(od.getOwnerByApartmentID(aid).getRid().getpId()));
+        }
+
         request.getRequestDispatcher("apartmentdetail.jsp").forward(request, response);
     }
 

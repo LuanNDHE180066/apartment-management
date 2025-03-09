@@ -138,9 +138,17 @@
                                                     <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="totalFees">Total Fees</label>
-                                                    <input type="number" id="totalFees" min="0"
-                                                           name="totalPrice" step="0.01" placeholder="Enter total fees" value="${expenditure.totalPrice}" required=""/>
+                                                    <label for="totalFees">Total Fees (VND)</label>
+
+
+                                                    <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencySymbol="VND" var="formattedTotalPrice"/>
+
+
+                                                    <input type="text" id="totalFeesDisplay" placeholder="Enter fees" 
+                                                           value="${formattedTotalPrice}" required=""/>
+
+
+                                                    <input type="hidden" id="totalFees" name="totalPrice" value="${expenditure.totalPrice}"/>
                                                 </div>
                                             </div>
                                         </div> 
@@ -213,6 +221,13 @@
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Add</button>
+                                            <div>
+                                                <span>
+                                                    <a style="color: #357AB8; text-decoration: underline; font-size: 15px" href="view-apartment-admin">
+                                                        <i class="fas fa-arrow-left"></i> Back
+                                                    </a>
+                                                </span>
+                                            </div>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>
@@ -227,8 +242,20 @@
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/custom.js"></script>
+
                 <script>
-                    // Add your JavaScript validation and functions here
+                    document.getElementById('totalFeesDisplay').addEventListener('input', function (e) {
+                        let rawValue = e.target.value.replace(/[^\d]/g, '');
+                        let numericValue = parseFloat(rawValue);
+
+                        if (!isNaN(numericValue)) {
+                            e.target.value = numericValue.toLocaleString('vi-VN') + ' VND';
+                            document.getElementById('totalFees').value = numericValue;
+                        } else {
+                            e.target.value = '';
+                            document.getElementById('totalFees').value = '';
+                        }
+                    });
                 </script>
         </body>
     </html>

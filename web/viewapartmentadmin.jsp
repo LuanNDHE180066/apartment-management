@@ -113,7 +113,7 @@
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterType">
                                                             <option value="">Filter by Types</option>
-                                                            <c:forEach items="${requestScope.types}" var="o">
+                                                            <c:forEach items="${sessionScope.types}" var="o">
                                                                 <option value="${o.id}" <c:if test="${requestScope.filterType == o.id}">selected</c:if>>${o.name}</option>
                                                             </c:forEach>
                                                         </select>
