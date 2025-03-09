@@ -33,18 +33,107 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
 
         <style>
-            /* CSS để làm cho đường kẻ của bảng xám mờ, căn giữa tên cột và màu nền của tiêu đề cột */
-            .table th, .table td {
-                border: 1px solid rgba(0, 0, 0, 0.2); /* Đặt đường kẻ màu xám mờ */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #f8f9fa;
+                color: #333;
             }
+
+            .container-fluid {
+                padding: 20px;
+            }
+
+            .white_shd {
+                background: #fff;
+                border-radius: 10px;
+                box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                padding: 20px;
+            }
+
+            h2, h3 {
+                color: #2c3e50;
+            }
+
+            h3 {
+                font-size: 20px;
+                font-weight: bold;
+                border-bottom: 3px solid #3498db;
+                display: inline-block;
+                padding-bottom: 5px;
+                margin-bottom: 15px;
+            }
+
             .table {
-                border-collapse: collapse; /* Đảm bảo không có khoảng cách giữa các đường kẻ */
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 15px;
             }
+
+            .table th, .table td {
+                padding: 10px;
+                text-align: left;
+                border-bottom: 1px solid #ddd;
+            }
+
             .table th {
-                text-align: center; /* Căn giữa tên cột */
-                background-color: #6B90DA; /* Màu nền cho tiêu đề cột */
-                color: black; /* Màu chữ trắng để nổi bật trên nền xanh */
+                background-color: #3498db;
+                color: white;
+                font-weight: bold;
             }
+
+            .table tbody tr:hover {
+                background-color: #f1f1f1;
+            }
+
+            input[type="number"] {
+                width: 60px;
+                padding: 5px;
+                border: 1px solid #ccc;
+                border-radius: 4px;
+                text-align: center;
+            }
+
+            a {
+                text-decoration: none;
+                color: #3498db;
+                font-size: 18px;
+            }
+
+            a:hover {
+                color: #217dbb;
+            }
+
+            /* Căn chỉnh bảng */
+            .table-responsive-sm {
+                margin-bottom: 20px;
+            }
+
+            .table_section {
+                padding: 20px;
+            }
+
+            /* Dropdown */
+            select {
+                padding: 7px;
+                border-radius: 5px;
+                border: 1px solid #ccc;
+                font-size: 14px;
+                cursor: pointer;
+            }
+
+            select:focus {
+                outline: none;
+                border-color: #3498db;
+            }
+
+            /* Flexbox */
+            .d-flex {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+
         </style>
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -93,7 +182,7 @@
                                             <div style="display: flex" class="table-responsive-sm">
                                                 <div style="width: 50%">
                                                     <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
-                                                        Dịch vụ theo yêu cầu
+                                                        Dịch vụ đang sử dụng
                                                     </h3>
 
                                                     <table class="table w-100">
@@ -116,14 +205,20 @@
                                                                         <td>
                                                                             <input name="serviceId" value="${item.service.id}" hidden=""/>
                                                                             <input name="apartmentId" value="${item.apartment.id}" hidden=""/>
-                                                                            <input onchange="this.form.submit()" step="1" ${item.service.categoryService.id == 'SV002' ? 'readonly' : ''}
+                                                                            <input onchange="this.form.submit()" step="1"
+                                                                                   ${item.service.categoryService.id == 'SV002' || requestScope.canUpdate==0 ? 'readonly' : ''}
                                                                                    type="number" min="1" name="quantity" value="${item.quantity}"/>
                                                                         </td> 
                                                                         <td>${item.service.unitPrice}</td>
                                                                         <td>${item.service.unit}</td>
                                                                         <td>${item.service.company.name}</td>
                                                                         <td style="text-align: center">
-                                                                            <a href="delete-service-resident?sid=${item.service.id}&aid=${item.apartment.id}" class="fa-solid fa-minus"></a>
+                                                                            <a href="${requestScope.canUpdate == 1 ? 
+                                                                                       'delete-service-resident?sid='.concat(item.service.id).concat('&aid=').concat(item.apartment.id) 
+                                                                                       : '#'}" 
+                                                                               class="fa-solid fa-minus">
+                                                                            </a>
+
                                                                         </td>
                                                                     </tr>
                                                                 </form>
@@ -152,7 +247,10 @@
                                                                     <td>${item.unitPrice}</td>
                                                                     <td>${item.company.name}</td>
                                                                     <td style="text-align: center">
-                                                                        <a href="update-service-resident?aid=${requestScope.aid}&sid=${item.id}" class="fa-solid fa-plus"></a>
+                                                                        <a href="${requestScope.canUpdate == 1 ? 
+                                                                                   'update-service-resident?aid='.concat(requestScope.aid).concat('&sid=').concat(item.id) 
+                                                                                   : '#'}" 
+                                                                           class="fa-solid fa-plus">
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>

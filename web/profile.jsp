@@ -123,6 +123,66 @@
                 margin-bottom: 10px;
                 border: 4px solid #007bff; /* Blue border */
             }
+            .profile-container {
+                display: grid;
+                grid-template-columns: 3fr 7fr; /* Image takes 3, content takes 7 */
+                align-items: center;
+                gap: 30px; /* Increased space between image and content */
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .profile-img {
+                display: flex;
+                justify-content: center;
+            }
+
+            .profile-img img {
+                width: 180px;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 50%;
+                border: 3px solid #4a90e2;
+            }
+
+            .profile-content {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+
+            .contact-inner ul {
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }
+
+            .contact-inner ul li {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 8px;
+            }
+
+            .contact-inner h6 {
+                margin-top: 10px;
+            }
+
+            .contact-inner .button {
+                display: inline-block;
+                padding: 8px 12px;
+                background: #4a90e2;
+                color: #fff;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+
+            .contact-inner .button:hover {
+                background: #357ab8;
+            }
+
 
 
 
@@ -160,14 +220,13 @@
                                         <div class="full price_table padding_infor_info">
                                             <div class="row">
                                                 <div class="col-lg-12">
-                                                    <div class="full dis_flex center_text">
-                                                        <div class="profile_img">
+                                                    <div class="profile-container">
+                                                        <div class="profile-img">
                                                             <img width="180" class="img-responsive rounded-circle" src="${sessionScope.person.image}" alt="User Image">
-
                                                         </div>
 
-                                                        <div class="profile_contant">
-                                                            <div class="contact_inner">
+                                                        <div class="profile-content">
+                                                            <div class="contact-inner">
                                                                 <h3>${sessionScope.person.name}</h3>
                                                                 <ul class="list-unstyled">
                                                                     <li><i class="fa-regular fa-envelope"></i> ${sessionScope.person.email}</li>
@@ -175,7 +234,6 @@
                                                                     <li><i class="fa-solid fa-house"></i> ${sessionScope.person.address}</li>
                                                                     <li><i class="fa-regular fa-user"></i> ${sessionScope.person.cccd}</li>
                                                                     <li><i class="fa-solid fa-calendar-days"></i> ${sessionScope.person.bod}</li>
-
                                                                 </ul>
                                                                 <h6>
                                                                     <a href="${ut.getTableNameByRoleIdEdit(sessionScope.account.roleId)}" class="button">
@@ -190,6 +248,7 @@
                                                             </div>
                                                         </div>
                                                     </div>
+
                                                 </div>
                                             </div>
                                         </div>

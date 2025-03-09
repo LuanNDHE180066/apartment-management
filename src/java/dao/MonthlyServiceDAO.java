@@ -130,6 +130,38 @@ public class MonthlyServiceDAO extends DBContext {
             }
         }
     }
+    public void addServiceToAllResidentNoUsing(String sid) {
+        List<String> listApartment = this.getApartmentIdNoUsingServiceId(sid);
+        for (String aid : listApartment) {
+            this.addServiceToApartment(sid, aid);
+        }
+    }
+    public void synchronousServiceByApartment(String aid,int quantity,String sid){
+        String sql = "update MonthlyInvoice set quantity=? where aid=? and sid=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, quantity);
+            st.setString(2, aid);
+            st.setString(3, sid);
+            st.executeUpdate();
+        } catch (SQLException e) {
+        }
+    }
+    public List<String> getApartmentIdNoUsingServiceId(String sid){
+         String sql = "select aid from LivingAparment where status =1 except\n"
+                + "select aid from MonthlyInvoice where sid =?";
+         List<String> list = new ArrayList<>();
+         try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, sid);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("aid"));
+            }
+        } catch (SQLException e) {
+        }
+         return list;
+    }
     public static void main(String[] args) {
         MonthlyServiceDAO dao = new MonthlyServiceDAO();
         System.out.println(dao.getByApartmentId("A01_01").size());

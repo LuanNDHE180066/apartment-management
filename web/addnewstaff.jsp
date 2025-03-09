@@ -133,10 +133,10 @@
                                                         placeholder="Enter full name"
                                                         value="${param.name}" required=""
                                                         />
+                                                    <span style="color: red">${requestScope.nameerror}</span>
                                                 </div>
                                         </div>
                                         <div class="form-group">
-                                            <input type="text" id="staffID" name="staffID" value="" hidden=""/>
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="gender">Gender</label>
@@ -148,6 +148,7 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="dob">Date of Birth</label>
                                                     <input type="date" id="dob" name="dob" value="${param.dob}"/>
+                                                    <span style="color: red">${requestScope.ageerror}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -162,6 +163,7 @@
                                                     value="${param.address}"
                                                     required=""
                                                     />
+                                                <span style="color: red">${requestScope.addresserror}</span>
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -176,7 +178,7 @@
                                                         value="${param.phone}"
                                                         required=""
                                                         />
-                                                    <span id="phone-error" style="color: red"></span>
+                                                    <span style="color: red">${requestScope.phoneerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="email">Email</label>
@@ -187,7 +189,7 @@
                                                         placeholder="Enter email"
                                                         value="${param.email}" required=""
                                                         />
-                                                    <span id="email-error" style="color: red"></span>
+                                                    <span style="color: red">${requestScope.emailerror}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,7 +204,7 @@
                                                         placeholder="Enter CCCD"
                                                         value="${param.cccd}" required=""
                                                         />
-                                                    <span id="CCCD-error" style="color: red"></span>
+                                                    <span style="color: red">${requestScope.cccderror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="education">Education</label>
@@ -213,16 +215,18 @@
                                                         placeholder="Enter education"
                                                         value="${param.education}" required=""
                                                         />
+<!--                                                    <span style="color: red">${requestScope.nameerror}</span>-->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="salary">Salary</label>
-                                                    <input
+                                                    <input class="format-number"
                                                         type="text"
                                                         id="salary"
                                                         name="salary"
                                                         placeholder="Enter salary"
                                                         value="${param.salary}" required=""
                                                         />
+                                                    <span style="color: red">${requestScope.salaryerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="bank">Bank Account</label>
@@ -233,6 +237,7 @@
                                                         placeholder="Enter bank account"
                                                         value="${param.bank}" required=""
                                                         />
+                                                    <span style="color: red">${requestScope.bankerror}</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -247,8 +252,8 @@
                                                         placeholder="Enter username"
                                                         value="${param.username}" required=""
                                                         />
+                                                    <span style="color: red">${requestScope.usernameerror}</span>
                                                 </div>
-                                                
                                             </div>
                                         </div>
                                         <div class="form-group">
@@ -264,6 +269,7 @@
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="startDate">Start Date</label>
                                                     <input type="date" id="startDate" name="startDate" value="${param.startDate}"/>
+                                                    <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="role">Role</label>

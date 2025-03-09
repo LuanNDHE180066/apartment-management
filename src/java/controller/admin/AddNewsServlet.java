@@ -16,6 +16,11 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.text.ParseException;
 import java.util.List;
 import model.News;
@@ -91,10 +96,31 @@ public class AddNewsServlet extends HttpServlet {
         String title = request.getParameter("title");
         String content = request.getParameter("content");
         String source = request.getParameter("source");    
-        String image = "";
-        if(null != request.getPart("file")){
-            Part fileImage = request.getPart("file");
-            image = "images/news/" + fileImage.getSubmittedFileName();
+        Part filePart=request.getPart("file");
+        String image="";
+        boolean hasError = false;
+        if(filePart!=null && filePart.getSize()>0){
+            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+            if(!fileExtention.matches("jpg|jpeg")){
+                request.setAttribute("fileerror", "Only jpg");
+                hasError = true;
+            }
+            String uploadpath=getServletContext().getRealPath("/")+"images/news";
+            File uploadDir=new File(uploadpath);
+            if(!uploadDir.exists()){
+                uploadDir.mkdirs();
+            }
+            File file= new File(uploadDir, filename);
+            try(InputStream fileContent=filePart.getInputStream();
+                    FileOutputStream outputStream=new FileOutputStream(file)) {
+                byte[] buffer=new byte[1024];
+                int byteread;
+                while((byteread=fileContent.read(buffer))!= -1){
+                    outputStream.write(buffer, 0, byteread);
+                }
+            }
+            image = "images/news/" + filename;           
         }
         String auther = request.getParameter("authorid");
         String date = request.getParameter("date");
@@ -103,13 +129,26 @@ public class AddNewsServlet extends HttpServlet {
         StaffDAO sdao = new StaffDAO();
         News anew = new News(title, content, source, category, image, sdao.getById(auther), date);
         try{
+            if(title.trim().isEmpty()){
+                request.setAttribute("titleerror", "Title is not empty");
+                hasError = true;
+            }if(content.trim().isEmpty()){
+                request.setAttribute("contenterror", "Content is not empty");
+                hasError = true;
+            }if(source.trim().isEmpty()){
+                request.setAttribute("sourceerror", "Source is not empty");
+                hasError = true;
+            }
             if(!CommonValidation.isValidNewsDate(date)){
-                request.setAttribute("error", "Date need to later current date");
-                doGet(request, response);
-                return;
+                request.setAttribute("dateError", "Date need to later current date");
+                hasError = true;
             }
         }catch(ParseException e){
             System.out.println(""+e);
+        }
+        if (hasError) {
+            request.getRequestDispatcher("addnews.jsp").forward(request, response);
+                return;
         }
         if (ndao.insertNews(anew)) {
             request.setAttribute("status", "true");

@@ -79,7 +79,7 @@ public class UpdateImage extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        
+
     }
 
     /**
@@ -93,14 +93,14 @@ public class UpdateImage extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-HttpSession session = request.getSession();
+        HttpSession session = request.getSession();
         Account ac = (Account) session.getAttribute("account");
         Part fileImage = request.getPart("file");
         String fileName = fileImage.getSubmittedFileName();
-        if(!fileName.endsWith(".jpg")){
+        if (!fileName.endsWith(".jpg")) {
             request.setAttribute("status", false);
-            request.setAttribute("message", "Only upload file .jpg");            
-        }else{
+            request.setAttribute("message", "Only upload file .jpg");
+        } else {
             String source = "images/avatar/" + fileName;
             AccountDAO dao = new AccountDAO();
             dao.changeImageByAccount(ac, source);

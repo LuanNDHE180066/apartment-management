@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author Lenovo
@@ -40,7 +44,7 @@ public class Service {
         this.unit = unit;
     }
     
-    public String getStartDate() {
+    public String getStartDate(){
         return startDate;
     }
 
@@ -115,6 +119,25 @@ public class Service {
     public Service() {
     }
 
+    public boolean equals(Service obj) {
+//         private String id;
+//    private String name;
+//    private double unitPrice;
+//    private String description;
+//    private CategoryService categoryService;
+//    private Company company;
+//    private int status;
+//    private String startDate,endDate;
+//    private String unit;
+            return name.equalsIgnoreCase(obj.getName())
+                    && unitPrice== obj.getUnitPrice() 
+                    && description.equalsIgnoreCase(obj.getDescription())
+                    && categoryService.getId().equalsIgnoreCase(obj.getCategoryService().getId())
+                    && company.getId().equalsIgnoreCase(obj.getCompany().getId())
+                    && status == obj.getStatus()
+                    && unit.equalsIgnoreCase(obj.getUnit());
+    }
+    
     public Service(String id, String name, double unitPrice, String description, CategoryService categoryService, Company company, int status) {
         this.id = id;
         this.name = name;
