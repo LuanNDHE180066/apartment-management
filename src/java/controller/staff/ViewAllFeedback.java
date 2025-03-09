@@ -20,6 +20,7 @@ import model.Feedback;
 import model.RequestType;
 import util.Util;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  *
@@ -67,11 +68,10 @@ public class ViewAllFeedback extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        List<Feedback> listFeedback;
+        List<Feedback> listFeedback=new ArrayList<>();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
-        listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
 
         // Get filter parameters
         String searchName = request.getParameter("searchName");

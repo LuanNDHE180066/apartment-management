@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.sql.Date;
+import java.time.LocalDate;
 import model.Rule;
 import util.Util;
 
@@ -102,7 +103,6 @@ public class UpdateRuleServlet extends HttpServlet {
         String effectiveDateStr = request.getParameter("effectiveDate");
         String status = request.getParameter("status");
 
-       
         if (id == null || title == null || description == null) {
             request.setAttribute("message", "Missing required fields!");
             request.setAttribute("status", "false");
@@ -120,31 +120,30 @@ public class UpdateRuleServlet extends HttpServlet {
             return;
         }
 
-        
         rule.setTitle(title);
         rule.setDescription(description);
 
-       
         if (status != null) {
             rule.setStatus(status);
-        } 
+        }
 
-     
         if (effectiveDateStr != null && !effectiveDateStr.isEmpty()) {
-            
-               
-                Date effectiveDate = Date.valueOf(effectiveDateStr);
 
-                Date createDate = Date.valueOf(rule.getDate());
-                if (!effectiveDate.after(createDate)) {
-                    request.setAttribute("message", "Effective date must be after start date!");
-                    request.setAttribute("status", "false");
-                    request.getRequestDispatcher("updateRule.jsp").forward(request, response);
-                    return;
-                }
+           Date effectiveDate = Date.valueOf(effectiveDateStr);
 
-                rule.setEffectiveDate(effectiveDate.toString());
-            } 
+            // Fix: Convert SQL Date to LocalDate to compare properly
+            LocalDate today = LocalDate.now();
+            LocalDate effectiveLocalDate = effectiveDate.toLocalDate();
+
+            if (effectiveLocalDate.isBefore(today)) {
+                request.setAttribute("message", "Effective date must be after start date!");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+                return;
+            }
+
+            rule.setEffectiveDate(effectiveDate.toString());
+        }
 
         boolean isUpdated = daoR.updateRule(rule);
 

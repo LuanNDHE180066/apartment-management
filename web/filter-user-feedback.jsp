@@ -231,8 +231,9 @@
                                                         <tr>
                                                             <th style="width: 15%;">Người tạo đơn</th>
                                                             <th style="width: 20%;">Tên dịch vụ</th>
+                                                            <th style="width: 10%;">Thời Gian</th>
                                                             <th style="width: 10%;">Mức độ hài lòng</th>
-                                                            <th style="width: 10%;" class="action-column">Hành động</th>
+                                                            <th style="width: 10%;">Hành động</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -241,6 +242,7 @@
                                                             <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}" >
                                                                 <td>${feedback.resident.name}</td>
                                                                 <td>${feedback.requestType.name}</td>
+                                                                <td>${feedback.date}</td>
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>

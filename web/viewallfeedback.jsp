@@ -156,30 +156,43 @@
                                             <form action="view-all-feedback" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        <div class="form-group text-center">
+                                                            <label for="searchName" class="fw-bold">Title</label>
+                                                            <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="date" class="form-control" name="startDate" value="${param.startDate}">
+                                                        <div class="form-group text-center">
+                                                            <label for="startDate" class="fw-bold">Start Date</label>
+                                                            <input type="date" class="form-control" name="startDate" value="${param.startDate}">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="date" class="form-control" name="endDate" value="${param.endDate}">
+                                                        <div class="form-group text-center">
+                                                            <label for="endDate" class="fw-bold">End Date</label>
+                                                            <input type="date" class="form-control" name="endDate" value="${param.endDate}">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" name="serviceType">
-                                                            <option value="">Select Service Type</option>
-                                                            <c:forEach items="${sessionScope.listRequestType}" var="service">
-                                                                <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
-                                                                    ${service.name}
-                                                                </option>
-                                                            </c:forEach>
-                                                        </select>
+                                                        <div class="form-group text-center">
+                                                            <label class="fw-bold">Service Type</label>
+                                                            <select class="form-control" name="serviceType">
+                                                                <option value="">Select Service Type</option>
+                                                                <c:forEach items="${sessionScope.listRequestType}" var="service">
+                                                                    <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
+                                                                        ${service.name}
+                                                                    </option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-2 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                    <div class=" text-center mt-3">
+                                                        <button type="submit" class="btn btn-primary">Filter</button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
+
 
                                         <!-- Feedback Table -->
                                         <div class="table_section padding_infor_info">
