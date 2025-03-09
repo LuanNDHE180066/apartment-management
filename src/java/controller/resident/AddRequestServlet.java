@@ -21,6 +21,7 @@ import model.Request;
 import model.RequestType;
 import model.SendEmail;
 import model.Staff;
+import util.Util;
 
 /**
  *
@@ -87,23 +88,24 @@ public class AddRequestServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
         String rid = account.getpId();
-        String detail = request.getParameter("detail");
+        String detail = Util.stringNomalize(request.getParameter("detail")) ;
         String typeRequestId = request.getParameter("typeRequest");
-
+        if(detail.isBlank()){
+            request.setAttribute("message","Content is not allow blank");
+            doGet(request, response);
+            return;
+        }
         RequestTypeDAO rtd = new RequestTypeDAO();
         RequestDAO rd = new RequestDAO();
         StaffDAO sd = new StaffDAO();
         SendEmail email = new SendEmail();
-
         RequestType typeRequest = rtd.getById(typeRequestId);
-        List<Staff> staffs = sd.getActiveStaffbyRole("2");
-        //add new request to db
         int addRequest = rd.addRequest(rid, detail, typeRequest);
-        //send email for staffs just found
-//        for (Staff staff : staffs) {
-//            email.sendRequestEmail(staff.getEmail(), account.getUsername(), typeRequest.getName(), detail);
-//        }
-        response.sendRedirect("viewrequest_history");
+        List<Staff> staffs = sd.getActiveStaffbyRole("2");
+        email.sendEmailToWorkingStaff(staffs);
+        request.setAttribute("status", true);
+        request.setAttribute("message","Add new request successful.");
+        doGet(request, response);
     }
 
     /**
