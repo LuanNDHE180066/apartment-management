@@ -189,31 +189,34 @@
                 </div>
             </div>
         </div>
-
+        <script src="js/jquery.min.js"></script>
+        <script src="js/popper.min.js"></script>
+        <script src="js/bootstrap.min.js"></script>
+        <script src="js/custom.js"></script>
         <script>
-            document.addEventListener("DOMContentLoaded", function () {
-                let fileInput = document.getElementById("profileImage");
-                let avatarImage = document.getElementById("previewImage");
-                let uploadPreviewImage = document.getElementById("uploadPreviewImage");
-                let uploadIcon = document.querySelector(".upload-icon");
+                                                    document.addEventListener("DOMContentLoaded", function () {
+                                                        let fileInput = document.getElementById("profileImage");
+                                                        let avatarImage = document.getElementById("previewImage");
+                                                        let uploadPreviewImage = document.getElementById("uploadPreviewImage");
+                                                        let uploadIcon = document.querySelector(".upload-icon");
 
-                fileInput.addEventListener("change", function () {
-                    previewSelectedImage(this);
-                });
+                                                        fileInput.addEventListener("change", function () {
+                                                            previewSelectedImage(this);
+                                                        });
 
-                function previewSelectedImage(input) {
-                    if (input.files && input.files[0]) {
-                        let reader = new FileReader();
-                        reader.onload = function (e) {
-                            avatarImage.src = e.target.result; // Update avatar
-                            uploadPreviewImage.src = e.target.result; // Update upload area
-                            uploadPreviewImage.style.display = "block"; // Show image
-                            uploadIcon.style.display = "none"; // Hide upload icon
-                        };
-                        reader.readAsDataURL(input.files[0]);
-                    }
-                }
-            });
+                                                        function previewSelectedImage(input) {
+                                                            if (input.files && input.files[0]) {
+                                                                let reader = new FileReader();
+                                                                reader.onload = function (e) {
+                                                                    avatarImage.src = e.target.result; // Update avatar
+                                                                    uploadPreviewImage.src = e.target.result; // Update upload area
+                                                                    uploadPreviewImage.style.display = "block"; // Show image
+                                                                    uploadIcon.style.display = "none"; // Hide upload icon
+                                                                };
+                                                                reader.readAsDataURL(input.files[0]);
+                                                            }
+                                                        }
+                                                    });
         </script>
     </body>
 </html>

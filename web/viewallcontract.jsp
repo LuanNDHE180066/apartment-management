@@ -75,7 +75,7 @@
                                                                 </div>
                                                                 <div class="col-md-3 d-flex">
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <c:if test="${sessionScope.account.roleId == 2}"> <a href="add-contract" class="btn btn-primary">Add Contract</a></c:if>
+                                                                    <c:if test="${sessionScope.account.roleId == 0}"> <a href="add-new-contract" class="btn btn-primary">Add Contract</a></c:if>
                                                                     </div>
                                                                 </div>
                                                             </div>

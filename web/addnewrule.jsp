@@ -15,7 +15,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <!-- site metas -->
-<title>Apartment management</title>        <meta name="keywords" content="">
+        <title>Apartment management</title>        <meta name="keywords" content="">
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- site icon -->
@@ -114,12 +114,12 @@
     <body class="dashboard dashboard_1">
         <div class="full_container">
             <div class="inner_container">
-              <%@include file="sidebar.jsp" %>
+                <%@include file="sidebar.jsp" %>
                 <!-- end sidebar -->
                 <!-- right content -->
                 <div id="content">
                     <!-- topbar -->
-                       <%@include file="topbar.jsp" %>
+                    <%@include file="topbar.jsp" %>
                     <!-- end topbar -->
                     <!-- Form to Add New Employee -->
                     <div class="container mt-5">
@@ -132,35 +132,25 @@
                                             <label for="title">Title</label>
                                             <input type="text" id="title" name="title" placeholder="Enter rule title" required />
                                         </div>
+
                                         <div class="form-group">
                                             <label for="description">Description</label>
-                                            <input type="text" id="description" name="description" placeholder="Enter description" required />
+                                            <textarea id="description" name="description" placeholder="Enter description" required maxlength="500" rows="4" style="width: 100%;"></textarea>
+
                                         </div>
-                                        <div class="form-group">
-                                            <label for="date">Date</label>
-                                            <input type="date" id="date" name="date" required />
-                                        </div>
+
                                         <div class="form-group">
                                             <label for="effectiveDate">Effective Date</label>
                                             <input type="date" id="effectiveDate" name="effectiveDate" required />
                                         </div>
-                                        <div class="form-group">
-                                            <label for="status">Status</label>
-                                            <select id="status" name="status" required>
-                                                <option value="1">Active</option>
-                                                
-                                            </select>
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="sid">SID</label>
-                                            <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" required />
-                                        </div>
+
                                         <div class="form-button">
                                             <button type="submit">Add Rule</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
                         </div>

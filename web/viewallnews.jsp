@@ -65,12 +65,15 @@
                                                         <div class="col-md-8">
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-2">
+                                                                    <label>Search</label>
                                                                     <input type="text" class="form-control" name="title" placeholder="Enter title" value="${param.title}">
                                                                 </div>
                                                                 <div class="col-md-2">
+                                                                    <label>Start date</label>
                                                                     <input type="date" class="form-control" name="startDate" placeholder="From" value="${param.startDate}">
                                                                 </div>
                                                                 <div class="col-md-2">
+                                                                    <label>End date</label>
                                                                     <input type="date" class="form-control" name="endDate" placeholder="To" value="${param.endDate}">
                                                                 </div>
                                                                 <div class="col-md-4 d-flex">
@@ -88,10 +91,10 @@
                                             <div class="news_section">
                                                 <ul class="news-list">
                                                 <c:forEach items="${sessionScope.listNews}" var="n">
-                                                    <li>-${n.date}<a href="news-detail?id=${n.id}">: ${n.title}</a></li>
+                                                    <li>-${n.date}<a href="news-detail?id=${n.id}">: ${n.title}</a>
                                                     <c:if test="${sessionScope.account.roleId == 2}"><a href="delete-news?id=${n.id}" onclick="return confirm('Are you sure to delete this news?')""><i class="material-icons" title="Delete">&#xE872;</i></a></c:if>
-                                                    
-                                                    </c:forEach>
+                                                    </li>
+                                                </c:forEach>
                                             </ul>
                                         </div>
                                     </div>
