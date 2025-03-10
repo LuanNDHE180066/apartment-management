@@ -167,10 +167,11 @@
                                                     </table>
                                                 </div>
                                                 <div style="width: 100%">
-                                                    <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
-                                                        Hóa đơn đã thanh toán
-                                                    </h3>
-
+                                                    <div>
+                                                        <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
+                                                            Hóa đơn đã thanh toán
+                                                        </h3>
+                                                    </div>
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
