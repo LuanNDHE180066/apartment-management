@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -14,26 +15,61 @@
         <link rel="stylesheet" href="css/custom.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <style>
-            body {
-                /* Style body n?u c?n */
+            .contract_section {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
+
             .contract-list {
-                padding-left: 20px; /* Kho?ng cách bên trái */
+                list-style: none;
+                padding: 0;
+                margin: 0;
             }
+
             .contract-list li {
-                padding: 10px; /* Padding cho t?ng m?c */
-                font-size: 18px; /* Kích th??c ch? cho t?ng m?c */
+                background: white;
+                padding: 10px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                transition: all 0.3s ease-in-out;
             }
-            .contract-list li a {
-                text-decoration: none; /* B? g?ch chân */
-                color: #007bff; /* Màu liên k?t */
+
+            .contract-list li:hover {
+                background: #e9ecef;
+                transform: translateY(-2px);
             }
-            .contract-list li a:hover {
-                color: #0056b3; /* Màu khi hover */
+
+            .contract-list a {
+                text-decoration: none;
+                font-weight: bold;
+                color: #007bff;
+                margin-left: 5px;
             }
-            .graph_head {
-                margin-bottom: 20px; /* Gi?m kho?ng cách d??i tiêu ?? */
+
+            .contract-list a:hover {
+                text-decoration: underline;
             }
+
+            .contract-icon {
+                font-size: 18px;
+                margin-right: 10px;
+                color: #28a745;
+            }
+
+            .contract-date {
+                font-size: 14px;
+                color: #6c757d;
+                margin-right: 8px;
+            }
+            h4 {
+    margin-bottom: 20px; /* T?ng kho?ng cách */
+}
+
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -92,18 +128,13 @@
                                         </div>
 
                                         <div class="contract_section">
-                                            
                                             <ul class="contract-list">
-
                                                 <c:if test="${not empty sessionScope.listContract}">
                                                     <c:forEach var="c" items="${sessionScope.listContract}">
                                                         <li>
-                                                            - ${c.startDate} <a href="contract-detail?id=${c.id}">: ${c.title}</a>
-                                                            <c:if test="${sessionScope.account.roleId == 1}">
-                                                                <a href="delete-contract?id=${c.id}" onclick="return confirm('Are you sure to delete this contract?')">
-                                                                    <i class="material-icons" title="Delete">&#xE872;</i>
-                                                                </a>
-                                                            </c:if>
+                                                            <span class="contract-icon"></span>
+                                                            <span class="contract-date">${c.startDate}</span> 
+                                                            <a href="contract-detail?id=${c.id}">${c.title}</a>
                                                         </li>
                                                     </c:forEach>
                                                 </c:if>

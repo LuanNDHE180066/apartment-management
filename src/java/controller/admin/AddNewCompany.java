@@ -123,7 +123,7 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("faxError", "Fax must be exactly 10 digits.");
             hasError = true;
         }
-        if (!taxCode.matches("[0-9]{10}")) {
+        if (!taxCode.matches("[0-9]{10}")) { 
             request.setAttribute("taxCodeError", "Tax code must be exactly 10 digits.");
             hasError = true;
         }
