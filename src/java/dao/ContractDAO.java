@@ -32,7 +32,36 @@ public class ContractDAO extends DBContext {
     //String signDate, String title, String description, String image, int status)
 
     public List<Contract> getAll() {
-        String sql = "select * from Contract";
+        String sql = "  select * from Contract order by id asc";
+        CompanyDAO daoCP = new CompanyDAO();
+        StaffDAO daoSt = new StaffDAO();
+        List<Contract> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new Contract(rs.getString("id"),
+                        daoSt.getById(rs.getString("sId")),
+                        daoSt.getById(rs.getString("adminId")),
+                        daoSt.getById(rs.getString("accountantId")),
+                        daoCP.getById(rs.getString("cId")),
+                        rs.getString("enddate"),
+                        rs.getString("Startdate"),
+                        rs.getString("paymenttems"),
+                        rs.getString("signdate"),
+                        rs.getString("title"),
+                        rs.getString("Description"),
+                        rs.getString("image"),
+                        rs.getInt("status")));
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(ContractDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    public List<Contract> getAllactive() {
+        String sql = "  select * from Contract where status=1 order by id asc";
         CompanyDAO daoCP = new CompanyDAO();
         StaffDAO daoSt = new StaffDAO();
         List<Contract> list = new ArrayList<>();
@@ -62,50 +91,56 @@ public class ContractDAO extends DBContext {
     }
 
     public List<Contract> filterContract(String title, String startDate, String endDate) {
-        String sql = "select * from Contract where 1 = 1 ";
-        CompanyDAO daoCP = new CompanyDAO();
-        StaffDAO daoSt = new StaffDAO();
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-        if (title != "") {
-            sql += "and title = '%" + title + "%'";
-        }
-        if (startDate != "") {
-            Date date = Date.valueOf(startDate);
-            String formatDate = format.format(date);
-            sql += " and startdate >= '" + formatDate + "'";
-        }
+    String sql = "SELECT * FROM Contract WHERE status = 1"; // Chỉ lấy hợp đồng đã duyệt
+    List<Object> params = new ArrayList<>();
 
-        if (endDate != "") {
-            Date date = Date.valueOf(endDate);
-            String formatDate = format.format(date);
-            sql += " and startdate <= '" + formatDate + "'";
-        }
-        List<Contract> list = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-
-                list.add(new Contract(rs.getString("id"),
-                        daoSt.getById(rs.getString("sId")),
-                        daoSt.getById(rs.getString("adminId")),
-                        daoSt.getById(rs.getString("accountantId")),
-                        daoCP.getById(rs.getString("cId")),
-                        rs.getString("enddate"),
-                        rs.getString("Startdate"),
-                        rs.getString("paymenttems"),
-                        rs.getString("signdate"),
-                        rs.getString("title"),
-                        rs.getString("Description"),
-                        rs.getString("image"),
-                        rs.getInt("status")));
-            }
-            return list;
-        } catch (SQLException ex) {
-            Logger.getLogger(ContractDAO.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        return null;
+    if (title != null && !title.trim().isEmpty()) {
+        sql += " AND title LIKE ?";
+        params.add("%" + title + "%");
     }
+    if (startDate != null && !startDate.trim().isEmpty()) {
+        sql += " AND startdate >= ?";
+        params.add(Date.valueOf(startDate));
+    }
+    if (endDate != null && !endDate.trim().isEmpty()) {
+        sql += " AND startdate <= ?";
+        params.add(Date.valueOf(endDate));
+    }
+
+    List<Contract> list = new ArrayList<>();
+    CompanyDAO daoCP = new CompanyDAO();
+    StaffDAO daoSt = new StaffDAO();
+
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        for (int i = 0; i < params.size(); i++) {
+            ps.setObject(i + 1, params.get(i));
+        }
+
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            list.add(new Contract(
+                rs.getString("id"),
+                daoSt.getById(rs.getString("sId")),
+                daoSt.getById(rs.getString("adminId")),
+                daoSt.getById(rs.getString("accountantId")),
+                daoCP.getById(rs.getString("cId")),
+                rs.getString("enddate"),
+                rs.getString("Startdate"),
+                rs.getString("paymenttems"),
+                rs.getString("signdate"),
+                rs.getString("title"),
+                rs.getString("Description"),
+                rs.getString("image"),
+                rs.getInt("status")
+            ));
+        }
+    } catch (SQLException ex) {
+        Logger.getLogger(ContractDAO.class.getName()).log(Level.SEVERE, null, ex);
+    }
+    return list;
+}
+
 
     public Contract getById(String id) {
         String sql = "select * from Contract where id  = " + id;
@@ -154,7 +189,7 @@ public class ContractDAO extends DBContext {
             ps.setString(6, c.getSignDate());
             ps.setString(7, c.getTitle());
             ps.setString(8, c.getDescription());
-            ps.setInt(9, 1);
+            ps.setInt(9, 0);
             ps.setString(10, (lastNum + 1) + "");
             ps.setString(11, c.getAccountant().getId());
             ps.setString(12, c.getAdmin().getId());
