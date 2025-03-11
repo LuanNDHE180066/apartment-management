@@ -12,7 +12,6 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,17 +28,15 @@ import model.Resident;
  * @author quang
  */
 public class RequestChangeResidentDAO extends DBContext {
-    
-    private ResidentDAO residentDAO = new ResidentDAO();
-    
-    public boolean addNewRequestChange(RequestChangeResident re) {
+
+    public void addNewRequestChange(RequestChangeResident re) {
         String sql = "INSERT INTO [dbo].[RequestChangeResident] ("
                 + "[owner_name], [new_person_name], [dob], [address], "
                 + "[phone], [email], [cccd], [username], [password], "
                 + "[gender], [room_number], [change_type], "
                 + "[new_person_exists], [admin_status], [created_at]) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-        
+
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, re.getOwner().getpId());
@@ -57,60 +54,12 @@ public class RequestChangeResidentDAO extends DBContext {
             ps.setInt(13, re.getNewPersonExists());
             ps.setInt(14, re.getAdminStatus());
             ps.setString(15, re.getCreatedAt());
-            return ps.executeUpdate() > 0;
+            ps.executeUpdate();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
-        return false;
-    }
-    
-    public List<RequestChangeResident> getPendingChangeRequest() {
-        String sql = "select * from requestchangeresident where admin_status = 0";
-        List<RequestChangeResident> list = new ArrayList<>();
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                int id = rs.getInt("request_id");
-                String ownerId = rs.getString("owner_name");
-                String newPersonId = rs.getString("new_person_name");
-                String dob = rs.getString("dob");
-                String address = rs.getString("address");
-                String phone = rs.getString("phone");
-                String email = rs.getString("email");
-                String cccd = rs.getString("cccd");
-                String username = rs.getString("username");
-                String password = rs.getString("password");
-                String gender = rs.getString("gender");
-                String roomId = rs.getString("room_number");
-                int changeType = rs.getInt("change_type");
-                int isExistPerson = rs.getInt("new_person_exists");
-                int admin_status = rs.getInt("admin_status");
-                String created_at = rs.getString("created_at");
-                
-                RequestChangeResident rc = new RequestChangeResident(id, residentDAO.getById_v2(ownerId), residentDAO.getById_v2(newPersonId),
-                        roomId, changeType, isExistPerson, admin_status, created_at);
-                
-                list.add(rc);
-            }
-        } catch (SQLException ex) {
-            java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        return list;
     }
     
     public static void main(String[] args) {
-        ResidentDAO dao = new ResidentDAO();
-        Resident owner = dao.getById("P102");
-        Resident newRe = dao.getById_v2("P106");
-        //System.out.println(newRe.getGender());
-        LocalDateTime lc = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        String formattedDate = lc.format(format);
-        RequestChangeResident re = new RequestChangeResident(owner, newRe,
-                "A008", 0, 1, 0, formattedDate);
-        RequestChangeResidentDAO daoR = new RequestChangeResidentDAO();
-//        System.out.println(daoR.addNewRequestChange(re));
-        System.out.println(daoR.getPendingChangeRequest().size());
     }
 }
