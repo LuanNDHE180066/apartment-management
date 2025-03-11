@@ -19,31 +19,46 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
+import org.apache.http.HttpRequest;
 
 /**
  *
- * @author PC
+ * @author quang
  */
-@WebFilter(filterName = "EnviromentFilter", urlPatterns = {"/view-all-request",
-    "/update-request-staff",
-    "/viewallrequest.jsp",
-    "/editrequest.jsp"})
-public class EnviromentFilter implements Filter {
-    
+@WebFilter(filterName = "AdminFilters",
+        urlPatterns = {"/view-roomtype",
+            "/update-room-type",
+            "/delete-room-type",
+            "/updateroomtype.jsp",
+            "/viewroomtype.jsp",
+            "/add-new-apartment",
+            "/view-apartment-admin",
+            "/viewresidentapartment.jsp",
+            "/viewdetailapartment-admin",
+            "/apartment-living-history",
+            "/apartment-owner-history",
+            "/viewdetailapartment-admin",
+            "/apartment-owner-history",
+            "/apartment-living-history",
+            "/apartmentdetail.jsp",
+            "/historyownerapartment.jsp",
+            "/historylivingapartment.jsp"})
+public class AdminFilters implements Filter {
+
     private static final boolean debug = true;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-    
-    public EnviromentFilter() {
-    }    
-    
+
+    public AdminFilters() {
+    }
+
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("EnviromentFilter:DoBeforeProcessing");
+            log("AdminFilters:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -66,12 +81,12 @@ public class EnviromentFilter implements Filter {
 	    log(buf.toString());
 	}
          */
-    }    
-    
+    }
+
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("EnviromentFilter:DoAfterProcessing");
+            log("AdminFilters:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -105,21 +120,30 @@ public class EnviromentFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-        
+
         if (debug) {
-            log("EnviromentFilter:doFilter()");
+            log("AdminFilters:doFilter()");
         }
-        
+
         doBeforeProcessing(request, response);
+
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 5) {
-            res.sendRedirect("401_error.jsp");
-            return;
-        } 
+        String uri = req.getServletPath();
+        if (a.getRoleId() != 0) {
+            if (a.getRoleId() == 2 && (uri.contains("view-rule-admin") || uri.contains("add-new-rule"))) {
+                chain.doFilter(request, response);
+                System.out.println("");
+                return;
+            } else {
+                res.sendRedirect("404_error.jsp");
+                return;
+            }
+        }
+
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -130,7 +154,7 @@ public class EnviromentFilter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-        
+
         doAfterProcessing(request, response);
 
         // If there was a problem, we want to rethrow it if it is
@@ -165,17 +189,17 @@ public class EnviromentFilter implements Filter {
     /**
      * Destroy method for this filter
      */
-    public void destroy() {        
+    public void destroy() {
     }
 
     /**
      * Init method for this filter
      */
-    public void init(FilterConfig filterConfig) {        
+    public void init(FilterConfig filterConfig) {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
-            if (debug) {                
-                log("EnviromentFilter:Initializing filter");
+            if (debug) {
+                log("AdminFilters:Initializing filter");
             }
         }
     }
@@ -186,27 +210,27 @@ public class EnviromentFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("EnviromentFilter()");
+            return ("AdminFilters()");
         }
-        StringBuffer sb = new StringBuffer("EnviromentFilter(");
+        StringBuffer sb = new StringBuffer("AdminFilters(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
     }
-    
+
     private void sendProcessingError(Throwable t, ServletResponse response) {
-        String stackTrace = getStackTrace(t);        
-        
+        String stackTrace = getStackTrace(t);
+
         if (stackTrace != null && !stackTrace.equals("")) {
             try {
                 response.setContentType("text/html");
                 PrintStream ps = new PrintStream(response.getOutputStream());
-                PrintWriter pw = new PrintWriter(ps);                
+                PrintWriter pw = new PrintWriter(ps);
                 pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
 
                 // PENDING! Localize this for next official release
-                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");                
-                pw.print(stackTrace);                
+                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
+                pw.print(stackTrace);
                 pw.print("</pre></body>\n</html>"); //NOI18N
                 pw.close();
                 ps.close();
@@ -223,7 +247,7 @@ public class EnviromentFilter implements Filter {
             }
         }
     }
-    
+
     public static String getStackTrace(Throwable t) {
         String stackTrace = null;
         try {
@@ -237,9 +261,9 @@ public class EnviromentFilter implements Filter {
         }
         return stackTrace;
     }
-    
+
     public void log(String msg) {
-        filterConfig.getServletContext().log(msg);        
+        filterConfig.getServletContext().log(msg);
     }
-    
+
 }

@@ -87,11 +87,8 @@ public class FilterRequest extends HttpServlet {
         RequestDAO rd = new RequestDAO();
         RequestTypeDAO rtd = new RequestTypeDAO();
         String from = request.getParameter("from");
-        if(null == from) from ="";
         String to = request.getParameter("to");
-        if(null == to) to ="";
         String typeRequest = request.getParameter("typeRequest");
-        if(null == typeRequest) typeRequest ="";
         Util u = new Util();
         List<RequestType> listTypeRequest = rtd.getAll();
         List<Request> list = new ArrayList<>();
