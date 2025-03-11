@@ -87,6 +87,7 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
+                                                            <th>Apartment</th>
                                                             <th>Creation Date</th>
                                                             <th>Response Date</th>
                                                             <th>Type</th>
@@ -99,6 +100,7 @@
                                                     <tbody>
                                                         <c:forEach items="${listRequest}" var="l">
                                                             <tr>
+                                                                <td>${l.aid.id}</td>
                                                                 <td>${l.date}</td>
                                                                 <td>
                                                                     <c:choose>
@@ -133,17 +135,15 @@
                                                                 </td>
                                                                 <td>
                                                                     <c:if test="${l.status == 'Waiting'}">
-                                                                    <a href="delete-request-resident?id=${l.id}" onclick="return confirm('Are you sure to delete this request?')"><i class="fa-solid fa-trash"></i></a>
-                                                                    </c:if>
+                                                                        <a href="delete-request-resident?id=${l.id}" onclick="return confirm('Are you sure to delete this request?')"><i class="fa-solid fa-trash"></i></a>
+                                                                        </c:if>
                                                                 </td>
                                                                 <td>
                                                                     <c:if test="${l.status == 'Waiting'}">
                                                                         <a href="update-request?id=${l.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                         </c:if>
                                                                 </td>
-
                                                             </tr>
-
                                                         </c:forEach>
                                                     </tbody>
                                                 </table>
