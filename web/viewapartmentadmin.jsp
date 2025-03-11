@@ -128,6 +128,7 @@
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="add-new-apartment"  class="btn btn-primary">Add new Apartment</a>
+                                                        <a style="margin-left: 5px" href="view-change-resident-request"  class="btn btn-primary">View pending change Living/Request request</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -154,9 +155,7 @@
                                                                 <td>
                                                                     <a class="option" href="viewdetailapartment-admin?apartmentId=${o.id}"><i class="fa-solid fa-eye"></i></a>
                                                                     <a class="option" href="update-apartment?id=${o.id}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                                        <c:if test="${o.status == 1}">
-                                                                        <a class="option" href="delete-apartment?id=${o.id}" onclick="return confirm('Are you sure to delete this apartment?')"><i class="fa-solid fa-trash"></i></a>
-                                                                        </c:if>
+
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
@@ -180,7 +179,7 @@
                                         ${page}
                                     </option>
                                 </c:forEach>
-                                   <!-- comment -->
+                                <!-- comment -->
                             </select>
 <!--                             <input type="text" value="${param.filterStatus}" hidden="">
                               <input type="text" value="${param.filterStatus}" hidden="">

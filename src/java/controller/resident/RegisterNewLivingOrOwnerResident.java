@@ -94,7 +94,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         String residentExists = request.getParameter("residentExists");
 
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formatDate = format.format(dateTime);
 
         Resident owner = oDAO.getOwnerByApartmentID(aid).getRid();
@@ -112,6 +112,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
+            re.setNewPersonExists(1);
             requestChangeDAO.addNewRequestChange(re);
         } else {
             String name = request.getParameter("name").trim();
@@ -161,6 +162,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
+            re.setNewPersonExists(0);
             requestChangeDAO.addNewRequestChange(re);
         }
 
