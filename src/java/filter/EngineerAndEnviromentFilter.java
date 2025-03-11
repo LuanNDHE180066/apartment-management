@@ -22,36 +22,28 @@ import model.Account;
 
 /**
  *
- * @author quang
+ * @author PC
  */
-@WebFilter(filterName = "AdministrativeFilters",
-        urlPatterns = {"/viewallrequest.jsp",
-            "/viewrequesttype.jsp",
-            "/addrequesttype.jsp",
-            "/updaterequesttype.jsp",
-            "/view-all-request",
-            "/assign-request",
-            "/view-request-type",
-            "/add-request-type",
-            "/update-request-type",
-            "/update-request-administrative",
-            "/update-request-staff"})
-public class AdministrativeFilter implements Filter {
-
+@WebFilter(filterName = "EngineerAndEnviromentFilter", urlPatterns = {"/viewallrequest.jsp",
+    "update-request-staff",
+    "updateRequest-staff.jsp"
+})
+public class EngineerAndEnviromentFilter implements Filter {
+    
     private static final boolean debug = true;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-
-    public AdministrativeFilter() {
-    }
-
+    
+    public EngineerAndEnviromentFilter() {
+    }    
+    
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdministrativeFilter:DoBeforeProcessing");
+            log("EngineerFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -74,12 +66,12 @@ public class AdministrativeFilter implements Filter {
 	    log(buf.toString());
 	}
          */
-    }
-
+    }    
+    
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdministrativeFilter:DoAfterProcessing");
+            log("EngineerFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -113,21 +105,21 @@ public class AdministrativeFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-
+        
         if (debug) {
-            log("AdministrativeFilter:doFilter()");
+            log("EngineerFilter:doFilter()");
         }
-        doBeforeProcessing(request, response);
+        
         doBeforeProcessing(request, response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
+        String uri = req.getServletPath();
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
+        if (a.getRoleId() != 4 || a.getRoleId() != 5) {
             res.sendRedirect("401_error.jsp");
             return;
         }
-
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -138,7 +130,7 @@ public class AdministrativeFilter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-
+        
         doAfterProcessing(request, response);
 
         // If there was a problem, we want to rethrow it if it is
@@ -173,17 +165,17 @@ public class AdministrativeFilter implements Filter {
     /**
      * Destroy method for this filter
      */
-    public void destroy() {
+    public void destroy() {        
     }
 
     /**
      * Init method for this filter
      */
-    public void init(FilterConfig filterConfig) {
+    public void init(FilterConfig filterConfig) {        
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
-            if (debug) {
-                log("AdministrativeFilter:Initializing filter");
+            if (debug) {                
+                log("EngineerFilter:Initializing filter");
             }
         }
     }
@@ -194,27 +186,27 @@ public class AdministrativeFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("AdministrativeFilter()");
+            return ("EngineerFilter()");
         }
-        StringBuffer sb = new StringBuffer("AdministrativeFilter(");
+        StringBuffer sb = new StringBuffer("EngineerFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
     }
-
+    
     private void sendProcessingError(Throwable t, ServletResponse response) {
-        String stackTrace = getStackTrace(t);
-
+        String stackTrace = getStackTrace(t);        
+        
         if (stackTrace != null && !stackTrace.equals("")) {
             try {
                 response.setContentType("text/html");
                 PrintStream ps = new PrintStream(response.getOutputStream());
-                PrintWriter pw = new PrintWriter(ps);
+                PrintWriter pw = new PrintWriter(ps);                
                 pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
 
                 // PENDING! Localize this for next official release
-                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
-                pw.print(stackTrace);
+                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");                
+                pw.print(stackTrace);                
                 pw.print("</pre></body>\n</html>"); //NOI18N
                 pw.close();
                 ps.close();
@@ -231,7 +223,7 @@ public class AdministrativeFilter implements Filter {
             }
         }
     }
-
+    
     public static String getStackTrace(Throwable t) {
         String stackTrace = null;
         try {
@@ -245,9 +237,9 @@ public class AdministrativeFilter implements Filter {
         }
         return stackTrace;
     }
-
+    
     public void log(String msg) {
-        filterConfig.getServletContext().log(msg);
+        filterConfig.getServletContext().log(msg);        
     }
-
+    
 }
