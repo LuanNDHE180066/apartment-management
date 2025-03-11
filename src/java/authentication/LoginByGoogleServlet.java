@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.io.FileInputStream;
+import java.util.Properties;
 import model.Account;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
@@ -85,7 +87,7 @@ public class LoginByGoogleServlet extends HttpServlet {
     public String getToken(String code) throws ClientProtocolException, IOException {
         String CIENT_ID = GoogleConfig.CLIENT_ID;
         String CLIENT_SECRET = GoogleConfig.CLIENT_SECRET;
-        String REDIRECT_URI = "http://localhost:8080/apartment-management/login-google";
+        String REDIRECT_URI = "http://localhost:6969/apartment-management/login-google";
         String LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";
         String GRANT_TYPE = "authorization_code";
         String response = Request.Post(LINK_GET_TOKEN)
