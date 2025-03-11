@@ -122,8 +122,11 @@ public class AdministrativeFilter implements Filter {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
+        String uri = req.getServletPath();
+        System.out.println("Filet");
         Account a = (Account) session.getAttribute("account");
         if (a.getRoleId() != 2) {
+            System.out.println("Da sdawdaw");
             res.sendRedirect("401_error.jsp");
             return;
         }
