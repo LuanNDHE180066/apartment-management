@@ -183,6 +183,23 @@ public class ApartmentDAO extends DBContext {
         return false;
     }
 
+    public List<Apartment> GetAllApartmentfromOwnerAndLivingByRId(String rid){
+        String sql = " select aid from AparmentOwner where rid = '"+rid+"'\n" +
+        "	union \n" +
+        "  select aid from LivingAparment where rid ='"+rid+"'";
+        List<Apartment> aparments = new ArrayList<>();
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                aparments.add(this.getById(rs.getString("aid")));
+            }            
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return aparments;
+    }
+    
     public List<Apartment> GetREApartment(String reId) {
         String sql = "SELECT A.*, RT.*\n"
                 + "FROM AparmentOwner AO\n"
@@ -272,5 +289,7 @@ public class ApartmentDAO extends DBContext {
         System.out.println(dao.getById("A10_04").getFloor().getSquare());
         System.out.println(dao.getAll().size());
 //        
+System.out.println(dao.getById("A10_02").getId());
+
     }
 }

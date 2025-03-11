@@ -30,6 +30,7 @@ import model.Account;
             "/viewallservices.jsp",
             "/add-service-staff",
             "/update-service-staff",
+            "/view-floor-staff",
             "/all-services"})
 public class Service_Administrative_Filter implements Filter {
 
