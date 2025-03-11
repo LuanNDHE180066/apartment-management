@@ -4,7 +4,6 @@
  */
 package controller.resident;
 
-import dao.ApartmentDAO;
 import dao.RequestDAO;
 import dao.RequestTypeDAO;
 import dao.StaffDAO;
@@ -18,7 +17,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Account;
-import model.Apartment;
 import model.Request;
 import model.RequestType;
 import model.SendEmail;
@@ -70,13 +68,8 @@ public class AddRequestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
         RequestTypeDAO rtd = new RequestTypeDAO();
-        ApartmentDAO ad= new ApartmentDAO();
         List<RequestType> listTypeRquest = rtd.getAll();
-        Account ac = (Account)session.getAttribute("account");
-        List<Apartment> listApartment = ad.GetAllApartmentfromOwnerAndLivingByRId(ac.getpId());
-        request.setAttribute("listApartment", listApartment);
         request.setAttribute("listTypeRquest", listTypeRquest);
         request.getRequestDispatcher("addrequest.jsp").forward(request, response);
     }
@@ -97,7 +90,6 @@ public class AddRequestServlet extends HttpServlet {
         String rid = account.getpId();
         String detail = Util.stringNomalize(request.getParameter("detail")) ;
         String typeRequestId = request.getParameter("typeRequest");
-        String aid = request.getParameter("aparment");
         if(detail.isBlank()){
             request.setAttribute("message","Content is not allow blank");
             doGet(request, response);
@@ -107,7 +99,8 @@ public class AddRequestServlet extends HttpServlet {
         RequestDAO rd = new RequestDAO();
         StaffDAO sd = new StaffDAO();
         SendEmail email = new SendEmail();
-        int addRequest = rd.addRequest(rid, detail, typeRequestId,aid);
+        RequestType typeRequest = rtd.getById(typeRequestId);
+        int addRequest = rd.addRequest(rid, detail, typeRequest);
         List<Staff> staffs = sd.getActiveStaffbyRole("2");
         email.sendEmailToWorkingStaff(staffs);
         request.setAttribute("status", true);

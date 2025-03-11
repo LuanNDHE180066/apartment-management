@@ -46,12 +46,11 @@ public class AccountDAO extends DBContext {
 //        }
         }
         else{
-            sql = "SELECT * FROM "+table+" WHERE [username]=? and roleid = ?";
+            sql = "SELECT * FROM "+table+" WHERE [username]=?";
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, user);
-            pre.setInt(2, roleId);
             ResultSet rs = pre.executeQuery();
             if (rs.next()) {
                 s = new Account(rs.getString("username"), rs.getString("password"), rs.getString("Email"), rs.getString("Id"), rs.getInt("roleId"));

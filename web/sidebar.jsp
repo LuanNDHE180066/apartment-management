@@ -103,7 +103,6 @@
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-staff"><i class="fa-solid fa-users-line"></i> <span>Staff Information</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-company"><i class="fa-solid fa-building"></i> <span>Company Information</span></a></li>
                     <li ><a href="view-news"><i class="fa-regular fa-newspaper"></i> <span>News</span></a></li>
-                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}"><a href="view-request-type"><i class="fa-solid fa-repeat"></i> <span>Request Type Information</span></a></li>
                     <li class="${sessionScope.account.roleId == 0? 'display-none':''}"><a href="${ut.getSiteToViewRequest(sessionScope.account.roleId)}"><i class="fa-solid fa-repeat"></i> <span>Request Information</span></a></li>
                     <li class="${sessionScope.account.roleId == 0? 'display-none':''}"><a href="${ut.getSiteToViewFeedBack(sessionScope.account.roleId)}"><i class="fa-solid fa-comment"></i><span>Feedback Information</span></a></li>
                     <li><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Rule of apartment</span></a></li>
@@ -122,9 +121,6 @@
                     </li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
-                    </li>
-                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}">
-                        <a href="dashboard-request"><i class="fa-solid fa-repeat"></i> <span>Dash Board Request</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 1? 'display-none':''}">
                         <a  href="view-service-resident"><i class="fa fa-headset"></i><span>Sử dụng dịch vụ</span></a>
