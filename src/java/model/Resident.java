@@ -20,7 +20,7 @@ public class Resident {
     private String name, cccd;
     private String phone, email, bod, address, username, password, status, note;
     private Role role;
-    private String gender,image;
+    private String gender, image;
 
     public Resident() {
     }
@@ -39,7 +39,8 @@ public class Resident {
         this.note = note;
         this.role = role;
     }
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role,String image) {
+
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String image) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -66,6 +67,18 @@ public class Resident {
         this.status = status;
     }
 
+    public Resident(String name, String cccd, String phone, String username, String password, String email, String bod, String address, String gender) {
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.username = username;
+        this.password = password;
+        this.address = address;
+        this.gender = gender;
+    }
+
     public Resident(String name, String cccd, String phone, String email, String bod, String address, String username, String password, Role role, String gender) {
         this.name = name;
         this.cccd = cccd;
@@ -78,29 +91,29 @@ public class Resident {
         this.role = role;
         this.gender = gender;
     }
-
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status, String gender) {
-        this.pId = pId;
-        this.name = name;
-        this.cccd = cccd;
-        this.phone = phone;
-        this.email = email;
-        this.bod = bod;
-        this.address = address;
-        this.status = status;
-        this.gender = gender;
-    }
+//
+//    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status, String gender) {
+//        this.pId = pId;
+//        this.name = name;
+//        this.cccd = cccd;
+//        this.phone = phone;
+//        this.email = email;
+//        this.bod = bod;
+//        this.address = address;
+//        this.status = status;
+//        this.gender = gender;
+//    }
 
     public Resident(String pId, String email, String phone, String address) {
-        this.pId=pId;
-        this.email=email;
-        this.phone=phone;
-        this.address=address;
-        
+        this.pId = pId;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+
     }
 
     public Resident(String pId) {
-        this.pId=pId;
+        this.pId = pId;
     }
 
     public String getGender() {

@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import model.RequestChangeResident;
 import model.Resident;
+import static util.Util.encryptPassword;
 
 /**
  *
@@ -93,14 +94,14 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         String changeResident = request.getParameter("residentType");
         String residentExists = request.getParameter("residentExists");
 
-        LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
-        String formatDate = format.format(dateTime);
+        LocalDateTime lc = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDate = lc.format(format);
 
         Resident owner = oDAO.getOwnerByApartmentID(aid).getRid();
         if (residentExists != null) {
             String newResidentId = request.getParameter("newResidentId");
-            Resident newRe = reDAO.getById(newResidentId);
+            Resident newRe = reDAO.getById_v2(newResidentId);
             if (newRe == null) {
                 request.setAttribute("status", "false");
                 request.setAttribute("message", "Resident ID is not exist");
@@ -108,11 +109,16 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 return;
             }
 
-            RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formatDate);
+            RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formattedDate);
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
-            requestChangeDAO.addNewRequestChange(re);
+            if (!requestChangeDAO.addNewRequestChange(re)) {
+                request.setAttribute("status", "false");
+                request.setAttribute("message", "Failed to add");
+                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                return;
+            }
         } else {
             String name = request.getParameter("name").trim();
             String dob = request.getParameter("dob");
@@ -155,13 +161,35 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
+            ResidentDAO rd = new ResidentDAO();
+            RoleDAO roleD = new RoleDAO();
 
-            Resident newRe = new Resident(name, id, phone, email, id, address, username, null, rDAO.getById("1"), gender);
-            RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formatDate);
+            Resident r = new Resident();
+            r.setName(name);
+            r.setBod(dob);
+            r.setAddress(address);
+            r.setPhone(phone);
+            r.setEmail(email);
+            r.setCccd(id);
+            r.setRole(roleD.getById("1"));
+            r.setUsername(username);
+            r.setPassword(null);
+            if(gender.equals("M")){
+                r.setGender("Nam");
+            } else{
+                r.setGender("Nữ");
+            }
+
+            RequestChangeResident re = new RequestChangeResident(owner, r, aid, 0, 1, 0, formattedDate);
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
-            requestChangeDAO.addNewRequestChange(re);
+            if (!requestChangeDAO.addNewRequestChange(re)) {
+                request.setAttribute("status", "false");
+                request.setAttribute("message", "Failed to add");
+                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                return;
+            }
         }
 
         request.setAttribute("status", "true");

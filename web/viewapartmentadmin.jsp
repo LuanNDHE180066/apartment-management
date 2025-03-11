@@ -128,6 +128,7 @@
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="add-new-apartment"  class="btn btn-primary">Add new Apartment</a>
+                                                        <a style="margin-left: 5px" href="view-all-change-resident-request"  class="btn btn-primary">View change Living/Owner request</a>
                                                     </div>
                                                 </div>
                                             </form>
