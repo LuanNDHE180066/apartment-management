@@ -19,19 +19,31 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
+import org.apache.http.HttpRequest;
 
 /**
  *
- * @author thanh
+ * @author quang
  */
-@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
-            "/floorinformation.jsp",
-            "/updateservice.jsp",
-            "/viewallservices.jsp",
-            "/add-service-staff",
-            "/update-service-staff",
-            "/all-services"})
-public class Service_Administrative_Filter implements Filter {
+@WebFilter(filterName = "AdminFiters",
+        urlPatterns = {"/view-roomtype",
+            "/update-room-type",
+            "/delete-room-type",
+            "/updateroomtype.jsp",
+            "/viewroomtype.jsp",
+            "/add-new-apartment",
+            "/view-apartment-admin",
+            "/viewresidentapartment.jsp",
+            "/viewdetailapartment-admin",
+            "/apartment-living-history",
+            "/apartment-owner-history",
+            "/viewdetailapartment-admin",
+            "/apartment-owner-history",
+            "/apartment-living-history",
+            "/apartmentdetail.jsp",
+            "/historyownerapartment.jsp",
+            "/historylivingapartment.jsp"})
+public class AdminFiters implements Filter {
 
     private static final boolean debug = true;
 
@@ -40,13 +52,13 @@ public class Service_Administrative_Filter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public Service_Administrative_Filter() {
+    public AdminFiters() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoBeforeProcessing");
+            log("AdminFiters:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -74,7 +86,7 @@ public class Service_Administrative_Filter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoAfterProcessing");
+            log("AdminFiters:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -110,21 +122,26 @@ public class Service_Administrative_Filter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("Service_Administrative_Filter:doFilter()");
+            log("AdminFiters:doFilter()");
         }
 
         doBeforeProcessing(request, response);
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
-            res.sendRedirect("401_error.jsp");
-            return;
-        } 
-        
+        String uri = req.getServletPath();
+        if (a.getRoleId() != 0) {
+            if (a.getRoleId() == 2 && (uri.contains("view-rule-admin") || uri.contains("add-new-rule"))) {
+                chain.doFilter(request, response);
+                System.out.println("");
+                return;
+            } else {
+                res.sendRedirect("404_error.jsp");
+                return;
+            }
+        }
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -180,7 +197,7 @@ public class Service_Administrative_Filter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("Service_Administrative_Filter:Initializing filter");
+                log("AdminFiters:Initializing filter");
             }
         }
     }
@@ -191,9 +208,9 @@ public class Service_Administrative_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Administrative_Filter()");
+            return ("AdminFiters()");
         }
-        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
+        StringBuffer sb = new StringBuffer("AdminFiters(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

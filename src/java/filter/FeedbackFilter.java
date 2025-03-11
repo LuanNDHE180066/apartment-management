@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Filter.java to edit this template
- */
 package filter;
 
 import java.io.IOException;
@@ -22,16 +18,10 @@ import model.Account;
 
 /**
  *
- * @author thanh
+ * @author Lenovo
  */
-@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
-            "/floorinformation.jsp",
-            "/updateservice.jsp",
-            "/viewallservices.jsp",
-            "/add-service-staff",
-            "/update-service-staff",
-            "/all-services"})
-public class Service_Administrative_Filter implements Filter {
+@WebFilter(filterName = "FeedbackFilter", urlPatterns = {"/update-feed-back", "/filterfeedback", "/sendfeedback", "/view-all-feedback", "/view-feed-back-user", "/deletefeedback", "/request-update-feedback"})
+public class FeedbackFilter implements Filter {
 
     private static final boolean debug = true;
 
@@ -40,13 +30,13 @@ public class Service_Administrative_Filter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public Service_Administrative_Filter() {
+    public FeedbackFilter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoBeforeProcessing");
+            log("FeedbackFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -74,7 +64,7 @@ public class Service_Administrative_Filter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoAfterProcessing");
+            log("FeedbackFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -110,21 +100,27 @@ public class Service_Administrative_Filter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("Service_Administrative_Filter:doFilter()");
+            log("FeedbackFilter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
 
-        Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
-            res.sendRedirect("401_error.jsp");
-            return;
-        } 
-        
+        Account a = (session != null) ? (Account) session.getAttribute("account") : null;
+        String uri = req.getServletPath();
+        if (uri.contains("view-all-feedback") || uri.contains("request-update-feedback")) {
+            if (a.getRoleId() == 1) {
+                res.sendRedirect("404_error.jsp");
+            }
+        } else {
+            if (a.getRoleId() != 1) {
+
+                res.sendRedirect("404_error.jsp");
+            }
+        }
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -135,7 +131,6 @@ public class Service_Administrative_Filter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-
         doAfterProcessing(request, response);
 
         // If there was a problem, we want to rethrow it if it is
@@ -180,7 +175,7 @@ public class Service_Administrative_Filter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("Service_Administrative_Filter:Initializing filter");
+                log("FeedbackFilter:Initializing filter");
             }
         }
     }
@@ -191,9 +186,9 @@ public class Service_Administrative_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Administrative_Filter()");
+            return ("FeedbackFilter()");
         }
-        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
+        StringBuffer sb = new StringBuffer("FeedbackFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

@@ -22,16 +22,20 @@ import model.Account;
 
 /**
  *
- * @author thanh
+ * @author PC
  */
-@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
-            "/floorinformation.jsp",
-            "/updateservice.jsp",
-            "/viewallservices.jsp",
-            "/add-service-staff",
-            "/update-service-staff",
-            "/all-services"})
-public class Service_Administrative_Filter implements Filter {
+@WebFilter(filterName = "AdmintrisFilter", urlPatterns = {"/view-all-request",
+    "/assign-request",
+    "/update-request-administrative",
+    "/view-request-type",
+    "/add-request-type",
+    "/update-request-type",
+    "/viewallrequest.jsp",
+    "/viewrequesttype.jsp",
+    "/addrequesttype.jsp",
+    "/updaterequesttype.jsp"
+})
+public class AdmintrisFilter implements Filter {
 
     private static final boolean debug = true;
 
@@ -40,13 +44,13 @@ public class Service_Administrative_Filter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public Service_Administrative_Filter() {
+    public AdmintrisFilter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoBeforeProcessing");
+            log("AdmintrisFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -74,7 +78,7 @@ public class Service_Administrative_Filter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoAfterProcessing");
+            log("AdmintrisFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -110,21 +114,27 @@ public class Service_Administrative_Filter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("Service_Administrative_Filter:doFilter()");
+            log("AdmintrisFilter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
-
+        String uri = req.getServletPath();
         Account a = (Account) session.getAttribute("account");
         if (a.getRoleId() != 2) {
-            res.sendRedirect("401_error.jsp");
-            return;
-        } 
-        
+            if (a.getRoleId() == 4 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp")||uri.contains("update-request-staff"))) {
+                chain.doFilter(request, response);
+                return;
+            } else if (a.getRoleId() == 5 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp") || uri.contains("update-request-staff"))) {
+                chain.doFilter(request, response);
+                return;
+            } else {
+                res.sendRedirect("404_error.jsp");
+                return;
+            }
+        }
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -180,7 +190,7 @@ public class Service_Administrative_Filter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("Service_Administrative_Filter:Initializing filter");
+                log("AdmintrisFilter:Initializing filter");
             }
         }
     }
@@ -191,9 +201,9 @@ public class Service_Administrative_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Administrative_Filter()");
+            return ("AdmintrisFilter()");
         }
-        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
+        StringBuffer sb = new StringBuffer("AdmintrisFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

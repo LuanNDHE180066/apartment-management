@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Filter.java to edit this template
- */
 package filter;
 
 import java.io.IOException;
@@ -22,16 +18,10 @@ import model.Account;
 
 /**
  *
- * @author thanh
+ * @author Lenovo
  */
-@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
-            "/floorinformation.jsp",
-            "/updateservice.jsp",
-            "/viewallservices.jsp",
-            "/add-service-staff",
-            "/update-service-staff",
-            "/all-services"})
-public class Service_Administrative_Filter implements Filter {
+@WebFilter(filterName = "ProfileFilter", urlPatterns = {"/view-profile-staff", "/view-profile-resident", "/editprofileREServlet", "/editprofileSTServlet"})
+public class ProfileFilter implements Filter {
 
     private static final boolean debug = true;
 
@@ -40,13 +30,13 @@ public class Service_Administrative_Filter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public Service_Administrative_Filter() {
+    public ProfileFilter() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoBeforeProcessing");
+            log("ProfileFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -74,7 +64,7 @@ public class Service_Administrative_Filter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoAfterProcessing");
+            log("ProfileFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -110,21 +100,28 @@ public class Service_Administrative_Filter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("Service_Administrative_Filter:doFilter()");
+            log("ProfileFilter:doFilter()");
         }
 
         doBeforeProcessing(request, response);
 
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
 
-        Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
-            res.sendRedirect("401_error.jsp");
-            return;
-        } 
-        
+        Account a = (session != null) ? (Account) session.getAttribute("account") : null;
+        String uri = req.getServletPath();
+        if (uri.contains("view-profile-staff") || uri.contains("editprofileSTServlet")) {
+            if (a.getRoleId() == 1) {
+                res.sendRedirect("404_error.jsp");
+            }
+        } else {
+
+            if (a.getRoleId() != 1) {
+                res.sendRedirect("404_error.jsp");
+            }
+        }
+
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -180,7 +177,7 @@ public class Service_Administrative_Filter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("Service_Administrative_Filter:Initializing filter");
+                log("ProfileFilter:Initializing filter");
             }
         }
     }
@@ -191,9 +188,9 @@ public class Service_Administrative_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Administrative_Filter()");
+            return ("ProfileFilter()");
         }
-        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
+        StringBuffer sb = new StringBuffer("ProfileFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
