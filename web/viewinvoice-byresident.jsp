@@ -194,7 +194,9 @@
                                                                 <c:if test="${item.status==1}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
-                                                                        <td>${item.total}</td> 
+                                                                        <td>
+                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
+                                                                        </td> 
                                                                         <td>${item.invoiceDate}</td>
                                                                         <td>${item.dueDate}</td>
                                                                         <td>${item.description}</td>

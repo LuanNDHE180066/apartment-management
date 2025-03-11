@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -118,7 +119,9 @@
                                                             <c:forEach items="${requestScope.nonPaidList}" var="item">
                                                                 <tr>
                                                                     <td>${item.id}</td>
-                                                                    <td>${item.total}</td> 
+                                                                    <td>
+                                                                        <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
+                                                                    </td> 
                                                                     <td>${item.invoiceDate}</td>
                                                                     <td>${item.dueDate}</td>
                                                                     <td>${item.description}</td>
@@ -149,8 +152,12 @@
                                                                                     <tr style="border-bottom: 1px solid #ddd;">
                                                                                         <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">
+                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
+                                                                                        </td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
+                                                                                        </td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
                                                                                     </tr>
                                                                                 </c:forEach>
@@ -206,7 +213,9 @@
                                                                 <c:if test="${item.status==1}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
-                                                                        <td>${item.total}</td> 
+                                                                        <td>
+                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
+                                                                        </td> 
                                                                         <td>${item.invoiceDate}</td>
                                                                         <td>${item.dueDate}</td>
                                                                         <td>${item.description}</td>
@@ -234,7 +243,9 @@
                                                                                             <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
+                                                                                            </td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
                                                                                         </tr>
                                                                                     </c:forEach>
