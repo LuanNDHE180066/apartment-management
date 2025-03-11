@@ -83,7 +83,7 @@ public class ExpenseCategoryDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, e.getCategoryName());
             ps.setString(2, e.getCategoryDescription());
-            ps.setInt(3, 0);
+            ps.setInt(3, 1);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
