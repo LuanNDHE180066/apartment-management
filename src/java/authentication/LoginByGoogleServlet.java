@@ -85,7 +85,7 @@ public class LoginByGoogleServlet extends HttpServlet {
     }
 
     public String getToken(String code) throws ClientProtocolException, IOException {
-        String CIENT_ID = GoogleConfig.CIENT_ID;
+        String CIENT_ID = GoogleConfig.CLIENT_ID;
         String CLIENT_SECRET = GoogleConfig.CLIENT_SECRET;
         String REDIRECT_URI = "http://localhost:6969/apartment-management/login-google";
         String LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";

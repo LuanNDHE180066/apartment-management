@@ -246,7 +246,7 @@ public class ExpenditureDAO extends DBContext {
         if (categories != "") {
             sql += " and categoryid = " + categories;
         } 
-        sql += " order by order by createdDate desc";
+        sql += "  order by createdDate desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
