@@ -92,23 +92,24 @@
                                                             <th>Created Date</th>
                                                             <th>Created By</th>
                                                             <th>Apartment Number</th>
-                                                            <th>Category</th>
-                                                            <th>Company</th>
-                                                            <th>Modified Staff</th>
-                                                            <th>Chief Acountant</th>
-                                                            <th>Responsible Person</th>
+                                                            <th>Change Role</th
+                                                            <th>Modified Staff</th>                                                        
+                                                            <th>New Living/Owner</th>
+                                                            <th>Is Exist</th>
                                                             <th>Option</th>
                                                             <!--       <th>Note</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
-                                                    <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
+                                                    <c:forEach items="${requestScope.listRequestChange}" var="request">
                                                         <tr>
-                                                            <td style="text-align: center;color : ${expenditure.id == null?'red':'green'}">${expenditure.id == null? 'Undefined':''}</td>
-                                                            <td style="text-align: center"> ${expenditure.title}</td>
+<!--                                                            <td style="text-align: center"> ${request.createdAt}</td>-->
                                                             <td>
-                                                                <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <fmt:formatDate pattern="dd/MM/yyyy" value="${request.createdAt}"/>
+                                                            </td>  
+                                                            <td>
+                                                                <fmt:setLocale value="vi_VN"/> 
                                                                 <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
                                                             </td>
                                                             <td style="text-align: center">${expenditure.approveddate}</td>
