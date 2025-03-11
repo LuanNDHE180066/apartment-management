@@ -5,6 +5,7 @@
 package controller.admin;
 
 import dao.CompanyDAO;
+import dao.ContractApproveDAO;
 import dao.ContractDAO;
 import dao.StaffDAO;
 import java.io.IOException;
@@ -22,9 +23,12 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import model.Company;
 import model.Contract;
+import model.ContractApprove;
 import model.Staff;
 import util.Util;
 import validation.CommonValidation;
@@ -102,9 +106,9 @@ public class AddContract extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Util u= new Util();
-        String title =u.stringNomalize(request.getParameter("title")) ;
-        String description =u.stringNomalize(request.getParameter("description")) ;
+        Util u = new Util();
+        String title = u.stringNomalize(request.getParameter("title"));
+        String description = u.stringNomalize(request.getParameter("description"));
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
         String paydate = request.getParameter("paydate");
@@ -160,7 +164,7 @@ public class AddContract extends HttpServlet {
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
-            if(!CommonValidation.validendateafterstartdate(paydate, signdate)){
+            if (!CommonValidation.validendateafterstartdate(paydate, signdate)) {
                 request.setAttribute("paydateerror", "Paydate need to later signdate");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
@@ -170,7 +174,7 @@ public class AddContract extends HttpServlet {
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
-            if(!CommonValidation.validendateafterstartdate(startDate, signdate)){
+            if (!CommonValidation.validendateafterstartdate(startDate, signdate)) {
                 request.setAttribute("startdateerror", "Startdate need to later signdate");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
@@ -197,7 +201,28 @@ public class AddContract extends HttpServlet {
         StaffDAO std = new StaffDAO();
         Contract contract = new Contract(std.getById(sid), cpd.getById(company), startDate, endDate, paydate, signdate, title, description, std.getById(accountant), std.getById(admin), image);
         ContractDAO ctd = new ContractDAO();
+        LocalDateTime lc = LocalDateTime.now();
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+        String formattedDate = lc.format(format);
+        String created=formattedDate;
+        String updated=formattedDate;
         if (ctd.addContract(contract)) {
+            Contract latestContract = ctd.getLastInsertedContract();
+
+            ContractApprove contractApprove = new ContractApprove(
+                    latestContract,
+                    null,
+                    null,
+                    1,
+                    created,
+                    updated,
+                    std.getById(accountant),
+                    std.getById(admin)
+                    
+            );
+            ContractApproveDAO ctdApprove = new ContractApproveDAO();
+            ctdApprove.addApprove(contractApprove);
+
             request.setAttribute("message", "Add new contract successfully");
 
             request.getRequestDispatcher("addcontract.jsp").forward(request, response);
