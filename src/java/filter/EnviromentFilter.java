@@ -24,11 +24,11 @@ import model.Account;
  *
  * @author PC
  */
-@WebFilter(filterName = "EngineerAndEnviromentFilter", urlPatterns = {"/viewallrequest.jsp",
+@WebFilter(filterName = "EnviromentFilter", urlPatterns = {"/viewallrequest.jsp",
     "update-request-staff",
     "updateRequest-staff.jsp"
 })
-public class EngineerAndEnviromentFilter implements Filter {
+public class EnviromentFilter implements Filter {
     
     private static final boolean debug = true;
 
@@ -37,13 +37,13 @@ public class EngineerAndEnviromentFilter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
     
-    public EngineerAndEnviromentFilter() {
+    public EnviromentFilter() {
     }    
     
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("EngineerFilter:DoBeforeProcessing");
+            log("EnviromentFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -71,7 +71,7 @@ public class EngineerAndEnviromentFilter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("EngineerFilter:DoAfterProcessing");
+            log("EnviromentFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -107,7 +107,7 @@ public class EngineerAndEnviromentFilter implements Filter {
             throws IOException, ServletException {
         
         if (debug) {
-            log("EngineerFilter:doFilter()");
+            log("EnviromentFilter:doFilter()");
         }
         
         doBeforeProcessing(request, response);
@@ -116,7 +116,7 @@ public class EngineerAndEnviromentFilter implements Filter {
         HttpSession session = req.getSession();
         String uri = req.getServletPath();
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 4 || a.getRoleId() != 5) {
+        if (a.getRoleId() != 5) {
             res.sendRedirect("401_error.jsp");
             return;
         }
@@ -175,7 +175,7 @@ public class EngineerAndEnviromentFilter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {                
-                log("EngineerFilter:Initializing filter");
+                log("EnviromentFilter:Initializing filter");
             }
         }
     }
@@ -186,9 +186,9 @@ public class EngineerAndEnviromentFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("EngineerFilter()");
+            return ("EnviromentFilter()");
         }
-        StringBuffer sb = new StringBuffer("EngineerFilter(");
+        StringBuffer sb = new StringBuffer("EnviromentFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
