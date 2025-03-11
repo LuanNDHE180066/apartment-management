@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Company;
+import util.Util;
 import validation.CompanyValidation;
 
 /**
@@ -82,9 +83,9 @@ public class UpdateCompanyServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        Util u= new Util();
         String id = request.getParameter("id");
-        String name = getSafeParameter(request, "name");
+        String name =u.stringNomalize(getSafeParameter(request, "name")) ;
         String phone = getSafeParameter(request, "phone");
         String contactPhone = getSafeParameter(request, "contactPhone");
         String fax = getSafeParameter(request, "fax");
@@ -93,8 +94,8 @@ public class UpdateCompanyServlet extends HttpServlet {
         String website = getSafeParameter(request, "website");
         String taxCode = getSafeParameter(request, "taxCode");
         String bank = getSafeParameter(request, "bank");
-        String address = getSafeParameter(request, "address");
-        String description = getSafeParameter(request, "description");
+        String address =u.stringNomalize(getSafeParameter(request, "address")) ;
+        String description =u.stringNomalize(getSafeParameter(request, "description")) ;
 
         boolean hasError = false;
                 Company company = new Company(id, name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address);

@@ -85,7 +85,13 @@ public class NewDAO extends DBContext {
     }
 
     public List<News> getOtherNews(String id) {
-        String sql = "select * from news where id != ?";
+        String sql = "select top 5 * from news where id != ? and Getdate() > date order by date desc";
+//        SELECT TOP 5 * 
+//FROM news 
+//WHERE id != ? 
+//AND publish_date <= GETDATE()
+//ORDER BY publish_date DESC;
+
         StaffDAO daoSt = new StaffDAO();
         List<News> list = new ArrayList<>();
         try {
@@ -137,7 +143,7 @@ public class NewDAO extends DBContext {
         }
     }
     public List<News> filterNews(String title, String startDate, String endDate) {
-        String sql = "select * from News where 1 = 1 ";
+        String sql = "select * from News where 1 = 1 and Getdate() > date";
         FeedbackDAO dao = new FeedbackDAO();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if (title != "") {

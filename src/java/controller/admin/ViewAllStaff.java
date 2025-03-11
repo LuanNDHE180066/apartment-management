@@ -68,64 +68,63 @@ public class ViewAllStaff extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         AdminDAO ad = new AdminDAO();
-        StaffDAO sd = new StaffDAO();
-        List<Staff> list = sd.getAll();
-        HttpSession session = request.getSession();
-        Util u = new Util();
-        
-            list = sd.getAll();
-            session.setAttribute("staffs", list);
-        
-        String filterStatus_raw = request.getParameter("filterStatus");
-        String searchName = request.getParameter("searchName");
-//        if(!(filterStatus_raw==null && searchName==null)){
-//            int filterStatus;
-//            try {
-//                filterStatus = Integer.parseInt(filterStatus_raw);
-//            } catch (NumberFormatException e) {
-//                filterStatus  = -1;
-//            }
-//            list = sd.getBySearchNameAndStatus(filterStatus, searchName);
-//             if (list.size()==0) {
-//                session.setAttribute("staffs", null);
-//                request.getRequestDispatcher("viewallstaff.jsp").forward(request, response);
-//                return;
-//            }
-//            session.setAttribute("staffs", list);
-//        }
-        if (filterStatus_raw != null) {
-            int filterStatus = Integer.parseInt(filterStatus_raw);
-            list = sd.getByStatus(filterStatus);
-            if (list.size()==0) {
-                session.setAttribute("staffs", null);
-                request.setAttribute("totalPage", 1);
-                request.getRequestDispatcher("viewallstaff.jsp").forward(request, response);
-                return;
-            }
-            session.setAttribute("staffs", list);
-        }
-        if (searchName != null) {
-            searchName = u.stringNomalize(searchName);
-            list = sd.searchByName(list, searchName);
-            if (list.size()==0) {
-                session.setAttribute("staffs", null);
-                request.setAttribute("totalPage", 1);
-                request.getRequestDispatcher("viewallstaff.jsp").forward(request, response);
-                return;
-            }
-            session.setAttribute("staffs", list);
-        }
-        String page = request.getParameter("page");
-        if (page == null) {
-            page = "1";
-        }
+StaffDAO sd = new StaffDAO();
+HttpSession session = request.getSession();
+Util u = new Util();
 
-        int totalPage = u.getTotalPage(list, 3);
-        list = u.getListPerPage(list, 3, page);
-        request.setAttribute("totalPage", totalPage);
-        request.setAttribute("currentPage", Integer.parseInt(page));
-        request.setAttribute("staffs", list);
+List<Staff> list = (List<Staff>) session.getAttribute("filteredStaffs");
+if (list == null) {
+    list = sd.getAll();
+}
+
+String filterStatus_raw = request.getParameter("filterStatus");
+String searchName = request.getParameter("searchName");
+
+if (filterStatus_raw != null || searchName != null) {
+    if (filterStatus_raw != null && !filterStatus_raw.trim().isEmpty()) {
+        int filterStatus = Integer.parseInt(filterStatus_raw);
+        list = sd.getByStatus(filterStatus);
+    }
+    if (searchName != null) {
+        searchName = u.stringNomalize(searchName);
+        list = sd.searchByName(list, searchName);
+    }
+    if (list.isEmpty()) {
+        session.setAttribute("filteredStaffs", null);
+        request.setAttribute("totalPage", 1);
+        request.setAttribute("staffs", null);
         request.getRequestDispatcher("viewallstaff.jsp").forward(request, response);
+        return;
+    }
+    session.setAttribute("filteredStaffs", list);
+}
+
+// Kiểm tra giá trị tham số page
+String page_raw = request.getParameter("page");
+System.out.println("Received page parameter: '" + page_raw + "'");
+
+int page = 1;  // Mặc định là trang 1 nếu không có giá trị hợp lệ
+
+if (page_raw != null && !page_raw.trim().isEmpty()) {
+    try {
+        page = Integer.parseInt(page_raw.trim());
+    } catch (NumberFormatException e) {
+        System.out.println("Invalid page parameter: '" + page_raw + "'");
+        page = 1; // Nếu lỗi, đặt về trang 1
+    }
+}
+
+int totalPage = u.getTotalPage(list, 3);
+list = u.getListPerPage(list, 3, String.valueOf(page));
+
+request.setAttribute("totalPage", totalPage);
+request.setAttribute("currentPage", page);
+request.setAttribute("staffs", list);
+request.getRequestDispatcher("viewallstaff.jsp").forward(request, response);
+
+
+
+
     }
 
     /**

@@ -100,17 +100,22 @@ public class Util {
         return rs;
     }
 
-    public static String stringNomalize(String str) {
 
-        if (str == null || str.trim().isEmpty()) {
-            return "";
-        }
-        String strNormalize = str.trim();
-        while (strNormalize.contains("  ")) {
-            strNormalize = strNormalize.replace("  ", " ");
-        }
-        return strNormalize;
+    public static String stringNomalize(String str) {
+    if (str == null || str.trim().isEmpty()) {
+        return "";
     }
+
+    String strNormalize = str.trim();
+
+    strNormalize = strNormalize.replaceAll("[\n\r\t]", " ");
+
+    while (strNormalize.contains("  ")) {
+        strNormalize = strNormalize.replace("  ", " ");
+    }
+
+    return strNormalize;
+}
 
 
     public <T> int getTotalPage(List<T> list, int numberPerPape) {

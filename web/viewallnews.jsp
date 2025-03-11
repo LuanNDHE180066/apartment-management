@@ -66,34 +66,39 @@
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-2">
                                                                     <label>Search</label>
-                                                                    <input type="text" class="form-control" name="title" placeholder="Enter title" value="${param.title}">
+                                                                    <input type="text" class="form-control" name="title" placeholder="Enter title"
+                                                                           value="${requestScope.title != null ? requestScope.title : ''}">
                                                                 </div>
                                                                 <div class="col-md-2">
                                                                     <label>Start date</label>
-                                                                    <input type="date" class="form-control" name="startDate" placeholder="From" value="${param.startDate}">
+                                                                    <input type="date" class="form-control" name="startDate" placeholder="From"
+                                                                           value="${requestScope.startDate}">
                                                                 </div>
                                                                 <div class="col-md-2">
                                                                     <label>End date</label>
-                                                                    <input type="date" class="form-control" name="endDate" placeholder="To" value="${param.endDate}">
+                                                                    <input type="date" class="form-control" name="endDate" placeholder="To"
+                                                                           value="${requestScope.endDate}">
                                                                 </div>
                                                                 <div class="col-md-4 d-flex">
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <c:if test="${sessionScope.account.roleId == 2}"> <a href="add-news"  class="btn btn-primary">Add News</a></c:if>
-                                                                    </div>
+                                                                    <c:if test="${sessionScope.account.roleId == 2}">
+                                                                        <a href="add-news" class="btn btn-primary">Add News</a>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
-
                                                         </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                                    </div>
+                                                </form>
 
-                                            <div class="news_section">
-                                                <ul class="news-list">
+                                            </div>
+                                        </div>
+
+                                        <div class="news_section">
+                                            <ul class="news-list">
                                                 <c:forEach items="${sessionScope.listNews}" var="n">
                                                     <li>-${n.date}<a href="news-detail?id=${n.id}">: ${n.title}</a>
-                                                    <c:if test="${sessionScope.account.roleId == 2}"><a href="delete-news?id=${n.id}" onclick="return confirm('Are you sure to delete this news?')""><i class="material-icons" title="Delete">&#xE872;</i></a></c:if>
-                                                    </li>
+                                                        <c:if test="${sessionScope.account.roleId == 2}"><a href="delete-news?id=${n.id}" onclick="return confirm('Are you sure to delete this news?')""><i class="material-icons" title="Delete">&#xE872;</i></a></c:if>
+                                                        </li>
                                                 </c:forEach>
                                             </ul>
                                         </div>
@@ -102,10 +107,10 @@
                             </div>
                         </div>
                         <form method="get" action="view-news" style="display: flex; align-items: center; gap: 10px;">
+                            <input type="hidden" name="title" value="${requestScope.title}">
+                            <input type="hidden" name="startDate" value="${requestScope.startDate}">
+                            <input type="hidden" name="endDate" value="${requestScope.endDate}">
                             <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                            <input type="text" name="title" value="${param.title}" hidden=""><!-- comment -->
-                            <input type="date" name="startDate" value="${param.startDate}" hidden=""><!-- comment -->
-                            <input type="date" name="endDate" value="${param.endDate}" hidden=""><!-- comment -->
                             <select id="page" name="page" onchange="this.form.submit()" 
                                     style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                                 <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
@@ -115,6 +120,7 @@
                                 </c:forEach>
                             </select>
                         </form>
+
                         <div class="container-fluid">
                             <div class="footer">
                                 <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>

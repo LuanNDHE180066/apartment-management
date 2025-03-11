@@ -62,28 +62,47 @@ public class ViewAllCompany extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         CompanyDAO cd = new CompanyDAO();
-        List<Company> list = cd.getAll();
         Util u = new Util();
+
         String searchName = request.getParameter("searchName");
-        int totalPage = u.getTotalPage(list, 3);
-        if (null != searchName) {
+
+// Lấy danh sách công ty
+        List<Company> list;
+        if (searchName == null || searchName.trim().isEmpty()) {
+            list = cd.getAll();
+            searchName = "";
+        } else {
             searchName = u.stringNomalize(searchName);
             list = cd.searchCompaniesbyName(searchName);
-            if (list.size() == 0) {
-                request.setAttribute("totalPage", 1);
-                request.getRequestDispatcher("viewallcompany.jsp").forward(request, response);
-                return;
-            }
         }
+
+// Xử lý nếu không có kết quả
+        if (list.isEmpty()) {
+            request.setAttribute("message", "No results found.");
+            request.setAttribute("totalPage", 1);
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("companies", list);
+            request.setAttribute("searchName", searchName);
+            request.getRequestDispatcher("viewallcompany.jsp").forward(request, response);
+            return;
+        }
+
+// Tính toán số trang sau khi lọc dữ liệu
+        int totalPage = u.getTotalPage(list, 3);
+
+// Xử lý phân trang
         String page = request.getParameter("page");
-        if (null == page) {
-            page = "1";
-        }       
-        list = u.getListPerPage(list, 3, page);        
-        request.setAttribute("totalPage", totalPage);     
-        request.setAttribute("currentPage", Integer.parseInt(page));
+        int pageNumber = (page == null) ? 1 : Integer.parseInt(page);
+        list = u.getListPerPage(list, 3, String.valueOf(pageNumber));
+
+// Set lại attribute
+        request.setAttribute("totalPage", totalPage);
+        request.setAttribute("currentPage", pageNumber);
         request.setAttribute("companies", list);
+        request.setAttribute("searchName", searchName);
+
         request.getRequestDispatcher("viewallcompany.jsp").forward(request, response);
+
     }
 
     /**
