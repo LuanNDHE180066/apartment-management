@@ -141,15 +141,17 @@
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
+                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
                                                                                 <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                     <tr style="border-bottom: 1px solid #ddd;">
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.name}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.unit}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.quantity * detail.service.unitPrice}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
                                                                                     </tr>
                                                                                 </c:forEach>
                                                                             </tbody>
@@ -223,15 +225,17 @@
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
+                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                     <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                         <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.name}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.unit}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.quantity * detail.service.unitPrice}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
                                                                                         </tr>
                                                                                     </c:forEach>
                                                                                 </tbody>

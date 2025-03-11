@@ -275,26 +275,33 @@ public class ServiceDAO extends DBContext {
         }
         return list;
     }
-    public String getServiceEVNId(){
-        String sql="select * from service where Name =N'Tiền điện' and status =1";
+
+    public String getServiceEVNId() {
+        String sql = "select * from service where Name =N'Tiền điện' and status =1";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getString("id");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getString("id");
+            }
         } catch (SQLException e) {
         }
         return null;
     }
-      public String getServiceWVNId(){
-        String sql="select * from service where Name =N'Tiền nước' and status =1";
+
+    public String getServiceWVNId() {
+        String sql = "select * from service where Name =N'Tiền nước' and status =1";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getString("id");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getString("id");
+            }
         } catch (SQLException e) {
         }
         return null;
     }
+
     public Date getLastInvoice() {
         String sql = "select * from invoice order by invoicedate desc";
         try {
@@ -308,6 +315,27 @@ public class ServiceDAO extends DBContext {
         return null;
     }
 
+    public void updateService(Service sv) {
+        String sql = "update service \n"
+                + "set Name= ?, UnitPrice = ?, Description=?,\n"
+                + "scId=?,cId=?,status=?, endDate=?, unit =?\n"
+                + "where id=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, sv.getName());
+            st.setFloat(2, (float)sv.getUnitPrice());
+            st.setString(3, sv.getDescription());
+            st.setString(4, sv.getCategoryService().getId());
+            st.setString(5, sv.getCompany().getId());
+            st.setInt(6, sv.getStatus());
+            st.setString(7, sv.getEndDate());
+            st.setString(8, sv.getUnit());
+            st.setString(9, sv.getId());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
 
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();

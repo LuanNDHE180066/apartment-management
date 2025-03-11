@@ -15,6 +15,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.util.Date;
 import model.Service;
 import util.Util;
 
@@ -105,7 +107,20 @@ public class UpdateService extends HttpServlet {
         Service sv = sd.getById(id);
         String categoryId = request.getParameter("category");
         String companyId = request.getParameter("company");
-        Service input = new Service(id, name, price, des, csd.getByCategoryId(categoryId), cd.getById(companyId), 0, sv.getStartDate(), sv.getEndDate(), unit);
+        int status = Integer.parseInt(request.getParameter("status"));
+        String endDate;
+        if(status != sv.getStatus()){
+            if(status==0){
+                endDate = java.sql.Date.valueOf(LocalDate.now()).toString();
+            }
+            else{
+                endDate = null;
+            }
+        }
+        else{
+            endDate = sv.getEndDate();
+        }
+        Service input = new Service(id, name, price, des, csd.getByCategoryId(categoryId), cd.getById(companyId), status, sv.getStartDate(), endDate, unit);
         if (input.equals(sv)) {
             request.setAttribute("error", "You doesn't change anything");
             request.setAttribute("service", sv);
@@ -114,27 +129,27 @@ public class UpdateService extends HttpServlet {
             request.getRequestDispatcher("updateservice.jsp").forward(request, response);
             return;
         }
-        int status = Integer.parseInt(request.getParameter("status"));
-        MonthlyServiceDAO md = new MonthlyServiceDAO();
-        if (status != sv.getStatus()) {//trường hợp đổi status
-            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
-                String newServiceId = sd.addService(name, price, des, categoryId, companyId, status, unit);
-                if (sd.getById(newServiceId).getCategoryService().getId().equals("SV001")) {
-                    md.addServiceToAllApartment(newServiceId);// nếu là loại bắt buộc thì thêm vào tất cả
-                }
-            } else { //từ hoạt động xuống dừng thì chỉ đổi status và enddate
-                sd.turnToInActive(id);
-                md.deleteWhenTurnOffService(id);//tắt các nơi đã đki dịch vụ
-            }
-        } else {//nếu như status không đổi mà chỉ đổi các thuộc tính khác
-            String newServiceId = sd.addService(name, price, des, categoryId, companyId, status, unit);//tạo mới
-            sd.turnToInActive(id);//off cũ
-            md.switchService(newServiceId, id);//đổi cũ sang mới
-            if(input.getCategoryService().getId().equals("SV001") && !input.getCategoryService().getId().equals(sv.getCategoryService().getId())){
-                //trường hợp update và đổi từ kiểu bthg sangg bắt buộc
-                md.addServiceToAllResidentNoUsing(newServiceId);
-            }
-        }
+        sd.updateService(input);
+//        MonthlyServiceDAO md = new MonthlyServiceDAO();
+//        if (status != sv.getStatus()) {//trường hợp đổi status
+//            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới
+//                String newServiceId = sd.addService(name, price, des, categoryId, companyId, status, unit);
+//                if (sd.getById(newServiceId).getCategoryService().getId().equals("SV001")) {
+//                    md.addServiceToAllApartment(newServiceId);// nếu là loại bắt buộc thì thêm vào tất cả
+//                }
+//            } else { //từ hoạt động xuống dừng thì chỉ đổi status và enddate
+//                sd.turnToInActive(id);
+//                md.deleteWhenTurnOffService(id);//tắt các nơi đã đki dịch vụ
+//            }
+//        } else {//nếu như status không đổi mà chỉ đổi các thuộc tính khác
+//            String newServiceId = sd.addService(name, price, des, categoryId, companyId, status, unit);//tạo mới
+//            sd.turnToInActive(id);//off cũ
+//            md.switchService(newServiceId, id);//đổi cũ sang mới
+//            if(input.getCategoryService().getId().equals("SV001") && !input.getCategoryService().getId().equals(sv.getCategoryService().getId())){
+//                //trường hợp update và đổi từ kiểu bthg sangg bắt buộc
+//                md.addServiceToAllResidentNoUsing(newServiceId);
+//            }
+//        }
         response.sendRedirect("all-services");
     }
 
