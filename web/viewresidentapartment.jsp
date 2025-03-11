@@ -197,6 +197,28 @@
                                             <div class="heading1 margin_0">
                                                 <h2>Apartment</h2>
                                             </div>
+
+                                        </div>
+                                        <div style="margin-left: 40px;">
+                                            <form action="view-resident" method="GET">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-2">
+                                                        <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select class="form-control" name="filterStatus">
+                                                            <option value="">Filter by Status</option>
+                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
+                                                            <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
+                                                            <option value="2" ${param.filterStatus == '2' ? 'selected' : ''}>Pending</option>
+                                                        </select>
+                                                    </div>
+                                                    <div class="col-md-4 d-flex">
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                        <a href="register-new-living-or-owner-resident" class="btn btn-primary">Register living/owner resident</a>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="view-all-resident-apartment" method="GET">

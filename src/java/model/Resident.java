@@ -66,6 +66,19 @@ public class Resident {
         this.status = status;
     }
 
+    public Resident(String name, String cccd, String phone, String email, String bod, String address, String username, String password, Role role, String gender) {
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.address = address;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.gender = gender;
+    }
+
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status, String gender) {
         this.pId = pId;
         this.name = name;
