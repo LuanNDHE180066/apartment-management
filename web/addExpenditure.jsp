@@ -223,7 +223,7 @@
                                             <button type="submit">Add</button>
                                             <div>
                                                 <span>
-                                                    <a style="color: #357AB8; text-decoration: underline; font-size: 15px" href="view-apartment-admin">
+                                                    <a style="color: #357AB8; text-decoration: underline; font-size: 15px" href="view-expenditure">
                                                         <i class="fas fa-arrow-left"></i> Back
                                                     </a>
                                                 </span>
