@@ -19,21 +19,8 @@ public class Request {
     private String status;
     private String shift;
     private RequestType requestType;
-    private Apartment aid;
 
     public Request() {
-    }
-   
-    public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, RequestType requestType) {
-        this.id = id;
-        this.residentId = residentId;
-        this.staffId = staffId;
-        this.detail = detail;
-        this.response = response;
-        this.date = date;
-        this.responseDate = responseDate;
-        this.status = status;
-        this.requestType = requestType;
     }
 
     public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, String shift, RequestType requestType) {
@@ -48,8 +35,8 @@ public class Request {
         this.shift = shift;
         this.requestType = requestType;
     }
-    
-    public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, String shift, RequestType requestType, Apartment aid) {
+
+    public Request(String id, Resident residentId, Staff staffId, String detail, String response, String date, String responseDate, String status, RequestType requestType) {
         this.id = id;
         this.residentId = residentId;
         this.staffId = staffId;
@@ -58,13 +45,9 @@ public class Request {
         this.date = date;
         this.responseDate = responseDate;
         this.status = status;
-        this.shift = shift;
         this.requestType = requestType;
-        this.aid = aid;
     }
 
-    
-    
     public String getId() {
         return id;
     }
@@ -164,14 +147,4 @@ public class Request {
             return "18:00-20:00";
         }
     }
-
-    public Apartment getAid() {
-        return aid;
-    }
-
-    public void setAid(Apartment aid) {
-        this.aid = aid;
-    }
-    
-    
 }
