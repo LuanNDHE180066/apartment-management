@@ -104,7 +104,7 @@
                                                             <td>${expense.categoryDescription}</td>
                                                             <td style="text-align: center">
                                                                 <a href="update-expense-category?id=${expense.id}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                                <a href="delete-room-type?id=${expense.id}"><i class="fa-solid fa-trash"></i></a>
+<!--                                                                <a href="delete-room-type?id=${expense.id}"><i class="fa-solid fa-trash"></i></a>-->
                                                             </td>
                                                         </tr>
                                                     </c:forEach>
