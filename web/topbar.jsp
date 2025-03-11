@@ -53,7 +53,7 @@
                 <div class="full">
                     <button type="button" id="sidebarCollapse" class="sidebar_toggle"><i class="fa fa-bars"></i></button>
                     <div class="logo_section">
-                        <a href="index.jsp"><img class="img-responsive" src="images/logo/logo.png" alt="#" /></a>
+                        <a href="index.jsp"><img class="img-responsive" src="images/logo/png-transparent-computer-icons-home-house-home-angle-building-rectangle-thumbnail.png" alt="#" /></a>
                     </div>
                     <div class="right_topbar">
                         <div class="icon_info">

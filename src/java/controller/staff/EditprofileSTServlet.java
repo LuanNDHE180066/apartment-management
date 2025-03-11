@@ -134,7 +134,10 @@ public class EditprofileSTServlet extends HttpServlet {
             request.getRequestDispatcher("editprofileST.jsp").forward(request, response);
             return;
         }
-        Staff staff = new Staff(account.getpId(), eemail, ephone, ebank, eaddress);
+        Staff staff= st.getById(account.getpId());
+        staff.setEmail(eemail);
+        staff.setPhone(ephone);
+        staff.setAddress(eaddress);
         if (filePart != null && filePart.getSize() > 0) {
             String uploadPath = getServletContext().getRealPath("/avartars");
             File uploadDir = new File(uploadPath);

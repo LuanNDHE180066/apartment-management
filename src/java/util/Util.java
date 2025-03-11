@@ -112,6 +112,7 @@ public class Util {
         return strNormalize;
     }
 
+
     public <T> int getTotalPage(List<T> list, int numberPerPape) {
         int totalPage;
         if (list.size() % numberPerPape == 0) {

@@ -16,6 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.sql.Date;
 import model.Account;
 import model.Rule;
 import model.Staff;
@@ -83,25 +85,46 @@ public class AddNewRuleServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String title = request.getParameter("title");
         String description = request.getParameter("description");
-        String effectiveDate = request.getParameter("effectiveDate");
+        String effectiveDateStr = request.getParameter("effectiveDate");
         Account s = (Account) session.getAttribute("account");
         StaffDAO daoS = new StaffDAO();
-
         RuleDAO daoR = new RuleDAO();
-        Date sqlDate = new Date(System.currentTimeMillis());
-        String status=Date.valueOf(effectiveDate)==sqlDate?"1":"0";
-        Rule r = new Rule(title, description, sqlDate.toString(), effectiveDate, status, daoS.getById(s.getpId()));
 
-        if (daoR.insertRule(r)) {
-            request.setAttribute("message", "Add new rule successfully");
-            request.setAttribute("status", "true");
-            request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
-            return;
-        } else {
-            request.setAttribute("message", "Add new rule failed");
+        try {
+            // Convert Strings to java.sql.Date for proper date comparison
+            Date effectiveDate = Date.valueOf(effectiveDateStr);
+
+            // Fix: Convert SQL Date to LocalDate to compare properly
+            LocalDate today = LocalDate.now();
+            LocalDate effectiveLocalDate = effectiveDate.toLocalDate();
+
+            // Ensure effectiveDate is today or in the future
+            if (effectiveLocalDate.isBefore(today)) {
+                request.setAttribute("message", "Effective date must be today or a future date.");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
+                return;
+            }
+
+            // Status: "1" if effectiveDate is today, otherwise "0"
+            String status = effectiveDate.equals(today) ? "1" : "0";
+
+            Rule r = new Rule(title, description, today.toString(), effectiveDate.toString(), status, daoS.getById(s.getpId()));
+
+            if (daoR.insertRule(r)) {
+                request.setAttribute("message", "Added new rule successfully.");
+                request.setAttribute("status", "true");
+            } else {
+                request.setAttribute("message", "Failed to add new rule.");
+                request.setAttribute("status", "false");
+            }
+
+        } catch (IllegalArgumentException e) { // Catch invalid date formats
+            request.setAttribute("message", "Invalid date format. Please use YYYY-MM-DD.");
             request.setAttribute("status", "false");
-            request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
         }
+
+        request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
     }
 
     /**

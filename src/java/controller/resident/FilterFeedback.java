@@ -2,6 +2,7 @@ package controller.resident;
 
 import dao.FeedbackDAO;
 import dao.RequestTypeDAO;
+import dao.ResidentDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -49,25 +50,19 @@ public class FilterFeedback extends HttpServlet {
         String to = request.getParameter("to");
         String typeRequest = request.getParameter("typeRequest");
 
+        ResidentDAO rd = new ResidentDAO();
         FeedbackDAO fbd = new FeedbackDAO();
         RequestTypeDAO rtd = new RequestTypeDAO(); // Fetch request types again
         List<RequestType> listTypeRequest = rtd.getAll(); // Get request types
         List<Feedback> listFeedback = new ArrayList<>();
 
         // Apply filters
-        if (from != null && !from.isEmpty() && to != null && !to.isEmpty()) {
-            Date fromDate = u.convertStringToDate(from);
-            Date toDate = u.convertStringToDate(to);
-            if (fromDate.compareTo(toDate) >= 0) {
-                listFeedback = fbd.getByResidentIDAndDateAndTypeRequest(acc.getpId(), to, from, typeRequest);
-            } else {
-                listFeedback = fbd.getByResidentIDAndDateAndTypeRequest(acc.getpId(), from, to, typeRequest);
-            }
-        } else if (typeRequest != null && !typeRequest.isEmpty()) {
-            listFeedback = fbd.getByResidentIDAndDateAndTypeRequest(acc.getpId(), null, null, typeRequest);
-        } else {
-            listFeedback = fbd.getByResidentIDAndDateAndTypeRequest(acc.getpId(), null, null, null);
-        }
+        typeRequest = (typeRequest == null || typeRequest.trim().isEmpty()) ? "" : typeRequest;
+        from = (from == null || from.trim().isEmpty()) ? "" : from;
+        to = (to == null || to.trim().isEmpty()) ? "" : to;
+
+        // Apply filtering
+        listFeedback=fbd.getByResidentIDAndDateAndTypeRequest(acc.getpId(), from, to, typeRequest);
 
         // Store selected filters in session
         session.setAttribute("from", from);
@@ -93,7 +88,7 @@ public class FilterFeedback extends HttpServlet {
         request.setAttribute("listFeedbackU", paginatedList);
         request.setAttribute("currentPage", currentPage);
         request.setAttribute("totalPages", totalPages);
-        request.setAttribute("listTypeRequest", listTypeRequest); 
+        request.setAttribute("listTypeRequest", listTypeRequest);
 
         // Forward back to JSP
         request.getRequestDispatcher("filter-user-feedback.jsp").forward(request, response);
