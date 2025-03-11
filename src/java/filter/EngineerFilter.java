@@ -22,31 +22,29 @@ import model.Account;
 
 /**
  *
- * @author thanh
+ * @author PC
  */
-@WebFilter(filterName = "Service_Administrative_Filter", urlPatterns = {"/addnewservice.jsp",
-            "/floorinformation.jsp",
-            "/updateservice.jsp",
-            "/viewallservices.jsp",
-            "/add-service-staff",
-            "/update-service-staff",
-            "/all-services"})
-public class Service_Administrative_Filter implements Filter {
-
+@WebFilter(filterName = "EngineerFilter", urlPatterns = {"/view-all-request",
+    "/update-request-staff",
+    "/viewallrequest.jsp",
+    "/editrequest.jsp"
+})
+public class EngineerFilter implements Filter {
+    
     private static final boolean debug = true;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-
-    public Service_Administrative_Filter() {
-    }
-
+    
+    public EngineerFilter() {
+    }    
+    
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoBeforeProcessing");
+            log("EngineerFilter:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -69,12 +67,12 @@ public class Service_Administrative_Filter implements Filter {
 	    log(buf.toString());
 	}
          */
-    }
-
+    }    
+    
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("Service_Administrative_Filter:DoAfterProcessing");
+            log("EngineerFilter:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -108,23 +106,21 @@ public class Service_Administrative_Filter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-
+        
         if (debug) {
-            log("Service_Administrative_Filter:doFilter()");
+            log("EngineerFilter:doFilter()");
         }
-
+        
         doBeforeProcessing(request, response);
-
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
 
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
+        if (a.getRoleId() != 4) {
             res.sendRedirect("401_error.jsp");
             return;
         } 
-        
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -135,7 +131,7 @@ public class Service_Administrative_Filter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-
+        
         doAfterProcessing(request, response);
 
         // If there was a problem, we want to rethrow it if it is
@@ -170,17 +166,17 @@ public class Service_Administrative_Filter implements Filter {
     /**
      * Destroy method for this filter
      */
-    public void destroy() {
+    public void destroy() {        
     }
 
     /**
      * Init method for this filter
      */
-    public void init(FilterConfig filterConfig) {
+    public void init(FilterConfig filterConfig) {        
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
-            if (debug) {
-                log("Service_Administrative_Filter:Initializing filter");
+            if (debug) {                
+                log("EngineerFilter:Initializing filter");
             }
         }
     }
@@ -191,27 +187,27 @@ public class Service_Administrative_Filter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("Service_Administrative_Filter()");
+            return ("EngineerFilter()");
         }
-        StringBuffer sb = new StringBuffer("Service_Administrative_Filter(");
+        StringBuffer sb = new StringBuffer("EngineerFilter(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());
     }
-
+    
     private void sendProcessingError(Throwable t, ServletResponse response) {
-        String stackTrace = getStackTrace(t);
-
+        String stackTrace = getStackTrace(t);        
+        
         if (stackTrace != null && !stackTrace.equals("")) {
             try {
                 response.setContentType("text/html");
                 PrintStream ps = new PrintStream(response.getOutputStream());
-                PrintWriter pw = new PrintWriter(ps);
+                PrintWriter pw = new PrintWriter(ps);                
                 pw.print("<html>\n<head>\n<title>Error</title>\n</head>\n<body>\n"); //NOI18N
 
                 // PENDING! Localize this for next official release
-                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");
-                pw.print(stackTrace);
+                pw.print("<h1>The resource did not process correctly</h1>\n<pre>\n");                
+                pw.print(stackTrace);                
                 pw.print("</pre></body>\n</html>"); //NOI18N
                 pw.close();
                 ps.close();
@@ -228,7 +224,7 @@ public class Service_Administrative_Filter implements Filter {
             }
         }
     }
-
+    
     public static String getStackTrace(Throwable t) {
         String stackTrace = null;
         try {
@@ -242,9 +238,9 @@ public class Service_Administrative_Filter implements Filter {
         }
         return stackTrace;
     }
-
+    
     public void log(String msg) {
-        filterConfig.getServletContext().log(msg);
+        filterConfig.getServletContext().log(msg);        
     }
-
+    
 }

@@ -119,7 +119,7 @@
                         <div class="card shadow-sm p-4">
                             <h4 class="mb-4 text-center">Submit Your Feedback</h4>
                             <form action="update-feed-back" method="post" enctype="multipart/form-data">
-                                <input type="text" name="fID" value="${feedback.id}">
+                                <input type="hidden" name="fID" value="${feedback.id}">
                                 <div class="form-group">
                                     <label for="typeOfRequest" class="font-weight-bold">Type of Request</label>
                                     <select id="typeOfRequest" name="typeOfRequest" class="form-control" required>
