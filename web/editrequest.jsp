@@ -125,6 +125,10 @@
                                     <h1>Update A Request</h1>
                                     <form action="update-request" method="post">
                                         <div class="form-group">
+                                            <label for="aparment">Apartment Number</label>
+                                            <input id="aparment" name="aparment" value="${request.aid.id}" readonly=""/>
+                                        </div>
+                                        <div class="form-group">
                                             <input type="text" id="reqID" name="reqID" value="${request.id}" hidden=""/>
                                             <label for="typeRequest">Type Request</label>
                                             <select id="typeRequest" name="typeRequest" required>
