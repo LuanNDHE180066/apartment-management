@@ -14,16 +14,28 @@ import jakarta.servlet.FilterConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.ServletResponse;
+import jakarta.servlet.annotation.WebFilter;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
-import org.apache.http.HttpRequest;
 
 /**
  *
  * @author quang
  */
+@WebFilter(filterName = "AdministrativeFilters",
+        urlPatterns = {"/viewallrequest.jsp",
+            "/viewrequesttype.jsp",
+            "/addrequesttype.jsp",
+            "/updaterequesttype.jsp",
+            "/view-all-request",
+            "/assign-request",
+            "/view-request-type",
+            "/add-request-type",
+            "/update-request-type",
+            "/update-request-administrative",
+            "/update-request-staff"})
 public class AdministrativeFilter implements Filter {
 
     private static final boolean debug = true;
@@ -105,23 +117,18 @@ public class AdministrativeFilter implements Filter {
         if (debug) {
             log("AdministrativeFilter:doFilter()");
         }
-
+        doBeforeProcessing(request, response);
         doBeforeProcessing(request, response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession();
-
         String uri = req.getServletPath();
+        System.out.println("Filet");
         Account a = (Account) session.getAttribute("account");
         if (a.getRoleId() != 2) {
-            if(a.getRoleId() == 0 && (uri.contains("view-rule-admin")||uri.contains("add-new-rule"))){
-                chain.doFilter(request, response);
-                return;
-            } else{
-                res.sendRedirect("404_error.jsp");
-                return;
-            }
-            
+            System.out.println("Da sdawdaw");
+            res.sendRedirect("401_error.jsp");
+            return;
         }
 
         Throwable problem = null;
