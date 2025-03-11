@@ -154,17 +154,6 @@
                                             </div>
                                         </div>  
                                         <div class="form-group">
-                                            <label for="aparment">Apartment Number</label>
-                                            <input
-                                                    type="text"
-                                                    id="aparment"
-                                                    name="aparment"
-                                                    readonly=""
-                                                    value="${requestScope.rq.aid.id}"
-                                                    required=""
-                                                    />
-                                        </div>
-                                        <div class="form-group">
                                             <div class="col" style="padding: 0; margin-right: 5px">
                                                 <label for="detail">Detail requirement</label>
                                                 <input
