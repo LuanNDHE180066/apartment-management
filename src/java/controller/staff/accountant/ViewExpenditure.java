@@ -115,8 +115,8 @@ public class ViewExpenditure extends HttpServlet {
         
         request.setAttribute("roleId", a.getRoleId());
         if (listExpenditure.size() != 0) {
-            int totalPage = u.getTotalPage(listExpenditure, 3);
-            listExpenditure = u.getListPerPage(listExpenditure, 3, page);
+            int totalPage = u.getTotalPage(listExpenditure, 5);
+            listExpenditure = u.getListPerPage(listExpenditure, 5, page);
             request.setAttribute("totalPage", totalPage);
             request.setAttribute("currentPage", Integer.parseInt(page));
             request.setAttribute("listExpenditure", listExpenditure);

@@ -54,7 +54,7 @@
             .tbody td{
                 text-align: center;
             }
-            
+
             .display-none{
                 display: none;
             }
@@ -144,10 +144,14 @@
                                                             <td>${expenditure.id}</td>
                                                             <td>${expenditure.title}</td>
                                                             <td>
-                                                                <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
-                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                                <%--  <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <%--       <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
+                                                                ${expenditure.totalPrice}
                                                             </td>
                                                             <td>${expenditure.approveddate}</td>
+                                                            <td>
+                                                                ${expenditure.approveddate}
+                                                            </td>
                                                             <td>${expenditure.category.categoryName}</td>
                                                             <td>${expenditure.company.name}</td>
                                                             <td>${expenditure.createdStaff.name}</td>

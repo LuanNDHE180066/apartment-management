@@ -109,8 +109,9 @@
                                                                 <fmt:formatDate pattern="dd/MM/yyyy" value="${request.createdAt}"/>
                                                             </td>  
                                                             <td>
-                                                                <fmt:setLocale value="vi_VN"/> 
-                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                                <%--%>         <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <%--        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
+                                                                ${expenditure.totalPrice}
                                                             </td>
                                                             <td style="text-align: center">${expenditure.approveddate}</td>
 
