@@ -6,6 +6,7 @@
 package controller.staff;
 
 import dao.ContractApproveDAO;
+import dao.ContractDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
+import model.ContractApprove;
 
 /**
  *
@@ -72,13 +74,14 @@ public class UpdatePendingContract extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
         throws ServletException, IOException {
     // Lấy tham số từ request
-    String contractId = request.getParameter("contractId");
+        ContractDAO ctdao=new ContractDAO();
+    String id = request.getParameter("id");
     String approveStatus = request.getParameter("approve");
     HttpSession session = request.getSession();
     Account account = (Account) session.getAttribute("account"); // Lấy thông tin người dùng đăng nhập
 
     // Kiểm tra tham số đầu vào
-    if (contractId == null || contractId.isEmpty() || approveStatus == null || approveStatus.isEmpty() || account == null) {
+    if (id == null || id.isEmpty() || approveStatus == null || approveStatus.isEmpty() || account == null) {
         request.setAttribute("error", "Invalid parameters.");
         request.getRequestDispatcher("error.jsp").forward(request, response);
         return;
@@ -114,7 +117,7 @@ public class UpdatePendingContract extends HttpServlet {
 
 
         // Cập nhật trạng thái phê duyệt
-        isUpdated = contractApproveDAO.updateApprovalStatus(contractId, account.getpId(), approvalStatus);
+        isUpdated = contractApproveDAO.updateApprovalStatus(id, account.getpId(), approvalStatus);
     } catch (Exception e) {
         e.printStackTrace();
         request.setAttribute("error", "An error occurred while updating the contract approval status.");
@@ -125,6 +128,8 @@ public class UpdatePendingContract extends HttpServlet {
     // Xử lý kết quả cập nhật
     if (isUpdated) {
         // Cập nhật thành công, chuyển hướng đến trang danh sách hợp đồng
+        ContractApprove c=new ContractApprove();
+        ctdao.updateStatus(c.getContractId().getId());
         response.sendRedirect("viewapprovecontrat.jsp");
     } else {
         // Cập nhật thất bại, hiển thị thông báo lỗi

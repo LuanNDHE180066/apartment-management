@@ -70,24 +70,24 @@
                                                             <td>
                                                                 <!-- Show approval options for admin if adminApproval is 0 or null -->
                                                                 <c:if test="${staffId == c.admin.id && (c.adminApproval == null || c.adminApproval == 0)}">
-                                                                    <a class="approval-link" href="update-pending-contract?contractId=${c.contractId}&approve=1">
+                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=1">
                                                                         <i class="fas fa-check"></i> Approve
                                                                     </a>
-                                                                    <a class="approval-link" href="update-pending-contract?contractId=${c.contractId}&approve=-1">
+                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=-1">
                                                                         <i class="fas fa-times"></i> Reject
                                                                     </a>
                                                                 </c:if>
 
                                                                 <!-- Show approval options for accountant if accountantApproval is 0 or null -->
                                                                 <c:if test="${staffId == c.accountant.id && (c.accountantApproval == null || c.accountantApproval == 0)}">
-                                                                    <a class="approval-link" href="update-pending-contract?contractId=${c.contractId}&approve=1">
+                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=1">
                                                                         <i class="fas fa-check"></i> Approve
                                                                     </a>
-                                                                    <a class="approval-link" href="update-pending-contract?contractId=${c.contractId}&approve=-1">
+                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=-1">
                                                                         <i class="fas fa-times"></i> Reject
                                                                     </a>
                                                                 </c:if>
-
+                                                                
                                                                 <!-- Show approval status for admin or accountant if either has approved -->
                                                                 <c:if test="${c.adminApproval == 1 || c.accountantApproval == 1}">
                                                                     <span style="color: green">Approved</span>

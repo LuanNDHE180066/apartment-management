@@ -217,12 +217,23 @@ public class ContractDAO extends DBContext {
             ps.setString(6, c.getSignDate());
             ps.setString(7, c.getTitle());
             ps.setString(8, c.getDescription());
-            ps.setInt(9, 0);
+            ps.setInt(9, 1);
             ps.setString(10, (lastNum + 1) + "");
             ps.setString(11, c.getAccountant().getId());
             ps.setString(12, c.getAdmin().getId());
             ps.setString(13, c.getImage());
             return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+    public boolean updateStatus(String id){
+        String sql="Update Contract set status =? where id=?";
+        try {
+            PreparedStatement ps= connection.prepareStatement(sql);
+            ps.setInt(1, 1);
+            ps.setString(2, id);
+            return ps.executeUpdate()>0;
         } catch (Exception e) {
         }
         return false;
@@ -234,6 +245,6 @@ public class ContractDAO extends DBContext {
         CompanyDAO cpd = new CompanyDAO();
         Contract c = new Contract(std.getById("S1003"), cpd.getById("C001"), "2025-02-12", "2025-02-12", "2025-02-12", "2025-02-12", "hehe", "hehe", std.getById("S1004"), std.getById("S1003"), "images/avatar/anh.jpg");
         //System.out.println(dap.filterContract("", "", "2025-3-27").size());
-        System.out.println(dap.getAll().get(0).getCompany());
+        System.out.println(dap.updateStatus("9"));
     }
 }

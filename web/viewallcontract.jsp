@@ -112,7 +112,6 @@
                                                                     <input type="date" class="form-control" name="endDate" placeholder="To"
                                                                            value="${requestScope.endDate}">
                                                                 </div>
-                                                                
                                                                 <div class="col-md-3 d-flex">
                                                                     <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
                                                                         <a style="color: white" href="pending-contract">View pending contract list</a></span>

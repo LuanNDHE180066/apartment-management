@@ -2,6 +2,7 @@ package dao;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import jdbc.DBContext;
@@ -147,31 +148,49 @@ public class ContractApproveDAO extends DBContext {
         }
         return list;
     }
-    public boolean updateApprovalStatus(String contractId, String staffId, int approvalStatus) {
-        String sql = "UPDATE ContractApproval SET "
-                + "(adminApproval = CASE WHEN adminId = ? THEN ? ELSE adminApproval END, "
-                + "accountantApproval = CASE WHEN accountantId = ? THEN ? ELSE accountantApproval END), "
-                + "updatedAt = GETDATE() "
-                + "WHERE contractId = ?";
+    public boolean updateApprovalStatus(String id, String staffId, int approvalStatus) {
+    String sql = "UPDATE ContractApproval SET "
+            + "adminApproval = CASE WHEN adminId = ? THEN ? ELSE adminApproval END, "
+            + "accountantApproval = CASE WHEN accountantId = ? THEN ? ELSE accountantApproval END, "
+            + "updatedAt = GETDATE() "
+            + "WHERE id = ?";
 
-        try (
-             PreparedStatement ps = connection.prepareStatement(sql)) {
+    try (PreparedStatement ps = connection.prepareStatement(sql)) {
+        ps.setString(1, staffId);
+        ps.setInt(2, approvalStatus);
+        ps.setString(3, staffId);
+        ps.setInt(4, approvalStatus);
+        ps.setString(5, id);
 
-            ps.setString(1, staffId);
-            ps.setInt(2, approvalStatus); 
-            ps.setString(3, staffId);
-            ps.setInt(4, approvalStatus); 
-            ps.setString(5, contractId);
+        if (approvalStatus == 1) {
+            String checkSql = "SELECT adminApproval, accountantApproval FROM ContractApproval WHERE contractId = ?";
+            try (PreparedStatement checkPs = connection.prepareStatement(checkSql)) {
+                checkPs.setString(1, id);
+                ResultSet rs = checkPs.executeQuery();
+                if (rs.next()) {
+                    Integer adminApproval = (Integer) rs.getObject("adminApproval");
+                    Integer accountantApproval = (Integer) rs.getObject("accountantApproval");
 
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
-        } catch (Exception e) {
-            e.printStackTrace();
-            return false;
+                    if (adminApproval != null && accountantApproval != null 
+                        && adminApproval == 1 && accountantApproval == 1) {
+                        return ps.executeUpdate() > 0;
+                    } else {
+                        return false;
+                    }
+                }
+            }
         }
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return false;
+}
+
+
+
     public static void main(String[] args) {
         ContractApproveDAO dao= new ContractApproveDAO();
-        System.out.println(dao.getPendingContractApprovalsByStaffId("S1004"));
+        System.out.println(dao.updateApprovalStatus("8", "S1003", 0));
+        System.out.println(dao.updateApprovalStatus("8", "S1004", 0));
     }
 }
