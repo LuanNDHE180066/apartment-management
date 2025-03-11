@@ -66,7 +66,6 @@ public class ViewAllCompany extends HttpServlet {
 
         String searchName = request.getParameter("searchName");
 
-// Lấy danh sách công ty
         List<Company> list;
         if (searchName == null || searchName.trim().isEmpty()) {
             list = cd.getAll();
@@ -76,7 +75,6 @@ public class ViewAllCompany extends HttpServlet {
             list = cd.searchCompaniesbyName(searchName);
         }
 
-// Xử lý nếu không có kết quả
         if (list.isEmpty()) {
             request.setAttribute("message", "No results found.");
             request.setAttribute("totalPage", 1);
@@ -87,15 +85,12 @@ public class ViewAllCompany extends HttpServlet {
             return;
         }
 
-// Tính toán số trang sau khi lọc dữ liệu
         int totalPage = u.getTotalPage(list, 3);
 
-// Xử lý phân trang
         String page = request.getParameter("page");
         int pageNumber = (page == null) ? 1 : Integer.parseInt(page);
         list = u.getListPerPage(list, 3, String.valueOf(pageNumber));
 
-// Set lại attribute
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentPage", pageNumber);
         request.setAttribute("companies", list);
