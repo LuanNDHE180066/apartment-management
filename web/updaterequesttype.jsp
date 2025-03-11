@@ -1,6 +1,6 @@
 <%-- 
-    Document   : updateroomtype.jsp
-    Created on : Feb 14, 2025, 2:39:58 PM
+    Document   : updaterequesttype
+    Created on : Mar 11, 2025, 1:28:06 AM
     Author     : PC
 --%>
 
@@ -137,99 +137,49 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Update Request Information</h1>
-                                    <form action="update-request-staff" method="post">
-                                        <input type="text" id="id" name="id" value="${requestScope.rq.id}" hidden=""/>
+                                    <h1>Add Request Type Information</h1>
+                                    <form action="update-request-type" method="post">
+                                        <input type="text" id="id" name="id" value="${requestScope.requestType.id}" hidden=""/>
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="name">Resident Name</label>
+                                                <label for="name"> Name</label>
                                                 <input
                                                     type="text"
                                                     id="name"
                                                     name="name"
-                                                    readonly=""
-                                                    value="${requestScope.rq.residentId.name}"
+                                                    value ="${requestScope.requestType.name}"
                                                     required=""
                                                     />
                                             </div>
-                                        </div>  
-                                        <div class="form-group">
-                                            <label for="aparment">Apartment Number</label>
-                                            <input
-                                                    type="text"
-                                                    id="aparment"
-                                                    name="aparment"
-                                                    readonly=""
-                                                    value="${requestScope.rq.aid.id}"
-                                                    required=""
-                                                    />
-                                        </div>
+                                        </div> 
                                         <div class="form-group">
                                             <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="detail">Detail requirement</label>
+                                                <label for="role">Destination</label>
+                                                <select name="role" required="">
+                                                    <option value="">Filter by Roles</option>
+                                                    <c:forEach items="${requestScope.rolelist}" var="o">
+                                                        <c:if test="${o.id >= 4}">
+                                                            <option value="${o.id}" <c:if test="${requestScope.requestType.destination.id == o.id}">selected</c:if>>${o.name}</option>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <div class="one-col" style="padding: 0; margin-right: 5px">
+                                                <label for="detail">Detail</label>
                                                 <input
                                                     type="text"
                                                     id="detail"
                                                     name="detail"
-                                                    value="${requestScope.rq.detail}"
-                                                    required=""
-                                                    readonly=""
-                                                    />
-                                            </div>
-                                        </div>
-                                        <div class="form-group">
-                                            <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="response">Response</label>
-                                                <input
-                                                    type="text"
-                                                    id="response"
-                                                    name="response"\
-                                                    value="${requestScope.rq.response}"
+                                                    value="${requestScope.requestType.detail}"
                                                     required=""
                                                     />
+                                            </div>                                                                             
+                                            <div class="form-button">
+                                                <button type="submit">Update</button>
+                                                <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             </div>
-                                        </div>
-
-                                        <div class="form-group">
-                                            <div class="two-cols">
-                                                <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="date">Date</label>
-                                                    <input
-                                                        type="text"
-                                                        readonly=""
-                                                        id="date"
-                                                        name="date"
-                                                        value="${requestScope.rq.date}"
-                                                        required=""
-                                                        />
-                                                </div>
-                                                <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="typerequest">Type request</label>
-                                                    <input
-                                                        type="text"
-                                                        id="typerequest"
-                                                        name="typerequest"
-                                                        value="${requestScope.rq.requestType.name}"
-                                                        required=""
-                                                        readonly=""
-                                                        />
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group" >
-                                            <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="balcony">Status of request</label>
-                                                <select name="status">
-                                                    <!--<option value="Wating">Waiting</option>-->
-                                                    <option value="1">In process</option>
-                                                    <option value="2">Done</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="form-button">
-                                            <button type="submit">Update</button>
-                                            <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
-                                        </div>
                                     </form>
                                 </div>
                             </div>

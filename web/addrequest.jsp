@@ -125,6 +125,15 @@
                                     <h1>Create A Request</h1>
                                     <form action="resident-add-request" method="post">
                                         <div class="form-group">
+                                            <label for="aparment">Apartment Number</label>
+                                            <select id="aparment" name="aparment" required>
+                                                <option value="">Select apartment</option>
+                                                <c:forEach items="${requestScope.listApartment}" var="tr">
+                                                    <option value="${tr.id}">${tr.id}</option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
                                             <label for="typeRequest">Type Request</label>
                                             <select id="typeRequest" name="typeRequest" required>
                                                 <option value="">Select type request</option>
