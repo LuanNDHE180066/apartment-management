@@ -15,7 +15,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDate;
 import model.Rule;
 import util.Util;
 
@@ -63,29 +64,28 @@ public class UpdateRuleServlet extends HttpServlet {
      */
     @Override
 
-protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-    String id = request.getParameter("id");
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
 
-    if (id != null && !id.isEmpty()) {
-        RuleDAO daoR = new RuleDAO();
-        Rule rule = daoR.getById(id);
+        if (id != null && !id.isEmpty()) {
+            RuleDAO daoR = new RuleDAO();
+            Rule rule = daoR.getById(id);
 
-        if (rule != null) {
-            request.setAttribute("rule", rule);
-            request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+            if (rule != null) {
+                request.setAttribute("rule", rule);
+                request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+            } else {
+                request.setAttribute("message", "Rule not found");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+            }
         } else {
-            request.setAttribute("message", "Rule not found");
+            request.setAttribute("message", "Invalid ID");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("updateRule.jsp").forward(request, response);
         }
-    } else {
-        request.setAttribute("message", "Invalid ID");
-        request.setAttribute("status", "false");
-        request.getRequestDispatcher("updateRule.jsp").forward(request, response);
     }
-}
-
 
     /**
      * Handles the HTTP <code>POST</code> method.
@@ -96,33 +96,57 @@ protected void doGet(HttpServletRequest request, HttpServletResponse response)
      * @throws IOException if an I/O error occurs
      */
     @Override
-protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-    String id = request.getParameter("id");
-    String title = request.getParameter("title");
-    String description = request.getParameter("description");
-    String dateStr = request.getParameter("date");
-    String effectiveDateStr = request.getParameter("effectiveDate");
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String id = request.getParameter("id");
+        String title = request.getParameter("title");
+        String description = request.getParameter("description");
+        String effectiveDateStr = request.getParameter("effectiveDate");
+        String status = request.getParameter("status");
 
-    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-
-    Rule rule = new Rule(id, title, description, dateStr, effectiveDateStr);
-    request.setAttribute("rule", rule);
-
-    try {
-        Date startDate = sdf.parse(dateStr);
-        Date effectiveDate = sdf.parse(effectiveDateStr);
-
-        if (!effectiveDate.after(startDate)) {
-            request.setAttribute("message", "Effective date must be after start date!");
+        if (id == null || title == null || description == null) {
+            request.setAttribute("message", "Missing required fields!");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("updateRule.jsp").forward(request, response);
-            return; // Dừng xử lý nếu ngày không hợp lệ
+            return;
         }
-        
+
         RuleDAO daoR = new RuleDAO();
+        Rule rule = daoR.getById(id);
+
+        if (rule == null) {
+            request.setAttribute("message", "Rule not found!");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+            return;
+        }
+
+        rule.setTitle(title);
+        rule.setDescription(description);
+
+        if (status != null) {
+            rule.setStatus(status);
+        }
+
+        if (effectiveDateStr != null && !effectiveDateStr.isEmpty()) {
+
+           Date effectiveDate = Date.valueOf(effectiveDateStr);
+
+            // Fix: Convert SQL Date to LocalDate to compare properly
+            LocalDate today = LocalDate.now();
+            LocalDate effectiveLocalDate = effectiveDate.toLocalDate();
+
+            if (effectiveLocalDate.isBefore(today)) {
+                request.setAttribute("message", "Effective date must be after start date!");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("updateRule.jsp").forward(request, response);
+                return;
+            }
+
+            rule.setEffectiveDate(effectiveDate.toString());
+        }
+
         boolean isUpdated = daoR.updateRule(rule);
-    
+
         if (isUpdated) {
             request.setAttribute("message", "Update rule successfully");
             request.setAttribute("status", "true");
@@ -130,15 +154,9 @@ protected void doPost(HttpServletRequest request, HttpServletResponse response)
             request.setAttribute("message", "Update rule failed");
             request.setAttribute("status", "false");
         }
-    } catch (ParseException e) {
-        request.setAttribute("message", "Invalid date format!");
-        request.setAttribute("status", "false");
+
+        request.getRequestDispatcher("updateRule.jsp").forward(request, response);
     }
-
-    request.getRequestDispatcher("updateRule.jsp").forward(request, response);
-}
-
-
 
     /**
      * Returns a short description of the servlet.

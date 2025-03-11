@@ -8,12 +8,19 @@ import dao.RuleDAO;
 import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.Date;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.sql.Date;
+import model.Account;
 import model.Rule;
+import model.Staff;
 
 /**
  *
@@ -60,7 +67,7 @@ public class AddNewRuleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-      request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
+        request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
 
     }
 
@@ -75,27 +82,49 @@ public class AddNewRuleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-          String title = request.getParameter("title");
+        HttpSession session = request.getSession();
+        String title = request.getParameter("title");
         String description = request.getParameter("description");
-        String date = request.getParameter("date");
-        String effectiveDate = request.getParameter("effectiveDate");
-        String status = request.getParameter("status");
-        String sid = request.getParameter("sid");
+        String effectiveDateStr = request.getParameter("effectiveDate");
+        Account s = (Account) session.getAttribute("account");
         StaffDAO daoS = new StaffDAO();
-
         RuleDAO daoR = new RuleDAO();
-        Rule r = new Rule(title, description, date, effectiveDate, status, daoS.getById(sid));
 
-        if (daoR.insertRule(r)) {
-            request.setAttribute("message", "Add new rule successfully");
-            request.setAttribute("status", "true");
-            request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
-            return;
-        } else {
-            request.setAttribute("message", "Add new rule failed");
+        try {
+            // Convert Strings to java.sql.Date for proper date comparison
+            Date effectiveDate = Date.valueOf(effectiveDateStr);
+
+            // Fix: Convert SQL Date to LocalDate to compare properly
+            LocalDate today = LocalDate.now();
+            LocalDate effectiveLocalDate = effectiveDate.toLocalDate();
+
+            // Ensure effectiveDate is today or in the future
+            if (effectiveLocalDate.isBefore(today)) {
+                request.setAttribute("message", "Effective date must be today or a future date.");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
+                return;
+            }
+
+            // Status: "1" if effectiveDate is today, otherwise "0"
+            String status = effectiveDate.equals(today) ? "1" : "0";
+
+            Rule r = new Rule(title, description, today.toString(), effectiveDate.toString(), status, daoS.getById(s.getpId()));
+
+            if (daoR.insertRule(r)) {
+                request.setAttribute("message", "Added new rule successfully.");
+                request.setAttribute("status", "true");
+            } else {
+                request.setAttribute("message", "Failed to add new rule.");
+                request.setAttribute("status", "false");
+            }
+
+        } catch (IllegalArgumentException e) { // Catch invalid date formats
+            request.setAttribute("message", "Invalid date format. Please use YYYY-MM-DD.");
             request.setAttribute("status", "false");
-            request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
         }
+
+        request.getRequestDispatcher("addnewrule.jsp").forward(request, response);
     }
 
     /**

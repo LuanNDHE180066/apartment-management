@@ -183,7 +183,7 @@
                                                     <label for="invoiceCreator">Expenditure Creator</label>
                                                     <input type="text" id="invoiceCreator" name="invoiceCreator" 
                                                            placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
-                                                    <input type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
+                                                    <input hidden="" type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="chiefAccountant">Chief Accountant</label>

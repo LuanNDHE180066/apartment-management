@@ -66,7 +66,7 @@ public class DeleteRoomType extends HttpServlet {
             RoomTypeDAO rtd = new RoomTypeDAO();
             rtd.deleteRoomType(id);
             response.sendRedirect("view-roomtype");
-        } 
+        }
     }
 
     /**
@@ -80,7 +80,12 @@ public class DeleteRoomType extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        String id_raw = request.getParameter("oldRoomTypeId");
+//        String newId_raw = request.getParameter("newRoomType");
+//        RoomTypeDAO roomtypeDAO = new RoomTypeDAO();
+//        ApartmentDAO apartmentDAO = new ApartmentDAO();
+//        apartmentDAO.updateRoomType(Integer.parseInt(id_raw), Integer.parseInt(newId_raw));
+//        response.sendRedirect("view-roomtype");
     }
 
     /**

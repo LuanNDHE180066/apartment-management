@@ -183,6 +183,23 @@ public class ApartmentDAO extends DBContext {
         return false;
     }
 
+    public List<Apartment> GetAllApartmentfromOwnerAndLivingByRId(String rid){
+        String sql = " select aid from AparmentOwner where rid = '"+rid+"'\n" +
+        "	union \n" +
+        "  select aid from LivingAparment where rid ='"+rid+"'";
+        List<Apartment> aparments = new ArrayList<>();
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                aparments.add(this.getById(rs.getString("aid")));
+            }            
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return aparments;
+    }
+    
     public List<Apartment> GetREApartment(String reId) {
         String sql = "SELECT A.*, RT.*\n"
                 + "FROM AparmentOwner AO\n"
@@ -225,12 +242,13 @@ public class ApartmentDAO extends DBContext {
         return list;
     }
 
-    public boolean updatenoperson(Apartment a) {
-        String sql = "update Apartment set NoPerson =? where id=?";
+    public boolean updateApartmentInforamtion(Apartment a) {
+        String sql = "update Apartment set NoPerson =?, information = ?  where id=?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setInt(1, a.getNumberOfPerson());
-            ps.setString(2, a.getId());
+            ps.setString(2, a.getInfor());
+            ps.setString(3, a.getId());
             int rowsUpdated = ps.executeUpdate();
             if (rowsUpdated > 0) {
                 return true;
@@ -241,6 +259,18 @@ public class ApartmentDAO extends DBContext {
 
     }
 
+    public void updateRoomType(int oldRoomTypeId, int newRoomTypeId) {
+        String sql = "update Apartment set rtId = ? where rtId = ?";
+        PreparedStatement ps;
+        try {
+            ps = connection.prepareStatement(sql);
+            ps.setInt(1, newRoomTypeId);
+            ps.setInt(2, oldRoomTypeId);
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     public static void main(String[] args) {
         ApartmentDAO dao = new ApartmentDAO();
@@ -259,5 +289,7 @@ public class ApartmentDAO extends DBContext {
         System.out.println(dao.getById("A10_04").getFloor().getSquare());
         System.out.println(dao.getAll().size());
 //        
+System.out.println(dao.getById("A10_02").getId());
+
     }
 }

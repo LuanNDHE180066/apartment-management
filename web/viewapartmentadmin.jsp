@@ -113,7 +113,7 @@
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterType">
                                                             <option value="">Filter by Types</option>
-                                                            <c:forEach items="${requestScope.types}" var="o">
+                                                            <c:forEach items="${sessionScope.types}" var="o">
                                                                 <option value="${o.id}" <c:if test="${requestScope.filterType == o.id}">selected</c:if>>${o.name}</option>
                                                             </c:forEach>
                                                         </select>
@@ -128,6 +128,7 @@
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="add-new-apartment"  class="btn btn-primary">Add new Apartment</a>
+                                                        <a style="margin-left: 5px" href="view-all-change-resident-request"  class="btn btn-primary">View change Living/Owner request</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -171,6 +172,7 @@
                         <form method="get" action="view-apartment-admin" style="display: flex; align-items: center; gap: 10px;">
                             <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
                             <input type="text" name="filterStatus" value="${param.filterStatus}" hidden=""><!-- comment -->
+                            <input type="text" name="filterType" value="${param.filterType}" hidden=""><!-- comment -->
                             <input type="text" name="searchName" value="${param.searchName}" hidden=""><!-- comment -->
                             <select id="page" name="page" onchange="this.form.submit()" 
                                     style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
@@ -179,7 +181,12 @@
                                         ${page}
                                     </option>
                                 </c:forEach>
+                                   <!-- comment -->
                             </select>
+<!--                             <input type="text" value="${param.filterStatus}" hidden="">
+                              <input type="text" value="${param.filterStatus}" hidden="">
+                               <input type="text" value="${param.searchName}" hidden="">
+                               <input type="text" value="${param.searchName}" hidden="">-->
                         </form>
                         <div class="container-fluid">
                             <div class="footer">

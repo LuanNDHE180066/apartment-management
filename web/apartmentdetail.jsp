@@ -99,11 +99,13 @@
                                         </div>
                                     </div>
 
-                                    <div style="display: flex; gap: 20px; width: 100%;">
+                                    
                                         <!-- Additional content can be added here -->
-                                    </div>
+                                        
+                                        <span class="btn btn-primary" style="margin-left: 30px; margin-bottom: 20px;color: white "><a href="view-apartment-admin">Back</a></span>
                                 </div>
                             </div>
+                                         
                         </div>
                         <div class="container-fluid">
                             <div class="footer">

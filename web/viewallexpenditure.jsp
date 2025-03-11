@@ -5,6 +5,9 @@
 --%>
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -44,6 +47,14 @@
                 background-color: #6B90DA;
                 color: black;
             }
+            .display-none{
+                display: none;
+            }
+
+            .tbody td{
+                text-align: center;
+            }
+            
             .display-none{
                 display: none;
             }
@@ -114,38 +125,39 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
-                                                            <th>Expense</th>
-                                                            <th>Total fees</th>
-                                                            <th>Approve Date</th>
-                                                            <th>Payment Date</th>
-                                                            <th>Category</th>
-                                                            <th>Company</th>
-                                                            <th>Staff Create</th>
-                                                            <th>Chief Acountant</th>
-                                                            <th>Responsible Person</th>
-                                                            <th>Option</th>
-                                                            <!--       <th>Note</th> -->
+                                                            <th style="text-align: center">ID</th>
+                                                            <th style="text-align: center">Expense</th>
+                                                            <th style="text-align: center">Total fees</th>
+                                                            <th style="text-align: center">Approve Date</th>
+                                                            <th style="text-align: center">Category</th>
+                                                            <th style="text-align: center">Company</th>
+                                                            <th style="text-align: center">Staff Create</th>
+                                                            <th style="text-align: center">Chief Accountant</th>
+                                                            <th style="text-align: center">Responsible Person</th>
+                                                            <th  style="text-align: center">Option</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody>
+                                                    <tbody class="tbody">
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
                                                         <tr>
                                                             <td>${expenditure.id}</td>
                                                             <td>${expenditure.title}</td>
-                                                            <td>${expenditure.totalPrice}</td>
+                                                            <td>
+                                                                <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                            </td>
                                                             <td>${expenditure.approveddate}</td>
-                                                            <td>${expenditure.paymentdate}</td>
                                                             <td>${expenditure.category.categoryName}</td>
                                                             <td>${expenditure.company.name}</td>
                                                             <td>${expenditure.createdStaff.name}</td>
                                                             <td>${expenditure.chiefAccountantId.name}</td>
                                                             <td>${expenditure.currentAdmin.name}</td>
                                                             <td>
-                                                                <a href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                                <a class="${sessionScope.account.roleId != 3? 'display-none':''}" href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" 
                                                                    style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
+
                                                             </td>
                                                     <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
@@ -168,7 +180,7 @@
                         <select id="page" name="page" onchange="this.form.submit()" 
                                 style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}"> selected</c:if>>
                                     ${page}
                                 </option>
                             </c:forEach>

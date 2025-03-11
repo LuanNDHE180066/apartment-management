@@ -5,6 +5,7 @@
 package controller.resident;
 
 import dao.ApartmentDAO;
+import dao.RoomTypeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,7 +13,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import model.Apartment;
+import model.RoomType;
+import util.Util;
 
 /**
  *
@@ -59,13 +64,18 @@ public class UpdatenopersonRE extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String id = request.getParameter("id");
 
+        RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
+
+        List<RoomType> listRoomType = roomTypeDAO.getAll();
+        session.setAttribute("listRoomType", listRoomType);
         if (id != null && !id.isEmpty()) {
             ApartmentDAO daoA = new ApartmentDAO();
             Apartment apartment = daoA.getById(id);
-
             if (apartment != null) {
+
                 request.setAttribute("apartment", apartment);
                 request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
             } else {
@@ -90,68 +100,75 @@ public class UpdatenopersonRE extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
-    String id = request.getParameter("id");
-    String noperson = request.getParameter("noperson");
+            throws ServletException, IOException {
+        String id = request.getParameter("id");
+        String noperson = request.getParameter("numberOfPerson");
+        String information = request.getParameter("infor");
 
-    // Kiểm tra ID hợp lệ
-    if (id == null || id.trim().isEmpty()) {
-        request.setAttribute("message", "Invalid ID");
-        request.setAttribute("status", "false");
-        request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
-        return;
-    }
-
-    ApartmentDAO apd = new ApartmentDAO();
-    Apartment apartment = apd.getById(id); // Lấy thông tin căn hộ từ database
-    request.setAttribute("apartment", apartment); // Giữ lại dữ liệu để hiển thị
-
-    if (apartment == null) {
-        request.setAttribute("message", "Apartment not found");
-        request.setAttribute("status", "false");
-        request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
-        return;
-    }
-
-    // Kiểm tra nếu noperson rỗng
-    if (noperson == null || noperson.trim().isEmpty()) {
-        request.setAttribute("message", "Noperson cannot be empty");
-        request.setAttribute("status", "false");
-        request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
-        return;
-    }
-
-    int person;
-    try {
-        person = Integer.parseInt(noperson.trim());
-        if (person < 0) {
-            request.setAttribute("message", "Invalid number format! Please enter a valid positive number.");
+        if (information.trim().isBlank()) {
+            request.setAttribute("message", "Information can not be blank");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
             return;
         }
-    } catch (NumberFormatException e) {
-        request.setAttribute("message", "Invalid number format! Please enter a valid number.");
-        request.setAttribute("status", "false");
+
+        if (id == null || id.trim().isEmpty()) {
+            request.setAttribute("message", "Invalid ID");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
+            return;
+        }
+
+        ApartmentDAO apd = new ApartmentDAO();
+        Apartment apartment = apd.getById(id); 
+        request.setAttribute("apartment", apartment);
+
+        if (apartment == null) {
+            request.setAttribute("message", "Apartment not found");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
+            return;
+        }
+
+
+        if (noperson == null || noperson.trim().isEmpty()) {
+            request.setAttribute("message", "Noperson cannot be empty");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
+            return;
+        }
+
+        int person;
+        try {
+            person = Integer.parseInt(noperson.trim());
+            if (person < 0) {
+                request.setAttribute("message", "Invalid number format! Please enter a valid positive number.");
+                request.setAttribute("status", "false");
+                request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
+                return;
+            }
+        } catch (NumberFormatException e) {
+            request.setAttribute("message", "Invalid number format! Please enter a valid number.");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
+            return;
+        }
+
+
+        apartment.setNumberOfPerson(person);
+        apartment.setInfor(Util.stringNomalize(information));
+        boolean isUpdated = apd.updateApartmentInforamtion(apartment);
+
+        if (isUpdated) {
+            request.setAttribute("message", "Update noperson successfully");
+            request.setAttribute("status", "true");
+        } else {
+            request.setAttribute("message", "Update noperson failed");
+            request.setAttribute("status", "false");
+        }
+
         request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
-        return;
     }
-
-    // Cập nhật số người trong apartment
-    apartment.setNumberOfPerson(person);
-    boolean isUpdated = apd.updatenoperson(apartment);
-
-    if (isUpdated) {
-        request.setAttribute("message", "Update noperson successfully");
-        request.setAttribute("status", "true");
-    } else {
-        request.setAttribute("message", "Update noperson failed");
-        request.setAttribute("status", "false");
-    }
-
-    request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
-}
-
 
     /**
      * Returns a short description of the servlet.

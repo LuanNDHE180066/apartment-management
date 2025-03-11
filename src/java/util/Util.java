@@ -9,6 +9,8 @@ import dao.StaffDAO;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Random;
 import model.SendEmail;
 import org.mindrot.jbcrypt.BCrypt;
@@ -45,15 +47,13 @@ public class Util {
         }
         return "view-rule-admin";
     }
-    
-    
+
     public String getSiteToViewApartment(int role) {
         if (role == 1) {
             return "view-apartment-resident";
         }
         return "view-apartment-admin";
     }
-    
 
     public String getSiteToViewRequest(int role) {
         if (role == 1) {
@@ -168,21 +168,21 @@ public class Util {
         return true;
     }
 
-    public  String generatePassword() {
-        Random random=new Random();
-        String password="";
+    public String generatePassword() {
+        Random random = new Random();
+        String password = "";
         String upperCase = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String lowerCase = "abcdefghijklmnopqrstuvwxyz";
         String digits = "0123456789";
         String specialCharacter = "!@#$%^&*()-_=+<>?";
-        String allCharacter=upperCase+lowerCase+digits+specialCharacter;
-       
-        password+=upperCase.charAt(random.nextInt(0, upperCase.length()));
-        password+=lowerCase.charAt(random.nextInt(0, lowerCase.length()));
-        password+=digits.charAt(random.nextInt(0, digits.length()));
-        password+=specialCharacter.charAt(random.nextInt(0, specialCharacter.length()));
+        String allCharacter = upperCase + lowerCase + digits + specialCharacter;
+
+        password += upperCase.charAt(random.nextInt(0, upperCase.length()));
+        password += lowerCase.charAt(random.nextInt(0, lowerCase.length()));
+        password += digits.charAt(random.nextInt(0, digits.length()));
+        password += specialCharacter.charAt(random.nextInt(0, specialCharacter.length()));
         for (int i = 0; i < 2; i++) {
-            password+=allCharacter.charAt(random.nextInt(0,allCharacter.length()));
+            password += allCharacter.charAt(random.nextInt(0, allCharacter.length()));
         }
         return password;
     }
@@ -192,7 +192,18 @@ public class Util {
     }
 
     public static void main(String[] args) {
-        Util u = new Util(); 
+        Util u = new Util();
+    }
+
+    public  boolean compareFeedbackDateToCurrentTime(String date) {
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
+        LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        LocalDateTime oneDayBefore = currentDateTime.minusDays(1);
+
+        // Compare current time with test time
+        return oneDayBefore.isBefore(testDateTime);
+
     }
 
 }

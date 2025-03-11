@@ -14,13 +14,13 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.util.ArrayList;
 import java.util.List;
 import model.Account;
 import model.Feedback;
 import model.RequestType;
 import util.Util;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  *
@@ -68,11 +68,10 @@ public class ViewAllFeedback extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        List<Feedback> listFeedback;
+        List<Feedback> listFeedback=new ArrayList<>();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
-        listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
 
         // Get filter parameters
         String searchName = request.getParameter("searchName");
@@ -136,6 +135,7 @@ public class ViewAllFeedback extends HttpServlet {
         List<Feedback> listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
         request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
         session.setAttribute("listFeedback", listFeedback);
+      
         request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
     }
 
@@ -149,4 +149,7 @@ public class ViewAllFeedback extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
+   
 }
+
+

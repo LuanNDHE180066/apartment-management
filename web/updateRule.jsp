@@ -5,6 +5,8 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<jsp:useBean id="today" class="java.util.Date" />
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -15,7 +17,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <!-- site metas -->
-<title>Apartment management</title>        <meta name="keywords" content="">
+        <title>Apartment management</title>        <meta name="keywords" content="">
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- site icon -->
@@ -114,7 +116,7 @@
     <body class="dashboard dashboard_1">
         <div class="full_container">
             <div class="inner_container">
-              <%@include file="sidebar.jsp" %>
+                <%@include file="sidebar.jsp" %>
                 <!-- end sidebar -->
                 <!-- right content -->
                 <div id="content">
@@ -129,30 +131,49 @@
                                     <h1>Update Rule</h1>
                                     <form action="update-rule" method="post">
                                         <input type="hidden" id="id" name="id" value="${rule.id}" />
+
                                         <div class="form-group">
                                             <label for="title">Title</label>
                                             <input type="text" id="title" name="title" value="${rule.title}" required />
                                         </div>
+
                                         <div class="form-group">
                                             <label for="description">Description</label>
                                             <input type="text" id="description" name="description" value="${rule.description}" required />
                                         </div>
-                                        <div class="form-group">
-                                            <label for="date">Date</label>
-                                            <input type="date" id="date" name="date" value="${rule.date}" required />
-                                        </div>
-                                        <div class="form-group">
-                                            <label for="effectiveDate">Effective Date</label>
-                                            <input type="date" id="effectiveDate" name="effectiveDate" value="${rule.effectiveDate}" required />
-                                        </div>
+
+                                        <c:if test="${rule.status == 'Inactive'}">
+                                            <div class="form-group">
+                                                <label for="effectiveDate">Effective Date</label>
+                                                <input type="date" id="effectiveDate" name="effectiveDate" value="${rule.effectiveDate}" required />
+                                            </div>
+                                        </c:if>
+
+
+
+
+
+                                        <fmt:formatDate value="${today}" pattern="yyyy-MM-dd" var="todayStr" />
+
+                                        <%-- Show status field only if rule is Active AND effectiveDate is null/empty or >= today --%>
+                                        <c:if test="${ rule.effectiveDate le todayStr}">
+                                            <div class="form-group">
+                                                <label for="status">Status</label>
+                                                <select id="status" name="status">
+                                                    <option value="Active" ${rule.status == 'Active' ? 'selected' : ''}>Active</option>
+                                                    <option value="Inactive" ${rule.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                </select>
+                                            </div>
+                                        </c:if>
+
                                         <div class="form-button">
                                             <button type="submit">Update Rule</button>
                                             <h5 style="color:${requestScope.status == 'true' ? 'green' : 'red'}; text-align:center">
                                                 ${requestScope.message}
                                             </h5>
-
                                         </div>
                                     </form>
+
                                 </div>
                             </div>
                         </div>

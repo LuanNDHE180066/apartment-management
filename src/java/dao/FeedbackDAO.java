@@ -28,6 +28,8 @@ import model.Request;
 import model.RequestType;
 import model.Staff;
 import java.sql.Timestamp;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import util.Util;
 
 /**
@@ -290,32 +292,42 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> filterFeedback(String residentName, String serviceId, String startDate, String endDate, String role) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM Feedback f JOIN Resident r ON r.Id = f.rId WHERE 1=1 ");
+        String sql = "SELECT * FROM Feedback f JOIN Resident r ON r.Id = f.rId WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
         if (residentName != null && !residentName.trim().isEmpty()) {
-            sql.append(" AND r.name LIKE ?");
+            sql += " AND r.name LIKE ?";
             params.add("%" + residentName + "%");
         }
+
         if (serviceId != null && !serviceId.trim().isEmpty()) {
-            sql.append(" AND f.tid = ?");
+            sql += " AND f.tid = ?";
             params.add(serviceId);
         }
-        if (startDate != null && !startDate.trim().isEmpty()) {
-            sql.append(" AND f.date >= ?");
-            params.add(Date.valueOf(startDate)); // Safe conversion
+
+        if (startDate != null && !startDate.trim().isEmpty() && endDate != null && !endDate.trim().isEmpty()) {
+            // Case: Both startDate and endDate provided → Get records between them
+            sql += " AND f.date BETWEEN ? AND ?";
+            params.add(Timestamp.valueOf(startDate + " 00:00:00"));
+            params.add(Timestamp.valueOf(endDate + " 23:59:59"));
+        } else if (startDate != null && !startDate.trim().isEmpty()) {
+            // Case: Only startDate provided → Get records from startDate to today
+            sql += " AND f.date BETWEEN ? AND ?";
+            params.add(Timestamp.valueOf(startDate + " 00:00:00"));
+            params.add(Timestamp.valueOf(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
+        } else if (endDate != null && !endDate.trim().isEmpty()) {
+            // Case: Only endDate provided → Get records from past to endDate
+            sql += " AND f.date <= ?";
+            params.add(Timestamp.valueOf(endDate + " 23:59:59"));
         }
-        if (endDate != null && !endDate.trim().isEmpty()) {
-            sql.append(" AND f.date <= ?");
-            params.add(Date.valueOf(endDate)); // Safe conversion
-        }
-        sql.append(" order by date desc");
+
+        sql += " ORDER BY f.date DESC";
 
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
 
-        try (PreparedStatement ps = connection.prepareStatement(sql.toString())) {
+        try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.size(); i++) {
                 ps.setObject(i + 1, params.get(i));
             }
@@ -385,50 +397,61 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> getByResidentIDAndDateAndTypeRequest(String id, String from, String to, String requestType) {
-        StringBuilder sql = new StringBuilder("SELECT * FROM feedback WHERE rId = ?");
+        String sql = "SELECT * FROM feedback WHERE rId = ?";
+        List<Object> params = new ArrayList<>();
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
 
-        // Handle optional parameters
-        if (from != null && to != null) {
-            sql.append(" AND (date BETWEEN ? AND ?)");
+        params.add(id);
+
+        // Handle date filtering
+        if (from != null && !from.trim().isEmpty() && to != null && !to.trim().isEmpty()) {
+            sql += " AND date BETWEEN ? AND ?";
+            params.add(Timestamp.valueOf(from + " 00:00:00"));
+            params.add(Timestamp.valueOf(to + " 23:59:59"));
+        } else if (from != null && !from.trim().isEmpty()) {
+            sql += " AND date BETWEEN ? AND ?";
+            params.add(Timestamp.valueOf(from + " 00:00:00"));
+            params.add(Timestamp.valueOf(LocalDateTime.now().withHour(23).withMinute(59).withSecond(59)));
+        } else if (to != null && !to.trim().isEmpty()) {
+            sql += " AND date <= ?";
+            params.add(Timestamp.valueOf(to + " 23:59:59"));
         }
-        if (requestType != null && !requestType.isEmpty()) {
-            sql.append(" AND tId = ?");
+
+        // Handle requestType filtering
+        if (requestType != null && !requestType.trim().isEmpty()) {
+            sql += " AND tId = ?";
+            params.add(requestType);
         }
 
-        try {
-            PreparedStatement st = connection.prepareStatement(sql.toString());
-            st.setString(1, id);
+        sql += " ORDER BY date DESC";
 
-            int paramIndex = 2;
-            if (from != null && to != null) {
-                st.setString(paramIndex++, from);
-                st.setString(paramIndex++, to);
-            }
-            if (requestType != null && !requestType.isEmpty()) {
-                st.setString(paramIndex++, requestType);
+        try (PreparedStatement st = connection.prepareStatement(sql)) {
+            for (int i = 0; i < params.size(); i++) {
+                st.setObject(i + 1, params.get(i));
             }
 
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                List<String> img = getFeedbackImgs(rs.getString("id"));
-                list.add(new Feedback(
-                        rs.getString("id"),
-                        rs.getString("detail"),
-                        rs.getString("date"),
-                        daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
-                        rs.getInt("rate"),
-                        img,
-                        rs.getInt("Status")
-                ));
+            try (ResultSet rs = st.executeQuery()) {
+                while (rs.next()) {
+                    List<String> img = getFeedbackImgs(rs.getString("id"));
+                    list.add(new Feedback(
+                            rs.getString("id"),
+                            rs.getString("detail"),
+                            rs.getString("date"),
+                            daoR.getById(rs.getString("rid")),
+                            daoRT.getById(rs.getString("tid")),
+                            rs.getInt("rate"),
+                            img,
+                            rs.getInt("Status")
+                    ));
+                }
             }
         } catch (SQLException e) {
-            e.printStackTrace(); // Consider using a logger for real applications
+            e.printStackTrace();
         }
-        System.out.println(list.size());
+
+        System.out.println("Fetched feedback count: " + list.size());
         return list;
     }
 
@@ -449,8 +472,6 @@ public class FeedbackDAO extends DBContext {
         return null;
 
     }
-
-    
 
     public boolean insertImgFeedback(List<String> imgs, String fId) {
         String sql = "INSERT INTO [dbo].[FeedbackImages] ([img], [feedbackId]) VALUES (?, ?)";
@@ -508,6 +529,7 @@ public class FeedbackDAO extends DBContext {
                 + "    Detail=?,\n"
                 + "    [Date]=?,\n"
                 + "    tId=?,\n"
+                + "    rate=?,\n"
                 + "Status=?\n"
                 + "WHERE id=?;";
         try {
@@ -515,8 +537,9 @@ public class FeedbackDAO extends DBContext {
             st.setString(1, f.getDetail());
             st.setString(2, f.getDate());
             st.setString(3, f.getRequestType().getId());
-            st.setInt(4, f.getStatus());
-            st.setString(5, f.getId());
+            st.setInt(4, f.getRate());
+            st.setInt(5, f.getStatus());
+            st.setString(6, f.getId());
             st.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -541,8 +564,6 @@ public class FeedbackDAO extends DBContext {
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-        Feedback f = dao.getById("F0");
-        f.setStatus(0);
-        System.out.println(dao.editFeedback(f));
+        System.out.println(dao.getByResidentIDAndDateAndTypeRequest("P100", "2025-03-01", null, null));
     }
 }

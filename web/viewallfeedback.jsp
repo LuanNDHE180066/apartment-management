@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@page contentType="text/html" pageEncoding="UTF-8" import="util.Util,model.Feedback"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html lang="en">
     <head>
         <!-- basic -->
@@ -155,30 +156,43 @@
                                             <form action="view-all-feedback" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        <div class="form-group text-center">
+                                                            <label for="searchName" class="fw-bold">Title</label>
+                                                            <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="date" class="form-control" name="startDate" value="${param.startDate}">
+                                                        <div class="form-group text-center">
+                                                            <label for="startDate" class="fw-bold">Start Date</label>
+                                                            <input type="date" class="form-control" name="startDate" value="${param.startDate}">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <input type="date" class="form-control" name="endDate" value="${param.endDate}">
+                                                        <div class="form-group text-center">
+                                                            <label for="endDate" class="fw-bold">End Date</label>
+                                                            <input type="date" class="form-control" name="endDate" value="${param.endDate}">
+                                                        </div>
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" name="serviceType">
-                                                            <option value="">Select Service Type</option>
-                                                            <c:forEach items="${sessionScope.listRequestType}" var="service">
-                                                                <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
-                                                                    ${service.name}
-                                                                </option>
-                                                            </c:forEach>
-                                                        </select>
+                                                        <div class="form-group text-center">
+                                                            <label class="fw-bold">Service Type</label>
+                                                            <select class="form-control" name="serviceType">
+                                                                <option value="">Select Service Type</option>
+                                                                <c:forEach items="${sessionScope.listRequestType}" var="service">
+                                                                    <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
+                                                                        ${service.name}
+                                                                    </option>
+                                                                </c:forEach>
+                                                            </select>
+                                                        </div>
                                                     </div>
-                                                    <div class="col-md-2 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                    <div class=" text-center mt-3">
+                                                        <button type="submit" class="btn btn-primary">Filter</button>
                                                     </div>
                                                 </div>
                                             </form>
                                         </div>
+
 
                                         <!-- Feedback Table -->
                                         <div class="table_section padding_infor_info">
@@ -211,13 +225,27 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td class="action-column">
-                                                                <c:if test="${feedback.date <= oneDayAgo}">
-                                                                    <a href="request-update-feedback?id=${feedback.id}" 
-                                                                       class="btn btn-primary request-update-btn">
-                                                                        Yêu cầu cập nhật 
-                                                                    </a>
+                                                                <%
+                                                                   
+                                                                    Object feedbackObj = pageContext.getAttribute("feedback");
+                                                                    String feedbackDate = null;
+                                                                    if (feedbackObj != null) {
+                                                                        model.Feedback feedback = (model.Feedback) feedbackObj; 
+                                                                        feedbackDate = feedback.getDate(); 
+                                                                    }
 
-                                                                </c:if>
+                                                                    Util u = new Util();
+                                                                    boolean showButton = u.compareFeedbackDateToCurrentTime(feedbackDate);   
+                                                                           
+                                                                    if (showButton) {
+                                                                %>
+                                                                <a href="request-update-feedback?id=${feedback.id}" 
+                                                                   class="btn btn-primary request-update-btn">
+                                                                    Yêu cầu cập nhật
+                                                                </a>
+                                                                <%
+                                                                    }
+                                                                %>
                                                             </td>
 
 

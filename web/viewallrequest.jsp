@@ -167,8 +167,8 @@
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
-                                                                <th>ID</th>
-                                                                <th>Resident Name</th>                                                            
+                                                                <th>Resident Name</th> 
+                                                                <th>Apartment</th>
                                                                 <th>Detail</th>
                                                                 <th>Date</th>                                               
                                                                 <th>Type</th>
@@ -180,14 +180,13 @@
                                                         <tbody>
                                                             <c:forEach items="${requestScope.waiting_requestes}" var="o" varStatus="status">
                                                                 <tr>
-                                                                    <td>${o.id}</td>
                                                                     <td>${o.residentId.name}</td>
+                                                                    <td>${o.aid.id}</td>
                                                                     <td>${o.detail}</td>
                                                                     <td>${o.date}</td> 
                                                                     <td>${o.requestType.name}</td>  
                                                                     <td>${o.status}</td> 
                                                                     <td>
-
                                                                         <a href="#assignRequestWaiting${status.index}" class="edit" data-toggle="modal">
                                                                             <i class="material-icons" data-toggle="tooltip" title="Assign">&#xE254;</i>
                                                                         </a>
@@ -225,7 +224,7 @@
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
-                                                                                                            <td>${request.address}</td>   
+                                                                                                            <td>${staff.address}</td>   
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
@@ -310,8 +309,8 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
-                                                            <th>Resident Name</th>                                                            
+                                                            <th>Resident Name</th> 
+                                                            <th>Apartment</th>
                                                             <th>Detail</th>
                                                             <th>Date</th>                                               
                                                             <th>Type</th>
@@ -324,8 +323,8 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.inprocess_requestes}" var="o" varStatus="status">
                                                             <tr>
-                                                                <td>${o.id}</td>
                                                                 <td>${o.residentId.name}</td>
+                                                                <td>${o.aid.id}</td>
                                                                 <td>${o.detail}</td>
                                                                 <td>${o.date}</td> 
                                                                 <td>${o.requestType.name}</td>                                             
@@ -377,7 +376,7 @@
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
-                                                                                                            <td>${request.address}</td>
+                                                                                                            <td>${staff.address}</td>
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
@@ -438,8 +437,8 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
-                                                            <th>Resident Name</th>                                                            
+                                                            <th>Resident Name</th> 
+                                                            <th>Apartment</th>
                                                             <th>Detail</th>
                                                             <th>Date</th>                                               
                                                             <th>Type</th>
@@ -451,8 +450,8 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.done_requestes}" var="o" varStatus="status">
                                                             <tr>
-                                                                <td>${o.id}</td>
                                                                 <td>${o.residentId.name}</td>
+                                                                <td>${o.aid.id}</td>
                                                                 <td>${o.detail}</td>
                                                                 <td>${o.date}</td> 
                                                                 <td>${o.requestType.name}</td>                                             

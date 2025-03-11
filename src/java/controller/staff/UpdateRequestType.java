@@ -5,7 +5,8 @@
 
 package controller.staff;
 
-import dao.RuleDAO;
+import dao.RequestTypeDAO;
+import dao.RoleDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,13 +14,17 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.RequestType;
+import model.Role;
+import util.Util;
 
 /**
  *
- * @author thanh
+ * @author PC
  */
-@WebServlet(name="ViewRuleAdminServlet", urlPatterns={"/view-rule-admin"})
-public class ViewRuleAdminServlet extends HttpServlet {
+@WebServlet(name="UpdateRequestType", urlPatterns={"/update-request-type"})
+public class UpdateRequestType extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -36,10 +41,10 @@ public class ViewRuleAdminServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewRuleServlet</title>");  
+            out.println("<title>Servlet UpdateRequestType</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewRuleServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UpdateRequestType at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -56,9 +61,14 @@ public class ViewRuleAdminServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        RuleDAO rd = new RuleDAO();
-        request.setAttribute("rules", rd.getAllRule());
-        request.getRequestDispatcher("viewrule-admin.jsp").forward(request, response);
+        String id = request.getParameter("id");
+        RoleDAO rd = new RoleDAO();
+        List<Role> ls = rd.getAll();
+        request.setAttribute("rolelist", ls);
+        RequestTypeDAO rtd = new RequestTypeDAO();
+        RequestType requestType = rtd.getById(id);
+        request.setAttribute("requestType", requestType);
+        request.getRequestDispatcher("updaterequesttype.jsp").forward(request, response);
     } 
 
     /** 
@@ -71,7 +81,38 @@ public class ViewRuleAdminServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String id = request.getParameter("id");
+        String name = Util.stringNomalize(request.getParameter("name"));
+        String detail = Util.stringNomalize(request.getParameter("detail"));
+        String destination = request.getParameter("role");
+        if(name.isBlank()){
+            request.setAttribute("status", false);
+            request.setAttribute("message", "Name is not allow blank!");
+            doGet(request, response);
+            return;
+        }
+        if(detail.isBlank()){
+            request.setAttribute("status", false);
+            request.setAttribute("message", "Detail is not allow blank!");
+            doGet(request, response);
+            return;
+        }
+        RequestTypeDAO rtd = new RequestTypeDAO();
+        if(rtd.checkExistedNameExceptSeft(id,name)){
+            request.setAttribute("status", false);
+            request.setAttribute("message", "Name is existed!");
+            doGet(request, response);
+            return;
+        }
+        if (rtd.updateRequestType(id,name, detail, destination)) {
+            request.setAttribute("status", true);
+            request.setAttribute("message", "Add request type successful!");
+            doGet(request, response);
+        } else {
+            request.setAttribute("status", false);
+            request.setAttribute("message", "Can not add request type!");
+            doGet(request, response);
+        }
     }
 
     /** 

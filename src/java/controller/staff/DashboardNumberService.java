@@ -86,7 +86,7 @@ public class DashboardNumberService extends HttpServlet {
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
         request.setAttribute("data", sd.getNumberUsedAllMonth(year, sid));
-        request.setAttribute("screen", 2);
+        request.setAttribute("screen", 3);
         request.getRequestDispatcher("dashboardinvoice.jsp").forward(request, response);
     }
 

@@ -79,13 +79,75 @@ public class UpdatePendingExpenditureStatus extends HttpServlet {
             response.sendRedirect("index.jsp");
             return;
         }
-        
-        
+
+        String emailContentInsert = "<html>"
+                + "<body>"
+                + "<h2>Thông báo về chi phí</h2>"
+                + "<table style='border-collapse: collapse; width: 100%;'>"
+                + "<tr>"
+                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Thông tin</th>"
+                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Chi tiết</th>"
+                + "</tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>ID</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getId() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tiêu đề</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTitle() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Trạng thái phê duyệt Kế toán trưởng</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + (he.getChiefAccountantApproveStatus() == 1 ? "Đã chấp nhận" : "Đã từ chối") + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tổng giá</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTotalPrice() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ghi chú</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getNote() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Danh mục chi phí</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCategory().getCategoryName() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Công ty</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCompany().getName() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày tạo</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedDate() + "</td></tr>"
+                + "</table>"
+                + "<p>Vui lòng kiểm tra và xác nhận chi phí này.</p>"
+                + "</body>"
+                + "</html>";
+
+        String emailContentUpdate = "<html>"
+                + "<body>"
+                + "<h2>Cập nhật thông tin chi phí</h2>"
+                + "<table style='border-collapse: collapse; width: 100%;'>"
+                + "<tr>"
+                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Thông tin</th>"
+                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Chi tiết</th>"
+                + "</tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>ID</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getId() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tiêu đề</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTitle() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày cập nhật</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getModifiedDate() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Trạng thái phê duyệt Kế toán trưởng</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + (he.getChiefAccountantApproveStatus() == 1 ? "Đã chấp nhận" : "Đã từ chối") + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tổng giá</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTotalPrice() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ghi chú</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getNote() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Danh mục chi phí</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCategory().getCategoryName() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Công ty</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCompany().getName() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Người tạo</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedStaff().getEmail() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Người sửa đổi</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getModifiedBy().getEmail() + "</td></tr>"
+                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày tạo</td>"
+                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedDate() + "</td></tr>"
+                + "</table>"
+                + "<p>Vui lòng kiểm tra và xác nhận thông tin chi phí đã cập nhật.</p>"
+                + "</body>"
+                + "</html>";
+
         if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("update")) {
             String newId = daoE.generateExpenditureId();
             SendEmail send = new SendEmail();
-            send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure has been accepted an expenditure " + he.getTitle(),
-                    "Please check and confirm the expenditure" + he.getTitle());
+            send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
             daoE.updateExpenditure(he);
         } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
             SendEmail send = new SendEmail();
@@ -95,13 +157,10 @@ public class UpdatePendingExpenditureStatus extends HttpServlet {
             }
         }
 
-      
-
         if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("insert")) {
             String newId = daoE.generateExpenditureId();
             SendEmail send = new SendEmail();
-            send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure has been accepted an expenditure " + he.getTitle(),
-                    "Please check and confirm the expenditure" + he.getTitle());
+            send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentUpdate);
             he.setId(newId);
             daoHe.updateEidAfterInsert(he);
             daoE.addExpenditure(he);
