@@ -56,6 +56,10 @@ public class ConfirmPayment extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        if(!request.getParameter("vnp_ResponseCode").equals("00")){
+            response.sendRedirect("view-invoice-resident");
+            return;
+        }
         String invoiceId = request.getParameter("invoiceId");
         InvoiceDAO ivd = new InvoiceDAO();
         ivd.switchToPaidStatusById(invoiceId);
