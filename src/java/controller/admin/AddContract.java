@@ -194,6 +194,11 @@ public class AddContract extends HttpServlet {
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
+            if (image.isEmpty()) {
+                request.setAttribute("fileerror", "Please upload an image");
+                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+                return;
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -204,8 +209,8 @@ public class AddContract extends HttpServlet {
         LocalDateTime lc = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedDate = lc.format(format);
-        String created=formattedDate;
-        String updated=formattedDate;
+        String created = formattedDate;
+        String updated = formattedDate;
         if (ctd.addContract(contract)) {
             Contract latestContract = ctd.getLastInsertedContract();
 
@@ -218,7 +223,6 @@ public class AddContract extends HttpServlet {
                     updated,
                     std.getById(accountant),
                     std.getById(admin)
-                    
             );
             ContractApproveDAO ctdApprove = new ContractApproveDAO();
             ctdApprove.addApprove(contractApprove);

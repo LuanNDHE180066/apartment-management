@@ -94,10 +94,7 @@ public class AddNewCompany extends HttpServlet {
         String description =u.stringNomalize(request.getParameter("description")) ;
 
         boolean hasError = false;
-        if (hasError) {
-            request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
-            return;
-        }
+        
 
         CompanyDAO cd = new CompanyDAO();
         List<Company> listCompany = cd.getAll();
@@ -186,6 +183,10 @@ public class AddNewCompany extends HttpServlet {
         if (companyValidation.isExistWebsite(website)) {
             request.setAttribute("webError", "Web Site is existed");
             hasError = true;
+        }
+        if (hasError) {
+            request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
+            return;
         }
         if (cd.insertNewCompany(newC)) {
             request.setAttribute("status", "true");
