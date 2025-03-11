@@ -157,18 +157,18 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listServices}" var="list">
                                                             <tr>
-                                                                <td>${list.name}</td>
-                                                                <td>${list.unitPrice}</td>
-                                                                <td>${list.unit}</td>
-                                                                <td>${list.description}</td>
-                                                                <td>${list.categoryService.name}</td>
-                                                                <td>${list.company.name}</td>
-                                                                <td>${list.status==1?'Active':'Inactive'}</td>
-                                                                <td>
+                                                                <td style="text-align: left">${list.name}</td>
+                                                                <td style="text-align: left">${list.unitPrice}</td>
+                                                                <td style="text-align: left">${list.unit}</td>
+                                                                <td style="text-align: left">${list.description}</td>
+                                                                <td style="text-align: left">${list.categoryService.name}</td>
+                                                                <td style="text-align: left">${list.company.name}</td>
+                                                                <td style="text-align: left">${list.status==1?'Active':'Inactive'}</td>
+                                                                <td style="text-align: left">
                                                                     ${list.startDate}
                                                                 </td>
-                                                                <td>${list.endDate}</td>
-                                                                <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                                                                <td style="text-align: left">${list.endDate}</td>
+                                                                <td style="text-align: left"><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>
