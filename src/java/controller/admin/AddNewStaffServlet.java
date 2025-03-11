@@ -100,12 +100,12 @@ public class AddNewStaffServlet extends HttpServlet {
             throws ServletException, IOException {
         RoleDAO daoR = new RoleDAO();
         CompanyDAO daoCp = new CompanyDAO();
-
-        String name = request.getParameter("name");
+        Util u = new Util();
+        String name = u.stringNomalize(request.getParameter("name"));
         String dob = request.getParameter("dob");
-        String address = request.getParameter("address");
+        String address = u.stringNomalize(request.getParameter("address")) ;
         String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
+        String email = u.stringNomalize( request.getParameter("email"));
         String cccd = request.getParameter("cccd");
         String education = request.getParameter("education");
         String salary_raw = request.getParameter("salary");
@@ -123,7 +123,7 @@ public class AddNewStaffServlet extends HttpServlet {
         if (listStaff == null) {
             listStaff = new ArrayList<>();
         }
-        Util u = new Util();
+        
 
         String password = u.generatePassword();
         String password2 = password;
@@ -221,7 +221,7 @@ public class AddNewStaffServlet extends HttpServlet {
                     hasError = true;
                 }
             }
-            if (!s.getPhone().matches("0[0-9]{9}")) {
+            if (!s.getPhone().matches("0[0-9]a-zA-Z")) {
                 request.setAttribute("phoneerror", "Please enter a valid phone number: 10 digits starting with 0!");
                 hasError = true;
             }

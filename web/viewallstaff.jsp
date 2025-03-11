@@ -82,7 +82,7 @@
                                                     </div>
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="add-new-staff"  class="btn btn-primary">Add new Staff</a>
+                                                        <a href="add-new-staff" class="btn btn-primary">Add new Staff</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -133,21 +133,32 @@
                                                                                  src="${staff.image == null ? 'images/logo/person.jpg' : staff.image}" 
                                                                                  alt="alt"/>
                                                                         </div>
-                                                                        <div style="width: 50%;margin-left: 5%;">
-                                                                            <p><strong>ID:</strong> ${staff.id}</p>
-                                                                            <p><strong>Name:</strong> ${staff.name}</p>
-                                                                            <p><strong>Bod</strong> ${staff.bod}</p>
-                                                                            <p><strong>Email:</strong> ${staff.email}</p>
-                                                                            <p><strong>Phone:</strong> ${staff.phone}</p>
-                                                                            <p><strong>Address:</strong> ${staff.address}</p>
-                                                                            <p><strong>CCCD:</strong> ${staff.cccd}</p>
-                                                                            <p><strong>Salary:</strong> ${staff.salary} VND</p>
-                                                                            <p><strong>Education: </strong> ${staff.education}</p>
-                                                                            <p><strong>Bank: </strong> ${staff.bank}</p>
-                                                                            <p><strong>Start date :</strong> ${staff.startDate}</p>
-                                                                            <p><strong>End date :</strong> ${staff.endDate}</p>
-                                                                            <p><strong>Role:</strong> ${staff.role.name}</p>
-                                                                            <p><strong>Status:</strong> ${staff.status == 1 ? 'Working' : 'Retired'}</p>
+                                                                        <div class="ml-4" style="width: 60%;">
+                                                                            <div class="row">
+                                                                                <div class="col-md-6">
+                                                                                    <p><strong>ID:</strong> ${staff.id}</p>
+                                                                                    <p><strong>Name:</strong> ${staff.name}</p>
+                                                                                    <p><strong>DOB:</strong> ${staff.bod}</p>
+                                                                                    <p><strong>Email:</strong> ${staff.email}</p>
+                                                                                    <p><strong>Phone:</strong> ${staff.phone}</p>
+                                                                                    <p><strong>Address:</strong> ${staff.address}</p>
+                                                                                    <p><strong>CCCD:</strong> ${staff.cccd}</p>
+                                                                                </div>
+                                                                                <div class="col-md-6">
+                                                                                    
+                                                                                    <p><strong>Salary:</strong> ${staff.salary} VND</p>
+                                                                                    <p><strong>Education:</strong> ${staff.education}</p>
+                                                                                    <p><strong>Bank:</strong> ${staff.bank}</p>
+                                                                                    <p><strong>Start Date:</strong> ${staff.startDate}</p>
+                                                                                    <p><strong>End Date:</strong> ${staff.endDate}</p>
+                                                                                    <p><strong>Role:</strong> ${staff.role.name}</p>
+                                                                                    <p><strong>Status:</strong> 
+                                                                                        <span class="badge ${staff.status == 1 ? 'badge-success' : 'badge-secondary'}">
+                                                                                            ${staff.status == 1 ? 'Working' : 'Retired'}
+                                                                                        </span>
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -165,17 +176,17 @@
                         </div>
                     </div>
                     <form method="get" action="view-all-staff" style="display: flex; align-items: center; gap: 10px;">
-                        <!-- Dropdown ch?n trang -->
+                        <input type="hidden" name="searchName" value="${param.searchName}">
+                        <input type="hidden" name="filterStatus" value="${param.filterStatus}">
                         <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
-                        <select id="page" name="page" onchange="this.form.submit()" 
-                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                                    ${page}
-                                </option>
+                        <select id="page" name="page" onchange="this.form.submit()" required>
+                            <c:forEach begin="1" end="${requestScope.totalPage}" var="p">
+                                <option value="${p}" <c:if test="${p == requestScope.currentPage}">selected</c:if>>${p}</option>
                             </c:forEach>
                         </select>
                     </form>
+
+
 
                     <!-- footer -->
                     <div class="container-fluid">

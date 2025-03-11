@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import model.News;
 import model.Staff;
+import util.Util;
 
 /**
  *
@@ -101,10 +102,11 @@ public class UpdateNewServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Util u= new Util();
         String id = request.getParameter("id");
-        String title = request.getParameter("title");
-        String content = request.getParameter("content");
-        String source = request.getParameter("source");
+        String title = u.stringNomalize(request.getParameter("title")) ;
+        String content = u.stringNomalize(request.getParameter("content")) ;
+        String source = u.stringNomalize(request.getParameter("source")) ;
         String date = request.getParameter("date");
         String category = request.getParameter("category");
         String auther = request.getParameter("auther");

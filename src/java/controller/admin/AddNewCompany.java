@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Company;
+import util.Util;
 import validation.CompanyValidation;
 
 /**
@@ -78,8 +79,9 @@ public class AddNewCompany extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        Util u= new Util();
         HttpSession session = request.getSession();
-        String name = request.getParameter("name");
+        String name =u.stringNomalize(request.getParameter("name")) ;
         String phone = request.getParameter("phone");
         String contactPhone = request.getParameter("contactPhone");
         String fax = request.getParameter("fax");
@@ -88,14 +90,11 @@ public class AddNewCompany extends HttpServlet {
         String website = request.getParameter("website");
         String taxCode = request.getParameter("taxCode");
         String bank = request.getParameter("bank");
-        String address = request.getParameter("address");
-        String description = request.getParameter("description");
+        String address =u.stringNomalize(request.getParameter("address")) ;
+        String description =u.stringNomalize(request.getParameter("description")) ;
 
         boolean hasError = false;
-        if (hasError) {
-            request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
-            return;
-        }
+        
 
         CompanyDAO cd = new CompanyDAO();
         List<Company> listCompany = cd.getAll();
@@ -121,7 +120,7 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("faxError", "Fax must be exactly 10 digits.");
             hasError = true;
         }
-        if (!taxCode.matches("[0-9]{10}")) {
+        if (!taxCode.matches("[0-9]{10}")) { 
             request.setAttribute("taxCodeError", "Tax code must be exactly 10 digits.");
             hasError = true;
         }
@@ -184,6 +183,10 @@ public class AddNewCompany extends HttpServlet {
         if (companyValidation.isExistWebsite(website)) {
             request.setAttribute("webError", "Web Site is existed");
             hasError = true;
+        }
+        if (hasError) {
+            request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
+            return;
         }
         if (cd.insertNewCompany(newC)) {
             request.setAttribute("status", "true");

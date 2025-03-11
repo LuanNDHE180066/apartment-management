@@ -176,6 +176,7 @@
                                         <div class="form-button">
                                             <button type="submit">Update News</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-news">Back</a></span>
                                         </div>
                                     </form>
                                 </div>

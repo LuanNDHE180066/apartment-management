@@ -35,6 +35,7 @@ public class StaffDAO extends DBContext {
         RoleDAO rd = new RoleDAO();
         String sql = "select * from Staff";
         List<Staff> list = new ArrayList<>();
+        
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -14,26 +15,61 @@
         <link rel="stylesheet" href="css/custom.css" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <style>
-            body {
-                /* Style body n?u c?n */
+            .contract_section {
+                background: #f8f9fa;
+                padding: 15px;
+                border-radius: 8px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             }
+
             .contract-list {
-                padding-left: 20px; /* Kho?ng cách bên trái */
+                list-style: none;
+                padding: 0;
+                margin: 0;
             }
+
             .contract-list li {
-                padding: 10px; /* Padding cho t?ng m?c */
-                font-size: 18px; /* Kích th??c ch? cho t?ng m?c */
+                background: white;
+                padding: 10px;
+                border-radius: 6px;
+                margin-bottom: 8px;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                display: flex;
+                align-items: center;
+                transition: all 0.3s ease-in-out;
             }
-            .contract-list li a {
-                text-decoration: none; /* B? g?ch chân */
-                color: #007bff; /* Màu liên k?t */
+
+            .contract-list li:hover {
+                background: #e9ecef;
+                transform: translateY(-2px);
             }
-            .contract-list li a:hover {
-                color: #0056b3; /* Màu khi hover */
+
+            .contract-list a {
+                text-decoration: none;
+                font-weight: bold;
+                color: #007bff;
+                margin-left: 5px;
             }
-            .graph_head {
-                margin-bottom: 20px; /* Gi?m kho?ng cách d??i tiêu ?? */
+
+            .contract-list a:hover {
+                text-decoration: underline;
             }
+
+            .contract-icon {
+                font-size: 18px;
+                margin-right: 10px;
+                color: #28a745;
+            }
+
+            .contract-date {
+                font-size: 14px;
+                color: #6c757d;
+                margin-right: 8px;
+            }
+            h4 {
+    margin-bottom: 20px; /* T?ng kho?ng cách */
+}
+
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -65,48 +101,60 @@
                                                         <div class="col-md-8">
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-3">
-                                                                    <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
+                                                                    <input type="text" class="form-control" name="title" placeholder="Enter title"
+                                                                           value="${requestScope.title}">
                                                                 </div>
                                                                 <div class="col-md-3">
-                                                                    <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
+                                                                    <input type="date" class="form-control" name="startDate" placeholder="From"
+                                                                           value="${requestScope.startDate}">
                                                                 </div>
                                                                 <div class="col-md-3">
-                                                                    <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
+                                                                    <input type="date" class="form-control" name="endDate" placeholder="To"
+                                                                           value="${requestScope.endDate}">
                                                                 </div>
                                                                 <div class="col-md-3 d-flex">
+                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                        <a style="color: white" href="pending-contract">View pending contract list</a></span>
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <c:if test="${sessionScope.account.roleId == 0}"> <a href="add-new-contract" class="btn btn-primary">Add Contract</a></c:if>
-                                                                    </div>
+                                                                    <c:if test="${sessionScope.account.roleId == 0}">
+                                                                        <a href="add-new-contract" class="btn btn-primary">Add Contract</a>
+                                                                    </c:if>
                                                                 </div>
                                                             </div>
-                                                    </form>
-                                                </div>
-                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </form>
 
-                                            <div class="contract_section">
-                                                <ul class="contract-list">
-                                                    <h3>${requestScope.message}</h3>
-                                                <c:forEach var="c" items="${sessionScope.listContract}">
-                                                    <li>-${c.startDate}<a href="contract-detail?id=${c.id}">: ${c.title}</a></li>
-                                                        <c:if test="${sessionScope.account.roleId == 1}">
-                                                        <a href="delete-contract?id=${c.id}" onclick="return confirm('Are you sure to delete this contract?')">
-                                                            <i class="material-icons" title="Delete">&#xE872;</i>
-                                                        </a>
-                                                    </c:if>
-                                                </c:forEach>
+
+                                            </div>
+                                        </div>
+
+                                        <div class="contract_section">
+                                            <ul class="contract-list">
+                                                <c:if test="${not empty sessionScope.listContract}">
+                                                    <c:forEach var="c" items="${sessionScope.listContract}">
+                                                        <li>
+                                                            <span class="contract-icon"></span>
+                                                            <span class="contract-date">${c.startDate}</span> 
+                                                            <a href="contract-detail?id=${c.id}">${c.title}</a>
+                                                        </li>
+                                                    </c:forEach>
+                                                </c:if>
                                             </ul>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <form method="get" action="view-all-contract" style="display: flex; align-items: center; gap: 10px;">
+                    <form method="get" action="view-all-contract">
+                        <input type="hidden" name="title" value="${requestScope.title}">
+                        <input type="hidden" name="startDate" value="${requestScope.startDate}">
+                        <input type="hidden" name="endDate" value="${requestScope.endDate}">
+
                         <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                        <input type="text" name="clientName" value="" hidden="">
-                        <input type="date" name="startDate" value="" hidden="">
-                        <input type="date" name="endDate" value="" hidden="">
-                        <select id="page" name="page" onchange="this.form.submit()" 
+                        <select id="page" name="page" onchange="this.form.submit()"
                                 style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
                                 <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
@@ -115,6 +163,8 @@
                             </c:forEach>
                         </select>
                     </form>
+
+
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
