@@ -141,6 +141,7 @@ public class RoomTypeDAO extends DBContext {
         }
         return false;
     }
+  
 
     public boolean insertRoomType(RoomType r) {
         String sql = "insert into RoomType (id, name,maxperson, square, bedroom, livingroom, bathroom, balcony)\n"

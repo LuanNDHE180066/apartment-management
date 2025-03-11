@@ -1,6 +1,8 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html lang="en">
     <head>
         <!-- basic -->
@@ -209,7 +211,9 @@
                                                                                    ${item.service.categoryService.id == 'SV002' || requestScope.canUpdate==0 ? 'readonly' : ''}
                                                                                    type="number" min="1" name="quantity" value="${item.quantity}"/>
                                                                         </td> 
-                                                                        <td>${item.service.unitPrice}</td>
+                                                                        <td>
+                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${item.service.unitPrice}"/>
+                                                                        </td>
                                                                         <td>${item.service.unit}</td>
                                                                         <td>${item.service.company.name}</td>
                                                                         <td style="text-align: center">

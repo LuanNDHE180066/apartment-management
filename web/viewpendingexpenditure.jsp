@@ -5,13 +5,14 @@
 --%>
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
 <html lang="en">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-        <title>Contracts</title>
+        <title>Pending Expenditure</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="style.css" />
@@ -71,7 +72,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Contract List</h2>
+
                                     </div>
                                 </div>
                             </div>
@@ -92,10 +93,10 @@
                                                             <th>Expense</th>
                                                             <th>Total fees</th>
                                                             <th>Approve Date</th>
-                                                            <th>Payment Date</th>
+
                                                             <th>Category</th>
                                                             <th>Company</th>
-                                                            <th>Staff Create</th>
+                                                            <th>Modified Staff</th>
                                                             <th>Chief Acountant</th>
                                                             <th>Responsible Person</th>
                                                             <th>Option</th>
@@ -106,49 +107,65 @@
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listExpenditure}" var="expenditure">
                                                         <tr>
-                                                            <td>${expenditure.id}</td>
-                                                            <td>${expenditure.title}</td>
-                                                            <td>${expenditure.totalPrice}</td>
-                                                            <td>${expenditure.approveddate}</td>
-                                                            <td>${expenditure.paymentdate}</td>
-                                                            <td>${expenditure.category.categoryName}</td>
-                                                            <td>${expenditure.company.name}</td>
-                                                            <td>${expenditure.createdStaff.name}</td>
-                                                            <td>${expenditure.chiefAccountantId.name}</td>
-                                                            <td>${expenditure.currentAdmin.name}</td>
+                                                            <td style="text-align: center;color : ${expenditure.id == null?'red':'green'}">${expenditure.id == null? 'Undefined':''}</td>
+                                                            <td style="text-align: center"> ${expenditure.title}</td>
                                                             <td>
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 0}">
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
-                                                                        <i class="fa-solid fa-check"></i>
-                                                                    </a>
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
-                                                                        <i class="fa-solid fa-xmark"></i>
-                                                                    </a>
-                                                                </c:if>
+                                                        <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                        </td>
+                                                        <td style="text-align: center">${expenditure.approveddate}</td>
 
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
-                                                                    <span style="color: green">Accept</span>
-                                                                </c:if>
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == -1}">
-                                                                    <span style="color: green">Accept</span>
-                                                                </c:if>
+                                                        <td style="text-align: center">${expenditure.category.categoryName}</td>
+                                                        <td style="text-align: center">${expenditure.company.name}</td>
+                                                        <td style="text-align: center">${expenditure.createdStaff.name}</td>
+                                                        <td style="text-align: center">${expenditure.chiefAccountantId.name}</td>
+                                                        <td style="text-align: center">${expenditure.currentAdmin.name}</td>
+                                                        <td style="text-align: center">
+                                                            <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 0}">
+                                                                <a style="text-align: center;" title="Approve"   class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                    <i class="fa-solid fa-check"></i>
+                                                                </a>
+                                                                <a style="text-align: center" title="Decline" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
+                                                                    <i class="fa-solid fa-xmark"></i>
+                                                                </a>
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </c:if>
 
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
-                                                                        <i class="fa-solid fa-check"></i>
-                                                                    </a>
-                                                                    <a class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
-                                                                        <i class="fa-solid fa-xmark"></i>
-                                                                    </a>
-                                                                </c:if>
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 1}">
-                                                                    <span style="color: green">Accept</span>
-                                                                </c:if>
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == -1}">
-                                                                    <span style="color: green">Accept</span>
-                                                                </c:if>
-                                                            </td>
-                                                    <!--    <td>${expenditure.note}</td>  -->
+                                                            <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
+                                                                <span style="text-align: center; color: green" >Accept</span>
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </c:if>
+
+
+                                                            <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
+                                                                <a style="text-align: center" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
+                                                                    <i class="fa-solid fa-check"></i>
+                                                                </a>
+                                                                <a style="text-align: center" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
+                                                                    <i class="fa-solid fa-xmark"></i>
+                                                                </a>
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </c:if>
+
+                                                            <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 1}">
+                                                                <span style="text-align: center; color: green" style="">Accept</span>
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </c:if>
+                                                            <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == -1}">
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </c:if>
+                                                        </td>
+                                                <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>

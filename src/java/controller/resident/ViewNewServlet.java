@@ -67,33 +67,40 @@ public class ViewNewServlet extends HttpServlet {
         String endDate = request.getParameter("endDate");
         String title = request.getParameter("title");
         Util u = new Util();
-        title = u.stringNomalize(title);
+
+        if (title == null || title.trim().isEmpty()) {
+            title = "";
+        } else {
+            title = u.stringNomalize(title);
+        }
         if (startDate == null || startDate.trim().isEmpty()) {
             startDate = "";
         }
         if (endDate == null || endDate.trim().isEmpty()) {
             endDate = "";
         }
+
         NewDAO dao = new NewDAO();
         String page = request.getParameter("page");
         if (page == null) {
             page = "1";
         }
+
         List<News> listNews = dao.filterNews(title, startDate, endDate);
         int totalPage = u.getTotalPage(listNews, 3);
-        if (listNews.size() != 0) {
+        if (!listNews.isEmpty()) {
             listNews = u.getListPerPage(listNews, 3, page);
-            session.setAttribute("listNews", listNews);
-            request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", Integer.parseInt(page));
-            request.getRequestDispatcher("viewallnews.jsp").forward(request, response);
-        } else {
-            session.setAttribute("listNews", listNews);
-            request.setAttribute("totalPage", 1);
-            request.setAttribute("currentPage", 1);
-            request.setAttribute("message", "No result");
-            request.getRequestDispatcher("viewallnews.jsp").forward(request, response);
         }
+        session.setAttribute("listNews", listNews);
+        request.setAttribute("totalPage", totalPage > 0 ? totalPage : 1);
+        request.setAttribute("currentPage", Integer.parseInt(page));
+        request.setAttribute("title", title);
+        request.setAttribute("startDate", startDate);
+        request.setAttribute("endDate", endDate);
+        if (listNews.isEmpty()) {
+            request.setAttribute("message", "No result found.");
+        }
+        request.getRequestDispatcher("viewallnews.jsp").forward(request, response);
     }
 
     /**

@@ -76,7 +76,7 @@ public class SendEmail {
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + emailInvoice.getEmail());
         } catch (MessagingException e) {
-            e.printStackTrace();
+            e.printStackTrace();        
         }
     }
     

@@ -14,6 +14,7 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Apartment;
 import model.RoomType;
@@ -61,6 +62,7 @@ public class ViewApartmantAdmin extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        HttpSession session = request.getSession();
         String floor = request.getParameter("floor");
         String filterType = request.getParameter("filterType");
         String filterStatus = request.getParameter("filterStatus");
@@ -80,7 +82,7 @@ public class ViewApartmantAdmin extends HttpServlet {
         request.setAttribute("floor", floor);
         request.setAttribute("filterType", filterType);
         request.setAttribute("filterStatus", filterStatus);
-        request.setAttribute("types", types);
+        session.setAttribute("types", types);
         String page = request.getParameter("page");
         if (page == null) {
             page = "1";

@@ -23,6 +23,7 @@ import java.util.List;
 import model.Company;
 import model.Role;
 import model.Staff;
+import util.Util;
 
 /**
  *
@@ -94,15 +95,15 @@ public class UpdateStaffInfor extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        Util u= new Util();
         String id = request.getParameter("staffID");
-        String name = request.getParameter("name");
+        String name = u.stringNomalize(request.getParameter("name")) ;
         String dob = request.getParameter("dob");
         String email = request.getParameter("email");
-        String address = request.getParameter("address");
+        String address = u.stringNomalize(request.getParameter("address")) ;
         String phone = request.getParameter("phone");
         String cccd = request.getParameter("cccd");
-        String education = request.getParameter("education");
+        String education = u.stringNomalize(request.getParameter("education")) ;
         String bank = request.getParameter("bank");
         String salary_raw = request.getParameter("salary");
         String companyId = request.getParameter("company");
