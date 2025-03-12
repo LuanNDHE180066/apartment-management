@@ -202,25 +202,33 @@
                                         <div style="margin-left: 40px;">
                                             <form action="view-all-resident-apartment" method="GET">
                                                 <div class="row align-items-center">
-                                                    
+                                                    <div class="col-md-2">
+                                                        <input type="number" min="0" max="16" class="form-control" name="floor" 
+                                                               value="${param.floor}" placeholder="Search by Floor">
+                                                    </div>
+                                                    <div class="col-md-2">
+                                                        <select class="form-control" name="filterType">
+                                                            <option value="">Filter by Types</option>
+                                                            <c:forEach items="${sessionScope.types}" var="o">
+                                                                <option value="${o.id}" <c:if test="${param.filterType == o.id}">selected</c:if>>${o.name}</option>
+                                                            </c:forEach>
+                                                        </select>
+                                                    </div>
                                                     <div class="col-md-4 d-flex">
-                                                        
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="register-new-living-or-owner-resident" class="btn btn-primary">Register living/owner resident</a>
                                                     </div>
                                                 </div>
                                             </form>
-                                        </div>
-                                        <div style="margin-left: 40px;">
-                                            <form action="view-all-resident-apartment" method="GET">
 
-                                            </form>
                                         </div>
+
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 15%;">Apartment Number</th>
+                                                            <th style="width: 15%;">Apartment Number </th>
                                                             <th style="width: 15%;">Number of Person</th>
                                                             <th style="width: 10%;">Floor</th>
                                                             <th style="width: 20%;">Living Person</th>
@@ -347,23 +355,25 @@
                             </div>
                         </div>
                     </div>
-                    <!--                    <form method="get" action="view-all-feedback" style="display: flex; align-items: center; gap: 10px;">
-                                             Dropdown ch?n trang 
-                                            <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
-                                            <select id="page" name="page" onchange="this.form.submit()" 
-                                                    style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                    <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                        <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                        ${page}
-                    </option>
-                    </c:forEach>
-                </select>
-    
-                <input type="text" value="${param.searchName}" class="form-control" name="searchName" hidden="">
-                <input type="date"  name="startDate" placeholder="Start Date" value="${param.startDate}" hidden="">
-                <input type="date"  name="endDate" placeholder="End Date" value="${param.endDate}" hidden="">
-                <input type="text"  name="endDate" placeholder="End Date" value="${param.serviceType}" hidden="">
-            </form>-->
+                    <form method="get" action="view-all-resident-apartment" style="display: flex; align-items: center; gap: 10px;">
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        
+                        <input type="text" name="filterType" value="${param.filterType}" hidden=""><!-- comment -->
+                        <input type="text" name="floor" value="${param.floor}" hidden=""><!-- comment -->
+                        <select id="page" name="page" onchange="this.form.submit()" 
+                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                    ${page}
+                                </option>
+                            </c:forEach>
+                            <!-- comment -->
+                        </select>
+<!--                             <input type="text" value="${param.filterStatus}" hidden="">
+                          <input type="text" value="${param.filterStatus}" hidden="">
+                           <input type="text" value="${param.searchName}" hidden="">
+                           <input type="text" value="${param.searchName}" hidden="">-->
+                    </form>
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
