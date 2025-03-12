@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author admin1711
@@ -247,6 +251,21 @@ public class Staff {
     public String getBod() {
         return bod;
     }
+    public String formatBod() {
+        if (bod == null || bod.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(bod);
+
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
+    
 
     public void setBod(String bod) {
         this.bod = bod;
@@ -295,7 +314,20 @@ public class Staff {
     public String getStartDate() {
         return startDate;
     }
+    public String formatStartdate() {
+        if (startDate == null || startDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(startDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -303,7 +335,20 @@ public class Staff {
     public String getEndDate() {
         return endDate;
     }
+    public String formatEndate() {
+        if (endDate == null || endDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(endDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
