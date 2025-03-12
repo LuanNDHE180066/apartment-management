@@ -121,7 +121,7 @@ public class LivingApartmentDAO extends DBContext {
     }
 
     public boolean updateEndLivingApartment(String endDate, String aid) {
-        String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ?";
+        String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ? and status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, endDate);

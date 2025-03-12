@@ -101,17 +101,18 @@ public class RequestChangeResidentDAO extends DBContext {
         return list;
     }
 
-    public void updateAdminStatus(String id, String status) {
+    public boolean updateAdminStatus(String id, String status) {
         String sql = "update requestchangeresident set admin_status = ? where request_id = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, status);
             ps.setString(2, id);
 
-            ps.executeUpdate();
+            return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        return false;
     }
 
     public RequestChangeResident getRequestChangeById(String id) {

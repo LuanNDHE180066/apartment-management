@@ -153,7 +153,7 @@
                                                             </td>
                                                             <td style="text-align: center">${request.roomNumber}</td>
 
-                                                            <td style="text-align: center">${request.changeType == 1? 'Owner':'Living Resident'}</td>
+                                                            <td style="text-align: center">${request.changeType == 1? 'Living Resident':'Owner'}</td>
                                                             <td style="text-align: center">
                                                                 <a href="#" data-toggle="modal" data-target="#newPersonModal-${request.newPerson.pId}">
                                                                     ${request.newPerson.name}

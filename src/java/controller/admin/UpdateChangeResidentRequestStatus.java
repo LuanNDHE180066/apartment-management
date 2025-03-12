@@ -4,6 +4,9 @@
  */
 package controller.admin;
 
+import dao.ApartmentDAO;
+import dao.LivingApartmentDAO;
+import dao.OwnerApartmentDAO;
 import dao.RequestChangeResidentDAO;
 import dao.ResidentDAO;
 import java.io.IOException;
@@ -13,8 +16,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import model.LivingApartment;
 import model.RequestChangeResident;
+import model.Resident;
 import model.SendEmail;
+import util.Util;
+import static util.Util.encryptPassword;
 
 /**
  *
@@ -48,7 +57,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
             out.println("</html>");
         }
     }
-
+//1 LA LIVING 0 LAF OWNER
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -64,17 +73,18 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
         String id = request.getParameter("id");
         String approve = request.getParameter("approve");
         ResidentDAO reDAO = new ResidentDAO();
+        ApartmentDAO aDAO = new ApartmentDAO();
+        OwnerApartmentDAO oaDAO = new OwnerApartmentDAO();
+        LivingApartmentDAO liDAO = new LivingApartmentDAO();
         RequestChangeResidentDAO rcDAO = new RequestChangeResidentDAO();
-        
 
-        rcDAO.updateAdminStatus(id, approve);
         RequestChangeResident r = rcDAO.getRequestChangeById(id);
         String emailContent = "<div class=\"container\">\n"
                 + "        <h2>Kính gửi " + r.getOwner().getName() + ",</h2>\n"
                 + "        <p>Chúng tôi đã nhận được yêu cầu thay đổi " + (r.getChangeType() == 1 ? "Người ở" : "Chủ căn hộ") + " của bạn với thông tin chi tiết như sau:</p>\n"
                 + "        <hr>\n"
                 + "        <p><strong>Tên cư dân mới:</strong> " + r.getNewPerson().getName() + "</p>\n"
-                + "        <p><strong>Ngày sinh:</strong> " + r.getNewPerson().getBod()+ "</p>\n"
+                + "        <p><strong>Ngày sinh:</strong> " + r.getNewPerson().getBod() + "</p>\n"
                 + "        <p><strong>Địa chỉ:</strong> " + r.getNewPerson().getAddress() + "</p>\n"
                 + "        <p><strong>Số điện thoại:</strong> " + r.getNewPerson().getPhone() + "</p>\n"
                 + "        <p><strong>Email:</strong> " + r.getNewPerson().getEmail() + "</p>\n"
@@ -92,7 +102,48 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 + "        </div>\n"
                 + "    </div>";
         SendEmail send = new SendEmail();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate now = LocalDate.now();
+        String date = now.format(formatter);
         send.sendEmail(r.getOwner().getEmail(), "Phản hồi về đơn yêu cầu thay đổi " + (r.getChangeType() == 1 ? "Người ở" : "Chủ căn hộ"), emailContent);
+        if (rcDAO.updateAdminStatus(id, approve) && approve.equals("1")) {
+            if (r.getNewPersonExists() == 0) {
+                Util u = new Util();
+                //generate random password then send to new user
+                String password = u.generatePassword();
+                password = encryptPassword(password);
+                Resident newResident = new Resident();
+                newResident.setName(r.getNewPerson().getName());
+                newResident.setBod(r.getNewPerson().getBod());
+                newResident.setAddress(r.getNewPerson().getAddress());
+                newResident.setPhone(r.getNewPerson().getPhone());
+                newResident.setEmail(r.getNewPerson().getEmail());
+                newResident.setCccd(r.getNewPerson().getCccd());
+                newResident.setRole(r.getNewPerson().getRole());
+                newResident.setUsername(r.getNewPerson().getUsername());
+                newResident.setPassword(password);
+                newResident.setGender(r.getNewPerson().getGender());
+
+                reDAO.insertNewResident(newResident);
+                Resident rNew = reDAO.getResidentByUsername(newResident.getUsername());
+                if (r.getChangeType() == 1) {
+                    liDAO.updateEndLivingApartment(date, r.getRoomNumber());
+                    liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
+                } else {
+                    oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
+                    oaDAO.insertOwnerApartment(rNew.getpId(), r.getRoomNumber(), date);
+                }
+            } else {
+                Resident existedResident = reDAO.getResidentByUsername(r.getNewPerson().getUsername());
+                if (r.getChangeType() == 1) {
+                    liDAO.updateEndLivingApartment(date, r.getRoomNumber());
+                    liDAO.insertLivingApartment(existedResident.getpId(), r.getRoomNumber(), date);
+                } else {
+                    oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
+                    oaDAO.insertOwnerApartment(existedResident.getpId(), r.getRoomNumber(), date);
+                }
+            }
+        }
         response.sendRedirect("view-change-resident-request");
     }
 
