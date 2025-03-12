@@ -1,5 +1,6 @@
 package filter;
 
+import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -15,6 +16,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import model.Account;
+import model.Resident;
 
 /**
  *
@@ -22,17 +24,17 @@ import model.Account;
  */
 @WebFilter(filterName = "ProfileFilter", urlPatterns = {"/view-profile-staff", "/view-profile-resident", "/editprofileREServlet", "/editprofileSTServlet"})
 public class ProfileFilter implements Filter {
-
+    
     private static final boolean debug = true;
 
     // The filter configuration object we are associated with.  If
     // this value is null, this filter instance is not currently
     // configured. 
     private FilterConfig filterConfig = null;
-
+    
     public ProfileFilter() {
     }
-
+    
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
@@ -60,7 +62,7 @@ public class ProfileFilter implements Filter {
 	}
          */
     }
-
+    
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
@@ -98,30 +100,37 @@ public class ProfileFilter implements Filter {
     public void doFilter(ServletRequest request, ServletResponse response,
             FilterChain chain)
             throws IOException, ServletException {
-
+        
         if (debug) {
             log("ProfileFilter:doFilter()");
         }
-
+        
         doBeforeProcessing(request, response);
-
+        
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
         HttpSession session = req.getSession(false);
-
+        ResidentDAO rd = new ResidentDAO();
         Account a = (session != null) ? (Account) session.getAttribute("account") : null;
+        
         String uri = req.getServletPath();
         if (uri.contains("view-profile-staff") || uri.contains("editprofileSTServlet")) {
             if (a.getRoleId() == 1) {
                 res.sendRedirect("404_error.jsp");
             }
         } else {
-
+            
             if (a.getRoleId() != 1) {
                 res.sendRedirect("404_error.jsp");
             }
         }
-
+        if (a.getRoleId() == 1) {
+            Resident r = rd.getById(a.getpId());
+            if (r.getStatus() == "2") {
+                res.sendRedirect("changepassword.jsp");
+            }
+        }
+        
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -132,7 +141,7 @@ public class ProfileFilter implements Filter {
             problem = t;
             t.printStackTrace();
         }
-
+        
         doAfterProcessing(request, response);
 
         // If there was a problem, we want to rethrow it if it is
@@ -195,10 +204,10 @@ public class ProfileFilter implements Filter {
         sb.append(")");
         return (sb.toString());
     }
-
+    
     private void sendProcessingError(Throwable t, ServletResponse response) {
         String stackTrace = getStackTrace(t);
-
+        
         if (stackTrace != null && !stackTrace.equals("")) {
             try {
                 response.setContentType("text/html");
@@ -225,7 +234,7 @@ public class ProfileFilter implements Filter {
             }
         }
     }
-
+    
     public static String getStackTrace(Throwable t) {
         String stackTrace = null;
         try {
@@ -239,9 +248,9 @@ public class ProfileFilter implements Filter {
         }
         return stackTrace;
     }
-
+    
     public void log(String msg) {
         filterConfig.getServletContext().log(msg);
     }
-
+    
 }

@@ -266,10 +266,29 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td class="action-column">
+
+                                                                    <%
+                                                                   
+                                                                   Object feedbackObj = pageContext.getAttribute("feedback");
+                                                                   String feedbackDate = null;
+                                                                   if (feedbackObj != null) {
+                                                                       model.Feedback feedback = (model.Feedback) feedbackObj; 
+                                                                       feedbackDate = feedback.getDate(); 
+                                                                   }
+
+                                                                   Util u = new Util();
+                                                                   boolean showButton = u.compareFeedbackDateToCurrentTime(feedbackDate,3);   
+                                                                           
+                                                                   if (showButton) {
+                                                                    %>
                                                                     <div class="dropdown-content">
                                                                         <a href="update-feed-back?id=${feedback.id}">✏ Edit  </a>
                                                                         <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                     </div>
+                                                                    <%
+                                                                        }
+                                                                    %>
+
                                                                 </td>
 
 

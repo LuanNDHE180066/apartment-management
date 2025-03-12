@@ -146,7 +146,7 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> getAllFeedbackUser(String residentID, int page, int pageSize) {
-        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY id desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY date desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         List<Feedback> list = new ArrayList<>();

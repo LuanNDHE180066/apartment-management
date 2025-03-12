@@ -195,14 +195,14 @@ public class Util {
         Util u = new Util();
     }
 
-    public  boolean compareFeedbackDateToCurrentTime(String date) {
+    public  boolean compareFeedbackDateToCurrentTime(String date,int distance) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
         LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
         LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime oneDayBefore = currentDateTime.minusDays(1);
+        LocalDateTime DayBefore = currentDateTime.minusDays(distance);
 
         // Compare current time with test time
-        return oneDayBefore.isBefore(testDateTime);
+        return DayBefore.isBefore(testDateTime);
 
     }
 
