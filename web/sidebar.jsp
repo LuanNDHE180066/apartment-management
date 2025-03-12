@@ -144,7 +144,10 @@
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Chart</span></a>
                     </li>
-                    
+                    <li>
+                        <a href="view-service-change"><i class="fa fa-chart-line"></i><span>Biến động giá dịch vụ</span></a>
+                    </li>
+
 
                     <!--                    <li>
                                             <a href="#apps" data-toggle="collapse" aria-expanded="false" class="dropdown-toggle"><i class="fa fa-object-group blue2_color"></i> <span>Apps</span></a>

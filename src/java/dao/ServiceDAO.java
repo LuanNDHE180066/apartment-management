@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.ServiceChange;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -336,10 +337,29 @@ public class ServiceDAO extends DBContext {
             System.out.println(e);
         }
     }
-
+    public List<ServiceChange> getChangeOfServicePrice(String name){
+        List<ServiceChange> list = new ArrayList<>();
+        String sql ="select distinct CONCAT(MONTH(date),'-', year(date)) as time, priceunit "
+                + "from (  select date, PriceUnit  from InvoiceDetail where ServiceName=?) as tab ";
+        try {
+            PreparedStatement st = connection.prepareCall(sql);
+            st.setString(1, name);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                String time = rs.getString("time");
+                float price = rs.getFloat("priceunit");
+                ServiceChange svc = new ServiceChange(time, price);
+                list.add(svc);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
         System.out.println(sd.getNumberUsedByTime(2025, 1, "SVC1"));
         System.out.println(Arrays.toString(sd.getPercentUsedAllMonth(2025, "SV001").toArray()));
+        System.out.println(sd.getChangeOfServicePrice("TIền điện").size());
     }
 }
