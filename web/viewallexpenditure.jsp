@@ -82,42 +82,41 @@
                                             <div class="heading1 margin_0">
                                                 <h2>Expenditure Table Information</h2>
                                             </div>
-                                            <br> <hr><!-- comment -->
-                                            <div>
-                                                <form action="view-expenditure" method="get">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-8">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-2">
-                                                                    <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
-                                                                </div>
-                                                                <div class="col-md-2.5">
-                                                                    <select class="form-control" name="category">
-                                                                        <option value="">Select category</option>
-                                                                        <c:forEach items="${requestScope.categorylist}" var="ca">
-                                                                            <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-2 d-flex">
-                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-expense-category">View expense cateogry</a></span>
-                                                                </div>
-
+                                        </div>
+                                        <div style="margin-left: 40px;">
+                                            <form action="view-expenditure" method="get">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-2">
+                                                                <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
+                                                            </div>
+                                                            <div class="col-md-2.5">
+                                                                <select class="form-control" name="category">
+                                                                    <option value="">Select category</option>
+                                                                    <c:forEach items="${requestScope.categorylist}" var="ca">
+                                                                        <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-2 d-flex">
+                                                                <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                                <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
+                                                                <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                    <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
+                                                                <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                    <a style="color: white" href="view-expense-category">View expense cateogry</a></span>
                                                             </div>
                                                         </div>
-                                                </form>
-                                            </div>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -149,9 +148,6 @@
                                                                 ${expenditure.totalPrice}
                                                             </td>
                                                             <td>${expenditure.approveddate}</td>
-                                                            <td>
-                                                                ${expenditure.approveddate}
-                                                            </td>
                                                             <td>${expenditure.category.categoryName}</td>
                                                             <td>${expenditure.company.name}</td>
                                                             <td>${expenditure.createdStaff.name}</td>

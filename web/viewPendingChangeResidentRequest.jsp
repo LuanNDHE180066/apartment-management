@@ -81,7 +81,7 @@
                                     <div class="white_shd full margin_bottom_30">
 
                                         <div class="heading1 margin_0">
-                                            <h2>Pending Change Living/Owner Residents</h2>
+                                            <h2 style="margin-left: 30px">Pending Change Living/Owner Residents</h2>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -92,26 +92,24 @@
                                                             <th>Created Date</th>
                                                             <th>Created By</th>
                                                             <th>Apartment Number</th>
-                                                            <th>Change Role</th
-                                                            <th>Modified Staff</th>                                                        
+                                                            <th>Change Role</th>                                                                     
                                                             <th>New Living/Owner</th>
                                                             <th>Is Exist</th>
                                                             <th>Option</th>
-                                                            <!--       <th>Note</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listChangeRequest}" var="request">
                                                         <tr>
-<!--                                                            <td style="text-align: center"> ${request.createdAt}</td>-->
+                                                            <!--                                                            <td style="text-align: center"> </td>-->
                                                             <td  style="text-align: center">
                                                                 ${request.createdAt}
                                                             </td>  
                                                             <!--                                                            <td  style="text-align: center">
                                                             <%--%>         <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
                                                             <%--        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
-                                                            ${request.owner.name}
+                                                            
                                                         </td>--> 
 
                                                             <td style="text-align: center">
@@ -141,7 +139,7 @@
                                                                                     <tr><th>CCCD</th><td>${request.owner.cccd}</td></tr>
                                                                                     <tr><th>Address</th><td>${request.newPerson.address}</td></tr>
                                                                                     <tr><th>Gender</th><td>${request.newPerson.gender}</td></tr>
-                                                                                    
+
                                                                                 </table>
                                                                             </div>
                                                                             <div class="modal-footer">
@@ -213,6 +211,18 @@
                             </div>
                         </div>
                     </div>
+                    <form method="get" action="view-change-resident-request" style="display: flex; align-items: center; gap: 10px;">
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        <select id="page" name="page" onchange="this.form.submit()" 
+                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                    ${page}
+                                </option>
+                            </c:forEach>
+                            <!-- comment -->
+                        </select>
+                    </form>
 
                     <div class="container-fluid">
                         <div class="footer">

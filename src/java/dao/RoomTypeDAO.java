@@ -69,6 +69,33 @@ public class RoomTypeDAO extends DBContext {
         return list;
     }
 
+    public List<RoomType> filterRoomType(String searchName) {
+        String sql = "select * from Roomtype where 1 = 1 ";
+        RoomTypeDAO dao = new RoomTypeDAO();
+        List<RoomType> list = new ArrayList<>();
+        if (searchName != "") {
+            sql += "  and Name like '%" + searchName + "%'";
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                list.add(new RoomType(rs.getString("id"),
+                        rs.getString("name"),
+                        rs.getInt("maxperson"),
+                        rs.getInt("bedroom"),
+                        rs.getInt("livingroom"),
+                        rs.getInt("bathroom"),
+                        rs.getInt("balcony"),
+                        rs.getFloat("square")));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(RoomTypeDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public RoomType getRoomTypeById(String id) {
         String sql = "select * from Roomtype where id = ?";
         try {
@@ -90,7 +117,7 @@ public class RoomTypeDAO extends DBContext {
         }
         return null;
     }
-    
+
     public boolean checkExistNameRoomTypeExceptSeft(String name, String id) {
         String sql = "select * from RoomType where name = ? and id <> ?";
         try {
@@ -106,7 +133,7 @@ public class RoomTypeDAO extends DBContext {
         }
         return false;
     }
-    
+
     public boolean checkExistNameRoomType(String name) {
         String sql = "select * from RoomType where name = ?";
         try {
@@ -141,7 +168,6 @@ public class RoomTypeDAO extends DBContext {
         }
         return false;
     }
-  
 
     public boolean insertRoomType(RoomType r) {
         String sql = "insert into RoomType (id, name,maxperson, square, bedroom, livingroom, bathroom, balcony)\n"
@@ -167,7 +193,7 @@ public class RoomTypeDAO extends DBContext {
     public boolean deleteRoomType(int id) {
         String sql = "DELETE FROM [dbo].[RoomType]\n"
                 + "      WHERE Id=?";
-        
+
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, id);
@@ -178,18 +204,19 @@ public class RoomTypeDAO extends DBContext {
         }
         return false;
     }
+
     public RoomType getRoomTypeByApartmentId(String apartmentId) {
-    String sql = "SELECT rt.* "
-               + "FROM RoomType rt "
-               + "JOIN Apartment ap ON ap.rtId = rt.Id "
-               + "WHERE ap.Id = ?";
+        String sql = "SELECT rt.* "
+                + "FROM RoomType rt "
+                + "JOIN Apartment ap ON ap.rtId = rt.Id "
+                + "WHERE ap.Id = ?";
 
-    try {
-        PreparedStatement pre = connection.prepareStatement(sql);
-        pre.setString(1, apartmentId);
-        ResultSet rs = pre.executeQuery();
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            pre.setString(1, apartmentId);
+            ResultSet rs = pre.executeQuery();
 
-        while (rs.next()) {
+            while (rs.next()) {
                 return new RoomType(rs.getString("id"),
                         rs.getString("name"),
                         rs.getInt("maxperson"),
@@ -198,21 +225,21 @@ public class RoomTypeDAO extends DBContext {
                         rs.getInt("bathroom"),
                         rs.getInt("balcony"),
                         rs.getFloat("square"));
-                
+
             }
 
-        rs.close();
-        pre.close();
-    } catch (Exception e) {
-        e.printStackTrace();
+            rs.close();
+            pre.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
-    return null;
-}
 
     public static void main(String[] args) {
         RoomTypeDAO dao = new RoomTypeDAO();
         RoomType r = new RoomType("1", "Deluxe Suite", 4, 2, 1, 2, 1, 500.0f);
-        System.out.println(dao.checkExistNameRoomType("Deluxe Suite"));
-        System.out.println(dao.deleteRoomType(3));
+        System.out.println(dao.filterRoomType("st").size());
+
     }
 }

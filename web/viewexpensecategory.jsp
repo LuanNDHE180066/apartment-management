@@ -110,6 +110,7 @@
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
+                                                    <a href="view-expenditure" class="btn btn-primary">Back</a>
                                             </div>
                                         </div>
                                     </div>

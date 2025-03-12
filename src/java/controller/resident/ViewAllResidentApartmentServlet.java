@@ -142,5 +142,34 @@ public class ViewAllResidentApartmentServlet extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+//    <!DOCTYPE html>
+//<html>
+//<head>
+//    <title>Date Picker Example</title>
+//    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+//    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+//    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+//    <script src="https://code.jquery.com/ui/1.12.1/i18n/datepicker-vi.js"></script>
+//</head>
+//<body>
+//    <label for="datepicker">Chọn ngày:</label>
+//    <input type="text" id="datepicker" placeholder="dd/MM/yyyy">
+//
+//    <script>
+//        $(function() {
+//            $.datepicker.setDefaults($.datepicker.regional['vi']);
+//            $("#datepicker").datepicker({
+//                dateFormat: 'dd/mm/yy',
+//                onClose: function(dateText, inst) {
+//                    if (!dateText) {
+//                        $(this).val(''); // Nếu không chọn ngày, xóa ô input
+//                    }
+//                }
+//            });
+//        });
+//    </script>
+//</body>
+//</html>
 
 }
