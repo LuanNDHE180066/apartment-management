@@ -79,6 +79,7 @@ public class Resident {
         this.gender = gender;
     }
 
+
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender) {
         this.pId = pId;
         this.name = name;
@@ -89,6 +90,19 @@ public class Resident {
         this.address = address;
         this.image = image;
         this.gender = gender;
+    }
+    
+       public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
+        this.pId = pId;
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.address = address;
+        this.image = image;
+        this.gender = gender;
+        this.username = username;
     }
 
     public Resident(String pId, String email, String phone, String address) {

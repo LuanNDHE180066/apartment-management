@@ -192,10 +192,10 @@
                                                             </td>
 
                                                             <td style="text-align: center">
-                                                                <a href="accept.jsp?id=${request.requestId}" title="Accept" style="margin-left: 10px;">
+                                                                <a href="update-status-change-resident?id=${request.requestId}&approve=1" title="Accept" style="margin-left: 10px;">
                                                                     <i class="fas fa-check" style="font-size: 20px; color: green;"></i>
                                                                 </a>
-                                                                <a href="reject.jsp?id=${request.requestId}" title="Reject" style="margin-left: 10px;">
+                                                                <a href="update-status-change-resident?id=${request.requestId}&approve=-1" title="Reject" style="margin-left: 10px;">
                                                                     <i class="fas fa-times" style="font-size: 20px; color: red;"></i>
                                                                 </a>
                                                             </td>

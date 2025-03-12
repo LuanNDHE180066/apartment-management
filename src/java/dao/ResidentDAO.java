@@ -93,7 +93,7 @@ public class ResidentDAO extends DBContext {
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
-                Resident re = new Resident(id, name, cccd, phone, email, bod, address, image, gender);
+                Resident re = new Resident(id, name, cccd, phone, email, bod, address, image, gender, username);
                 return re;
             }
         } catch (SQLException ex) {

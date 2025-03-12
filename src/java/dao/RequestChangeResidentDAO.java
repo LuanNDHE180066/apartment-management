@@ -101,6 +101,54 @@ public class RequestChangeResidentDAO extends DBContext {
         return list;
     }
 
+    public void updateAdminStatus(String id, String status) {
+        String sql = "update requestchangeresident set admin_status = ? where request_id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, status);
+            ps.setString(2, id);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+    }
+
+    public RequestChangeResident getRequestChangeById(String id) {
+        String sql = "select * from RequestChangeResident where request_id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, id);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int rid = rs.getInt("request_id");
+                String ownerId = rs.getString("owner_name");
+                String newPersonId = rs.getString("new_person_name");
+                String dob = rs.getString("dob");
+                String address = rs.getString("address");
+                String phone = rs.getString("phone");
+                String email = rs.getString("email");
+                String cccd = rs.getString("cccd");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                String gender = rs.getString("gender");
+                String roomId = rs.getString("room_number");
+                int changeType = rs.getInt("change_type");
+                int isExistPerson = rs.getInt("new_person_exists");
+                int admin_status = rs.getInt("admin_status");
+                String created_at = rs.getString("created_at");
+
+                Resident r = new Resident(newPersonId, cccd, phone, email, dob, address, username, null, roleDAO.getById("1"), gender);
+                RequestChangeResident rc = new RequestChangeResident(rid, residentDAO.getById_v2(ownerId), r,
+                        roomId, changeType, isExistPerson, admin_status, created_at);
+                return rc;
+            }
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public static void main(String[] args) {
 
         ResidentDAO dao = new ResidentDAO();
@@ -114,6 +162,6 @@ public class RequestChangeResidentDAO extends DBContext {
                 "A008", 0, 1, 0, formattedDate);
         RequestChangeResidentDAO daoR = new RequestChangeResidentDAO();
 //        System.out.println(daoR.addNewRequestChange(re));
-        System.out.println(daoR.getPendingChangeRequest().get(0).getOwner().getImage());
+        System.out.println(daoR.getRequestChangeById("15"));
     }
 }
