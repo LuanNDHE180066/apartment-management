@@ -46,6 +46,9 @@
                 background-color: #6B90DA; /* Màu nền cho tiêu đề cột */
                 color: black; /* Màu chữ trắng để nổi bật trên nền xanh */
             }
+              td{
+                color: black;
+            }
         </style>
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>

@@ -173,6 +173,34 @@ public class InvoiceDAO extends DBContext{
         System.out.println(sql);
         return list;
     }
+    public List<Invoice> searchByTimeAndResidentId(String fromDate,String toDate,String sid){
+        ResidentDAO rd = new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Invoice> list = new ArrayList<>();
+        String sql="select * from invoice where invoicedate between ? and ?  and rid =?";
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setString(1, fromDate);
+            st.setString(2, toDate);
+            st.setString(3, sid);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                 String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                list.add(invoice);
+            }
+        } catch (SQLException e) {
+        }
+        System.out.println(sql);
+        return list;
+    }
     public void generateInvoice(){
         InvoiceDetalDAO idd=new InvoiceDetalDAO();
         LivingApartmentDAO ld =new LivingApartmentDAO();

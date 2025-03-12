@@ -153,6 +153,7 @@ public class ViewAllInvoiceServlet extends HttpServlet {
         request.setAttribute("usingApartment", apartmentSelected);
         request.setAttribute("usingFrom", fromDate);
         request.setAttribute("usingTo", toDate);
+        request.setAttribute("selectedPage", Integer.parseInt(page_raw));
         request.setAttribute("endPage", ivd.getMaxPage(full, numberPerPage));
         
         request.getRequestDispatcher("viewallinvoice-bystaff.jsp").forward(request, response);

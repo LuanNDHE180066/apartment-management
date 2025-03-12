@@ -134,7 +134,9 @@
                 justify-content: space-between;
                 align-items: center;
             }
-
+            td{
+                color: black;
+            }
 
         </style>
         <!--[if lt IE 9]>
