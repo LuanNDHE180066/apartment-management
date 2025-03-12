@@ -113,15 +113,48 @@ public class InvoiceDAO extends DBContext{
         }
         return list;
     }
-    public List<Invoice> searchByYearAndApartment(int year,String aid){
+     public List<Invoice> getPaidInvoice(){
         ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();
         List<Invoice> list = new ArrayList<>();
-        String sql="select * from invoice where aid =? and year(invoicedate) =?";
+        String sql = "select * from invoice where status =1";
+        try{
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs =st.executeQuery();
+            while(rs.next()){
+                String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                list.add(invoice);
+            }
+        }
+        catch(SQLException e){
+            System.out.println(e);
+        }
+        return list;
+    }
+    public List<Invoice> searchByTimeAndApartment(String fromDate,String toDate,String aid){
+        ResidentDAO rd = new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Invoice> list = new ArrayList<>();
+        String sql="select * from invoice where status = 1 and invoicedate between ? and ? ";
+        boolean isAllApartment = aid.equals("all");
+        if(!isAllApartment){
+            sql+="and aid =?";
+        }
         try {
             PreparedStatement st =connection.prepareStatement(sql);
-            st.setString(1, aid);
-            st.setInt(2, year);
+            st.setString(1, fromDate);
+            st.setString(2, toDate);
+            if(!isAllApartment){
+                st.setString(3, aid);
+            }
             ResultSet rs =st.executeQuery();
             while(rs.next()){
                  String i = rs.getString("id");
@@ -137,6 +170,7 @@ public class InvoiceDAO extends DBContext{
             }
         } catch (SQLException e) {
         }
+        System.out.println(sql);
         return list;
     }
     public void generateInvoice(){
@@ -272,11 +306,31 @@ public class InvoiceDAO extends DBContext{
         News n = new News(tittle, content, "", category, img, staff, date.toString());
          return nd.insertNews(n);
     }
+    public int getMaxPage(List<Invoice> list, int number){
+        int count = list.size();
+        if(count % number ==0){
+            return count /number;
+        }
+        else{
+            return count /number +1;
+        }
+    }
+    public List<Invoice> getByPaing(List<Invoice> list,int number,int page){
+        List<Invoice> rs = new ArrayList<>();
+        for (int i = 0; i < list.size(); i++) {
+            if(i >= (page-1)*number && i <= (page *number -1)){
+                rs.add(list.get(i));
+            }
+            if(i > (page * number -1)) break;
+        }
+        return rs;
+    }
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
-        System.out.println(id.getByResidentId("P101").size());
-        System.out.println(id.getNonPaidInvoice().size());
-        System.out.println(id.searchByYearAndApartment(2025, "A10_04").size());
-        System.out.println(id.getMonthlyRevenueByYear(2025).get(1));
+//        System.out.println(id.getByResidentId("P101").size());
+//        System.out.println(id.getNonPaidInvoice().size());
+System.out.println(id.getByPaing(id.getPaidInvoice(), 5, 1).size());
+        System.out.println(id.searchByTimeAndApartment("2025-03-11", "2025-03-11", "A10_04").get(0).getResident().getCccd());
+//        System.out.println(id.getMonthlyRevenueByYear(2025).get(1));
     }
 }

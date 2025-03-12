@@ -14,9 +14,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Apartment;
+import model.Invoice;
 
 /**
  *
@@ -24,6 +30,8 @@ import model.Apartment;
  */
 @WebServlet(name = "ViewAllInvoiceServlet", urlPatterns = {"/view-invoice-staff"})
 public class ViewAllInvoiceServlet extends HttpServlet {
+
+    private static final int numberPerPage = 5;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,7 +50,7 @@ public class ViewAllInvoiceServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewAllInvoiceServlet</title>");            
+            out.println("<title>Servlet ViewAllInvoiceServlet</title>");
             out.println("</head>");
             out.println("<body>");
             out.println("<h1>Servlet ViewAllInvoiceServlet at " + request.getContextPath() + "</h1>");
@@ -64,16 +72,57 @@ public class ViewAllInvoiceServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         InvoiceDAO ivd = new InvoiceDAO();
-        ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();
         List<Apartment> listApartment = ad.getAll();
-        int startYear = rd.getStartYear();
-        int currentYear = LocalDate.now().getYear();
-        
+        //fill những phần đã có
         request.setAttribute("nonPaidList", ivd.getNonPaidInvoice());
-        request.setAttribute("startYear", startYear);
-        request.setAttribute("currentYear", currentYear);
         request.setAttribute("apartmentList", listApartment);
+
+        //data từ front end
+        String fromDate;
+        if (request.getParameter("from") == null || request.getParameter("from").isEmpty()) {
+            fromDate = java.sql.Date.valueOf(LocalDate.EPOCH).toString();
+        } else {
+            fromDate = request.getParameter("from");
+        }
+        String toDate;
+        if (request.getParameter("to") == null || request.getParameter("to").isEmpty()) {
+            toDate = java.sql.Date.valueOf(LocalDate.now()).toString();
+        } else {
+            toDate = request.getParameter("to");
+        }
+        String apartmentSelected;
+        if (request.getParameter("apartmentSelected") == null) {
+            apartmentSelected = "all";
+        } else {
+            apartmentSelected = request.getParameter("apartmentSelected");
+        }
+        //check nếu to nhỏ hơn from
+        SimpleDateFormat sf = new SimpleDateFormat("yyyy-MM-dd");
+        try {
+            Date from = sf.parse(fromDate);
+            Date to = sf.parse(toDate);
+            if (from.after(to)) {
+                String temp = toDate;
+                toDate = fromDate;
+                fromDate = temp;
+            }
+        } catch (ParseException ex) {
+            System.out.println(ex);
+        }
+//        System.out.println(fromDate+"|||s||||||"+toDate);
+
+        request.setAttribute("usingApartment", apartmentSelected);
+        request.setAttribute("usingFrom", fromDate);
+        request.setAttribute("usingTo", toDate);
+
+        //paging
+        List<Invoice> fullPaidList = ivd.searchByTimeAndApartment(fromDate, toDate, apartmentSelected);
+        List<Invoice> outputPaidList = ivd.getByPaing(fullPaidList, numberPerPage, 1);
+        request.setAttribute("endPage", ivd.getMaxPage(fullPaidList, numberPerPage));
+        request.setAttribute("selectedPage", 1);
+
+        request.setAttribute("paidList", outputPaidList);
         request.getRequestDispatcher("viewallinvoice-bystaff.jsp").forward(request, response);
     }
 
@@ -88,24 +137,24 @@ public class ViewAllInvoiceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        String page_raw = request.getParameter("page");
+        String fromDate = request.getParameter("from");
+        String toDate = request.getParameter("to");
+        String apartmentSelected = request.getParameter("apartmentSelected");
         InvoiceDAO ivd = new InvoiceDAO();
-        ResidentDAO rd = new ResidentDAO();
+        List<Invoice> full = ivd.searchByTimeAndApartment(fromDate, toDate, apartmentSelected);
+        List<Invoice> outputPaidList = ivd.getByPaing(full, numberPerPage, Integer.parseInt(page_raw));
+        //xét các giá trị
+        request.setAttribute("paidList", outputPaidList);
         ApartmentDAO ad = new ApartmentDAO();
         List<Apartment> listApartment = ad.getAll();
-        int startYear = rd.getStartYear();
-        int currentYear = LocalDate.now().getYear();
-        
         request.setAttribute("nonPaidList", ivd.getNonPaidInvoice());
-        request.setAttribute("startYear", startYear);
-        request.setAttribute("currentYear", currentYear);
         request.setAttribute("apartmentList", listApartment);
-
-        //Đoạn code trên fill những phần đã có
-        String yearSelected = request.getParameter("yearSelected");
-        String apartmentSelected = request.getParameter("apartmentSelected");
-        request.setAttribute("usingYear", Integer.parseInt(yearSelected));
         request.setAttribute("usingApartment", apartmentSelected);
-        request.setAttribute("historyInvoice", ivd.searchByYearAndApartment(Integer.parseInt(yearSelected), apartmentSelected));
+        request.setAttribute("usingFrom", fromDate);
+        request.setAttribute("usingTo", toDate);
+        request.setAttribute("endPage", ivd.getMaxPage(full, numberPerPage));
+        
         request.getRequestDispatcher("viewallinvoice-bystaff.jsp").forward(request, response);
     }
 
