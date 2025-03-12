@@ -135,7 +135,7 @@
                                                     <c:forEach var="c" items="${sessionScope.listContract}">
                                                         <li>
                                                             <span class="contract-icon"></span>
-                                                            <span class="contract-date">${c.startDate}</span> 
+                                                            <span class="contract-date">${c.formatStartdate()}</span> 
                                                             <a href="contract-detail?id=${c.id}">${c.title}</a>
                                                         </li>
                                                     </c:forEach>

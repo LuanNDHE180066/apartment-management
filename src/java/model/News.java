@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author quang
@@ -16,7 +20,20 @@ public class News {
     public String getDate() {
         return date;
     }
+    public String formatdate() {
+        if (date == null || date.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date dat = inputFormat.parse(date);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(dat);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setDate(String date) {
         this.date = date;
     }
