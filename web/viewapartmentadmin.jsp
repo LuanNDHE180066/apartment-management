@@ -73,6 +73,17 @@
             .option{
                 margin-left: 1.5px;
             }
+            .table th {
+                text-align: center;
+                background-color: #6B90DA;
+                color: black;
+            }
+            
+            .table td{
+                 text-align: center;
+                 color: black;
+                 font-weight: 300;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">

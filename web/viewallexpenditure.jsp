@@ -14,7 +14,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-        <title>Contracts</title>
+        <title>Expenditure</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="style.css" />
@@ -58,6 +58,11 @@
             .display-none{
                 display: none;
             }
+             .table td{
+                 text-align: center;
+                 color: black;
+                 font-weight: 300;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -71,7 +76,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Contract List</h2>
+                                        
                                     </div>
                                 </div>
                             </div>

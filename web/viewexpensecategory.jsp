@@ -9,7 +9,7 @@
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- site metas -->
-        <title>Apartment management</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <title>Expense Category</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <!-- site css -->
@@ -43,6 +43,11 @@
             .search-section {
                 margin-bottom: 15px; /* Giảm khoảng cách giữa các phần tử */
             }
+             .table td{
+                 text-align: center;
+                 color: black;
+                 font-weight: 300;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -56,7 +61,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Feedback Information</h2>
+                                        
                                     </div>
                                 </div>
                             </div>
