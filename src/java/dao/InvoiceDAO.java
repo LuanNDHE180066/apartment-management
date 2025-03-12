@@ -173,6 +173,27 @@ public class InvoiceDAO extends DBContext{
         System.out.println(sql);
         return list;
     }
+    public float getTotalByTimeAndApartment(String fromDate,String toDate,String aid){
+        String sql="select sum(total) as total from invoice where status = 1 and invoicedate between ? and ? ";
+        boolean isAllApartment = aid.equals("all");
+        if(!isAllApartment){
+            sql+="and aid =?";
+        }
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setString(1, fromDate);
+            st.setString(2, toDate);
+            if(!isAllApartment){
+                st.setString(3, aid);
+            }
+            ResultSet rs =st.executeQuery();
+            if(rs.next()){
+                 return rs.getFloat("total");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
     public List<Invoice> searchByTimeAndResidentId(String fromDate,String toDate,String sid){
         ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();

@@ -194,11 +194,11 @@
                                                                 Find
                                                             </button>
                                                         </form>
-                                                        <form action="view-invoice-staff" method="post">
+                                                        <form action="synchronous-used-service" method="get">
                                                             <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
                                                             <input hidden="" name="from" value="${requestScope.usingFrom}"/>
                                                             <input hidden="" name="to" value="${requestScope.usingTo}"/>
-                                                            <button type="button" 
+                                                            <button type="submit" 
                                                                     style="height: 42px; padding: 5px 15px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer;">
                                                                 Xuất file
                                                             </button>
