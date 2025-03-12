@@ -134,6 +134,7 @@ public class AddNewStaffServlet extends HttpServlet {
         Staff s = null;
         boolean hasError = false;
         try {
+            salary_raw = salary_raw.replaceAll("\\.", "");
             int salary = Integer.parseInt(salary_raw);
             if (salary <= 0) {
                 request.setAttribute("salaryerror", "Salary must be greater than 0.");

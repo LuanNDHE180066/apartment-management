@@ -221,6 +221,7 @@ public class UpdateStaffInfor extends HttpServlet {
             request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
             return;
         }
+        salary_raw = salary_raw.replaceAll("\\.", "");
         int salary = Integer.parseInt(salary_raw);
         int status = Integer.parseInt(status_raw);
         if (salary <= 0) {

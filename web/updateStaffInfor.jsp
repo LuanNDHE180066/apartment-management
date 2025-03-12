@@ -306,5 +306,17 @@
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/custom.js"></script>
+                <script>
+                    function formatSalary(input) {
+                        // Remove any non-numeric characters (except dots and digits)
+                        let value = input.value.replace(/\D/g, "");
+
+                        // Convert to a number and format with dot separators
+                        value = Number(value).toLocaleString("en").replace(/,/g, ".");
+
+                        // Update input field with formatted value
+                        input.value = value;
+                    }
+                </script>
         </body>
     </html>
