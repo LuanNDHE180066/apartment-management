@@ -217,11 +217,9 @@ public class AddContract extends HttpServlet {
             ContractApprove contractApprove = new ContractApprove(
                     latestContract,
                     null,
-                    null,
                     1,
                     created,
                     updated,
-                    std.getById(accountant),
                     std.getById(admin)
             );
             ContractApproveDAO ctdApprove = new ContractApproveDAO();

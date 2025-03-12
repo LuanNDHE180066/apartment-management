@@ -107,6 +107,7 @@ public class ContractDAO extends DBContext {
             sql += " AND startdate <= ?";
             params.add(Date.valueOf(endDate));
         }
+        sql+=" ORDER BY TRY_CAST(id AS INT) DESC";
 
         List<Contract> list = new ArrayList<>();
         CompanyDAO daoCP = new CompanyDAO();
@@ -171,7 +172,7 @@ public class ContractDAO extends DBContext {
     }
 
     public Contract getLastInsertedContract() {
-        String sql = "SELECT TOP 1 * FROM Contract ORDER BY id DESC";
+        String sql = "SELECT top 1 * FROM Contract ORDER BY TRY_CAST(id AS INT) DESC;";
         CompanyDAO daoCP = new CompanyDAO();
         StaffDAO daoSt = new StaffDAO();
         try {
@@ -205,7 +206,7 @@ public class ContractDAO extends DBContext {
         List<Contract> listCont = ctd.getAll();
         int lastNum = 0;
         if (listCont.size() != 0) {
-            lastNum = u.getNumberFromTextOnlyNumber(listCont.get(listCont.size() - 1).getId());
+            lastNum = listCont.size()+1;
         }
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -217,7 +218,7 @@ public class ContractDAO extends DBContext {
             ps.setString(6, c.getSignDate());
             ps.setString(7, c.getTitle());
             ps.setString(8, c.getDescription());
-            ps.setInt(9, 1);
+            ps.setInt(9, 0);
             ps.setString(10, (lastNum + 1) + "");
             ps.setString(11, c.getAccountant().getId());
             ps.setString(12, c.getAdmin().getId());
@@ -227,17 +228,19 @@ public class ContractDAO extends DBContext {
         }
         return false;
     }
-    public boolean updateStatus(String id){
-        String sql="Update Contract set status =? where id=?";
-        try {
-            PreparedStatement ps= connection.prepareStatement(sql);
-            ps.setInt(1, 1);
-            ps.setString(2, id);
-            return ps.executeUpdate()>0;
-        } catch (Exception e) {
-        }
-        return false;
+    public boolean updateStatus(String id) {
+    String sql = "UPDATE Contract SET status = ? WHERE id = ?";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ps.setInt(1, 1);
+        ps.setString(2, id);
+        return ps.executeUpdate() > 0;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return false;
+}
+
 
     public static void main(String[] args) {
         ContractDAO dap = new ContractDAO();
