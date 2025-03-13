@@ -114,7 +114,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <c:forEach items="${requestScope.invoiceList}" var="item">
+                                                            <c:forEach items="${requestScope.invoiceNotPaidList}" var="item">
                                                                 <c:if test="${item.status==0}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
@@ -203,7 +203,7 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <c:forEach items="${requestScope.invoiceList}" var="item">
+                                                            <c:forEach items="${requestScope.invoicePaidList}" var="item">
                                                                 <c:if test="${item.status==1}">
                                                                     <tr>
                                                                         <td>${item.id}</td>

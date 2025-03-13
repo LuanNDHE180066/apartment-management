@@ -96,15 +96,17 @@ public class ViewInvoiceServlet extends HttpServlet {
         HttpSession session = request.getSession();
         String rid = ((Account)session.getAttribute("account")).getpId();
         InvoiceDAO ivd= new InvoiceDAO();
-        List<Invoice> fullInvoice = ivd.searchByTimeAndResidentId(fromDate,toDate,rid);
-        List<Invoice> outputPaidList = ivd.getByPaing(fullInvoice, numberPerPage, 1);
+        List<Invoice> fullInvoicePaid = ivd.searchPaidByTimeAndResidentId(fromDate,toDate,rid);
+        List<Invoice> outputPaidList = ivd.getByPaing(fullInvoicePaid, numberPerPage, 1);
+        List<Invoice> outputNotPaidList = ivd.searchNotPaidByTimeAndResidentId(rid);
         
         //các giá trị gửi lên fe
-        request.setAttribute("endPage", ivd.getMaxPage(fullInvoice, numberPerPage));
+        request.setAttribute("endPage", ivd.getMaxPage(fullInvoicePaid, numberPerPage));
         request.setAttribute("selectedPage", 1);
         request.setAttribute("usingFrom", fromDate);
         request.setAttribute("usingTo", toDate);
-        request.setAttribute("invoiceList", outputPaidList);
+        request.setAttribute("invoicePaidList", outputPaidList);
+        request.setAttribute("invoiceNotPaidList", outputNotPaidList);
         request.getRequestDispatcher("viewinvoice-byresident.jsp").forward(request, response);
     } 
 
@@ -125,10 +127,12 @@ public class ViewInvoiceServlet extends HttpServlet {
          
         HttpSession session = request.getSession();
         String rid = ((Account)session.getAttribute("account")).getpId();
-        List<Invoice> full = ivd.searchByTimeAndResidentId(fromDate, toDate, rid );
-        List<Invoice> outputList = ivd.getByPaing(full, numberPerPage, Integer.parseInt(page_raw));
+        List<Invoice> full = ivd.searchPaidByTimeAndResidentId(fromDate, toDate, rid );
+        List<Invoice> outputPaidList = ivd.getByPaing(full, numberPerPage, Integer.parseInt(page_raw));
+        List<Invoice> outputNotPaidList = ivd.searchNotPaidByTimeAndResidentId(rid);
         //xét các giá trị
-        request.setAttribute("invoiceList", outputList);
+        request.setAttribute("invoicePaidList", outputPaidList);
+        request.setAttribute("invoiceNotPaidList", outputNotPaidList);
         request.setAttribute("usingFrom", fromDate);
         request.setAttribute("usingTo", toDate);
         request.setAttribute("selectedPage",Integer.parseInt(page_raw) );
