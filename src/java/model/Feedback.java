@@ -60,19 +60,7 @@ public class Feedback {
     }
 
     public String getDate() {
-        try {
-            // Convert the stored date string to SQL Timestamp
-            Timestamp timestamp = Timestamp.valueOf(date);
-
-            // Define the desired date format
-            SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
-
-            // Convert and return formatted date
-            return sdf.format(timestamp);
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error parsing date: " + e);
-            return date; // Return the original date if there's an error
-        }
+       return this.date;
     }
 
     public void setDate(String date) {

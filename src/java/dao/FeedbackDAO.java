@@ -564,6 +564,10 @@ public class FeedbackDAO extends DBContext {
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-        System.out.println(dao.getByResidentIDAndDateAndTypeRequest("P100", "2025-03-01", null, null));
+        Feedback f=dao.getById("F20");
+        f.setStatus(1);
+        System.out.println(f.getStatus());
+        System.out.println(dao.editFeedback(f));
+        
     }
 }

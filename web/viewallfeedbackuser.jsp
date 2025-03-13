@@ -254,7 +254,8 @@
                                                                         <span class="red-dot"></span>
                                                                     </c:if></td>
                                                                 <td>${feedback.requestType.name}</td>
-                                                                <td>${feedback.date}</td>
+                                                                <c:set var="util" value="${util}" />
+                                                                <td>${util.FormatDateTime(feedback.date)}</td>
                                                                 <td>
                                                                     <c:choose>
                                                                         <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
@@ -266,30 +267,16 @@
                                                                     </c:choose>
                                                                 </td>
                                                                 <td class="action-column">
+                                                                    <c:set var="showButton" value="${util.compareFeedbackDateToCurrentTime(feedback.date, 3)}"/>
 
-                                                                    <%
-                                                                   
-                                                                   Object feedbackObj = pageContext.getAttribute("feedback");
-                                                                   String feedbackDate = null;
-                                                                   if (feedbackObj != null) {
-                                                                       model.Feedback feedback = (model.Feedback) feedbackObj; 
-                                                                       feedbackDate = feedback.getDate(); 
-                                                                   }
-
-                                                                   Util u = new Util();
-                                                                   boolean showButton = u.compareFeedbackDateToCurrentTime(feedbackDate,3);   
-                                                                           
-                                                                   if (showButton) {
-                                                                    %>
-                                                                    <div class="dropdown-content">
-                                                                        <a href="update-feed-back?id=${feedback.id}">✏ Edit  </a>
-                                                                        <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
-                                                                    </div>
-                                                                    <%
-                                                                        }
-                                                                    %>
-
+                                                                    <c:if test="${showButton}">
+                                                                        <div class="dropdown-content">
+                                                                            <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
+                                                                            <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
+                                                                        </div>
+                                                                    </c:if>
                                                                 </td>
+
 
 
                                                             </tr>
@@ -368,28 +355,28 @@
 
         <script>
 
-                                                                            document.addEventListener("DOMContentLoaded", function () {
-                                                                                document.querySelectorAll(".accordion-toggle").forEach(function (row) {
-                                                                                    row.addEventListener("click", function () {
-                                                                                        let targetId = this.getAttribute("data-target");
-                                                                                        let targetElement = document.querySelector(targetId);
+                                                                                document.addEventListener("DOMContentLoaded", function () {
+                                                                                    document.querySelectorAll(".accordion-toggle").forEach(function (row) {
+                                                                                        row.addEventListener("click", function () {
+                                                                                            let targetId = this.getAttribute("data-target");
+                                                                                            let targetElement = document.querySelector(targetId);
 
-                                                                                        if (targetElement.style.display === "none" || targetElement.style.display === "") {
-                                                                                            targetElement.style.display = "table-row";
-                                                                                        } else {
-                                                                                            targetElement.style.display = "none";
-                                                                                        }
+                                                                                            if (targetElement.style.display === "none" || targetElement.style.display === "") {
+                                                                                                targetElement.style.display = "table-row";
+                                                                                            } else {
+                                                                                                targetElement.style.display = "none";
+                                                                                            }
+                                                                                        });
+                                                                                    });
+
+                                                                                    // Handle image modal display
+                                                                                    document.querySelectorAll(".feedback-img").forEach(function (img) {
+                                                                                        img.addEventListener("click", function () {
+                                                                                            document.getElementById("modalImage").src = this.getAttribute("data-image");
+                                                                                            $('#imageModal').modal('show');
+                                                                                        });
                                                                                     });
                                                                                 });
-
-                                                                                // Handle image modal display
-                                                                                document.querySelectorAll(".feedback-img").forEach(function (img) {
-                                                                                    img.addEventListener("click", function () {
-                                                                                        document.getElementById("modalImage").src = this.getAttribute("data-image");
-                                                                                        $('#imageModal').modal('show');
-                                                                                    });
-                                                                                });
-                                                                            });
         </script>
 
 

@@ -213,7 +213,9 @@
                                                         <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}">
                                                             <td>${feedback.resident.name}</td>
                                                             <td>${feedback.requestType.name}</td>
-                                                            <td>${feedback.date}</td>
+                                                            <c:set var="util" value="${util}" />
+                                                            <td>${util.FormatDateTime(feedback.date)}</td>
+
                                                             <td>
                                                                 <c:choose>
                                                                     <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
@@ -225,28 +227,15 @@
                                                                 </c:choose>
                                                             </td>
                                                             <td class="action-column">
-                                                                <%
-                                                                   
-                                                                    Object feedbackObj = pageContext.getAttribute("feedback");
-                                                                    String feedbackDate = null;
-                                                                    if (feedbackObj != null) {
-                                                                        model.Feedback feedback = (model.Feedback) feedbackObj; 
-                                                                        feedbackDate = feedback.getDate(); 
-                                                                    }
-
-                                                                    Util u = new Util();
-                                                                    boolean showButton = u.compareFeedbackDateToCurrentTime(feedbackDate,1);   
-                                                                           
-                                                                    if (showButton) {
-                                                                %>
-                                                                <a href="request-update-feedback?id=${feedback.id}" 
-                                                                   class="btn btn-primary request-update-btn">
-                                                                    Yêu cầu cập nhật
-                                                                </a>
-                                                                <%
-                                                                    }
-                                                                %>
+                                                                <c:set var="showButton" value="${util.compareFeedbackDateToCurrentTime(feedback.date,1)}"/>
+                                                                <c:if test="${showButton}">
+                                                                    <a href="request-update-feedback?id=${feedback.id}" 
+                                                                       class="btn btn-primary request-update-btn">
+                                                                        Yêu cầu cập nhật
+                                                                    </a>
+                                                                </c:if>
                                                             </td>
+
 
 
                                                         </tr>
