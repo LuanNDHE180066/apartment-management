@@ -63,7 +63,7 @@
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listContract}" var="c">
                                                         <tr>
-                                                            <td>${c.accountant.name}</td>
+                                                            <td>${c.admin.name}</td>
                                                             <td>${c.createdAt}</td>
                                                             <td>
                                                                 <c:if test="${staffId == c.admin.id && (c.adminApproval == null || c.adminApproval == 0)}">

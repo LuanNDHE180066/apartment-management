@@ -67,8 +67,8 @@
                 margin-right: 8px;
             }
             h4 {
-    margin-bottom: 20px; /* T?ng kho?ng cách */
-}
+                margin-bottom: 20px; /* T?ng kho?ng cách */
+            }
 
         </style>
     </head>
@@ -113,12 +113,17 @@
                                                                            value="${requestScope.endDate}">
                                                                 </div>
                                                                 <div class="col-md-3 d-flex">
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="pending-contract">View pending contract list</a></span>
+                                                                    <c:if test="${sessionScope.account.roleId == 0}">
+                                                                        <span class="btn btn-primary" style="display: inline-block; margin-left:10px">
+                                                                            <a style="color: white; text-decoration: none;" href="pending-contract">View pending contract list</a>
+                                                                        </span>
+                                                                    </c:if>
+
                                                                     <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                                     <c:if test="${sessionScope.account.roleId == 3}">
                                                                         <a href="add-new-contract" class="btn btn-primary">Add Contract</a>
                                                                     </c:if>
+
                                                                 </div>
                                                             </div>
                                                         </div>
