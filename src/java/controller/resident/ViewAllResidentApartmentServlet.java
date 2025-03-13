@@ -105,8 +105,8 @@ public class ViewAllResidentApartmentServlet extends HttpServlet {
         List<ApartmentDetail> listapartment = apd.getApartmentDetailByOwnerid(resident.getpId(), floor, filterType);
 
         if (listapartment.size() != 0) {
-            int totalPage = u.getTotalPage(listapartment, 1);
-            listapartment = u.getListPerPage(listapartment, 1, page);
+            int totalPage = u.getTotalPage(listapartment, 5);
+            listapartment = u.getListPerPage(listapartment, 5, page);
             request.setAttribute("currentPage", page != null ? page : "1");
             request.setAttribute("totalPage", totalPage);
         } else {
