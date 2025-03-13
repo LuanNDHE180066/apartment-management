@@ -14,7 +14,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-        <title>Contracts</title>
+        <title>Expenditure</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="style.css" />
@@ -54,9 +54,14 @@
             .tbody td{
                 text-align: center;
             }
-            
+
             .display-none{
                 display: none;
+            }
+             .table td{
+                 text-align: center;
+                 color: black;
+                 font-weight: 300;
             }
         </style>
     </head>
@@ -71,7 +76,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Contract List</h2>
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -82,42 +87,41 @@
                                             <div class="heading1 margin_0">
                                                 <h2>Expenditure Table Information</h2>
                                             </div>
-                                            <br> <hr><!-- comment -->
-                                            <div>
-                                                <form action="view-expenditure" method="get">
-                                                    <div class="row align-items-center">
-                                                        <div class="col-md-8">
-                                                            <div class="row align-items-center">
-                                                                <div class="col-md-2">
-                                                                    <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
-                                                                </div>
-                                                                <div class="col-md-2">
-                                                                    <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
-                                                                </div>
-                                                                <div class="col-md-2.5">
-                                                                    <select class="form-control" name="category">
-                                                                        <option value="">Select category</option>
-                                                                        <c:forEach items="${requestScope.categorylist}" var="ca">
-                                                                            <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
-                                                                        </c:forEach>
-                                                                    </select>
-                                                                </div>
-                                                                <div class="col-md-2 d-flex">
-                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                                    <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
-                                                                    <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                                        <a style="color: white" href="view-expense-category">View expense cateogry</a></span>
-                                                                </div>
-
+                                        </div>
+                                        <div style="margin-left: 40px;">
+                                            <form action="view-expenditure" method="get">
+                                                <div class="row align-items-center">
+                                                    <div class="col-md-8">
+                                                        <div class="row align-items-center">
+                                                            <div class="col-md-2">
+                                                                <input type="text" class="form-control" value="${param.title}" name="title" placeholder="Enter title">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="date" class="form-control" value="${param.startDate}" name="startDate" placeholder="From">
+                                                            </div>
+                                                            <div class="col-md-2">
+                                                                <input type="date" class="form-control" value="${param.endDate}" name="endDate" placeholder="To">
+                                                            </div>
+                                                            <div class="col-md-2.5">
+                                                                <select class="form-control" name="category">
+                                                                    <option value="">Select category</option>
+                                                                    <c:forEach items="${requestScope.categorylist}" var="ca">
+                                                                        <option ${param.category == ca.id? 'selected':''} value="${ca.id}">${ca.categoryName}</option>
+                                                                    </c:forEach>
+                                                                </select>
+                                                            </div>
+                                                            <div class="col-md-2 d-flex">
+                                                                <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                                <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}"><a style="color: white" href="add-expenditure">Add</a></span>
+                                                                <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                    <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a></span>
+                                                                <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
+                                                                    <a style="color: white" href="view-expense-category">View expense cateogry</a></span>
                                                             </div>
                                                         </div>
-                                                </form>
-                                            </div>
+                                                    </div>
+                                                </div>
+                                            </form>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -144,8 +148,9 @@
                                                             <td>${expenditure.id}</td>
                                                             <td>${expenditure.title}</td>
                                                             <td>
-                                                                <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
-                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                                <%--  <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <%--       <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
+                                                                ${expenditure.totalPrice}
                                                             </td>
                                                             <td>${expenditure.approveddate}</td>
                                                             <td>${expenditure.category.categoryName}</td>

@@ -164,6 +164,9 @@
                                     </div>
                                     <div class="form-button">
                                         <button type="submit" id="submitButton" disabled>Save Apartment</button>
+                                        <div>
+                                            <a style="font-size: 20px; color: #4a90e2; text-decoration: underline" href="view-apartment-admin">Back</a>
+                                        </div>
                                     </div>
                                 </form>
                             </div>

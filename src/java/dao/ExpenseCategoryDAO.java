@@ -33,7 +33,28 @@ import java.util.logging.Logger;
 public class ExpenseCategoryDAO extends DBContext {
 
     public List<ExpenseCategory> getAllExpenseCategory() {
-        String sql = "select * from ExpenseCategory where status = 1";
+        String sql = "select * from ExpenseCategory ";
+        List<ExpenseCategory> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ExpenseCategoryId");
+                String categoryName = rs.getString("categoryName");
+                String categoryDescription = rs.getString("categoryDescription");
+                int status = rs.getInt("status");
+
+                ExpenseCategory e = new ExpenseCategory(id, categoryName, categoryDescription, status);
+                list.add(e);
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenseCategoryDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
+      public List<ExpenseCategory> getAllActiveExpenseCategory() {
+        String sql = "select * from ExpenseCategory where status =1";
         List<ExpenseCategory> list = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -57,7 +78,7 @@ public class ExpenseCategoryDAO extends DBContext {
         String sql = "select * from ExpenseCategory where status = 1 ";
         List<ExpenseCategory> list = new ArrayList<>();
         if (search != "") {
-            sql += "and categoryname like '%" + search + "%'";
+            sql += " and categoryname like '%" + search + "%'";
         }
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -83,7 +104,7 @@ public class ExpenseCategoryDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, e.getCategoryName());
             ps.setString(2, e.getCategoryDescription());
-            ps.setInt(3, 0);
+            ps.setInt(3, 1);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -136,6 +157,6 @@ public class ExpenseCategoryDAO extends DBContext {
         String des = "Tiền điện tiền nhà tiền nước";
         int status = 1;
         ExpenseCategory e = new ExpenseCategory(id, name, des, status);
-        System.out.println(dao.getExpenseCategoryById(1).getStatus());
+        System.out.println(dao.filterExpenseCategory("se"));
     }
 }

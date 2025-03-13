@@ -9,6 +9,8 @@ import dao.StaffDAO;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
+import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Random;
@@ -100,23 +102,21 @@ public class Util {
         return rs;
     }
 
-
     public static String stringNomalize(String str) {
-    if (str == null || str.trim().isEmpty()) {
-        return "";
+        if (str == null || str.trim().isEmpty()) {
+            return "";
+        }
+
+        String strNormalize = str.trim();
+
+        strNormalize = strNormalize.replaceAll("[\n\r\t]", " ");
+
+        while (strNormalize.contains("  ")) {
+            strNormalize = strNormalize.replace("  ", " ");
+        }
+
+        return strNormalize;
     }
-
-    String strNormalize = str.trim();
-
-    strNormalize = strNormalize.replaceAll("[\n\r\t]", " ");
-
-    while (strNormalize.contains("  ")) {
-        strNormalize = strNormalize.replace("  ", " ");
-    }
-
-    return strNormalize;
-}
-
 
     public <T> int getTotalPage(List<T> list, int numberPerPape) {
         int totalPage;
@@ -195,15 +195,37 @@ public class Util {
         Util u = new Util();
     }
 
-    public  boolean compareFeedbackDateToCurrentTime(String date) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("d/M/yyyy HH:mm");
-        LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
-        LocalDateTime currentDateTime = LocalDateTime.now();
-        LocalDateTime oneDayBefore = currentDateTime.minusDays(1);
+    public static boolean compareFeedbackDateToCurrentTime(String date, int distance) {
+        try {
+            // Correct format for parsing "2025-03-13 12:08:25.377"
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
 
-        // Compare current time with test time
-        return oneDayBefore.isBefore(testDateTime);
+            // Parse the given date string
+            LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
 
+            // Get the current time
+            LocalDateTime currentDateTime = LocalDateTime.now();
+
+            // Calculate the threshold date (N days before now)
+            LocalDateTime dayBefore = currentDateTime.minusDays(distance);
+
+            // Compare: return true if testDateTime is after the threshold
+            return dayBefore.isBefore(testDateTime);
+        } catch (Exception e) {
+            System.err.println("Error parsing date: " + e.getMessage());
+            return false;
+        }
+    }
+
+    public static String FormatDateTime(String date) {
+        // Convert the stored date string to SQL Timestamp
+        Timestamp timestamp = Timestamp.valueOf(date);
+
+        // Define the desired date format
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy HH:mm");
+
+        // Convert and return formatted date
+        return sdf.format(timestamp);
     }
 
 }

@@ -120,6 +120,9 @@
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-expenditure"><i class="fa fa-money-bill"></i><span>Expenditure Information</span></a>
                     </li>
+                      <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
+                        <a  href="expenditure-report"><i class="fa fa-money-bill"></i><span>Expenditure Information 2222</span></a>
+                    </li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
                     </li>

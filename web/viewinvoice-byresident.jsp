@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <html lang="en">
     <head>
         <!-- basic -->
@@ -114,7 +115,9 @@
                                                                 <c:if test="${item.status==0}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
-                                                                        <td>${item.total}</td> 
+                                                                        <td>
+                                                                            <fmt:formatNumber value="${item.total}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
+                                                                        </td> 
                                                                         <td>${item.invoiceDate}</td>
                                                                         <td>${item.dueDate}</td>
                                                                         <td>${item.description}</td>

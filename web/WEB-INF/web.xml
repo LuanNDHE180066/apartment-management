@@ -33,7 +33,7 @@
     <!--    <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/delete-room-type</url-pattern>
-    </filter-mapping>-->
+a    </filter-mapping>-->
     <filter>
         <filter-name>AccountantAndAdminFilter</filter-name>
         <filter-class>filter.AccountantAndAdminFilter</filter-class>
@@ -44,49 +44,24 @@
         <filter-name>AuthorizedFilter</filter-name>
         <url-pattern>/*</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaffFilter</filter-name>
-        <url-pattern>/view-profile-staff</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>StaffFilter</filter-name>
-        <url-pattern>/editprofileSTServlet</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/view-profile-resident</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/editprofileREServlet</url-pattern>
-    </filter-mapping>
+    
+   
+  
+   
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/viewrequest_history</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/view-feed-back-user</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/sendfeedback</url-pattern>
-    </filter-mapping>
+   
+    
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/filterequest</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/filterfeedback</url-pattern>
-    </filter-mapping>
+   
     <filter-mapping>
         <filter-name>ResidentFilter</filter-name>
         <url-pattern>/resident-add-request</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>ResidentFilter</filter-name>
-        <url-pattern>/view-rule-resident</url-pattern>
     </filter-mapping>
     <filter-mapping>
         <filter-name>AdministrativeFilter</filter-name>
@@ -100,22 +75,10 @@
         <filter-name>AdministrativeFilter</filter-name>
         <url-pattern>/assign-request</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdministrativeFilter</filter-name>
-        <url-pattern>/view-all-feedback</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdministrativeFilter</filter-name>
-        <url-pattern>/view-rule-admin</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdministrativeFilter</filter-name>
-        <url-pattern>/add-new-rule</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/view-resident</url-pattern>
-    </filter-mapping>
+   
+   
+   
+   
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-all-staff</url-pattern>
@@ -124,10 +87,7 @@
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-all-company</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/addNewResident</url-pattern>
-    </filter-mapping>
+  
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-staff</url-pattern>
@@ -136,14 +96,7 @@
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/add-new-company</url-pattern>
     </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/view-rule-admin</url-pattern>
-    </filter-mapping>
-    <filter-mapping>
-        <filter-name>AdminFilter</filter-name>
-        <url-pattern>/add-new-rule</url-pattern>
-    </filter-mapping>
+   
     <filter-mapping>
         <filter-name>AdminFilter</filter-name>
         <url-pattern>/view-categoryservice-staff</url-pattern>

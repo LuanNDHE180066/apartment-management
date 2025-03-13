@@ -58,6 +58,7 @@ public class RequestUpdateFeedback extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String id=request.getParameter("id");
+        System.out.println(id);
         FeedbackDAO fd=new FeedbackDAO();
         Feedback f=fd.getById(id);
         f.setStatus(1);

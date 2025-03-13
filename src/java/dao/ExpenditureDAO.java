@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.sql.SQLException;
 
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Collections;
 import java.util.Locale.Category;
@@ -99,13 +100,14 @@ public class ExpenditureDAO extends DBContext {
         }
         return list;
     }
-    public List<String> getListCategory(){
+
+    public List<String> getListCategory() {
         List<String> list = new ArrayList<>();
         String sql = "select distinct category from Expenditure";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while (rs.next()) {     
+            while (rs.next()) {
                 String category = rs.getString("category");
                 list.add(category);
             }
@@ -245,7 +247,7 @@ public class ExpenditureDAO extends DBContext {
         }
         if (categories != "") {
             sql += " and categoryid = " + categories;
-        } 
+        }
         sql += "   order by createdDate desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -267,6 +269,11 @@ public class ExpenditureDAO extends DBContext {
                 Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
                 Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
                 String createdDate = rs.getString("createdDate");
+
+//                SimpleDateFormat formatt = new SimpleDateFormat("dd/MM/yyy");
+//                java.util.Date date = format.parse(createdDate);
+//                String formatDate = formatt.format(date);
+//                
                 Expenditure ne = new Expenditure(id, titleE,
                         accountChiefApprove,
                         currentAdminApprove, approveddate, paymentdate,
@@ -277,6 +284,112 @@ public class ExpenditureDAO extends DBContext {
         } catch (Exception e) {
         }
         return list;
+    }
+
+    public int getNumberOfExpenditureByApproveDateAndExpenseCategory(String startDate, String endDate, String categoryId) {
+        String sql = "select count (*) as [noe] from \n"
+                + "Expenditure where 1= 1 ";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != "") {
+            Date date = Date.valueOf(startDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate >= '" + formatDate + "'";
+        }
+
+        if (endDate != "") {
+            Date date = Date.valueOf(endDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate <= '" + formatDate + "'";
+        }
+        if (categoryId != "") {
+            sql += " and categoryid = " + categoryId;
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("noe");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public double getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(String startDate, String endDate, String categoryId) {
+        String sql = "select sum(totalPrice) as [totalFees] from \n"
+                + "Expenditure where 1= 1 ";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != "") {
+            Date date = Date.valueOf(startDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate >= '" + formatDate + "'";
+        }
+
+        if (endDate != "") {
+            Date date = Date.valueOf(endDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate <= '" + formatDate + "'";
+        }
+        if (categoryId != "") {
+            sql += " and categoryid = " + categoryId;
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("totalFees");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public int getNumberOfExpenditureByYear(String year) {
+        String sql = "select count (*) as [noe] from Expenditure where YEAR(createdDate) = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("noe");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public int getNumberOfExpenditureByYearAndMonth(String month, String year) {
+        String sql = "select count(*) as [noe] from Expenditure where YEAR(createdDate) = ? and MONTH(createdDate) = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(2, month);
+            ps.setString(1, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("noe");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public double getTotalFeesByYear(String year) {
+        String sql = "select FLOOR(sum(totalPrice)) as total from Expenditure where Year(createdDate) = ? ";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, year);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("total");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     public Expenditure getExpenditureById(String id) {
@@ -345,6 +458,6 @@ public class ExpenditureDAO extends DBContext {
                 "2023-01-01" // createdDate
         );
 
-        System.out.println(dao.updateExpenditure(he));
+        System.out.println(dao.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory("", "", ""));
     }
 }

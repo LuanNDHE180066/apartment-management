@@ -29,12 +29,20 @@ public class ApartmentDetailDAO extends DBContext {
     private RoomTypeDAO roomtypeDAO = new RoomTypeDAO();
     private FloorDAO floorDAO = new FloorDAO();
 
-    public List<ApartmentDetail> getApartmentDetailByOwnerid(String ownerId) {
+    public List<ApartmentDetail> getApartmentDetailByOwnerid(String ownerId, String floorN, String rtId) {
         String sql = "select a.*,l.rId as living,  ao.rId  as owner, ao.status from AparmentOwner ao\n"
                 + "left join Apartment a on a.Id = ao.aId\n"
                 + "left join LivingAparment l \n"
                 + "on a.Id = l.aId  where ao.status = 1 and ao.rId = ? and l.status = 1 ";
         List<ApartmentDetail> list = new ArrayList<>();
+        if (floorN != "") {
+            sql += " and a.rtId = " + floorN;
+        }
+
+        if (rtId != "") {
+            sql += "  and a.rtId = " + rtId;
+        }
+
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, ownerId);
@@ -61,6 +69,6 @@ public class ApartmentDetailDAO extends DBContext {
 
     public static void main(String[] args) {
         ApartmentDetailDAO dao = new ApartmentDetailDAO();
-        System.out.println(dao.getApartmentDetailByOwnerid("P105").size());
+        System.out.println(dao.getApartmentDetailByOwnerid("P105", "", "").size());
     }
 }

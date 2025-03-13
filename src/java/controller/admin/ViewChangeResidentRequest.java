@@ -2,9 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.staff.accountant;
+package controller.admin;
 
-import dao.ExpenseCategoryDAO;
+import dao.RequestChangeResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -13,15 +13,15 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
-import model.ExpenseCategory;
+import model.RequestChangeResident;
 import util.Util;
 
 /**
  *
  * @author quang
  */
-@WebServlet(name = "ViewExpenseCategory", urlPatterns = {"/view-expense-category"})
-public class ViewExpenseCategory extends HttpServlet {
+@WebServlet(name = "ViewChangeResidentRequest", urlPatterns = {"/view-change-resident-request"})
+public class ViewChangeResidentRequest extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -40,10 +40,10 @@ public class ViewExpenseCategory extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewExpenseCategory</title>");
+            out.println("<title>Servlet ViewChangeResidentRequest</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewExpenseCategory at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewChangeResidentRequest at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -61,31 +61,26 @@ public class ViewExpenseCategory extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ExpenseCategoryDAO daoEx = new ExpenseCategoryDAO();
-        Util u = new Util();
+        RequestChangeResidentDAO reDAO = new RequestChangeResidentDAO();
+        List<RequestChangeResident> listChangeRequest = reDAO.getPendingChangeRequest();
         String page = request.getParameter("page");
 
-        String search = request.getParameter("search");
-        if (search == null) {
-            search = "";
-        }
-        search = u.stringNomalize(search);
-        int numPerPage = 3;
-        List<ExpenseCategory> listExpenseCategory = daoEx.filterExpenseCategory(search);
+        Util u = new Util();
 
-        if (listExpenseCategory.size() != 0) {
-            List<ExpenseCategory> listPerPage = u.getListPerPage(listExpenseCategory, numPerPage, page);
-            request.setAttribute("listExpenseCategory", listPerPage);
-            request.setAttribute("totalPage", u.getTotalPage(listExpenseCategory, numPerPage));
-            request.setAttribute("currentPage", page == null ? 1 : Integer.parseInt(page));
-            request.getRequestDispatcher("viewexpensecategory.jsp").forward(request, response);
-            return;
+        if (listChangeRequest.size() != 0) {
+            int totalPage = u.getTotalPage(listChangeRequest, 1);
+            listChangeRequest = u.getListPerPage(listChangeRequest, 1, page);
+            request.setAttribute("listChangeRequest", listChangeRequest);
+            request.setAttribute("currentPage", page == null ? "1" : page);
+            request.setAttribute("totalPage", totalPage);
+        } else {
+            request.setAttribute("currentPage", page == null ? "1" : page);
+            request.setAttribute("totalPage", 1);
         }
 
-        request.setAttribute("totalPage", 1F);
-//        request.setAttribute("listExpenseCategory", listPerPage);
-        request.setAttribute("currentPage", 1);
-        request.getRequestDispatcher("viewexpensecategory.jsp").forward(request, response);
+        
+        request.getRequestDispatcher("viewPendingChangeResidentRequest.jsp").forward(request, response);
+
     }
 
     /**

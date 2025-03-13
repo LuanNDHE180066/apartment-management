@@ -165,7 +165,7 @@
                                                                     <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
                                                                         <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Active</option>
                                                                         <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Inactive</option>
-                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''}>Pending</option>
+                                                                      
                                                                     </select>
                                                                 </form>
                                                             </td>
@@ -225,7 +225,6 @@
                                                 </table>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>

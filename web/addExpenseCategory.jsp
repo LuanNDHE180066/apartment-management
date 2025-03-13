@@ -139,6 +139,9 @@
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Add</button>
+                                            <div>
+                                                <a href="view-expense-category" style="font-size: 18px;" >Back</a>
+                                            </div>
                                             <h5 style="color:${requestScope.status == 'true' ? 'green' : 'red'}; text-align:center">
                                                 ${requestScope.message}
                                             </h5>
