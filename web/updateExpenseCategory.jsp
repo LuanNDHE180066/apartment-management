@@ -182,6 +182,7 @@
 
                                         <div class="form-button">
                                             <button type="submit">Update</button>
+                                            <div><a style="color: #4a90e2; font-size: 15px" href="view-expense-category"> Back</a></div>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>

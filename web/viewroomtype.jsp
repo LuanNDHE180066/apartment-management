@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -111,7 +112,7 @@
                                                         <tr>
                                                             <td>${room.name}</td>
                                                             <td>${room.limitPerson}</td>
-                                                            <td>${room.square}</td>
+                                                            <td><fmt:formatNumber value="${room.square}" maxFractionDigits="1"/></td>
                                                             <td>${room.bedroom}</td>
                                                             <td>${room.livingRoom}</td>
                                                             <td>${room.bathRoom}</td>
