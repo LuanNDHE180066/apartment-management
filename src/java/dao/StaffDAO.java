@@ -658,7 +658,7 @@ public class StaffDAO extends DBContext {
 //        for (Staff staff : l1) {
 //            System.out.println("id:" + staff.getId() + "name:" + staff.getName());
 //        }
-        System.out.println(dao.getAllAdmin().size());
+        System.out.println(dao.getActiveStaffbyRole("3").size());
     }
 
 }
