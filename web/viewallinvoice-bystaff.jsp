@@ -46,7 +46,7 @@
                 background-color: #6B90DA; /* Màu nền cho tiêu đề cột */
                 color: black; /* Màu chữ trắng để nổi bật trên nền xanh */
             }
-              td{
+            td{
                 color: black;
             }
         </style>
@@ -194,13 +194,22 @@
                                                                 Find
                                                             </button>
                                                         </form>
-                                                        <form action="synchronous-used-service" method="get">
+                                                        <form action="export-invoice-staff" method="get">
                                                             <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
                                                             <input hidden="" name="from" value="${requestScope.usingFrom}"/>
                                                             <input hidden="" name="to" value="${requestScope.usingTo}"/>
                                                             <button type="submit" 
                                                                     style="height: 42px; padding: 5px 15px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer;">
                                                                 Xuất file
+                                                            </button>
+                                                        </form>
+                                                        <form action="export-invoice-staff" method="post">
+                                                            <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
+                                                            <input hidden="" name="from" value="${requestScope.usingFrom}"/>
+                                                            <input hidden="" name="to" value="${requestScope.usingTo}"/>
+                                                            <button type="submit" 
+                                                                    style="height: 42px; padding: 5px 15px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer;">
+                                                                Xuất file chi tiết
                                                             </button>
                                                         </form>
                                                     </div>

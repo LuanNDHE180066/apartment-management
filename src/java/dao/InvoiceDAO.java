@@ -194,6 +194,32 @@ public class InvoiceDAO extends DBContext{
         }
         return 0;
     }
+    public Invoice getByApartmentIdNow(String aid){
+        ResidentDAO rd = new ResidentDAO();
+        ApartmentDAO ad = new ApartmentDAO();
+        String sql ="select * from invoice where aid=? and MONTH(invoicedate) =? and year(invoicedate) = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, aid);
+            st.setInt(2, LocalDate.now().getMonthValue());
+            st.setInt(3, LocalDate.now().getYear());
+            ResultSet rs =st.executeQuery();
+            if(rs.next()){
+                  String i = rs.getString("id");
+                float total = rs.getFloat("total");
+                String invoicedate = rs.getDate("invoicedate").toString();
+                String duedate = rs.getDate("duedate").toString();
+                int status = rs.getInt("status");
+                String des= rs.getString("description");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                Invoice invoice = new Invoice(i, total, invoicedate, duedate, status, des, re, a);
+                return invoice;
+            }
+        } catch (SQLException e) {
+        }
+        return null;
+    }
     public List<Invoice> searchByTimeAndResidentId(String fromDate,String toDate,String sid){
         ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();

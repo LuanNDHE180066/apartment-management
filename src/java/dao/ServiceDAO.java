@@ -236,16 +236,16 @@ public class ServiceDAO extends DBContext {
         return (float) this.getNumberUsedServiceId(sid) / ld.getNumberLivingResident() * 100;
     }
 
-    public int getNumberUsedByTime(int year, int month, String sid) {
+    public int getNumberUsedByTime(int year, int month, String name) {
         String sql = "select count(*) as no from InvoiceDetail id join Invoice i on id.invoiceId=i.id "
                 + "where year(i.invoicedate)=? "
                 + "and month(i.invoicedate)=?"
-                + " and id.serviceId=?";
+                + " and id.serviceName=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, year);
             st.setInt(2, month);
-            st.setString(3, sid);
+            st.setString(3, name);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return rs.getInt("no");
