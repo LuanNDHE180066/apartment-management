@@ -146,7 +146,7 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> getAllFeedbackUser(String residentID, int page, int pageSize) {
-        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY id desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY date desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         List<Feedback> list = new ArrayList<>();
@@ -564,6 +564,10 @@ public class FeedbackDAO extends DBContext {
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-        System.out.println(dao.getByResidentIDAndDateAndTypeRequest("P100", "2025-03-01", null, null));
+        Feedback f=dao.getById("F20");
+        f.setStatus(1);
+        System.out.println(f.getStatus());
+        System.out.println(dao.editFeedback(f));
+        
     }
 }

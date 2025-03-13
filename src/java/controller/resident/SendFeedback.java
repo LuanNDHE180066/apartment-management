@@ -150,24 +150,49 @@ public class SendFeedback extends HttpServlet {
             }
         }
 
-        // Debugging: Print final image paths
-        System.out.println("Final image paths: " + imagePaths);
-
         // Save feedback and image paths to the database
         FeedbackDAO fd = new FeedbackDAO();
         if (hasUploadedImages) {
-            fd.sendFeedback(detail, rID, tID, rate, imagePaths);
+            int i = fd.sendFeedback(detail, rID, tID, rate, imagePaths);
+            if (i == 0) {
+                if (rate < 3) {
+                    SendEmail email = new SendEmail();
+                    StaffDAO s = new StaffDAO();
+                    RequestTypeDAO rtd = new RequestTypeDAO();
+                    List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
+                    List<String> emails = new ArrayList<>();
+                    for (Staff staff : staffs) {
+                        emails.add(staff.getEmail());
+                    }
+                    email.sendFeedbackMail(emails, tID, rate, detail);
+                }
+            }
+
         } else {
-            fd.sendFeedback(detail, rID, tID, rate, null);
+            int i = fd.sendFeedback(detail, rID, tID, rate, null);
+            if (i == 0) {
+                if (rate < 3) {
+                    SendEmail email = new SendEmail();
+                    StaffDAO s = new StaffDAO();
+                    RequestTypeDAO rtd = new RequestTypeDAO();
+                    List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
+                    List<String> emails = new ArrayList<>();
+                    for (Staff staff : staffs) {
+                        emails.add(staff.getEmail());
+                    }
+                    email.sendFeedbackMail(emails, tID, rate, detail);
+                }
+            }
         }
+        //send mail if rate <3
 
         // Redirect after successful submission
         response.sendRedirect("view-feed-back-user");
     }
 }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
+/**
+ * Returns a short description of the servlet.
+ *
+ * @return a String containing servlet description
+ */
