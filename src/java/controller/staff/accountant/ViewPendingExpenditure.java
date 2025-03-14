@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Account;
 import model.HistoryExpenditure;
+import util.Util;
 
 /**
  *
@@ -62,9 +63,22 @@ public class ViewPendingExpenditure extends HttpServlet {
             throws ServletException, IOException {
         HistoryExpenditureDAO daoHe = new HistoryExpenditureDAO();
         HttpSession session = request.getSession();
+        String page = request.getParameter("page");
         Account a = (Account) session.getAttribute("account");
+        Util u = new Util();
         List<HistoryExpenditure> listHe = daoHe.getListWaitingExpenditureByStaffId(a.getpId());
-        request.setAttribute("listExpenditure", listHe);
+
+        if (listHe.size() != 0) {
+            int totalPage = u.getTotalPage(listHe, 5);
+            listHe = u.getListPerPage(listHe, 5, page);
+            request.setAttribute("listExpenditure", listHe);
+            request.setAttribute("currentPage", page == null ? "1" : page);
+            request.setAttribute("totalPage", totalPage);
+        } else {
+            request.setAttribute("currentPage", page == null ? "1" : page);
+            request.setAttribute("totalPage", 1);
+        }
+
         request.setAttribute("staffId", a.getpId());
         request.getRequestDispatcher("viewpendingexpenditure.jsp").forward(request, response);
 
