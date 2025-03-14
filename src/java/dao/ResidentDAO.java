@@ -153,7 +153,7 @@ public class ResidentDAO extends DBContext {
         }
     }
 
-    public void EditProfileRe(Resident r) {
+    public boolean EditProfileRe(Resident r) {
         String sql = "UPDATE [dbo].[Resident]\n"
                 + "   SET\n"
                 + "      [Email] = ?,\n"
@@ -170,7 +170,9 @@ public class ResidentDAO extends DBContext {
             pre.setString(4, r.getImage());
             pre.setString(5, r.getpId());
             pre.executeUpdate();
-        } catch (Exception e) {
+            return true;
+        } catch (SQLException e) {
+            return false;
         }
     }
 //    Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status)
@@ -323,10 +325,10 @@ public class ResidentDAO extends DBContext {
     public List<Resident> filterListResident(String name, String status) {
         String sql = "SELECT * FROM resident WHERE 1=1 ";
 
-        if ( name!=null && !name.isEmpty()) {
+        if (name != null && !name.isEmpty()) {
             sql += "AND name LIKE N'%" + name + "%' ";
         }
-        if (status!=null && !status.isEmpty()) {
+        if (status != null && !status.isEmpty()) {
             sql += "AND active = " + status + " ";
         }
 

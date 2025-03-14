@@ -123,6 +123,12 @@
             .pagination span {
                 font-weight: bold;
             }
+            .blurred {
+
+
+                opacity: 0.3;
+            }
+
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -155,12 +161,14 @@
                                         <div style="margin-left: 40px;">
                                             <form action="view-all-feedback" method="GET">
                                                 <div class="row align-items-center">
-                                                    <div class="col-md-2">
-                                                        <div class="form-group text-center">
-                                                            <label for="searchName" class="fw-bold">Title</label>
-                                                            <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                    <c:if test="${sessionScope.account.getRoleId()==2}">
+                                                        <div class="col-md-2">
+                                                            <div class="form-group text-center">
+                                                                <label for="searchName" class="fw-bold">Resident Name</label>
+                                                                <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                            </div>
                                                         </div>
-                                                    </div>
+                                                    </c:if>
                                                     <div class="col-md-2">
                                                         <div class="form-group text-center">
                                                             <label for="startDate" class="fw-bold">Start Date</label>
@@ -177,7 +185,7 @@
                                                         <div class="form-group text-center">
                                                             <label class="fw-bold">Service Type</label>
                                                             <select class="form-control" name="serviceType">
-                                                                <option value="">Select Service Type</option>
+                                                                <option value="">Select Type</option>
                                                                 <c:forEach items="${sessionScope.listRequestType}" var="service">
                                                                     <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
                                                                         ${service.name}
@@ -189,6 +197,11 @@
                                                     <div class=" text-center mt-3">
                                                         <button type="submit" class="btn btn-primary">Filter</button>
                                                     </div>
+                                                    <c:if test="${sessionScope.account.getRoleId()==1}">
+                                                        <div class=" text-center mt-3" style="padding-left: 30px">
+                                                            <a href="view-feed-back-user" class="btn btn-primary">Đánh giá của bạn</a>
+                                                        </div>
+                                                    </c:if>
                                                 </div>
                                             </form>
                                         </div>
@@ -200,61 +213,104 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 15%;">Người tạo đơn</th>
+                                                            <c:if test="${sessionScope.account.getRoleId()==2}">
+                                                                <th style="width: 15%;">Người tạo đơn</th>
+                                                                </c:if>
                                                             <th style="width: 20%;">Tên dịch vụ</th>
                                                             <th style="width: 10%;">Thời Gian</th>
                                                             <th style="width: 10%;">Mức độ hài lòng</th>
-                                                            <th style="width: 10%;">Hành động</th>
+                                                                <c:if test="${sessionScope.account.getRoleId()==2}">
+                                                                <th style="width: 10%;">Hành động</th>
+                                                                </c:if>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${sessionScope.listFeedback}" var="feedback" varStatus="loop">
-                                                        <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}">
-                                                            <td>${feedback.resident.name}</td>
-                                                            <td>${feedback.requestType.name}</td>
-                                                            <c:set var="util" value="${util}" />
-                                                            <td>${util.FormatDateTime(feedback.date)}</td>
+                                                        <c:choose>
+                                                            <%-- If account role is 2, display all feedback rows (blurred if feedback.status == 1) --%>
+                                                            <c:when test="${sessionScope.account.getRoleId() == 2}">
+                                                                <tr class="accordion-toggle ${feedback.status == 1 ? 'blurred' : ''}" data-target="#feedbackDetail${loop.index}">
 
-                                                            <td>
-                                                                <c:choose>
-                                                                    <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
-                                                                    <c:when test="${feedback.rate == 4}">Hài lòng ⭐⭐⭐⭐</c:when>
-                                                                    <c:when test="${feedback.rate == 3}">Bình thường ⭐⭐⭐</c:when>
-                                                                    <c:when test="${feedback.rate == 2}">Không hài lòng ⭐⭐</c:when>
-                                                                    <c:when test="${feedback.rate == 1}">Rất tệ ⭐</c:when>
-                                                                    <c:otherwise>Chưa đánh giá</c:otherwise>
-                                                                </c:choose>
-                                                            </td>
-                                                            <td class="action-column">
-                                                                <c:set var="showButton" value="${util.compareFeedbackDateToCurrentTime(feedback.date,1)}"/>
-                                                                <c:if test="${showButton}">
-                                                                    <a href="request-update-feedback?id=${feedback.id}" 
-                                                                       class="btn btn-primary request-update-btn">
-                                                                        Yêu cầu cập nhật
-                                                                    </a>
-                                                                </c:if>
-                                                            </td>
+                                                                    <td>${feedback.resident.name}</td>
+                                                                    <td>${feedback.requestType.name}</td>
+                                                                    <c:set var="util" value="${util}" />
+                                                                    <td>${util.FormatDateTime(feedback.date)}</td>
+                                                                    <td>
+                                                                        <c:choose>
+                                                                            <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
+                                                                            <c:when test="${feedback.rate == 4}">Hài lòng ⭐⭐⭐⭐</c:when>
+                                                                            <c:when test="${feedback.rate == 3}">Bình thường ⭐⭐⭐</c:when>
+                                                                            <c:when test="${feedback.rate == 2}">Không hài lòng ⭐⭐</c:when>
+                                                                            <c:when test="${feedback.rate == 1}">Rất tệ ⭐</c:when>
+                                                                            <c:otherwise>Chưa đánh giá</c:otherwise>
+                                                                        </c:choose>
+                                                                    </td>
+                                                                    <td class="action-column">
+                                                                        <a href="request-update-feedback?id=${feedback.id}" class="btn btn-primary request-update-btn">
+                                                                            Ẩn
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
 
-
-
-                                                        </tr>
-
-                                                        <!-- Feedback Detail Row -->
-                                                        <tr id="feedbackDetail${loop.index}" style="display: none;">
-                                                            <td colspan="5">
-                                                                <div class="card card-body">
-                                                                    <p><strong>Chi tiết:</strong> ${feedback.detail}</p>
-                                                                    <c:if test="${not empty feedback.img}">
-                                                                        <div class="image-gallery">
-                                                                            <c:forEach var="imageUrl" items="${feedback.img}">
-                                                                                <img src="${imageUrl}" alt="Feedback Image" class="feedback-img" data-image="${imageUrl}">
-                                                                            </c:forEach>
+                                                                <!-- Feedback Detail Row -->
+                                                                <tr id="feedbackDetail${loop.index}" style="display: none;">
+                                                                    <td colspan="5">
+                                                                        <div class="card card-body">
+                                                                            <p><strong>Chi tiết:</strong> ${feedback.detail}</p>
+                                                                            <c:if test="${not empty feedback.img}">
+                                                                                <div class="image-gallery">
+                                                                                    <c:forEach var="imageUrl" items="${feedback.img}">
+                                                                                        <img src="${imageUrl}" alt="Feedback Image" class="feedback-img" data-image="${imageUrl}">
+                                                                                    </c:forEach>
+                                                                                </div>
+                                                                            </c:if>
                                                                         </div>
-                                                                    </c:if>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
+                                                                    </td>
+                                                                </tr>
+                                                            </c:when>
+
+                                                            <%-- If account role is not 2, display only feedback rows where feedback.status != 1 --%>
+                                                            <c:otherwise>
+                                                                <c:if test="${feedback.status != 1}">
+                                                                    <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}">
+                                                                        <c:if test="${sessionScope.account.getRoleId()==2}">
+                                                                            <td>${feedback.resident.name}</td>
+                                                                        </c:if>
+                                                                        <td>${feedback.requestType.name}</td>
+                                                                        <c:set var="util" value="${util}" />
+                                                                        <td>${util.FormatDateTime(feedback.date)}</td>
+                                                                        <td>
+                                                                            <c:choose>
+                                                                                <c:when test="${feedback.rate == 5}">Rất hài lòng ⭐⭐⭐⭐⭐</c:when>
+                                                                                <c:when test="${feedback.rate == 4}">Hài lòng ⭐⭐⭐⭐</c:when>
+                                                                                <c:when test="${feedback.rate == 3}">Bình thường ⭐⭐⭐</c:when>
+                                                                                <c:when test="${feedback.rate == 2}">Không hài lòng ⭐⭐</c:when>
+                                                                                <c:when test="${feedback.rate == 1}">Rất tệ ⭐</c:when>
+                                                                                <c:otherwise>Chưa đánh giá</c:otherwise>
+                                                                            </c:choose>
+                                                                        </td>
+
+                                                                    </tr>
+
+                                                                    <!-- Feedback Detail Row -->
+                                                                    <tr id="feedbackDetail${loop.index}" style="display: none;">
+                                                                        <td colspan="5">
+                                                                            <div class="card card-body">
+                                                                                <p><strong>Chi tiết:</strong> ${feedback.detail}</p>
+                                                                                <c:if test="${not empty feedback.img}">
+                                                                                    <div class="image-gallery">
+                                                                                        <c:forEach var="imageUrl" items="${feedback.img}">
+                                                                                            <img src="${imageUrl}" alt="Feedback Image" class="feedback-img" data-image="${imageUrl}">
+                                                                                        </c:forEach>
+                                                                                    </div>
+                                                                                </c:if>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                </c:if>
+                                                            </c:otherwise>
+                                                        </c:choose>
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>

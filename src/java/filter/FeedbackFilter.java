@@ -111,13 +111,13 @@ public class FeedbackFilter implements Filter {
 
         Account a = (session != null) ? (Account) session.getAttribute("account") : null;
         String uri = req.getServletPath();
-        if (uri.contains("view-all-feedback") || uri.contains("request-update-feedback")) {
-            if (a.getRoleId() == 1) {
+        if (uri.contains("request-update-feedback")) {
+            if (a.getRoleId() != 2) {
                 res.sendRedirect("404_error.jsp");
             }
-        } else {
+        }
+        if (uri.contains("view-feed-back-user")) {
             if (a.getRoleId() != 1) {
-
                 res.sendRedirect("404_error.jsp");
             }
         }

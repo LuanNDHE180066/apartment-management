@@ -84,7 +84,7 @@ public class EditprofileREServlet extends HttpServlet {
             // Generate a unique filename using UUID
             String fileName = UUID.randomUUID().toString() + "_" + Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
             File file = new File(uploadPath, fileName);
-            String location="avartars/"+fileName;
+            String location = "avartars/" + fileName;
 
             // Save the file
             try (InputStream fileContent = filePart.getInputStream()) {
@@ -98,11 +98,15 @@ public class EditprofileREServlet extends HttpServlet {
         resident.setPhone(ephone);
         resident.setAddress(eaddress);
 
-        re.EditProfileRe(resident);
+        boolean isValid = re.EditProfileRe(resident);
         resident = re.getById(account.getpId());
-
+        if (isValid) {
+            request.setAttribute("msg", "successfully");
+        } else {
+            request.setAttribute("msg", "Unsuccessfully");
+        }
         session.setAttribute("person", resident);
-        request.setAttribute("msg", "Update successfully");
+
         request.getRequestDispatcher("editprofileRE.jsp").forward(request, response);
     }
 }

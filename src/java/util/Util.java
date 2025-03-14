@@ -197,22 +197,21 @@ public class Util {
 
     public static boolean compareFeedbackDateToCurrentTime(String date, int distance) {
         try {
-            // Correct format for parsing "2025-03-13 12:08:25.377"
+
+            if (date.matches(".*\\.\\d{1,2}$")) {
+                date += "0";
+            } else if (!date.contains(".")) {
+                date += ".000";
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
-            // Parse the given date string
             LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
-
-            // Get the current time
             LocalDateTime currentDateTime = LocalDateTime.now();
-
-            // Calculate the threshold date (N days before now)
             LocalDateTime dayBefore = currentDateTime.minusDays(distance);
 
-            // Compare: return true if testDateTime is after the threshold
             return dayBefore.isBefore(testDateTime);
         } catch (Exception e) {
-            System.err.println("Error parsing date: " + e.getMessage());
+            System.err.println("Error parsing date: " + date + " -> " + e.getMessage());
             return false;
         }
     }

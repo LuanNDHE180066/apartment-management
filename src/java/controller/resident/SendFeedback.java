@@ -22,11 +22,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 import model.Account;
 import model.RequestType;
 import model.SendEmail;
 import model.Staff;
+import validation.BadWordFilter;
 
 /**
  *
@@ -86,6 +88,7 @@ public class SendFeedback extends HttpServlet {
         request.setAttribute("listOfTypeRequest", listTypeOfRequest);
         request.setAttribute("rID", rID);
         request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
+
     }
 
     /**
@@ -97,7 +100,6 @@ public class SendFeedback extends HttpServlet {
      * @throws IOException if an I/O error occurs
      */
     @Override
-
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -107,88 +109,74 @@ public class SendFeedback extends HttpServlet {
         String detail = request.getParameter("content");
         String rate_raw = request.getParameter("rate");
         int rate = 0;
+
         try {
             rate = Integer.parseInt(rate_raw);
         } catch (NumberFormatException e) {
             System.out.println("Error parsing rate: " + e);
         }
 
-        // Define the upload directory correctly (inside deployed app folder)
-        String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
+        // Check for bad words before proceeding
+        // Use ServletContext to get the absolute path
+        String realPath = getServletContext().getRealPath("/asset/badwords.txt");
+        BadWordFilter bwf = new BadWordFilter(realPath);
 
-        File uploadDir = new File(uploadPath);
-
-        // Ensure directory exists
-        if (!uploadDir.exists()) {
-            boolean dirCreated = uploadDir.mkdirs();
+        if (bwf.containsBadWord(detail.toLowerCase())) {
+            request.setAttribute("errorMessage", "Your feedback content must not contain offensive words!");
+            request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
+            return;
         }
 
-        // List to store image paths
+        // ----------- File upload handling ----------------
+        String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
+        File uploadDir = new File(uploadPath);
+        if (!uploadDir.exists()) {
+            uploadDir.mkdirs();
+        }
+
         List<String> imagePaths = new ArrayList<>();
         boolean hasUploadedImages = false;
-
-        // Retrieve uploaded images
         Collection<Part> parts = request.getParts();
         for (Part part : parts) {
-            // Check if the part is a file (it should have content and be from the correct field)
             if (part.getName().equals("images[]") && part.getSize() > 0) {
                 String originalFileName = Paths.get(part.getSubmittedFileName()).getFileName().toString();
-
-                // Ensure unique filename
                 String fileName = UUID.randomUUID().toString() + "_" + originalFileName;
                 String filePath = uploadPath + File.separator + fileName;
-
-                // Save file safely
                 try {
                     part.write(filePath);
-                    imagePaths.add("uploads/" + fileName); // Store relative path for database
+                    imagePaths.add("uploads/" + fileName);
                     hasUploadedImages = true;
-                    System.out.println("Saved file: " + filePath);
                 } catch (IOException e) {
                     System.out.println("Error saving file: " + e.getMessage());
                 }
             }
         }
 
-        // Save feedback and image paths to the database
+        // Save feedback to database
         FeedbackDAO fd = new FeedbackDAO();
         if (hasUploadedImages) {
-            int i = fd.sendFeedback(detail, rID, tID, rate, imagePaths);
-            if (i == 0) {
-                if (rate < 3) {
-                    SendEmail email = new SendEmail();
-                    StaffDAO s = new StaffDAO();
-                    RequestTypeDAO rtd = new RequestTypeDAO();
-                    List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
-                    List<String> emails = new ArrayList<>();
-                    for (Staff staff : staffs) {
-                        emails.add(staff.getEmail());
-                    }
-                    email.sendFeedbackMail(emails, tID, rate, detail);
-                }
-            }
-
+            fd.sendFeedback(detail, rID, tID, rate, imagePaths);
         } else {
-            int i = fd.sendFeedback(detail, rID, tID, rate, null);
-            if (i == 0) {
-                if (rate < 3) {
-                    SendEmail email = new SendEmail();
-                    StaffDAO s = new StaffDAO();
-                    RequestTypeDAO rtd = new RequestTypeDAO();
-                    List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
-                    List<String> emails = new ArrayList<>();
-                    for (Staff staff : staffs) {
-                        emails.add(staff.getEmail());
-                    }
-                    email.sendFeedbackMail(emails, tID, rate, detail);
-                }
-            }
+            fd.sendFeedback(detail, rID, tID, rate, null);
         }
-        //send mail if rate <3
 
-        // Redirect after successful submission
+        // Send email alert if rate < 3
+        if (rate < 3) {
+            SendEmail email = new SendEmail();
+            StaffDAO s = new StaffDAO();
+            RequestTypeDAO rtd = new RequestTypeDAO();
+            List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
+            List<String> emails = new ArrayList<>();
+            for (Staff staff : staffs) {
+                emails.add(staff.getEmail());
+            }
+            email.sendFeedbackMail(emails, tID, rate, detail);
+        }
+
+        // Redirect after successful feedback submission
         response.sendRedirect("view-feed-back-user");
     }
+
 }
 
 /**

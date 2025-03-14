@@ -159,14 +159,6 @@
                 border-radius: 8px;
                 box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
             }
-            .red-dot {
-                display: inline-block;
-                width: 10px;
-                height: 10px;
-                background-color: red;
-                border-radius: 50%;
-                margin-left: 5px;
-            }
 
 
 
@@ -191,36 +183,37 @@
                     <!-- end topbar -->
                     <div class="midde_cont">
                         <div class="container-fluid">
-                            <div class="row column_title">
-                                <div class="col-md-12">
-                                    <div class="page_title">
-                                        <h2>Feedback Information</h2>
-                                    </div>
-                                </div>
-                            </div>
+
                             <div class="row">
                                 <!-- Feedback Information Table -->
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head d-flex justify-content-between align-items-center">
-                                            <div class="heading1 margin_0">
+
+                                            <div class="heading1 ">
                                                 <h2>Feedback Table</h2>
-                                                <h1>${cac}</h1>
                                             </div>
-                                            <button class="btn btn-primary" onclick="location.href = 'sendfeedback'">Send New Feedback</button>
+
+
+                                            <div>
+                                                <button class="btn btn-primary" onclick="location.href = 'sendfeedback'" style="margin-right: 20px">Send New Feedback</button>
+                                                <button class="btn btn-primary" onclick="location.href = 'view-all-feedback'">View All</button>
+                                            </div>
                                         </div>
                                         <div class="table_section padding_infor_info">
                                             <div style="margin-left: 40px; margin-bottom: 30px;">
                                                 <form action="filterfeedback" method="get">
                                                     <div class="row align-items-center">
                                                         <div class="col-md-2">
+                                                            <label for="startDate" class="fw-bold">Start Date</label>
                                                             <input type="date" class="form-control" name="from" value="${sessionScope.from}">
                                                         </div>
                                                         <div class="col-md-2">
+                                                            <label for="endDate" class="fw-bold">End Date</label>
                                                             <input type="date" class="form-control" name="to" value="${sessionScope.to}">
                                                         </div>
-
                                                         <div class="col-md-2">
+                                                            <label class="fw-bold">Service Type</label>
                                                             <select class="form-control" name="typeRequest">
                                                                 <option value="" ${empty sessionScope.selectedType ? 'selected' : ''}>--Select Type--</option>
                                                                 <c:forEach items="${requestScope.listTypeRequest}" var="t">
@@ -233,13 +226,11 @@
                                                         </div>
                                                     </div>
                                                 </form>
-
                                             </div>
                                             <div class="table-responsive-sm">
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 15%;">Người tạo đơn</th>
                                                             <th style="width: 20%;">Tên dịch vụ</th>
                                                             <th style="width: 10%;">Thời Gian</th>
                                                             <th style="width: 10%;">Mức độ hài lòng</th>
@@ -249,10 +240,7 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listFeedbackU}" var="feedback" varStatus="loop">
                                                             <!-- First row: Author with blue background and rounded corners -->
-                                                            <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}" >
-                                                                <td>${feedback.resident.name}<c:if test="${feedback.status == 1}">
-                                                                        <span class="red-dot"></span>
-                                                                    </c:if></td>
+                                                            <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}">
                                                                 <td>${feedback.requestType.name}</td>
                                                                 <c:set var="util" value="${util}" />
                                                                 <td>${util.FormatDateTime(feedback.date)}</td>
@@ -268,7 +256,6 @@
                                                                 </td>
                                                                 <td class="action-column">
                                                                     <c:set var="showButton" value="${util.compareFeedbackDateToCurrentTime(feedback.date, 3)}"/>
-
                                                                     <c:if test="${showButton}">
                                                                         <div class="dropdown-content">
                                                                             <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
@@ -276,9 +263,6 @@
                                                                         </div>
                                                                     </c:if>
                                                                 </td>
-
-
-
                                                             </tr>
 
                                                             <!-- Second row: Details with white background -->
@@ -304,18 +288,11 @@
                                                 <c:if test="${currentPage > 1}">
                                                     <a href="?page=${currentPage - 1}" class="btn btn-primary">Previous</a>
                                                 </c:if>
-
                                                 <span>Page ${currentPage} of ${totalPages}</span>
-
                                                 <c:if test="${currentPage < totalPages}">
                                                     <a href="?page=${currentPage + 1}" class="btn btn-primary">Next</a>
                                                 </c:if>
                                             </div>
-
-
-
-
-
 
                                             <!-- Modal for Image Inspection -->
                                             <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="false">
@@ -333,27 +310,28 @@
                                                     </div>
                                                 </div>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-                    <!-- footer -->
 
                 </div>
-                <!-- end dashboard inner -->
             </div>
-        </div>
-        <!-- jQuery -->
-        <script src="js/jquery.min.js"></script>
-        <script src="js/popper.min.js"></script>
-        <script src="js/bootstrap.min.js"></script>
-        <script src="js/custom.js"></script>
+            <!-- footer -->
 
-        <script>
+        </div>
+        <!-- end dashboard inner -->
+    </div>
+</div>
+<!-- jQuery -->
+<script src="js/jquery.min.js"></script>
+<script src="js/popper.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/custom.js"></script>
+
+<script>
 
                                                                                 document.addEventListener("DOMContentLoaded", function () {
                                                                                     document.querySelectorAll(".accordion-toggle").forEach(function (row) {
@@ -377,8 +355,8 @@
                                                                                         });
                                                                                     });
                                                                                 });
-        </script>
+</script>
 
 
-    </body>
+</body>
 </html>
