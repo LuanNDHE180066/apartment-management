@@ -206,9 +206,10 @@ public class AddExpenditure extends HttpServlet {
                 return;
             } else {
                 SendEmail send = new SendEmail();
-                send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
-                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
-                        "Please check and confirm the expenditure : " + he.getTitle());
+                send.sendEmail(he.getChiefAccountantId().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
+                send.sendEmail(he.getCurrentAdmin().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
+//                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
+//                        "Please check and confirm the expenditure : " + he.getTitle());
                 request.setAttribute("message", "Your expenditure has been successfully saved to the waiting list.");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);

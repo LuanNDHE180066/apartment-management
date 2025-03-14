@@ -27,7 +27,7 @@ import static util.Util.stringNomalize;
 @WebServlet(name = "ViewRuleAdminServlet", urlPatterns = {"/view-rule-admin"})
 public class ViewRuleAdminServlet extends HttpServlet {
 
-    private static final int RECORDS_PER_PAGE = 5;
+    private static final int RECORDS_PER_PAGE = 8;
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>

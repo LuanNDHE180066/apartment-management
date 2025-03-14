@@ -76,22 +76,14 @@
                                             <form action="view-roomtype" method="GET">
                                                 <div class="row align-items-center">
 
-                                                    <!--                                                    <div class="col-md-2">
-                                                                                                            <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
-                                                                                                        </div>
-                                                                                                        
-                                                                                                        <div class="col-md-2">
-                                                                                                            <select class="form-control" name="serviceType">
-                                                                                                                <option value="">Select Service Type</option>
-                                                    <c:forEach items="${sessionScope.listRequestType}" var="service">
-                                                        <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
-                                                        ${service.name}
-                                                    </option>
-                                                    </c:forEach>
-                                                </select>
-                                            </div>-->
+                                                    <div class="col-md-2">
+                                                        <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                    </div>
+
+
+
                                                     <div class="col-md-2 d-flex">
-                                                        <!--                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>-->
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="add-new-room-type" class="btn btn-primary">Add new room type</a>
                                                     </div>
                                                 </div>
@@ -141,23 +133,24 @@
                             </div>
                         </div>
                     </div>
-                    <!--                    <form method="get" action="view-all-feedback" style="display: flex; align-items: center; gap: 10px;">
-                                             Dropdown ch?n trang 
-                                            <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
-                                            <select id="page" name="page" onchange="this.form.submit()" 
-                                                    style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                    <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                        <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                        ${page}
-                    </option>
-                    </c:forEach>
-                </select>
-
-                <input type="text" value="${param.searchName}" class="form-control" name="searchName" hidden="">
-                <input type="date"  name="startDate" placeholder="Start Date" value="${param.startDate}" hidden="">
-                <input type="date"  name="endDate" placeholder="End Date" value="${param.endDate}" hidden="">
-                <input type="text"  name="endDate" placeholder="End Date" value="${param.serviceType}" hidden="">
-            </form>-->
+                    <form method="get" action="view-roomtype" style="display: flex; align-items: center; gap: 10px;">
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        
+                        <input type="text" name="searchName" value="${param.searchName}" hidden=""><!-- comment -->
+                        <select id="page" name="page" onchange="this.form.submit()" 
+                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                    ${page}
+                                </option>
+                            </c:forEach>
+                            <!-- comment -->
+                        </select>
+<!--                             <input type="text" value="${param.filterStatus}" hidden="">
+                          <input type="text" value="${param.filterStatus}" hidden="">
+                           <input type="text" value="${param.searchName}" hidden="">
+                           <input type="text" value="${param.searchName}" hidden="">-->
+                    </form>
                     <div class="container-fluid">
                         <div class="footer">
                             <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>

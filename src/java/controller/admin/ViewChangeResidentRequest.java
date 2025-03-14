@@ -4,7 +4,7 @@
  */
 package controller.admin;
 
-import dao.RoomTypeDAO;
+import dao.RequestChangeResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -12,18 +12,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Account;
-import model.RoomType;
+import model.RequestChangeResident;
 import util.Util;
 
 /**
  *
- * @author pc
+ * @author quang
  */
-@WebServlet(name = "ViewRoomTypeServlet", urlPatterns = {"/view-roomtype"})
-public class ViewRoomTypeServlet extends HttpServlet {
+@WebServlet(name = "ViewChangeResidentRequest", urlPatterns = {"/view-change-resident-request"})
+public class ViewChangeResidentRequest extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -42,10 +40,10 @@ public class ViewRoomTypeServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewRoomTypeServlet</title>");
+            out.println("<title>Servlet ViewChangeResidentRequest</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewRoomTypeServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewChangeResidentRequest at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -63,28 +61,26 @@ public class ViewRoomTypeServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String searchName = request.getParameter("searchName");
+        RequestChangeResidentDAO reDAO = new RequestChangeResidentDAO();
+        List<RequestChangeResident> listChangeRequest = reDAO.getPendingChangeRequest();
         String page = request.getParameter("page");
-        if (searchName == null) {
-            searchName = "";
-        }
+
         Util u = new Util();
-        searchName = u.stringNomalize(searchName);
-        RoomTypeDAO RT = new RoomTypeDAO();
-        List<RoomType> listRoomType = RT.filterRoomType(searchName);
 
-        if (listRoomType.size() != 0) {
-            int totalPage = u.getTotalPage(listRoomType, 5);
-            listRoomType = u.getListPerPage(listRoomType, 5, page);
+        if (listChangeRequest.size() != 0) {
+            int totalPage = u.getTotalPage(listChangeRequest, 1);
+            listChangeRequest = u.getListPerPage(listChangeRequest, 1, page);
+            request.setAttribute("listChangeRequest", listChangeRequest);
+            request.setAttribute("currentPage", page == null ? "1" : page);
             request.setAttribute("totalPage", totalPage);
-            request.setAttribute("currentPage", page == null ? "1" : page);
-            request.setAttribute("roomtype", listRoomType);
         } else {
-            request.setAttribute("totalPage", 1);
             request.setAttribute("currentPage", page == null ? "1" : page);
+            request.setAttribute("totalPage", 1);
         }
 
-        request.getRequestDispatcher("viewroomtype.jsp").forward(request, response);
+        
+        request.getRequestDispatcher("viewPendingChangeResidentRequest.jsp").forward(request, response);
+
     }
 
     /**
@@ -98,7 +94,7 @@ public class ViewRoomTypeServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        processRequest(request, response);
     }
 
     /**
