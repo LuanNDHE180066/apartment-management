@@ -73,7 +73,7 @@ public class UpdateApartmentServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 //        HttpSession session = request.getSession();
-        String id = request.getParameter("id");
+        String aid = request.getParameter("id");
         ApartmentDAO dao = new ApartmentDAO();
         LivingApartmentDAO daoLA = new LivingApartmentDAO();
         OwnerApartmentDAO daoAO = new OwnerApartmentDAO();
@@ -82,11 +82,17 @@ public class UpdateApartmentServlet extends HttpServlet {
 
         List<Resident> listResident = daoR.getAllResident();
         List<RoomType> listRoomType = daoRT.getAll();
-        Apartment a = dao.getById(id);
-        LivingApartment la = daoLA.getLivingResidentByApartmentID(id);
-        OwnerApartment oa = daoAO.getOwnerByApartmentID(id);
+        Apartment a = dao.getById(aid);
+        LivingApartment la = daoLA.getLivingResidentByApartmentID(aid);
+        OwnerApartment oa = daoAO.getOwnerByApartmentID(aid);
+        String livingResidentName = daoLA.getLivingResidentName(aid);
+        String livingResidentIds = daoLA.getLivingResidentId(aid);
+        List<Resident> listLivingResident = daoLA.getLivingResidentList(aid);
 
+        request.setAttribute("livingResidents", listLivingResident);
         request.setAttribute("apartment", a);
+        request.setAttribute("livingResidentNames", livingResidentName);
+        request.setAttribute("livingResidentIds", livingResidentIds);
         request.setAttribute("livingResident", la);
         request.setAttribute("ownerApartment", oa);
 //        session.setAttribute("roomTypes", listRoomType);

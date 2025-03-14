@@ -28,6 +28,8 @@ import model.Resident;
  */
 public class LivingApartmentDAO extends DBContext {
 
+    private ResidentDAO residenDAO = new ResidentDAO();
+
     public List<LivingApartment> getByApartmentID(String aid) {
         String sql = "select * from LivingAparment where aId=?";
         ResidentDAO rd = new ResidentDAO();
@@ -100,6 +102,65 @@ public class LivingApartmentDAO extends DBContext {
             return (Collections.max(list) + 1) + "";
         } catch (SQLException ex) {
 
+        }
+        return null;
+    }
+
+    public String getLivingResidentName(String aid) {
+        String sql = "select rId from LivingAparment where aId = ? and status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+            StringBuilder str = new StringBuilder();
+            while (rs.next()) {
+                str.append(residenDAO.getById(rs.getString("rid")).getName());
+
+                str.append(",");
+
+            }
+            return str.toString().trim();
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public List<Resident> getLivingResidentList(String aid) {
+        String sql = " select * from LivingAparment where  aId = ? and status = 1";
+        List<Resident> list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                Resident r = residenDAO.getById(rs.getString("rid"));
+                list.add(r);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public String getLivingResidentId(String aid) {
+        String sql = "select rId from LivingAparment where aId = ? and status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+            StringBuilder str = new StringBuilder();
+            while (rs.next()) {
+                str.append(rs.getString("rid"));
+
+                str.append(",");
+
+            }
+            return str.toString().trim();
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -275,6 +336,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getNumberLivingByTime(2, 2025));
+        System.out.println(dao.getLivingResidentId("A001"));
     }
 }
