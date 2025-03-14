@@ -94,6 +94,8 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address, usernameE, password, st, null, role, image);
                 resident.setGender(gender);
+                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                resident.setIsHomeOwner(isHomeOwner);
                 return resident;
             }
         } catch (SQLException ex) {
@@ -124,6 +126,7 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
                 Resident re = new Resident(id, name, cccd, phone, email, bod, address, image, gender, username);
+
                 return re;
             }
         } catch (SQLException ex) {
@@ -153,7 +156,11 @@ public class ResidentDAO extends DBContext {
                 Role role = new Role("1", "resident", "--");
                 String status = String.valueOf(rs.getInt("active"));
                 String gender = rs.getString("gender");
-                list.add(new Resident(id, name, cccd, phone, email, bod, address, status, gender));
+                String img = rs.getString("image");
+                Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, null, role, img);
+                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                resident.setIsHomeOwner(isHomeOwner);
+                list.add(resident);
             }
             return list;
         } catch (SQLException ex) {
@@ -259,8 +266,9 @@ public class ResidentDAO extends DBContext {
                 String status = String.valueOf(rs.getInt("active"));
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-
+                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, status, gender);
+                resident.setIsHomeOwner(isHomeOwner);
                 list.add(resident);
             }
         } catch (SQLException ex) {
@@ -290,13 +298,15 @@ public class ResidentDAO extends DBContext {
                 + "           ,[Address]\n"
                 + "           ,[CCCD]\n"
                 + "           ,[username]\n"
-                + "            ,[password]\n"
+                + "           ,[password]\n"
                 + "           ,[roleId]\n"
                 + "           ,[active]\n"
                 + "           ,[gender]\n"
-                + "           ,[image])\n"
+                + "           ,[image]\n"
+                + "           ,[isHomeOwner])\n "
                 + "     VALUES\n"
-                + "           (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+                + "           (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+
         Util u = new Util();
         List<Resident> listResident = getAll();
         int lastID = u.getNumberFromText(listResident.get(listResident.size() - 1).getpId());
@@ -305,16 +315,43 @@ public class ResidentDAO extends DBContext {
             st.setString(1, "P" + (lastID + 1));
             st.setString(2, r.getName());
             st.setString(3, r.getBod());
-            st.setString(4, r.getEmail());
-            st.setString(5, r.getPhone());
+            if (r.getEmail() == null || r.getEmail().trim().isEmpty()) {
+                st.setNull(4, java.sql.Types.VARCHAR);
+            } else {
+                st.setString(4, r.getEmail());
+            }
+            if (r.getPhone() == null || r.getPhone().trim().isEmpty()) {
+                st.setNull(5, java.sql.Types.VARCHAR);
+            } else {
+                st.setString(5, r.getPhone());
+            }
             st.setString(6, r.getAddress());
-            st.setString(7, r.getCccd());
-            st.setString(8, r.getUsername());
+            if (r.getCccd() == null || r.getCccd().trim().isEmpty()) {
+                st.setNull(7, java.sql.Types.VARCHAR);
+            } else {
+                st.setString(7, r.getCccd());
+            }
+
+            if (r.getUsername() == null || r.getUsername().trim().isEmpty()) {
+                st.setNull(8, java.sql.Types.VARCHAR); // Pass NULL if username is null or empty
+            } else {
+                st.setString(8, r.getUsername());
+            }
+
             st.setString(9, r.getPassword());
             st.setString(10, r.getRole().getId());
-            st.setInt(11, 2);
+            if (r.getUsername() != null) {
+                st.setInt(11, 2);
+            } else {
+                st.setInt(11, 1);
+            }
             st.setString(12, r.getGender());
             st.setString(13, "images/avatar/person.jpg");
+            if (r.isIsHomeOwner()) {
+                st.setInt(14, 1);
+            } else {
+                st.setInt(14, 0);
+            }
             st.executeUpdate();
             return 0;
 
@@ -382,7 +419,7 @@ public class ResidentDAO extends DBContext {
         return listpage;
     }
 
-    public List<Resident> filterListResident(String name, String status) {
+    public List<Resident> filterListResident(String name, String status, String homeOwner) {
         String sql = "SELECT * FROM resident WHERE 1=1 ";
 
         if (name != null && !name.isEmpty()) {
@@ -391,6 +428,13 @@ public class ResidentDAO extends DBContext {
         if (status != null && !status.isEmpty()) {
             sql += "AND active = " + status + " ";
         }
+        if (homeOwner != null && !homeOwner.isEmpty()) {
+            if ("1".equals(homeOwner)) {
+                sql += "And isHomeOwner=1";
+            } else {
+                sql += "And isHomeOwner=0";
+            }
+        }
 
         sql += "ORDER BY id DESC";
 
@@ -398,6 +442,7 @@ public class ResidentDAO extends DBContext {
             List<Resident> list = new ArrayList<>();
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
+            LivingApartmentDAO lad = new LivingApartmentDAO();
             while (rs.next()) {
                 String id = rs.getString("id");
                 String na = rs.getString("name");
@@ -414,6 +459,9 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address, username, password, st, name, role, image);
                 resident.setGender(gender);
+                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                resident.setIsHomeOwner(isHomeOwner);
+                resident.setApartmentNumber(lad.getApartmentsByResidentId(id));
                 list.add(resident);
             }
             return list;
@@ -439,8 +487,6 @@ public class ResidentDAO extends DBContext {
         return false;
 
     }
-
-  
 
     public int getNumberLivingPerson() {
         String sql = "select sum(NoPerson) as noperson from Apartment";
@@ -521,9 +567,9 @@ public class ResidentDAO extends DBContext {
         return 0;
     }
 
-      public static void main(String[] args) {
+    public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-          System.out.println(dao.getResidentByUsername("quang"));
+        System.out.println(dao.getResidentByUsername("alice").isIsHomeOwner());
 
     }
 }

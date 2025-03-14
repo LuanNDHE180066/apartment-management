@@ -105,24 +105,28 @@ public class AddNewResident extends HttpServlet {
         Util u = new Util();
         //generate random password then send to new user
         String password = u.generatePassword();
-        SendEmail e = new SendEmail();
-        e.sendEmail(email, name, username, password);
         //insert to database with encryted password
         ResidentDAO rd = new ResidentDAO();
         RoleDAO roleD = new RoleDAO();
-        password = encryptPassword(password);
+        String password_encript = encryptPassword(password);
+
         Resident r = new Resident();
         r.setName(name);
         r.setBod(dob);
         r.setAddress(address);
         r.setPhone(phone);
-        r.setEmail(email);
-        r.setCccd(id);
+        r.setEmail(email != null ? email : null);
+        r.setCccd(id != null ? id : null);
         r.setRole(roleD.getById("1"));
-        r.setUsername(username);
-        r.setPassword(password);
+        r.setPassword(password_encript);
         r.setGender(gender);
-        rd.insertNewResident(r);
+        r.setIsHomeOwner(username != null ? true : false);
+        r.setUsername(r.isIsHomeOwner() == true ? username : null);
+        int successful = rd.insertNewResident(r);
+        if (successful == 1 && username != null) {
+            SendEmail e = new SendEmail();
+            e.sendEmail(email, name, username, password);
+        }
 
         response.sendRedirect("view-resident");
     }
