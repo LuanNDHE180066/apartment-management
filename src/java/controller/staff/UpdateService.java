@@ -87,6 +87,7 @@ public class UpdateService extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        MonthlyServiceDAO md = new MonthlyServiceDAO();
         String unit = Util.stringNomalize(request.getParameter("unit"));
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
@@ -109,18 +110,18 @@ public class UpdateService extends HttpServlet {
         String companyId = request.getParameter("company");
         int status = Integer.parseInt(request.getParameter("status"));
         String endDate;
-        if(status != sv.getStatus()){
-            if(status==0){
+        if (status != sv.getStatus()) {
+            if (status == 0) {
                 endDate = java.sql.Date.valueOf(LocalDate.now()).toString();
-            }
-            else{
+            } else {
                 endDate = null;
             }
-        }
-        else{
+        } else {
             endDate = sv.getEndDate();
         }
-        Service input = new Service(id, name, price, des, csd.getByCategoryId(categoryId), cd.getById(companyId), status, sv.getStartDate(), endDate, unit);
+        Service input = new Service(id, name, price, des,
+                csd.getByCategoryId(categoryId), cd.getById(companyId),
+                status, sv.getStartDate(), endDate, unit);
         if (input.equals(sv)) {
             request.setAttribute("error", "You doesn't change anything");
             request.setAttribute("service", sv);
@@ -130,6 +131,10 @@ public class UpdateService extends HttpServlet {
             return;
         }
         sd.updateService(input);
+        if (!input.getCategoryService().getId().equals(sv.getCategoryService().getId())
+                && input.getCategoryService().getId().equals("SV001")) {
+            md.addServiceToAllResidentNoUsing(input.getId());// nếu là loại bắt buộc thì thêm vào tất cả
+        }
 //        MonthlyServiceDAO md = new MonthlyServiceDAO();
 //        if (status != sv.getStatus()) {//trường hợp đổi status
 //            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới

@@ -210,7 +210,9 @@
                                                                         <td>
                                                                             <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
                                                                         </td> 
-                                                                        <td>${item.invoiceDate}</td>
+                                                                        <td>
+                                                                            <fmt:formatDate value="${item.invoiceDate}" pattern="dd-MM-yyyy"/>
+                                                                        </td>
                                                                         <td>${item.dueDate}</td>
                                                                         <td>${item.description}</td>
                                                                         <td>${item.apartment.id}</td>
