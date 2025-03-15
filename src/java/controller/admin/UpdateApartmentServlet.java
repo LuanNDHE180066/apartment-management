@@ -208,6 +208,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         }
 
         List<Resident> listNewLivingResident = new ArrayList<>();
+        List<Resident> listOldLivingResident = daoLA.getLivingResidentList(aid);
         if (!livingResidentId.trim().isBlank()) {
             String[] listResident = livingResidentId.split(",");
             for (String i : listResident) {
@@ -216,8 +217,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         }
 
         if (listNewLivingResident.size() != 0) {
-            List<Resident> listOldLivingResident = daoLA.getLivingResidentList(aid);
-            
+
 //            PrintWriter out = response.getWriter();
 //           for(Resident re : listOldLivingResident){
 //                out.println("Old: " + re.getpId() );
@@ -226,8 +226,6 @@ public class UpdateApartmentServlet extends HttpServlet {
 //           for(Resident re : listNewLivingResident){
 //                out.println("New: " + re.getpId() );
 //           }
-           
-
             for (Resident re : listOldLivingResident) {
                 if (!listNewLivingResident.contains(re)) {
                     if (!daoLA.updateEndLivingApartment(date, aid, re.getpId())) {
@@ -252,6 +250,18 @@ public class UpdateApartmentServlet extends HttpServlet {
                 }
             }
         } else {
+            for (Resident re : listOldLivingResident) {
+                if (!listNewLivingResident.contains(re)) {
+                    if (!daoLA.updateEndLivingApartment(date, aid, re.getpId())) {
+                        request.setAttribute("apartment", a);
+                        request.setAttribute("status", "false");
+                        request.setAttribute("message", "Failed to update 6 ");
+//                out.println(ownerId + " " + date + " " + livingId + " " + aid);
+                        request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
+                        return;
+                    }
+                }
+            }
             daoLA.insertLivingApartment(ownerResident.getpId(), aid, date);
         }
 
