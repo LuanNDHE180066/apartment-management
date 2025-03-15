@@ -5,6 +5,7 @@
 package model;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  *
@@ -254,6 +255,28 @@ public class Resident {
 
     public void setApartmentNumber(List<Apartment> apartmentNumber) {
         this.apartmentNumber = apartmentNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.pId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Resident other = (Resident) obj;
+        return Objects.equals(this.pId, other.pId);
     }
     
 

@@ -135,7 +135,7 @@ public class LivingApartmentDAO extends DBContext {
             ResultSet rs = ps.executeQuery();
 
             while (rs.next()) {
-                Resident r = residenDAO.getById(rs.getString("rid"));
+                Resident r = residenDAO.getById_v2(rs.getString("rid"));
                 list.add(r);
             }
             return list;
@@ -181,12 +181,13 @@ public class LivingApartmentDAO extends DBContext {
         return false;
     }
 
-    public boolean updateEndLivingApartment(String endDate, String aid) {
-        String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ? and status = 1";
+    public boolean updateEndLivingApartment(String endDate, String aid, String rid) {
+        String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ? and status = 1 and rId = ? ";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, endDate);
             ps.setString(2, aid);
+            ps.setString(3, rid);
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
