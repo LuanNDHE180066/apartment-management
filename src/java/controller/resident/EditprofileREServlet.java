@@ -65,7 +65,7 @@ public class EditprofileREServlet extends HttpServlet {
         }
 
         ResidentDAO re = new ResidentDAO();
-        if (re.checkDuplicateEmail(eemail) && !eemail.equals(account.getEmail())) {
+        if (re.checkDuplicateEmail(eemail,account.getpId()) && !eemail.equals(account.getEmail())) {
             request.setAttribute("status", "false");
             request.setAttribute("msg", "Email already exists. Please use a different email.");
             request.getRequestDispatcher("editprofileRE.jsp").forward(request, response);

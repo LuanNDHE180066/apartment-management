@@ -316,7 +316,7 @@ public class SendEmail {
         return false;
     }
 
-    public void sendEmail(String to, String residentName, String username, String residentPassword) {
+    public void sendEmailResidentAccount(String to, String residentName, String username, String residentPassword) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587"); // Use 587 for TLS

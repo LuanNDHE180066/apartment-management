@@ -160,23 +160,21 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-
                                                             <th>Name</th>
                                                             <th>Phone</th>
                                                             <th>Email</th>
                                                             <th>Status</th>
                                                             <th>View Detail</th>
+                                                            <th>Update</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listResident}" var="resident">
                                                         <tr>
-
                                                             <td>${resident.name}</td>
                                                             <td>${empty resident.phone ? 'None':resident.phone}</td>
                                                             <td>${empty resident.email ? 'None' : resident.email}</td>
-
                                                             <td>
                                                                 <form action="updateResidentStatus" method="POST" class="status-form">
                                                                     <input type="hidden" name="id" value="${resident.pId}">
@@ -184,8 +182,6 @@
                                                                         <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Active</option>
                                                                         <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Inactive</option>
                                                                         <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''} disabled>Pending</option>
-                                                                    </select>
-
                                                                     </select>
                                                                 </form>
                                                             </td>
@@ -198,10 +194,13 @@
                                                                        onclick="confirmDelete(this, event)">
                                                                         <i class="fa-solid fa-delete-left"></i>
                                                                     </a>
-
                                                                 </c:if>
                                                             </td>
-
+                                                            <td style="text-align: center;">
+                                                                <a href="updateRE?rid=${resident.pId}">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                            </td>
                                                         </tr>
 
                                                         <!-- Modal for resident details -->
