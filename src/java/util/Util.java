@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -215,7 +216,14 @@ public class Util {
             return false;
         }
     }
-
+    public static String formatDate(String date){
+        if(date == null) return null;
+        String[] token = date.split("-");
+        String temp = token[0];
+        token[0] = token[2];
+        token[2] = temp;
+        return String.join("-", token);
+    }
     public static String FormatDateTime(String date) {
         // Convert the stored date string to SQL Timestamp
         Timestamp timestamp = Timestamp.valueOf(date);

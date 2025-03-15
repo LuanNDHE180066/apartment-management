@@ -135,6 +135,14 @@ public class UpdateService extends HttpServlet {
                 && input.getCategoryService().getId().equals("SV001")) {
             md.addServiceToAllResidentNoUsing(input.getId());// nếu là loại bắt buộc thì thêm vào tất cả
         }
+         if (input.getStatus()!= sv.getStatus()
+                && input.getStatus() ==0) {
+            md.deleteWhenTurnOffService(input.getId());// nếu tắt sv thì sẽ loại tự hủy đăng kí của dân
+        }
+         if (input.getStatus()!= sv.getStatus()
+                && input.getStatus() == 1 && input.getCategoryService().getId().equals("SV001")) {
+             md.addServiceToAllResidentNoUsing(input.getId());// nếu bật lại 1 dịch vụ đang tắt và đó là bắt buộc
+        }
 //        MonthlyServiceDAO md = new MonthlyServiceDAO();
 //        if (status != sv.getStatus()) {//trường hợp đổi status
 //            if (status == 1) {// tức là từ không hoạt động lên hoạt động = tạo mới

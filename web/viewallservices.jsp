@@ -161,16 +161,18 @@
                                                         <c:forEach items="${requestScope.listServices}" var="list">
                                                             <tr>
                                                                 <td style="text-align: left">${list.name}</td>
-                                                                <td style="text-align: left">${list.unitPrice}</td>
+                                                                <td style="text-align: left">
+                                                                    <fmt:formatNumber type="currency" currencyCode="VND" value="${list.unitPrice}" maxFractionDigits="0"/>
+                                                                </td>
                                                                 <td style="text-align: left">${list.unit}</td>
                                                                 <td style="text-align: left">${list.description}</td>
                                                                 <td style="text-align: left">${list.categoryService.name}</td>
                                                                 <td style="text-align: left">${list.company.name}</td>
                                                                 <td style="text-align: left">${list.status==1?'Active':'Inactive'}</td>
                                                                 <td style="text-align: left">
-                                                                    ${list.startDate}
+                                                                    ${list.startDateFormat}
                                                                 </td>
-                                                                <td style="text-align: left">${list.endDate}</td>
+                                                                <td style="text-align: left">${list.endDateFormat}</td>
                                                                 <td style="text-align: left"><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
