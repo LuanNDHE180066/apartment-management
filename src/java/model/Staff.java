@@ -32,6 +32,7 @@ public class Staff {
     private String startDate; // Start date as String
     private String endDate; // End date as String
     private String gender,image;
+    private int ischief;
 
     public Staff(String id, String email, String phone, String bank, String address) {
         this.id= id;
@@ -49,7 +50,7 @@ public class Staff {
         this.gender = gender;
     }
 
-    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender) {
+    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,int ischief) {
         this.id = id;
         this.name = name;
         this.bod = bod;
@@ -68,8 +69,9 @@ public class Staff {
         this.startDate = startDate;
         this.endDate = endDate;
         this.gender = gender;
+        this.ischief=ischief;
     }
-    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,String image) {
+    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,String image,int ischief) {
         this.id = id;
         this.name = name;
         this.bod = bod;
@@ -89,6 +91,7 @@ public class Staff {
         this.endDate = endDate;
         this.gender = gender;
         this.image = image;
+        this.ischief=ischief;
     }
     public Staff(String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, String username, String password, Role role, Company company, String startDate, String gender) {
         this.name = name;
@@ -392,5 +395,14 @@ public class Staff {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public int getIschief() {
+        return ischief;
+    }
+
+    public void setIschief(int ischief) {
+        this.ischief = ischief;
+    }
+    
     
 }

@@ -98,7 +98,8 @@
                                                             <th>Email</th>                                               
                                                             <th>Address</th>
                                                             <th>Role</th>
-                                                            <th>Status</th> 
+                                                            <th>Status</th>
+                                                            <th>Is Chief</th>
                                                             <th>Detail</th>
                                                             <th>Option</th>
                                                         </tr>
@@ -112,6 +113,7 @@
                                                                 <td>${staff.address}</td>
                                                                 <td>${staff.role.name}</td>
                                                                 <td>${staff.status==1?'Working':'Retired'}</td>
+                                                                <td>${staff.ischief==1?'Yes':'No'}</td>
                                                                 <td style="text-align: center">
                                                                     <a href="#" data-toggle="modal" data-target="#staffDetail${staff.id}">
                                                                         <i class="fa fa-user" aria-hidden="true"></i>

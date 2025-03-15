@@ -59,7 +59,8 @@ public class StaffDAO extends DBContext {
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -107,7 +108,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 staffs.add(s);
             }
         } catch (Exception e) {
@@ -142,7 +144,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -178,7 +181,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -213,7 +217,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -249,7 +254,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
@@ -297,7 +303,8 @@ public class StaffDAO extends DBContext {
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image,ischief);
                 return s;
             }
         } catch (Exception e) {
@@ -340,7 +347,7 @@ public class StaffDAO extends DBContext {
 
     public boolean updateStaffInfor(Staff s) {
         String sql = "Update staff set name = ?, bod = ? ,email = ? , phone = ?, address = ? , cccd = ? , salary = ? , education = ? , bank = ?"
-                + ", status = ? ,roleid = ? ,cID = ?, startdate = ?, enddate = ? where id = ? ";
+                + ", status = ? ,roleid = ? ,cID = ?, startdate = ?, enddate = ?,ischief=? where id = ? ";
         try (PreparedStatement st = connection.prepareStatement(sql)) {
 
             st.setString(1, s.getName());
@@ -361,7 +368,8 @@ public class StaffDAO extends DBContext {
             } else {
                 st.setString(14, s.getEndDate());
             }
-            st.setString(15, s.getId());
+            st.setInt(15, s.getIschief());
+            st.setString(16, s.getId());
             st.executeUpdate();
             return true;
 
@@ -373,8 +381,8 @@ public class StaffDAO extends DBContext {
     }
 
     public boolean insertStaff(Staff s) {
-        String sql = "insert into Staff(id,Name, bod, email, phone, Address, cccd,Salary,Education,Bank,status,username,password,roleId, cid,startdate,gender,image) \n"
-                + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into Staff(id,Name, bod, email, phone, Address, cccd,Salary,Education,Bank,status,username,password,roleId, cid,startdate,gender,image,ischief) \n"
+                + "values(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         Util u = new Util();
         List<Staff> list = this.getAll();
         String newId = "";
@@ -410,6 +418,7 @@ public class StaffDAO extends DBContext {
             ps.setString(16, s.getStartDate());
             ps.setString(17, s.getGender());
             ps.setString(18, "images/avatar/person.jpg");
+            ps.setInt(19, 0);
             return ps.executeUpdate() > 0;
 
         } catch (SQLException ex) {
@@ -464,7 +473,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff sf = new Staff(id, n, bod, Email, phone, address, cccd, salary, education, bank, s, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff sf = new Staff(id, n, bod, Email, phone, address, cccd, salary, education, bank, s, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(sf);
             }
         } catch (SQLException e) {
@@ -524,7 +534,8 @@ public class StaffDAO extends DBContext {
                 String enddate = resultSet.getString("enddate");
                 String gender = resultSet.getString("gender");
                 String image = resultSet.getString("image");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image);
+                int ischief=resultSet.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender, image,ischief);
                 rs.add(s);
             }
         } catch (SQLException e) {
@@ -622,9 +633,10 @@ public class StaffDAO extends DBContext {
 //        for (Staff staff : l1) {
 //            System.out.println("id:" + staff.getId() + "name:" + staff.getName());
 //        }
-        System.out.println("" + dao.getStaffbyStatus());
-        System.out.println("" + dao.getWorkingStaff("4"));
-        System.out.println("" + dao.getWorkingStaff("5"));
+//        System.out.println("" + dao.getStaffbyStatus());
+//        System.out.println("" + dao.getWorkingStaff("4"));
+//        System.out.println("" + dao.getWorkingStaff("5"));
+        System.out.println(dao.getById("S1002"));
     }
 
 }
