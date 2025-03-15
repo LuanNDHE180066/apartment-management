@@ -33,6 +33,24 @@ public class Resident {
     public Resident() {
     }
 
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String gender, String image, boolean isHomeOwner) {
+        this.pId = pId;
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.address = address;
+        this.username = username;
+        this.password = password;
+        this.status = status;
+        this.note = note;
+        this.role = role;
+        this.gender = gender;
+        this.image = image;
+        this.isHomeOwner = isHomeOwner;
+    }
+    
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role) {
         this.pId = pId;
         this.name = name;
