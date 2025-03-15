@@ -92,7 +92,7 @@
                                     <label for="serviceId">Dịch vụ:</label>
                                     <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.id}">${item.name}(${item.id})</option>
+                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.name}">${item.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -117,7 +117,7 @@
                                     <label for="serviceId">Dịch vụ:</label>
                                     <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.id}">${item.name}(${item.id})</option>
+                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.name}">${item.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>

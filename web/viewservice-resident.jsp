@@ -134,7 +134,9 @@
                 justify-content: space-between;
                 align-items: center;
             }
-
+            td{
+                color: black;
+            }
 
         </style>
         <!--[if lt IE 9]>
@@ -287,7 +289,9 @@
                                                                 <tr>
                                                                     <td>${item.service.name}</td>
                                                                     <td>${item.quantity}</td> 
-                                                                    <td>${item.service.unitPrice}</td>
+                                                                    <td>
+                                                                        <fmt:formatNumber type="currency" currencyCode="VND" value="${item.service.unitPrice}"/>
+                                                                    </td>
                                                                     <td>${item.service.unit}</td>
                                                                     <td>${item.service.company.name}</td>
                                                                 </tr>

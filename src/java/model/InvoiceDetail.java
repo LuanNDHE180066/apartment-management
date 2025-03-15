@@ -4,27 +4,38 @@
  */
 package model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 /**
  *
  * @author thanh
  */
 public class InvoiceDetail {
-//    	[invoiceId] [varchar](10) NULL,
-//	[serviceId] [varchar](10) NULL,
-//	[Quantity] [int] NULL,
-//	[Amount] [float] NULL
+//create table InvoiceDetail(
+//	InvoiceId varchar(10) references Invoice(id),
+//	ServiceName nvarchar(255),
+//	PriceUnit float,
+//	Quantity int,
+//	Date datetime,
+//	Amount float
+//)
     private Invoice invocie;
-    private Service service;
+    private String serviceName;
+    private float unitPrice;
     private int quantity;
+    private LocalDateTime date;
     private float amount;
 
     public InvoiceDetail() {
     }
 
-    public InvoiceDetail(Invoice invocie, Service service, int quantity, float amount) {
+    public InvoiceDetail(Invoice invocie, String serviceName, float unitPrice, int quantity, LocalDateTime date, float amount) {
         this.invocie = invocie;
-        this.service = service;
+        this.serviceName = serviceName;
+        this.unitPrice = unitPrice;
         this.quantity = quantity;
+        this.date = date;
         this.amount = amount;
     }
 
@@ -36,12 +47,20 @@ public class InvoiceDetail {
         this.invocie = invocie;
     }
 
-    public Service getService() {
-        return service;
+    public String getServiceName() {
+        return serviceName;
     }
 
-    public void setService(Service service) {
-        this.service = service;
+    public void setServiceName(String serviceName) {
+        this.serviceName = serviceName;
+    }
+
+    public float getUnitPrice() {
+        return unitPrice;
+    }
+
+    public void setUnitPrice(float unitPrice) {
+        this.unitPrice = unitPrice;
     }
 
     public int getQuantity() {
@@ -52,6 +71,14 @@ public class InvoiceDetail {
         this.quantity = quantity;
     }
 
+    public LocalDateTime getDate() {
+        return date;
+    }
+
+    public void setDate(LocalDateTime date) {
+        this.date = date;
+    }
+
     public float getAmount() {
         return amount;
     }
@@ -59,5 +86,7 @@ public class InvoiceDetail {
     public void setAmount(float amount) {
         this.amount = amount;
     }
+    
+    
     
 }
