@@ -99,20 +99,7 @@ public class FeedbackDAO extends DBContext {
         return listFeedbackGetByRole;
     }
 
-    public List<Feedback> getFeebackAfterFilter(List<Feedback> list, String role) {
-        FeedbackDAO dao = new FeedbackDAO();
-        List<Feedback> listFeedbackGetByRole = new ArrayList<>();
-        if (role.equals("2")) {
-            return list;
-        }
-        for (Feedback f : list) {
-            if (f.getRequestType().getDestination().getId().equals(role)) {
-                listFeedbackGetByRole.add(f);
-            }
-        }
-        return listFeedbackGetByRole;
-    }
-
+   
     public int sendFeedback(String detail, String rID, String tID, int rate, List<String> img) {
         String sql = "INSERT INTO Feedback (Id, Detail, Date, rId, tId, rate) VALUES (?, ?, ?, ?, ?, ?)";
 
@@ -146,7 +133,7 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> getAllFeedbackUser(String residentID, int page, int pageSize) {
-        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY id desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
+        String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY date desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         ResidentDAO daoR = new ResidentDAO();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         List<Feedback> list = new ArrayList<>();
@@ -291,7 +278,7 @@ public class FeedbackDAO extends DBContext {
         return null;
     }
 
-    public List<Feedback> filterFeedback(String residentName, String serviceId, String startDate, String endDate, String role) {
+    public List<Feedback> filterFeedback(String residentName, String serviceId, String startDate, String endDate) {
         String sql = "SELECT * FROM Feedback f JOIN Resident r ON r.Id = f.rId WHERE 1=1";
         List<Object> params = new ArrayList<>();
 
@@ -351,7 +338,7 @@ public class FeedbackDAO extends DBContext {
             Logger.getLogger(FeedbackDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        return getFeebackAfterFilter(list, role);
+        return list;
     }
 
     public List<Feedback> getPageByNumber(List<Feedback> list, int page, int number) {
@@ -564,6 +551,10 @@ public class FeedbackDAO extends DBContext {
 
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
-        System.out.println(dao.getByResidentIDAndDateAndTypeRequest("P100", "2025-03-01", null, null));
+        Feedback f=dao.getById("F20");
+        f.setStatus(1);
+        System.out.println(f.getStatus());
+        System.out.println(dao.editFeedback(f));
+        
     }
 }

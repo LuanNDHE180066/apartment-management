@@ -15,68 +15,71 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
         <style>
             .graph_head h2 {
-        text-align: center;
-        font-size: 24px;
-        font-weight: bold;
-        margin-bottom: 20px;
-    }
+                text-align: center;
+                font-size: 24px;
+                font-weight: bold;
+                margin-bottom: 20px;
+            }
 
-    form {
-        padding: 15px 0;
-    }
+            form {
+                padding: 15px 0;
+            }
 
-    .align-items-center .form-control {
-        height: 38px;
-        font-size: 14px;
-    }
+            .align-items-center .form-control {
+                height: 38px;
+                font-size: 14px;
+            }
 
-    .align-items-center .btn {
-        height: 38px;
-        font-size: 14px;
-    }
+            .align-items-center .btn {
+                height: 38px;
+                font-size: 14px;
+            }
 
-    .table_section {
-        padding: 20px;
-    }
+            .table_section {
+                padding: 20px;
+            }
 
-    .table th, .table td {
-        text-align: center;
-        vertical-align: middle;
-        padding: 12px;
-    }
+            .table th, .table td {
+                text-align: center;
+                vertical-align: middle;
+                padding: 12px;
+            }
 
-    .table thead {
-        background-color: #007bff;
-        color: white;
-    }
+            .table thead {
+                background-color: #007bff;
+                color: white;
+            }
 
-    .table tbody tr:nth-child(even) {
-        background-color: #f9f9f9;
-    }
+            .table tbody tr:nth-child(even) {
+                background-color: #f9f9f9;
+            }
 
-    .table tbody tr:hover {
-        background-color: #f1f1f1;
-    }
+            .table tbody tr:hover {
+                background-color: #f1f1f1;
+            }
 
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
+            .btn-primary {
+                background-color: #007bff;
+                border-color: #007bff;
+            }
 
-    .btn-primary:hover {
-        background-color: #0056b3;
-        border-color: #004494;
-    }
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004494;
+            }
 
-    .d-flex {
-        display: flex;
-        gap: 10px;
-        align-items: center;
-    }
+            .d-flex {
+                display: flex;
+                gap: 10px;
+                align-items: center;
+            }
 
-    .col-md-4.d-flex {
-        justify-content: flex-start;
-    }
+            .col-md-4.d-flex {
+                justify-content: flex-start;
+            }
+            td{
+                color: black;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -157,18 +160,18 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listServices}" var="list">
                                                             <tr>
-                                                                <td>${list.name}</td>
-                                                                <td>${list.unitPrice}</td>
-                                                                <td>${list.unit}</td>
-                                                                <td>${list.description}</td>
-                                                                <td>${list.categoryService.name}</td>
-                                                                <td>${list.company.name}</td>
-                                                                <td>${list.status==1?'Active':'Inactive'}</td>
-                                                                <td>
+                                                                <td style="text-align: left">${list.name}</td>
+                                                                <td style="text-align: left">${list.unitPrice}</td>
+                                                                <td style="text-align: left">${list.unit}</td>
+                                                                <td style="text-align: left">${list.description}</td>
+                                                                <td style="text-align: left">${list.categoryService.name}</td>
+                                                                <td style="text-align: left">${list.company.name}</td>
+                                                                <td style="text-align: left">${list.status==1?'Active':'Inactive'}</td>
+                                                                <td style="text-align: left">
                                                                     ${list.startDate}
                                                                 </td>
-                                                                <td>${list.endDate}</td>
-                                                                <td><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
+                                                                <td style="text-align: left">${list.endDate}</td>
+                                                                <td style="text-align: left"><a href="update-service-staff?id=${list.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>

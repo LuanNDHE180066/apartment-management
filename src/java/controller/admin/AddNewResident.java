@@ -81,7 +81,7 @@ public class AddNewResident extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-
+        
         String name = request.getParameter("name");
         String dob = request.getParameter("dob");
         String address = request.getParameter("address");
@@ -90,6 +90,7 @@ public class AddNewResident extends HttpServlet {
         String id = request.getParameter("id");
         String username = request.getParameter("username");
         String gender = request.getParameter("gender");
+        String HomeOwner = request.getParameter("isHomeOwner");
 
         // Validate phone number (11 digits) and ID (12 digits)
         if (!phone.matches("\\d{10}")) {
@@ -105,25 +106,32 @@ public class AddNewResident extends HttpServlet {
         Util u = new Util();
         //generate random password then send to new user
         String password = u.generatePassword();
-        SendEmail e = new SendEmail();
-        e.sendEmail(email, name, username, password);
         //insert to database with encryted password
         ResidentDAO rd = new ResidentDAO();
         RoleDAO roleD = new RoleDAO();
-        password = encryptPassword(password);
+        String password_encript = encryptPassword(password);
+        
         Resident r = new Resident();
         r.setName(name);
         r.setBod(dob);
         r.setAddress(address);
         r.setPhone(phone);
-        r.setEmail(email);
-        r.setCccd(id);
+        r.setEmail(email != null ? email : null);
+        r.setCccd(id != null ? id : null);
         r.setRole(roleD.getById("1"));
-        r.setUsername(username);
-        r.setPassword(password);
+        r.setPassword(password_encript);
         r.setGender(gender);
-        rd.insertNewResident(r);
-
+        r.setIsHomeOwner(HomeOwner.equals("yes") ? true : false);
+        if (r.isIsHomeOwner()) {
+            r.setUsername(username);
+           
+        }
+        int successful = rd.insertNewResident(r);
+        if (successful == 0 && username != null) {
+            SendEmail e = new SendEmail();
+            e.sendEmailResidentAccount(email, name, username, password);
+        }
+        
         response.sendRedirect("view-resident");
     }
 

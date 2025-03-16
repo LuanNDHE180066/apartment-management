@@ -81,5 +81,14 @@
                 </div>
 
             </div>
+            <div class="container-fluid">
+                <div class="footer">
+                    <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
+                </div>
+            </div>
+            <script src="js/jquery.min.js"></script>
+            <script src="js/popper.min.js"></script>
+            <script src="js/bootstrap.min.js"></script>
+            <script src="js/custom.js"></script>
         </body> 
     </html>

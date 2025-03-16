@@ -59,6 +59,11 @@
                 background-color: #0056b3 !important; /* Darker blue for active */
                 color: #fff !important;
             }
+            .table th {
+                text-align: center;
+                background-color: #6B90DA;
+                color: black;
+            }
         </style>
 
 

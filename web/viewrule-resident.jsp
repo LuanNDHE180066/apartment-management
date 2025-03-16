@@ -39,6 +39,11 @@
                 background-color: #0056b3 !important;
                 color: #fff !important;
             }
+            .table th {
+                text-align: center;
+                background-color: #6B90DA;
+                color: black;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -52,7 +57,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>BaVi apartment's rules</h2>
+                                        <h2 >BaVi apartment's rules</h2>
                                     </div>
                                 </div>
                             </div>
@@ -61,7 +66,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Rule Information</h2>
+                                                <h2 style="font-weight: bold">Rule Information</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px; margin-bottom: 15px;">
@@ -93,8 +98,8 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>Title</th>
-                                                                <th>Description</th>
                                                                 <th>Effective Date</th>
+                                                                <th>Description</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -102,8 +107,8 @@
                                                             <c:if test="${rule.status=='Active'}">
                                                                 <tr>
                                                                     <td>${rule.title}</td>
-                                                                    <td>${rule.description}</td>
                                                                     <td>${rule.effectiveDate}</td>
+                                                                    <td>${rule.description}</td>
                                                                 </tr>
                                                             </c:if>
                                                         </c:forEach>

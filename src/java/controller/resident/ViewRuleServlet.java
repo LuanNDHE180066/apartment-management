@@ -25,7 +25,7 @@ import static util.Util.stringNomalize;
 @WebServlet(name = "ViewRuleServlet", urlPatterns = {"/view-rule-resident"})
 public class ViewRuleServlet extends HttpServlet {
 
-    private static final int RECORDS_PER_PAGE = 5;
+    private static final int RECORDS_PER_PAGE = 8;
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

@@ -12,6 +12,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+import model.Account;
 
 /**
  *
@@ -61,19 +63,21 @@ public class CheckDuplicateResidentInfor extends HttpServlet {
         String type = request.getParameter("type");
         String value = request.getParameter("value");
         ResidentDAO rd = new ResidentDAO();
+        HttpSession session=request.getSession();
+        Account a=(Account)session.getAttribute("account");
         boolean exists = false;
         switch (type) {
             case "email":
-                exists = rd.checkDuplicateEmail(value);
+                exists = rd.checkDuplicateEmail(value,a.getpId());
                 break;
             case "phone":
-                exists = rd.checkDuplicatePhone(value);
+                exists = rd.checkDuplicatePhone(value,a.getpId());
                 break;
             case "id":
-                exists = rd.checkDuplicateID(value);
+                exists = rd.checkDuplicateID(value,a.getpId());
                 break;
             case "username":
-                exists=rd.checkDuplicateUser(value);
+                exists=rd.checkDuplicateUser(value,a.getpId());
                 break;
         }
         response.setContentType("application/json");

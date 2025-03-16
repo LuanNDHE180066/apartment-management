@@ -81,7 +81,7 @@
                                     <div class="white_shd full margin_bottom_30">
 
                                         <div class="heading1 margin_0">
-                                            <h2>Pending Change Living/Owner Residents</h2>
+                                            <h2 style="margin-left: 30px">Pending Change Living/Owner Residents</h2>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -92,79 +92,114 @@
                                                             <th>Created Date</th>
                                                             <th>Created By</th>
                                                             <th>Apartment Number</th>
-                                                            <th>Change Role</th
-                                                            <th>Modified Staff</th>                                                        
+                                                            <th>Change Role</th>                                                                     
                                                             <th>New Living/Owner</th>
                                                             <th>Is Exist</th>
                                                             <th>Option</th>
-                                                            <!--       <th>Note</th> -->
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
-                                                    <c:forEach items="${requestScope.listRequestChange}" var="request">
+                                                    <c:forEach items="${requestScope.listChangeRequest}" var="request">
                                                         <tr>
-<!--                                                            <td style="text-align: center"> ${request.createdAt}</td>-->
-                                                            <td>
-                                                                <fmt:formatDate pattern="dd/MM/yyyy" value="${request.createdAt}"/>
+                                                            <!--                                                            <td style="text-align: center"> </td>-->
+                                                            <td  style="text-align: center">
+                                                                ${request.createdAt}
                                                             </td>  
-                                                            <td>
-                                                                <fmt:setLocale value="vi_VN"/> 
-                                                                <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
-                                                            </td>
-                                                            <td style="text-align: center">${expenditure.approveddate}</td>
+                                                            <!--                                                            <td  style="text-align: center">
+                                                            <%--%>         <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                            <%--        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
+                                                            
+                                                        </td>--> 
 
-                                                            <td style="text-align: center">${expenditure.category.categoryName}</td>
-                                                            <td style="text-align: center">${expenditure.company.name}</td>
-                                                            <td style="text-align: center">${expenditure.createdStaff.name}</td>
-                                                            <td style="text-align: center">${expenditure.chiefAccountantId.name}</td>
-                                                            <td style="text-align: center">${expenditure.currentAdmin.name}</td>
                                                             <td style="text-align: center">
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 0}">
-                                                                    <a style="text-align: center;" title="Approve"   class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
-                                                                        <i class="fa-solid fa-check"></i>
-                                                                    </a>
-                                                                    <a style="text-align: center" title="Decline" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
-                                                                        <i class="fa-solid fa-xmark"></i>
-                                                                    </a>
-                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                        <i class="fa-solid fa-eye"></i> 
-                                                                    </a>
-                                                                </c:if>
+                                                                <a href="#" data-toggle="modal" data-target="#ownerModal-${request.owner.pId}">
+                                                                    ${request.owner.name}
+                                                                </a>
+                                                                <!-- Modal Owner -->
+                                                                <div class="modal fade" id="ownerModal-${request.owner.pId}" tabindex="-1" role="dialog" aria-labelledby="ownerModalLabel-${request.requestId}" aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">Owner Information</h5>
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+                                                                                <div class="text-center" style="margin-bottom: 15px">
+                                                                                    <img src="images\avatar\kuru.jpg" alt="Profile Image"  class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
+                                                                                </div>
+                                                                                <table class="table">
+                                                                                    <tr><th>PID</th><td>${request.owner.pId}</td></tr>
+                                                                                    <tr><th>Name</th><td>${request.owner.name}</td></tr>
+                                                                                    <tr><th>Date of Birth</th><td>${request.owner.bod}</td></tr>
+                                                                                    <tr><th>Phone</th><td>${request.owner.phone}</td></tr>
+                                                                                    <tr><th>Email</th><td>${request.owner.email}</td></tr>
+                                                                                    <tr><th>CCCD</th><td>${request.owner.cccd}</td></tr>
+                                                                                    <tr><th>Address</th><td>${request.newPerson.address}</td></tr>
+                                                                                    <tr><th>Gender</th><td>${request.newPerson.gender}</td></tr>
 
-                                                                <c:if test="${expenditure.currentAdmin.id == staffId && expenditure.currentAdminApproveStatus == 1}">
-                                                                    <span style="text-align: center; color: green" >Accept</span>
-                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                        <i class="fa-solid fa-eye"></i> 
-                                                                    </a>
-                                                                </c:if>
-
-
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 0}">
-                                                                    <a style="text-align: center" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=1">
-                                                                        <i class="fa-solid fa-check"></i>
-                                                                    </a>
-                                                                    <a style="text-align: center" class="approval-link" href="update-pending-expenditure?id=${expenditure.heid}&approve=-1">
-                                                                        <i class="fa-solid fa-xmark"></i>
-                                                                    </a>
-                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                        <i class="fa-solid fa-eye"></i> 
-                                                                    </a>
-                                                                </c:if>
-
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == 1}">
-                                                                    <span style="text-align: center; color: green" style="">Accept</span>
-                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                        <i class="fa-solid fa-eye"></i> 
-                                                                    </a>
-                                                                </c:if>
-                                                                <c:if test="${expenditure.chiefAccountantId.id == staffId && expenditure.chiefAccountantApproveStatus == -1}">
-                                                                    <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                        <i class="fa-solid fa-eye"></i> 
-                                                                    </a>
-                                                                </c:if>
+                                                                                </table>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
                                                             </td>
-                                                    <!--    <td>${expenditure.note}</td>  -->
+                                                            <td style="text-align: center">${request.roomNumber}</td>
+
+                                                            <td style="text-align: center">${request.changeType == 1? 'Living Resident':'Owner'}</td>
+                                                            <td style="text-align: center">
+                                                                <a href="#" data-toggle="modal" data-target="#newPersonModal-${request.newPerson.pId}">
+                                                                    ${request.newPerson.name}
+                                                                </a>
+                                                                <!-- Modal New Person -->
+                                                                <div class="modal fade" id="newPersonModal-${request.newPerson.pId}" tabindex="-1" role="dialog" aria-labelledby="newPersonModalLabel-${request.requestId}" aria-hidden="true">
+                                                                    <div class="modal-dialog" role="document">
+                                                                        <div class="modal-content">
+                                                                            <div class="modal-header">
+                                                                                <h5 class="modal-title">New Resident Information</h5>
+                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                                                    <span aria-hidden="true">&times;</span>
+                                                                                </button>
+                                                                            </div>
+                                                                            <div class="modal-body">
+
+                                                                                <table class="table">
+                                                                                    <tr><th>Name</th><td>${request.newPerson.name}</td></tr>
+                                                                                    <tr><th>Phone</th><td>${request.newPerson.phone}</td></tr>
+                                                                                    <tr><th>Email</th><td>${request.newPerson.email}</td></tr>
+                                                                                    <tr><th>Date of Birth</th><td>${request.newPerson.bod}</td></tr>
+                                                                                    <tr><th>Address</th><td>${request.newPerson.address}</td></tr>
+                                                                                    <tr><th>Gender</th><td>${request.newPerson.gender}</td></tr>
+                                                                                    <tr><th>CCCD</th><td>${request.newPerson.cccd}</td></tr>
+                                                                                </table>
+                                                                            </div>
+                                                                            <div class="modal-footer">
+                                                                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </td>
+                                                            <td style="text-align: center; color: ${request.newPersonExists == 1 ? 'Green' : 'Red'};">
+                                                                ${request.newPersonExists == 1?'Yes':'No'}
+                                                            </td>
+
+                                                            <td style="text-align: center">
+                                                                <a href="update-status-change-resident?id=${request.requestId}&approve=1" title="Accept" style="margin-left: 10px;">
+                                                                    <i class="fas fa-check" style="font-size: 20px; color: green;"></i>
+                                                                </a>
+                                                                <a href="update-status-change-resident?id=${request.requestId}&approve=-1" title="Reject" style="margin-left: 10px;">
+                                                                    <i class="fas fa-times" style="font-size: 20px; color: red;"></i>
+                                                                </a>
+                                                            </td>
+                                                            </td>
+
+
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
@@ -176,6 +211,18 @@
                             </div>
                         </div>
                     </div>
+                    <form method="get" action="view-change-resident-request" style="display: flex; align-items: center; gap: 10px;">
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        <select id="page" name="page" onchange="this.form.submit()" 
+                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                            <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                    ${page}
+                                </option>
+                            </c:forEach>
+                            <!-- comment -->
+                        </select>
+                    </form>
 
                     <div class="container-fluid">
                         <div class="footer">

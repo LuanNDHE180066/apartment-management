@@ -68,7 +68,7 @@ public class ViewAllFeedback extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        List<Feedback> listFeedback=new ArrayList<>();
+        List<Feedback> listFeedback = new ArrayList<>();
         RequestTypeDAO daoRT = new RequestTypeDAO();
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
@@ -86,7 +86,7 @@ public class ViewAllFeedback extends HttpServlet {
         endDate = (endDate == null || endDate.trim().isEmpty()) ? "" : endDate;
 
         // Apply filtering
-        listFeedback = daoF.filterFeedback(searchName, serviceType, startDate, endDate, String.valueOf(acc.getRoleId()));
+        listFeedback = daoF.filterFeedback(searchName, serviceType, startDate, endDate);
 
         // Get current page
         String pageParam = request.getParameter("page");
@@ -135,7 +135,7 @@ public class ViewAllFeedback extends HttpServlet {
         List<Feedback> listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
         request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
         session.setAttribute("listFeedback", listFeedback);
-      
+
         request.getRequestDispatcher("viewallfeedback.jsp").forward(request, response);
     }
 
@@ -149,7 +149,4 @@ public class ViewAllFeedback extends HttpServlet {
         return "Short description";
     }// </editor-fold>
 
-   
 }
-
-

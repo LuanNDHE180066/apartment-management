@@ -4,6 +4,8 @@
  */
 package model;
 
+import java.util.List;
+
 /**
  *
  * @author thanh
@@ -20,7 +22,13 @@ public class Resident {
     private String name, cccd;
     private String phone, email, bod, address, username, password, status, note;
     private Role role;
-    private String gender,image;
+    private String gender, image;
+
+    private List<Apartment> apartmentNumber;
+
+
+
+    private boolean isHomeOwner;
 
     public Resident() {
     }
@@ -39,7 +47,8 @@ public class Resident {
         this.note = note;
         this.role = role;
     }
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role,String image) {
+
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String image) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -79,7 +88,7 @@ public class Resident {
         this.gender = gender;
     }
 
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status, String gender) {
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -87,20 +96,33 @@ public class Resident {
         this.email = email;
         this.bod = bod;
         this.address = address;
-        this.status = status;
+        this.image = image;
         this.gender = gender;
     }
 
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
+        this.pId = pId;
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.address = address;
+        this.image = image;
+        this.gender = gender;
+        this.username = username;
+    }
+
     public Resident(String pId, String email, String phone, String address) {
-        this.pId=pId;
-        this.email=email;
-        this.phone=phone;
-        this.address=address;
-        
+        this.pId = pId;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+
     }
 
     public Resident(String pId) {
-        this.pId=pId;
+        this.pId = pId;
     }
 
     public String getGender() {
@@ -126,6 +148,13 @@ public class Resident {
 
     public String getUsername() {
         return username;
+    }
+    public boolean isIsHomeOwner() {
+        return isHomeOwner;
+    }
+
+    public void setIsHomeOwner(boolean isHomeOwner) {
+        this.isHomeOwner = isHomeOwner;
     }
 
     public void setUsername(String username) {
@@ -219,5 +248,13 @@ public class Resident {
     public void setImage(String image) {
         this.image = image;
     }
+    public List<Apartment> getApartmentNumber() {
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber(List<Apartment> apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
+    }
+    
 
 }

@@ -57,7 +57,7 @@ public class ExpenseCategoryDAO extends DBContext {
         String sql = "select * from ExpenseCategory where status = 1 ";
         List<ExpenseCategory> list = new ArrayList<>();
         if (search != "") {
-            sql += "and categoryname like '%" + search + "%'";
+            sql += " and categoryname like '%" + search + "%'";
         }
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -83,7 +83,7 @@ public class ExpenseCategoryDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, e.getCategoryName());
             ps.setString(2, e.getCategoryDescription());
-            ps.setInt(3, 0);
+            ps.setInt(3, 1);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -136,6 +136,6 @@ public class ExpenseCategoryDAO extends DBContext {
         String des = "Tiền điện tiền nhà tiền nước";
         int status = 1;
         ExpenseCategory e = new ExpenseCategory(id, name, des, status);
-        System.out.println(dao.getExpenseCategoryById(1).getStatus());
+        System.out.println(dao.filterExpenseCategory("se"));
     }
 }

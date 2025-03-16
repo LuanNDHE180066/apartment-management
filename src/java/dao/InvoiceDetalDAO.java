@@ -12,12 +12,16 @@ import jdbc.DBContext;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Floor;
 import model.MonthlyService;
+import model.Service;
 import util.Util;
 
 /**
@@ -28,7 +32,6 @@ public class InvoiceDetalDAO extends DBContext {
 
     public List<InvoiceDetail> getByInvoiceId(String id) {
         String sql = "select * from invoicedetail where invoiceid =?";
-        ServiceDAO sd = new ServiceDAO();
         InvoiceDAO ivdao = new InvoiceDAO();
         List<InvoiceDetail> list = new ArrayList<>();
         try {
@@ -37,10 +40,12 @@ public class InvoiceDetalDAO extends DBContext {
             ResultSet rs = st.executeQuery();
             while (rs.next()) {
                 String invoiceId = rs.getString("invoiceId");
-                String serviceId = rs.getString("serviceId");
+                String serviceName = rs.getString("servicename");
+                float unitprice = rs.getFloat("priceunit");
                 int quantity = rs.getInt("quantity");
+                LocalDateTime time = rs.getTimestamp("date").toLocalDateTime();
                 float amount = rs.getFloat("amount");
-                InvoiceDetail ivd = new InvoiceDetail(ivdao.getById(invoiceId), sd.getById(serviceId), quantity, amount);
+                InvoiceDetail ivd = new InvoiceDetail(ivdao.getById(invoiceId), serviceName, unitprice, quantity, time, amount);
                 list.add(ivd);
             }
         } catch (SQLException e) {
@@ -54,16 +59,20 @@ public class InvoiceDetalDAO extends DBContext {
         List<MonthlyService> listUsingSerivce = md.getByApartmentId(aid);
         for (int i = 0; i < listUsingSerivce.size(); i++) {
             MonthlyService ms = listUsingSerivce.get(i);
-            String sid = ms.getService().getId();
+            Service sv = ms.getService();
             int quantity = ms.getQuantity();
-            float amount = ms.getQuantity() * (float) ms.getService().getUnitPrice();
-            String sql = "insert into invoicedetail values(?,?,?,?)";
+            float amount = ms.getQuantity() * (float) sv.getUnitPrice();
+            float unitprice = (float)sv.getUnitPrice();
+            LocalDateTime time = LocalDateTime.now();
+            String sql = "insert into invoicedetail values(?,?,?,?,?,?)";
             try {
                 PreparedStatement st =connection.prepareStatement(sql);
                 st.setString(1, invoiceId);
-                st.setString(2, sid);
-                st.setInt(3, quantity);
-                st.setFloat(4, amount);
+                st.setString(2, sv.getName());
+                st.setFloat(3, unitprice);
+                st.setInt(4, quantity);
+                st.setTimestamp(5, Timestamp.valueOf(time));
+                st.setFloat(6, amount);
                 st.executeUpdate();
                 
             } catch (SQLException e) {

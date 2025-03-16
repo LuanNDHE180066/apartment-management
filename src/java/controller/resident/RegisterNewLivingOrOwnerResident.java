@@ -10,6 +10,7 @@ import dao.OwnerApartmentDAO;
 import dao.RequestChangeResidentDAO;
 import dao.ResidentDAO;
 import dao.RoleDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -17,11 +18,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import model.Account;
 import model.RequestChangeResident;
 import model.Resident;
+import model.SendEmail;
+import model.Staff;
 
 /**
  *
@@ -84,18 +90,22 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             throws ServletException, IOException {
         ResidentDAO reDAO = new ResidentDAO();
         ApartmentDAO aDAO = new ApartmentDAO();
+        StaffDAO stDAO = new StaffDAO();
         OwnerApartmentDAO oDAO = new OwnerApartmentDAO();
         LivingApartmentDAO lDAO = new LivingApartmentDAO();
         RequestChangeResidentDAO requestChangeDAO = new RequestChangeResidentDAO();
         RoleDAO rDAO = new RoleDAO();
+        HttpSession session=request.getSession();
+        Account a =(Account)session.getAttribute("account");
 
         String aid = request.getParameter("apartment");
         String changeResident = request.getParameter("residentType");
         String residentExists = request.getParameter("residentExists");
 
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         String formatDate = format.format(dateTime);
+        String emailContent = "";
 
         Resident owner = oDAO.getOwnerByApartmentID(aid).getRid();
         if (residentExists != null) {
@@ -112,6 +122,43 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
+            emailContent = "<html><head><style>"
+                    + "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; padding: 20px; background-color: #f4f4f4; color: #333; }"
+                    + "h2 { color: #007BFF; }"
+                    + ".container { background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+                    + ".section { margin-bottom: 15px; }"
+                    + ".label { font-weight: bold; }"
+                    + ".info { margin-left: 10px; }"
+                    + "</style></head><body>"
+                    + "<div class='container'>"
+                    + "<h2>Change Request</h2>"
+                    + "<div class='section'><span class='label'>Request change:</span><span class='info'>"
+                    + (re.getChangeType() == 1 ? "Living person" : "Owner") + "</span></div>"
+                    + "<div class='section'><span class='label'>From apartment:</span><span class='info'>"
+                    + re.getRoomNumber() + "</span></div>"
+                    + "<div class='section'><span class='label'>Change person:</span><span class='info'>"
+                    + re.getNewPerson().getName() + " (ID: " + (re.getNewPerson().getpId() != null ? re.getNewPerson().getpId() : "Not exist") + ")</span></div>"
+                    + "<div class='section'><span class='label'>Owner:</span><span class='info'>"
+                    + re.getOwner().getName() + " (ID: " + re.getOwner().getpId() + ")</span></div>"
+                    + "<h3>Details of New Person:</h3>"
+                    + "<div class='section'><span class='label'>Date of Birth:</span><span class='info'>"
+                    + re.getNewPerson().getBod() + "</span></div>"
+                    + "<div class='section'><span class='label'>Address:</span><span class='info'>"
+                    + re.getNewPerson().getAddress() + "</span></div>"
+                    + "<div class='section'><span class='label'>Phone:</span><span class='info'>"
+                    + re.getNewPerson().getPhone() + "</span></div>"
+                    + "<div class='section'><span class='label'>Email:</span><span class='info'>"
+                    + re.getNewPerson().getEmail() + "</span></div>"
+                    + "<div class='section'><span class='label'>CCCD:</span><span class='info'>"
+                    + re.getNewPerson().getCccd() + "</span></div>"
+                    + "<div class='section'><span class='label'>Username:</span><span class='info'>"
+                    + re.getNewPerson().getUsername() + "</span></div>"
+                    + "<div class='section'><span class='label'>Gender:</span><span class='info'>"
+                    + re.getNewPerson().getGender() + "</span></div>"
+                    + "<div class='section'><span class='label'>Created At:</span><span class='info'>"
+                    + re.getCreatedAt() + "</span></div>"
+                    + "</div></body></html>";
+            re.setNewPersonExists(1);
             requestChangeDAO.addNewRequestChange(re);
         } else {
             String name = request.getParameter("name").trim();
@@ -134,23 +181,23 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 return;
             }
 
-            if (reDAO.checkDuplicatePhone(phone)) {
+            if (reDAO.checkDuplicatePhone(phone,a.getpId())) {
                 request.setAttribute("message", "Phone is existed.");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
-            if (reDAO.checkDuplicateEmail(email)) {
+            if (reDAO.checkDuplicateEmail(email,a.getpId())) {
                 request.setAttribute("message", "Email is existed..");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
-            if (reDAO.checkDuplicateID(id)) {
+            if (reDAO.checkDuplicateID(id,a.getpId())) {
                 request.setAttribute("message", "ID is existed..");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
 
-            if (reDAO.checkDuplicateUser(username)) {
+            if (reDAO.checkDuplicateUser(username,a.getpId())) {
                 request.setAttribute("message", "Username is existed.");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
@@ -161,9 +208,50 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
             }
+            re.setNewPersonExists(0);
             requestChangeDAO.addNewRequestChange(re);
+//            String message = "Request change " + (re.getChangeType() == 1 ? "Living person" : "Owner") + " from apartment " + re.getRoomNumber() + ". "
+//                    + "Change person " + re.getNewPerson().getName() +;
+            emailContent = "<html><head><style>"
+                    + "body { font-family: Arial, sans-serif; line-height: 1.6; margin: 20px; padding: 20px; background-color: #f4f4f4; color: #333; }"
+                    + "h2 { color: #007BFF; }"
+                    + ".container { background: #fff; padding: 15px; border-radius: 5px; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); }"
+                    + ".section { margin-bottom: 15px; }"
+                    + ".label { font-weight: bold; }"
+                    + ".info { margin-left: 10px; }"
+                    + "</style></head><body>"
+                    + "<div class='container'>"
+                    + "<h2>Change Request</h2>"
+                    + "<div class='section'><span class='label'>Owner:</span><span class='info'>"
+                    + re.getOwner().getName() + " (ID: " + re.getOwner().getpId() + ")</span></div>"
+                    + "<div class='section'><span class='label'>From apartment:</span><span class='info'>"
+                    + re.getRoomNumber() + "</span></div>"
+                    + "<div class='section'><span class='label'>Request change:</span><span class='info'>"
+                    + (re.getChangeType() == 1 ? "Living person" : "Owner") + "</span></div>"
+                    + "<div class='section'><span class='label'>Change person:</span><span class='info'>"
+                    + re.getNewPerson().getName() + " (ID: " + (re.getNewPerson().getpId() != null ? re.getNewPerson().getpId() : "Not exist") + ")</span></div>"
+                    + "<h3>Details of New Person:</h3>"
+                    + "<div class='section'><span class='label'>Date of Birth:</span><span class='info'>"
+                    + re.getNewPerson().getBod() + "</span></div>"
+                    + "<div class='section'><span class='label'>Address:</span><span class='info'>"
+                    + re.getNewPerson().getAddress() + "</span></div>"
+                    + "<div class='section'><span class='label'>Phone:</span><span class='info'>"
+                    + re.getNewPerson().getPhone() + "</span></div>"
+                    + "<div class='section'><span class='label'>Email:</span><span class='info'>"
+                    + re.getNewPerson().getEmail() + "</span></div>"
+                    + "<div class='section'><span class='label'>CCCD:</span><span class='info'>"
+                    + re.getNewPerson().getCccd() + "</span></div>"
+                    + "<div class='section'><span class='label'>Username:</span><span class='info'>"
+                    + re.getNewPerson().getUsername() + "</span></div>"
+                    + "<div class='section'><span class='label'>Gender:</span><span class='info'>"
+                    + re.getNewPerson().getGender() + "</span></div>"
+                    + "<div class='section'><span class='label'>Created At:</span><span class='info'>"
+                    + re.getCreatedAt() + "</span></div>"
+                    + "</div></body></html>";
         }
-
+        List<Staff> listAdmin = stDAO.getAllAdmin();
+        SendEmail send = new SendEmail();
+        send.sendEmailToWorkingAdmin(listAdmin, emailContent);
         request.setAttribute("status", "true");
         request.setAttribute("message", "Add request successful");
         request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);

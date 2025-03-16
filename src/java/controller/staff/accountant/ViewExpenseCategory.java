@@ -73,11 +73,18 @@ public class ViewExpenseCategory extends HttpServlet {
         int numPerPage = 3;
         List<ExpenseCategory> listExpenseCategory = daoEx.filterExpenseCategory(search);
 
-        List<ExpenseCategory> listPerPage = u.getListPerPage(listExpenseCategory, numPerPage, page);
+        if (listExpenseCategory.size() != 0) {
+            List<ExpenseCategory> listPerPage = u.getListPerPage(listExpenseCategory, numPerPage, page);
+            request.setAttribute("listExpenseCategory", listPerPage);
+            request.setAttribute("totalPage", u.getTotalPage(listExpenseCategory, numPerPage));
+            request.setAttribute("currentPage", page == null ? 1 : Integer.parseInt(page));
+            request.getRequestDispatcher("viewexpensecategory.jsp").forward(request, response);
+            return;
+        }
 
-        request.setAttribute("totalPage", u.getTotalPage(listExpenseCategory, numPerPage));
-        request.setAttribute("listExpenseCategory", listPerPage);
-        request.setAttribute("currentPage", page == null ? 1 : Integer.parseInt(page));
+        request.setAttribute("totalPage", 1F);
+//        request.setAttribute("listExpenseCategory", listPerPage);
+        request.setAttribute("currentPage", 1);
         request.getRequestDispatcher("viewexpensecategory.jsp").forward(request, response);
     }
 

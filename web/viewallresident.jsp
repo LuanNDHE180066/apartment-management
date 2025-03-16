@@ -119,23 +119,40 @@
                                         <div style="margin-left: 40px;">
                                             <form action="view-resident" method="GET">
                                                 <div class="row align-items-center">
+                                                    <!-- Search by Name -->
                                                     <div class="col-md-2">
-                                                        <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        <input type="text" value="${sessionScope.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
                                                     </div>
+
+                                                    <!-- Filter by Status -->
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
                                                             <option value="">Filter by Status</option>
-                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
-                                                            <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
-                                                            <option value="2" ${param.filterStatus == '2' ? 'selected' : ''}>Pending</option>
+                                                            <option value="1" ${sessionScope.filterStatus == '1' ? 'selected' : ''}>Active</option>
+                                                            <option value="0" ${sessionScope.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
+                                                            <option value="2" ${sessionScope.filterStatus == '2' ? 'selected' : ''}>Pending</option>
                                                         </select>
                                                     </div>
+
+                                                    <!-- Filter by Home Owner -->
+                                                    <div class="col-md-2">
+                                                        <select class="form-control" name="isHomeOwner">
+
+                                                            <option value="" ${empty sessionScope.isHomeOwner ? 'selected' : ''}>Filter by Apartment Owner</option>
+                                                            <option value="1" ${sessionScope.isHomeOwner == '1' ? 'selected' : ''}>Owner</option>
+                                                            <option value="0" ${sessionScope.isHomeOwner == '0' ? 'selected' : ''}>Not Owner</option>
+                                                        </select>
+                                                    </div>
+
+                                                    <!-- Submit & Reset -->
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="addNewResident" class="btn btn-primary">Add new Resident</a>
+                                                        <a href="view-resident" class="btn btn-secondary" style="margin-left: 5px;">Reset</a>
                                                     </div>
                                                 </div>
                                             </form>
+
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -143,29 +160,28 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>ID</th>
                                                             <th>Name</th>
                                                             <th>Phone</th>
                                                             <th>Email</th>
                                                             <th>Status</th>
                                                             <th>View Detail</th>
+                                                            <th>Update</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listResident}" var="resident">
                                                         <tr>
-                                                            <td>${resident.pId}</td>
                                                             <td>${resident.name}</td>
-                                                            <td>${resident.phone}</td>
-                                                            <td>${resident.email}</td>
+                                                            <td>${empty resident.phone ? 'None':resident.phone}</td>
+                                                            <td>${empty resident.email ? 'None' : resident.email}</td>
                                                             <td>
                                                                 <form action="updateResidentStatus" method="POST" class="status-form">
                                                                     <input type="hidden" name="id" value="${resident.pId}">
                                                                     <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
                                                                         <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Active</option>
                                                                         <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Inactive</option>
-                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''}>Pending</option>
+                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''} disabled>Pending</option>
                                                                     </select>
                                                                 </form>
                                                             </td>
@@ -178,10 +194,13 @@
                                                                        onclick="confirmDelete(this, event)">
                                                                         <i class="fa-solid fa-delete-left"></i>
                                                                     </a>
-
                                                                 </c:if>
                                                             </td>
-
+                                                            <td style="text-align: center;">
+                                                                <a href="updateRE?rid=${resident.pId}">
+                                                                    <i class="fa fa-edit"></i>
+                                                                </a>
+                                                            </td>
                                                         </tr>
 
                                                         <!-- Modal for resident details -->
@@ -199,41 +218,36 @@
                                                                         <div style="width: 50%;margin-left: 5%">
                                                                             <p><strong>Name:</strong> ${resident.name}</p>
                                                                             <p><strong>Bod:</strong> ${resident.bod}</p>
-                                                                            <p><strong>Email:</strong> ${resident.email}</p>
-                                                                            <p><strong>Phone:</strong> ${resident.phone}</p>
+                                                                            <p><strong>Email:</strong> ${empty resident.email ? 'None' : resident.email}</p>
+                                                                            <p><strong>Phone:</strong> ${empty resident.phone ? 'None':resident.phone}</p>
                                                                             <p><strong>Address:</strong> ${resident.address}</p>
-                                                                            <p><strong>CCCD:</strong> ${resident.cccd}</p>
+                                                                            <p><strong>CCCD:</strong> ${empty resident.cccd ? 'None' : resident.cccd}</p>
                                                                             <p><strong>Gender:</strong> ${resident.gender}</p>
-                                                                            <p><strong>Status:</strong>
-                                                                            <form action="updateResidentStatus" method="POST" class="status-form">
-                                                                                <input type="hidden" name="id" value="${resident.pId}">
-                                                                                <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
-                                                                                    <option value="1" class="status-active" <c:if test="${resident.status == '1'}">selected</c:if>>Active</option>
-                                                                                    <option value="0" class="status-inactive" <c:if test="${resident.status == '0'}">selected</c:if>>Inactive</option>
-
-
-                                                                                    </select>
-                                                                                </form>
-                                                                                </p>
-                                                                            </div>
+                                                                            <p><strong>Owner of</strong> ${resident.gender}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
+                                                        </div>
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
                                             </div>
                                         </div>
-
                                     </div>
                                 </div>
                             </div>
                         </div>
+                        <!-- Pagination Form -->
                         <form method="get" action="view-resident" style="display: flex; align-items: center; gap: 10px;">
                             <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                            <input type="text" name="filterStatus" value="${param.filterStatus}" hidden=""><!-- comment -->
-                            <input type="text" name="searchName" value="${param.searchName}" hidden=""><!-- comment -->
+
+                            <!-- Preserve Filter Parameters -->
+                            <input type="hidden" name="searchName" value="${sessionScope.searchName}">
+                            <input type="hidden" name="filterStatus" value="${sessionScope.filterStatus}">
+                            <input type="hidden" name="isHomeOwner" value="${sessionScope.isHomeOwner}">
+
+                            <!-- Page Selection -->
                             <select id="page" name="page" onchange="this.form.submit()" 
                                     style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                                 <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
@@ -243,6 +257,7 @@
                                 </c:forEach>
                             </select>
                         </form>
+
 
                         <!-- footer -->
                         <div class="container-fluid">
@@ -283,8 +298,18 @@
                                         window.location.href = link.href; // Proceed with deletion
                                     }
                                 }
+                                function confirmStatusChange(selectElement) {
+                                    if (selectElement.value == "2") {
+                                        alert("Pending status cannot be selected.");
+                                        selectElement.value = selectElement.dataset.previousValue; // Revert to previous value
+                                    } else {
+                                        selectElement.dataset.previousValue = selectElement.value; // Store new value
+                                    }
+                                }
+
 
             </script>
+
 
     </body>
 </html>

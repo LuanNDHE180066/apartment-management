@@ -120,7 +120,7 @@ public class OwnerApartmentDAO extends DBContext {
     }
 
     public boolean updateEndOwnerApartment(String id, String endDate) {
-        String sql = "update AparmentOwner set Enddate = ?, status = 0 where aid = ?";
+        String sql = "update AparmentOwner set Enddate = ?, status = 0 where aid = ? and status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, endDate);

@@ -12,7 +12,7 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-        <title>Contracts</title>
+        <title>Expenditure Change History</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="style.css" />
@@ -59,6 +59,11 @@
                 background-color: #6B90DA;
                 color: black;
             }
+             .table td{
+                 text-align: center;
+                 color: black;
+                 font-weight: 300;
+            }
         </style>
     </head>
     <body class="inner_page contract_page">
@@ -81,7 +86,7 @@
                                     <div class="white_shd full margin_bottom_30">
 
                                         <div class="heading1 margin_0">
-                                            <h2>Expenditure Update History Information</h2>
+                                            <h2 style="margin-left: 30px">Expenditure Update History Information</h2>
                                         </div>
 
                                         <div class="table_section padding_infor_info">
@@ -93,10 +98,9 @@
                                                             <th>Expense</th>
                                                             <th>Total fees</th>
                                                             <th>Approve Date</th>
-                                                            <th>Payment Date</th>
+                                                            
                                                             <th>Category</th>
                                                             <th>Company</th>
-
                                                             <th>Chief Acountant</th>
                                                             <th>Responsible Person</th>
                                                             <th>Modiefed Person</th>
@@ -112,34 +116,39 @@
                                                             <td style="text-align: center">${expenditure.id}</td>
                                                             <td style="text-align: center">${expenditure.title}</td>
                                                             <td>
-                                                        <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
-                                                        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
-                                                        </td>
-                                                        <td style="text-align: center">${expenditure.approveddate}</td>
-                                                        <td style="text-align: center">${expenditure.paymentdate}</td>
-                                                        <td style="text-align: center">${expenditure.category.categoryName}</td>
-                                                        <td style="text-align: center">${expenditure.company.name}</td>
+                                                                <%--%>         <fmt:setLocale value="vi_VN"/> <%-- Thi?t l?p locale v? Vi?t Nam --%>
+                                                                <%--        <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="0"/> --%>
+                                                                ${expenditure.totalPrice}
+                                                            </td>
+                                                            <td style="text-align: center">${expenditure.approveddate}</td>
+                                                            
+                                                            <td style="text-align: center">${expenditure.category.categoryName}</td>
+                                                            <td style="text-align: center">${expenditure.company.name}</td>
 
-                                                        <td style="text-align: center">${expenditure.chiefAccountantId.name}</td>
-                                                        <td style="text-align: center">${expenditure.currentAdmin.name}</td>
-                                                        <td style="text-align: center">${expenditure.modifiedBy.name}</td>
-                                                        <td style="text-align: center">${expenditure.modifiedDate}</td>
-                                                        <td>
-                                                            <c:if test="${expenditure.chiefAccountantApproveStatus == 1 && expenditure.currentAdminApproveStatus == 1}">
-                                                                <span style="color: green">Approved</span>
-                                                            </c:if>
-                                                            <c:if test="${expenditure.chiefAccountantApproveStatus == -1 || expenditure.currentAdminApproveStatus == -1}">
-                                                                <span style="color: red">Rejected</span>
-                                                            </c:if>
-                                                            <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
-                                                                <i class="fa-solid fa-eye"></i> 
-                                                            </a>
-                                                        </td>
-                                                <!--    <td>${expenditure.note}</td>  -->
+                                                            <td style="text-align: center">${expenditure.chiefAccountantId.name}</td>
+                                                            <td style="text-align: center">${expenditure.currentAdmin.name}</td>
+                                                            <td style="text-align: center">${expenditure.modifiedBy.name}</td>
+                                                            <td style="text-align: center">${expenditure.modifiedDate}</td>
+                                                            <td>
+                                                                <c:if test="${expenditure.chiefAccountantApproveStatus == 1 && expenditure.currentAdminApproveStatus == 1}">
+                                                                    <span style="color: green">Approved</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantApproveStatus == -1 || expenditure.currentAdminApproveStatus == -1}">
+                                                                    <span style="color: red">Rejected</span>
+                                                                </c:if>
+                                                                <c:if test="${expenditure.chiefAccountantApproveStatus == 0 || expenditure.currentAdminApproveStatus == 0}">
+                                                                    <span style="color:#FF9900 ">Pending</span>
+                                                                </c:if>
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                    <i class="fa-solid fa-eye"></i> 
+                                                                </a>
+                                                            </td>
+                                                    <!--    <td>${expenditure.note}</td>  -->
                                                         </tr>
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
+                                                    <a href="view-expenditure" style="color: white" class="btn btn-primary">Back</a>
                                             </div>
                                         </div>
                                     </div>
