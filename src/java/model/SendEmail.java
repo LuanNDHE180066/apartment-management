@@ -123,18 +123,18 @@ public class SendEmail {
             e.printStackTrace();
         }
     }
-
-    public void sendEmailToWorkingStaff(List<Staff> list) {
+    
+    public void sendEmailToWorkingStaff(List<Staff> list,String detail,String aid){
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (Staff ei : list) {
-            executor.execute(() -> sendEmailStaffToOne(ei));
+            executor.execute(() -> sendEmailStaffToOne(ei,detail,aid));
         }
         executor.shutdown();
     }
-
-    public void sendEmailStaffToOne(Staff estaff) {
-        try {
+    
+    public void sendEmailStaffToOne(Staff estaff,String detail,String aid){
+         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -148,9 +148,9 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(estaff.getEmail()));
-            message.setSubject("Công việc yêu cầu từ dân cư", "UTF-8");
-            String dataText = "Bạn có yêu cầu từ " + estaff.getName() + " cần giải quyết, xem chi tiết tại ứng dụng";
-            message.setText(dataText, "UTF-8");
+            message.setSubject("Công việc yêu cầu từ dân cư","UTF-8");
+            String dataText = "Bạn có yêu cầu từ "+estaff.getName()+"tại phòng "+aid +" cần giải quyết: "+detail+", xem chi tiết tại ứng dụng";
+            message.setText(dataText,"UTF-8");
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + estaff.getEmail());
         } catch (MessagingException e) {

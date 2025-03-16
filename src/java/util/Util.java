@@ -75,6 +75,14 @@ public class Util {
         return "view-all-feedback";
     }
 
+    public String getSiteViewByNofication(String id){
+        String[] s = id.split("[0-9]+");
+        if(s[0].equalsIgnoreCase("R")){
+            return "view-all-request";
+        }
+        return "index.jsp";
+    }
+    
     public int getNumberFromText(String str) {
         return Integer.parseInt(str.substring(1));
     }

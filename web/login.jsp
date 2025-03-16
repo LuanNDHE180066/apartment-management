@@ -126,8 +126,7 @@
                                             <button class="main_bt" type="submit">Sign In</button>
                                             <div>
                                                 <i class="fa fa-google" aria-hidden="true"></i>
-                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:6969/apartment-management/login-google&response_type=code&client_id=356880565891-7ehq5ej4qae557jaoor4d4jdi8pi4586.apps.googleusercontent.com&approval_prompt=force">Sign In With Google<a/>
-                                            </div>
+                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/apartment-management/login-google&response_type=code&client_id=879385543144-fh57neia4tt4ogqqjfk4hnb5182npalt.apps.googleusercontent.com&prompt=force">Sign In With Google</a>                                            </div>
                                         </div>
                                     </fieldset>
                                 </form>
@@ -171,7 +170,7 @@
             <!-- nice scrollbar -->
             <script src="js/perfect-scrollbar.min.js"></script>
             <script>
-                      var ps = new PerfectScrollbar('#sidebar');
+                var ps = new PerfectScrollbar('#sidebar');
             </script>
             <!-- custom js -->
             <script src="js/custom.js"></script>

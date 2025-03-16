@@ -109,7 +109,7 @@ public class AddRequestServlet extends HttpServlet {
         SendEmail email = new SendEmail();
         int addRequest = rd.addRequest(rid, detail, typeRequestId,aid);
         List<Staff> staffs = sd.getActiveStaffbyRole("2");
-        email.sendEmailToWorkingStaff(staffs);
+        email.sendEmailToWorkingStaff(staffs,detail,aid);
         request.setAttribute("status", true);
         request.setAttribute("message","Add new request successful.");
         doGet(request, response);

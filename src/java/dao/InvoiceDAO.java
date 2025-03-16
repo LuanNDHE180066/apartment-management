@@ -349,6 +349,8 @@ public class InvoiceDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
             st.executeUpdate();
+            FundDAO fd = new FundDAO();
+            fd.revenueFundByInvoice(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
