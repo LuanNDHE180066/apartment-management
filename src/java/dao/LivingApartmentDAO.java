@@ -181,6 +181,22 @@ public class LivingApartmentDAO extends DBContext {
         return false;
     }
 
+    public int getNumberOfLivingPerson(String aid) {
+        String sql = "select count (*) as nop from LivingAparment where aId = ? and status  = 1";
+
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("nop");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
     public boolean updateEndLivingApartment(String endDate, String aid, String rid) {
         String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ? and status = 1 and rId = ? ";
         try {
@@ -337,6 +353,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getLivingResidentId("A001"));
+        System.out.println(dao.getNumberOfLivingPerson("A001"));
     }
 }

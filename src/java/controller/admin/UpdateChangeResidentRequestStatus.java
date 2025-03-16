@@ -127,7 +127,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 reDAO.insertNewResident(newResident);
                 Resident rNew = reDAO.getResidentByUsername(newResident.getUsername());
                 if (r.getChangeType() == 1) {
-                    liDAO.updateEndLivingApartment(date, r.getRoomNumber());
+                   // liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
                 } else {
                     oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
@@ -136,7 +136,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
             } else {
                 Resident existedResident = reDAO.getResidentByUsername(r.getNewPerson().getUsername());
                 if (r.getChangeType() == 1) {
-                    liDAO.updateEndLivingApartment(date, r.getRoomNumber());
+                    //liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(existedResident.getpId(), r.getRoomNumber(), date);
                 } else {
                     oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
