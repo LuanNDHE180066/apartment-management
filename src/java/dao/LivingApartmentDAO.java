@@ -59,6 +59,37 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
+    
+    
+    public List<LivingApartment> getActiveLivingResidentByApartmentID(String aid) {
+        String sql = "select * from LivingAparment where aId=? and status = 1 order by startDate";
+        ResidentDAO rd = new ResidentDAO();
+        List<LivingApartment> list = new ArrayList<>();
+        ApartmentDAO ad = new ApartmentDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, aid);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(aid);
+                String startDate = rs.getDate("startDate").toString();
+                String endDate;
+                if (rs.getDate("enddate") == null) {
+                    endDate = null;
+                } else {
+                    endDate = rs.getDate("enddate").toString();
+                }
+                int status = rs.getInt("status");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                list.add(la);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
 
     public LivingApartment getLivingResidentByApartmentID(String aid) {
         String sql = "select * from LivingAparment where aId= ? and status  = 1";
@@ -353,6 +384,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getNumberOfLivingPerson("A001"));
+        System.out.println(dao.getActiveLivingResidentByApartmentID("A001"));
     }
 }

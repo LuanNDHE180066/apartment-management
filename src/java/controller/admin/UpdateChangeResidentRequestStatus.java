@@ -110,8 +110,8 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
             if (r.getNewPersonExists() == 0) {
                 Util u = new Util();
                 //generate random password then send to new user
-                String password = u.generatePassword();
-                password = encryptPassword(password);
+//                String password = u.generatePassword();
+//                password = encryptPassword(password);
                 Resident newResident = new Resident();
                 newResident.setName(r.getNewPerson().getName());
                 newResident.setBod(r.getNewPerson().getBod());
@@ -120,12 +120,12 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 newResident.setEmail(r.getNewPerson().getEmail());
                 newResident.setCccd(r.getNewPerson().getCccd());
                 newResident.setRole(r.getNewPerson().getRole());
-                newResident.setUsername(r.getNewPerson().getUsername());
-                newResident.setPassword(password);
+//                newResident.setUsername(r.getNewPerson().getUsername());
+//                newResident.setPassword(password);
                 newResident.setGender(r.getNewPerson().getGender());
 
                 reDAO.insertNewResident(newResident);
-                Resident rNew = reDAO.getResidentByUsername(newResident.getUsername());
+                Resident rNew = reDAO.getResidentById(newResident.getCccd());
                 if (r.getChangeType() == 1) {
                    // liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
@@ -134,7 +134,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                     oaDAO.insertOwnerApartment(rNew.getpId(), r.getRoomNumber(), date);
                 }
             } else {
-                Resident existedResident = reDAO.getResidentByUsername(r.getNewPerson().getUsername());
+                Resident existedResident = reDAO.getResidentById(r.getNewPerson().getCccd());
                 if (r.getChangeType() == 1) {
                     //liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(existedResident.getpId(), r.getRoomNumber(), date);
