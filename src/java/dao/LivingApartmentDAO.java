@@ -31,7 +31,7 @@ public class LivingApartmentDAO extends DBContext {
     private ResidentDAO residenDAO = new ResidentDAO();
 
     public List<LivingApartment> getByApartmentID(String aid) {
-        String sql = "select * from LivingAparment where aId=?";
+        String sql = "select * from LivingAparment where aId=? order by status desc, enddate desc";
         ResidentDAO rd = new ResidentDAO();
         List<LivingApartment> list = new ArrayList<>();
         ApartmentDAO ad = new ApartmentDAO();
