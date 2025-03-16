@@ -22,7 +22,7 @@
                 padding: 40px;
                 border-radius: 8px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                max-width: 850px;
+                max-width: 900px;
                 margin: auto;
             }
             .form-container h1 {
@@ -101,7 +101,7 @@
                 border: none;
             }
             table th {
-                background-color: #4B0082; /* Dark Slate Blue */
+                background-color: #4B4B4B; /* Dark Slate Blue */
                 color: white;
                 font-weight: bold;
             }
@@ -111,13 +111,67 @@
             table tr:hover {
                 background-color: #e1f5fe;
             }
-            table th {
-                background-color: #4B4B4B;
-                color: white;
-                font-weight: bold;
-            }
             .select {
-                background: #D3D3D3;
+                background-color: #D3D3D3 !important;
+            }
+            .modal-content {
+                border-radius: 8px;
+                display: flex;
+            }
+
+            .modal-header {
+                background-color: #6B90DA;
+                color: white;
+                border-top-left-radius: 8px;
+                border-top-right-radius: 8px;
+                width: 100%;
+            }
+
+            .modal-body {
+                display: flex;
+                align-items: center;
+                padding: 20px;
+            }
+
+            .modal-body img {
+                width: 180px; /* Increased image size */
+                height: 180px; /* Increased image size */
+                border-radius: 50%;
+                object-fit: cover;
+                margin-right: 30px; /* Increased margin for spacing */
+            }
+
+            .modal-info {
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+            }
+
+            .modal-info p {
+                margin: 5px 0; /* Space between each info line */
+            }
+
+            .footer {
+                text-align: center;
+                padding: 20px 0;
+                background-color: #f1f1f1;
+                border-top: 1px solid #ddd;
+            }
+
+            .btn-link {
+                color: #007bff;
+                text-decoration: underline;
+                cursor: pointer;
+            }
+
+            .btn-link:hover {
+                color: #0056b3;
+                text-decoration: none;
+            }
+
+            .info-icon {
+                margin-right: 8px; /* Space between icon and text */
+                color: #6B90DA; /* Icon color */
             }
         </style>
     </head>
@@ -134,10 +188,10 @@
                                     <h1>Update Apartment Information</h1>
                                     <form action="updatenopersonre" method="post">
                                         <input type="hidden" id="id" name="id" value="${apartment.id}" />
-
                                         <div class="form-group">
                                             <label for="numberOfPerson"><i class="fas fa-users"></i> Number of Persons</label>
-                                            <input type="number" id="numberOfPerson" min="1" max="${apartment.roomtype.limitPerson}" name="numberOfPerson" value="${apartment.numberOfPerson}" required />
+                                            <jsp:useBean id="laDAO" class="dao.LivingApartmentDAO" scope="page"></jsp:useBean>
+                                            <input type="number" id="numberOfPerson" min="1" max="${apartment.roomtype.limitPerson}" name="numberOfPerson" value="${laDAO.getNumberOfLivingPerson(apartment.id)}" required readonly=""/>
                                         </div>
                                         <div class="form-row">
                                             <div class="form-group">
@@ -177,7 +231,7 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="infor"><i class="fas fa-info-circle"></i> Additional Information</label>
-                                            <textarea id="infor" name="infor" rows="4"  required>${apartment.infor}</textarea>
+                                            <textarea id="infor" name="infor" rows="4" required>${apartment.infor}</textarea>
                                         </div>
 
                                         <div class="form-button">
@@ -194,6 +248,65 @@
                                             </h5>
                                         </div>
                                     </form>
+
+                                    <h2 class="mt-5">Living Persons</h2>
+                                    <table class="table table-bordered mt-3">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Name</th>
+                                                <th>CCCD</th>
+                                                <th>Bod</th>
+                                                <th>Phone</th>
+
+                                                <th>Start Date</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <c:forEach items="${requestScope.livingPersons}" var="person">
+                                                <tr>
+                                                    <td>${person.rid.pId}</td>
+                                                    <td>
+                                                        <a style="color: #4a90e2; text-decoration: underline; font-weight: bold" class="btn btn-link" data-toggle="modal" data-target="#modal${person.rid.pId}">
+                                                            ${person.rid.name}
+                                                        </a>
+
+                                                        <!-- Modal for Owner Details -->
+
+
+
+
+
+                                                        <div class="modal fade" id="modal${person.rid.pId}" tabindex="-1" role="dialog">
+                                                            <div class="modal-dialog" style="max-width: 600px;">
+                                                                <div class="modal-content">
+                                                                    <div class="modal-header">
+                                                                        <h3>Owner Information</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                    </div>
+                                                                    <div class="modal-body">
+                                                                        <img src="${person.rid.image == null ? 'images/logo/person.jpg' : person.rid.image}" alt="Owner Image"/>
+                                                                        <div class="modal-info">
+                                                                            <p><i class="fas fa-user info-icon"></i><strong>Name:</strong> ${person.rid.name}</p>
+                                                                            <p><i class="fas fa-id-card info-icon"></i><strong>ID Card:</strong> ${person.rid.cccd}</p>
+                                                                            <p><i class="fas fa-calendar-alt info-icon"></i><strong>Date of Birth:</strong> ${person.rid.bod}</p>
+                                                                            <p><i class="fas fa-envelope info-icon"></i><strong>Email:</strong> ${person.rid.email}</p>
+                                                                            <p><i class="fas fa-phone info-icon"></i><strong>Phone:</strong> ${person.rid.phone}</p>
+                                                                            <p><strong>Address:</strong> ${person.rid.address}</p>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                    <td>${person.rid.cccd}</td>
+                                                    <td>${person.rid.bod}</td>
+                                                    <td>${person.rid.phone}</td>
+                                                    <td>${person.startDate}</td>
+                                                </tr>
+                                            </c:forEach>
+                                        </tbody>
+                                    </table>
 
                                     <h2 class="mt-5">Room Types and Limits</h2>
                                     <div style="margin-top: 10px">
@@ -213,7 +326,7 @@
                                         </thead>
                                         <tbody>
                                             <c:forEach items="${sessionScope.listRoomType}" var="roomType">
-                                                <tr class="${roomType.id == apartment.roomtype.id ? 'select':''}" >
+                                                <tr class="${roomType.id == apartment.roomtype.id ? 'select':''}">
                                                     <td>${roomType.name}</td>
                                                     <td>${roomType.limitPerson}</td>
                                                     <td>${roomType.bedroom}</td>

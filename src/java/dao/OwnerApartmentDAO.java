@@ -27,11 +27,19 @@ import model.Resident;
  */
 public class OwnerApartmentDAO extends DBContext {
 
-    public List<OwnerApartment> getByApartmentID(String aid) {
+    public List<OwnerApartment> getByApartmentID(String aid, String startDate1, String endDate1) {
         String sql = "select * from AparmentOwner where aId=?";
         ResidentDAO rd = new ResidentDAO();
         List<OwnerApartment> list = new ArrayList<>();
         ApartmentDAO ad = new ApartmentDAO();
+
+        if (startDate1 != "") {
+            sql += " and startDate >=  '" + startDate1 + "' ";
+        }
+        if (endDate1 != "") {
+            sql += " and startDate <= '" + endDate1 + "' ";
+        }
+        sql += "  order by status desc, enddate desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, aid);
@@ -143,7 +151,7 @@ public class OwnerApartmentDAO extends DBContext {
 //        oa.setRid(ownerResident);
 //        oa.setEndDate(date);
 //        oa.setStatus(0);
-    
+
         System.out.println(dao.updateEndOwnerApartment("A14_04", "2025-02-16"));
     }
 }

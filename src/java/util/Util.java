@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -205,26 +206,32 @@ public class Util {
 
     public static boolean compareFeedbackDateToCurrentTime(String date, int distance) {
         try {
-            // Correct format for parsing "2025-03-13 12:08:25.377"
+
+            if (date.matches(".*\\.\\d{1,2}$")) {
+                date += "0";
+            } else if (!date.contains(".")) {
+                date += ".000";
+            }
+
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
-
-            // Parse the given date string
             LocalDateTime testDateTime = LocalDateTime.parse(date, formatter);
-
-            // Get the current time
             LocalDateTime currentDateTime = LocalDateTime.now();
-
-            // Calculate the threshold date (N days before now)
             LocalDateTime dayBefore = currentDateTime.minusDays(distance);
 
-            // Compare: return true if testDateTime is after the threshold
             return dayBefore.isBefore(testDateTime);
         } catch (Exception e) {
-            System.err.println("Error parsing date: " + e.getMessage());
+            System.err.println("Error parsing date: " + date + " -> " + e.getMessage());
             return false;
         }
     }
-
+    public static String formatDate(String date){
+        if(date == null) return null;
+        String[] token = date.split("-");
+        String temp = token[0];
+        token[0] = token[2];
+        token[2] = temp;
+        return String.join("-", token);
+    }
     public static String FormatDateTime(String date) {
         // Convert the stored date string to SQL Timestamp
         Timestamp timestamp = Timestamp.valueOf(date);

@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author admin1711
@@ -28,6 +32,7 @@ public class Staff {
     private String startDate; // Start date as String
     private String endDate; // End date as String
     private String gender,image;
+    private int ischief;
 
     public Staff(String id, String email, String phone, String bank, String address) {
         this.id= id;
@@ -45,7 +50,7 @@ public class Staff {
         this.gender = gender;
     }
 
-    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender) {
+    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,int ischief) {
         this.id = id;
         this.name = name;
         this.bod = bod;
@@ -64,8 +69,9 @@ public class Staff {
         this.startDate = startDate;
         this.endDate = endDate;
         this.gender = gender;
+        this.ischief=ischief;
     }
-    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,String image) {
+    public Staff(String id, String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, int status, String username, String password, Role role, Company company, String startDate, String endDate, String gender,String image,int ischief) {
         this.id = id;
         this.name = name;
         this.bod = bod;
@@ -85,6 +91,7 @@ public class Staff {
         this.endDate = endDate;
         this.gender = gender;
         this.image = image;
+        this.ischief=ischief;
     }
     public Staff(String name, String bod, String email, String phone, String address, String cccd, int salary, String education, String bank, String username, String password, Role role, Company company, String startDate, String gender) {
         this.name = name;
@@ -247,6 +254,21 @@ public class Staff {
     public String getBod() {
         return bod;
     }
+    public String formatBod() {
+        if (bod == null || bod.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(bod);
+
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
+    
 
     public void setBod(String bod) {
         this.bod = bod;
@@ -295,7 +317,20 @@ public class Staff {
     public String getStartDate() {
         return startDate;
     }
+    public String formatStartdate() {
+        if (startDate == null || startDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(startDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -303,7 +338,20 @@ public class Staff {
     public String getEndDate() {
         return endDate;
     }
+    public String formatEndate() {
+        if (endDate == null || endDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(endDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
@@ -347,5 +395,14 @@ public class Staff {
     public void setImage(String image) {
         this.image = image;
     }
+
+    public int getIschief() {
+        return ischief;
+    }
+
+    public void setIschief(int ischief) {
+        this.ischief = ischief;
+    }
+    
     
 }

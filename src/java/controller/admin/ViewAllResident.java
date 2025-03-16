@@ -11,6 +11,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.util.List;
 
 import model.Resident;
@@ -60,42 +61,64 @@ public class ViewAllResident extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String name = request.getParameter("searchName");
-        String status = request.getParameter("filterStatus");
+        HttpSession session = request.getSession();
         ResidentDAO daoR = new ResidentDAO();
         Util u = new Util();
 
-        if (status == null || status.trim().isEmpty()) {
+        // Retrieve filter parameters
+        String name = request.getParameter("searchName");
+        String status = request.getParameter("filterStatus");
+        String isHomeOwner = request.getParameter("isHomeOwner");
+        String page = request.getParameter("page");
+
+        // Normalize name input
+        name = u.stringNomalize(name);
+
+        // Store filters in session only if provided, else remove
+        if (name != null && !name.trim().isEmpty()) {
+            session.setAttribute("searchName", name);
+        } else {
+            session.removeAttribute("searchName");
+            name = "";
+        }
+
+        if (status != null && !status.trim().isEmpty()) {
+            session.setAttribute("filterStatus", status);
+        } else {
+            session.removeAttribute("filterStatus");
             status = "";
         }
 
-        name = u.stringNomalize(name);
+        if (isHomeOwner != null && !isHomeOwner.trim().isEmpty()) {
+            session.setAttribute("isHomeOwner", isHomeOwner);
+        } else {
+            session.removeAttribute("isHomeOwner");
+            isHomeOwner = "";
+        }
 
-        List<Resident> listResident = daoR.filterListResident(name, status);
-        String page = request.getParameter("page");
+        // Fetch residents based on filters
+        List<Resident> listResident = daoR.filterListResident(name, status, isHomeOwner);
+
+        // Handle pagination
         if (page == null) {
             page = "1";
         }
         int totalPage = u.getTotalPage(listResident, 5);
 
-        if (listResident.size() != 0) {
+        // Paginate results
+        if (!listResident.isEmpty()) {
             listResident = u.getListPerPage(listResident, 5, page);
             request.setAttribute("listResident", listResident);
-            for (int i = 0; i < listResident.size(); i++) {
-                System.out.println(listResident.get(i).getImage());
-            }
             request.setAttribute("totalPage", totalPage);
             request.setAttribute("currentPage", Integer.parseInt(page));
             request.setAttribute("isFilter", "true");
-            request.getRequestDispatcher("viewallresident.jsp").forward(request, response);
-            return;
         } else {
             request.setAttribute("totalPage", 1);
             request.setAttribute("currentPage", 1);
             request.setAttribute("message", "No result");
-            request.getRequestDispatcher("viewallresident.jsp").forward(request, response);
         }
 
+        request.getRequestDispatcher("viewallresident.jsp").forward(request, response);
     }
 
     /**

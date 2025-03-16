@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.ServiceChange;
 import java.util.ArrayList;
 import java.util.List;
 import java.sql.PreparedStatement;
@@ -26,6 +27,36 @@ public class ServiceDAO extends DBContext {
 
     public List<Service> getAll() {
         String sql = "Select * from Service";
+        List<Service> list = new ArrayList<>();
+        CompanyDAO cd = new CompanyDAO();
+        CategoryServiceDAO csd = new CategoryServiceDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                double price = rs.getDouble("unitprice");
+                String des = rs.getString("description");
+                CategoryService ct = csd.getByCategoryId(rs.getString("scid"));
+                Company c = cd.getById(rs.getString("cid"));
+                int status = rs.getInt("status");
+                Service s = new Service(id, name, price, des, ct, c, status);
+                s.setStartDate(rs.getDate("startdate").toString());
+                if (rs.getDate("enddate") != null) {
+                    s.setEndDate(rs.getDate("enddate").toString());
+                }
+                s.setUnit(rs.getString("unit"));
+                list.add(s);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
+     public List<Service> getAllActive() {
+        String sql = "Select * from Service where status =1 ";
         List<Service> list = new ArrayList<>();
         CompanyDAO cd = new CompanyDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();
@@ -83,7 +114,7 @@ public class ServiceDAO extends DBContext {
 //        return list;
 //    }
     public List<Service> filterByNameAndCompanyAndCategoryAndStatus(String name, String category, String company, String status) {
-        String sql = "Select * from Service where name like '%" + name + "%'";
+        String sql = "Select * from Service where name like N'%" + name + "%'";
         List<Service> list = new ArrayList<>();
         CompanyDAO cd = new CompanyDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();
@@ -235,16 +266,16 @@ public class ServiceDAO extends DBContext {
         return (float) this.getNumberUsedServiceId(sid) / ld.getNumberLivingResident() * 100;
     }
 
-    public int getNumberUsedByTime(int year, int month, String sid) {
+    public int getNumberUsedByTime(int year, int month, String name) {
         String sql = "select count(*) as no from InvoiceDetail id join Invoice i on id.invoiceId=i.id "
                 + "where year(i.invoicedate)=? "
                 + "and month(i.invoicedate)=?"
-                + " and id.serviceId=?";
+                + " and id.serviceName=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setInt(1, year);
             st.setInt(2, month);
-            st.setString(3, sid);
+            st.setString(3, name);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return rs.getInt("no");
@@ -275,26 +306,33 @@ public class ServiceDAO extends DBContext {
         }
         return list;
     }
-    public String getServiceEVNId(){
-        String sql="select * from service where Name =N'Tiền điện' and status =1";
+
+    public String getServiceEVNId() {
+        String sql = "select * from service where Name =N'Tiền điện' and status =1";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getString("id");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getString("id");
+            }
         } catch (SQLException e) {
         }
         return null;
     }
-      public String getServiceWVNId(){
-        String sql="select * from service where Name =N'Tiền nước' and status =1";
+
+    public String getServiceWVNId() {
+        String sql = "select * from service where Name =N'Tiền nước' and status =1";
         try {
-            PreparedStatement st =connection.prepareStatement(sql);
-            ResultSet rs= st.executeQuery();
-            if(rs.next()) return rs.getString("id");
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return rs.getString("id");
+            }
         } catch (SQLException e) {
         }
         return null;
     }
+
     public Date getLastInvoice() {
         String sql = "select * from invoice order by invoicedate desc";
         try {
@@ -308,10 +346,50 @@ public class ServiceDAO extends DBContext {
         return null;
     }
 
-
+    public void updateService(Service sv) {
+        String sql = "update service \n"
+                + "set Name= ?, UnitPrice = ?, Description=?,\n"
+                + "scId=?,cId=?,status=?, endDate=?, unit =?\n"
+                + "where id=?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, sv.getName());
+            st.setFloat(2, (float)sv.getUnitPrice());
+            st.setString(3, sv.getDescription());
+            st.setString(4, sv.getCategoryService().getId());
+            st.setString(5, sv.getCompany().getId());
+            st.setInt(6, sv.getStatus());
+            st.setString(7, sv.getEndDate());
+            st.setString(8, sv.getUnit());
+            st.setString(9, sv.getId());
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public List<ServiceChange> getChangeOfServicePrice(String name){
+        List<ServiceChange> list = new ArrayList<>();
+        String sql ="select distinct CONCAT(MONTH(date),'-', year(date)) as time, priceunit "
+                + "from (  select date, PriceUnit  from InvoiceDetail where ServiceName=?) as tab ";
+        try {
+            PreparedStatement st = connection.prepareCall(sql);
+            st.setString(1, name);
+            ResultSet rs = st.executeQuery();
+            while(rs.next()){
+                String time = rs.getString("time");
+                float price = rs.getFloat("priceunit");
+                ServiceChange svc = new ServiceChange(time, price);
+                list.add(svc);
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     public static void main(String[] args) {
         ServiceDAO sd = new ServiceDAO();
         System.out.println(sd.getNumberUsedByTime(2025, 1, "SVC1"));
         System.out.println(Arrays.toString(sd.getPercentUsedAllMonth(2025, "SV001").toArray()));
+        System.out.println(sd.getChangeOfServicePrice("TIền điện").size());
     }
 }

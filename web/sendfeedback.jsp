@@ -114,6 +114,10 @@
             .add-upload-btn:hover {
                 background-color: #0056b3;
             }
+            .error-msg {
+                color: red;
+                font-weight: bold;
+            }
 
         </style>
         <script src="js/jquery.min.js"></script>
@@ -192,6 +196,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="text-center">
+                                    <h5 class="error-msg">${errorMessage}</h5>
                                     <button type="submit" class="btn btn-primary btn-lg">Submit Feedback</button>
                                 </div>
                             </form>
@@ -277,6 +282,8 @@
                     uploadIndex++;
                 });
             });
+
+
 
 
         </script>

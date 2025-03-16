@@ -16,6 +16,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.LivingApartment;
 import model.OwnerApartment;
+import util.Util;
 
 /**
  *
@@ -63,11 +64,37 @@ public class ApartmentLivingHistory extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String aid = request.getParameter("aid");
+        String page = request.getParameter("page");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         LivingApartmentDAO ld = new LivingApartmentDAO();
-        List<LivingApartment> historyOfLiving = ld.getByApartmentID(aid);
-        request.setAttribute("historyOfLiving", historyOfLiving);
-        request.getRequestDispatcher("historylivingapartment.jsp").forward(request, response);
-
+        if (startDate == null) {
+            startDate = "";
+        }
+        if (endDate == null) {
+            endDate = "";
+        }
+        System.out.println( startDate + "     x    " +endDate);
+        
+        List<LivingApartment> historyOfLiving = ld.getByApartmentID(aid, startDate, endDate);
+        Util u = new Util();
+        if (historyOfLiving.size() != 0) {
+            int totalPage = u.getTotalPage(historyOfLiving, 5);
+            historyOfLiving = u.getListPerPage(historyOfLiving, 5, page);
+            request.setAttribute("currentPage", page != null ? page : "1");
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("historyOfLiving", historyOfLiving);
+            request.getRequestDispatcher("historylivingapartment.jsp").forward(request, response);
+            return;
+        } else{
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("totalPage", 1);
+            request.getRequestDispatcher("historylivingapartment.jsp").forward(request, response);
+        }
+        
+      
+        
+        
     }
 
     /**

@@ -134,7 +134,9 @@
                 justify-content: space-between;
                 align-items: center;
             }
-
+            td{
+                color: black;
+            }
 
         </style>
         <!--[if lt IE 9]>
@@ -203,19 +205,19 @@
                                                                 <c:if test="${item.service.categoryService.id!='SV001'}">
                                                                 <form action="update-service-resident" method="post">
                                                                     <tr>
-                                                                        <td>${item.service.name}</td>
-                                                                        <td>
+                                                                        <td style="text-align: left">${item.service.name}</td>
+                                                                        <td style="text-align: center">
                                                                             <input name="serviceId" value="${item.service.id}" hidden=""/>
                                                                             <input name="apartmentId" value="${item.apartment.id}" hidden=""/>
                                                                             <input onchange="this.form.submit()" step="1"
                                                                                    ${item.service.categoryService.id == 'SV002' || requestScope.canUpdate==0 ? 'readonly' : ''}
                                                                                    type="number" min="1" name="quantity" value="${item.quantity}"/>
                                                                         </td> 
-                                                                        <td>
+                                                                        <td style="text-align: right">
                                                                             <fmt:formatNumber type="currency" currencyCode="VND" value="${item.service.unitPrice}"/>
                                                                         </td>
-                                                                        <td>${item.service.unit}</td>
-                                                                        <td>${item.service.company.name}</td>
+                                                                        <td style="text-align: left">${item.service.unit}</td>
+                                                                        <td style="text-align: left">${item.service.company.name}</td>
                                                                         <td style="text-align: center">
                                                                             <a href="${requestScope.canUpdate == 1 ? 
                                                                                        'delete-service-resident?sid='.concat(item.service.id).concat('&aid=').concat(item.apartment.id) 
@@ -284,10 +286,12 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.usingServices}" var="item">
                                                             <c:if test="${item.service.categoryService.id=='SV001'}">
-                                                                <tr>
+                                                                <tr>    
                                                                     <td>${item.service.name}</td>
-                                                                    <td>${item.quantity}</td> 
-                                                                    <td>${item.service.unitPrice}</td>
+                                                                    <td style="text-align: center">${item.quantity}</td> 
+                                                                    <td style="text-align: right">
+                                                                        <fmt:formatNumber type="currency" currencyCode="VND" value="${item.service.unitPrice}"/>
+                                                                    </td>
                                                                     <td>${item.service.unit}</td>
                                                                     <td>${item.service.company.name}</td>
                                                                 </tr>

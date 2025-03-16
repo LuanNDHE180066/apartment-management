@@ -96,7 +96,7 @@
                                         <div class="news_section">
                                             <ul class="news-list">
                                                 <c:forEach items="${sessionScope.listNews}" var="n">
-                                                    <li>-${n.date}<a href="news-detail?id=${n.id}">: ${n.title}</a>
+                                                    <li>-${n.formatdate()}<a href="news-detail?id=${n.id}">: ${n.title}</a>
                                                         <c:if test="${sessionScope.account.roleId == 2}"><a href="delete-news?id=${n.id}" onclick="return confirm('Are you sure to delete this news?')""><i class="material-icons" title="Delete">&#xE872;</i></a></c:if>
                                                         </li>
                                                 </c:forEach>

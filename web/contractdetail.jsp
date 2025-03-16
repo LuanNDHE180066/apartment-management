@@ -123,9 +123,9 @@
                                 <p><strong>Admin:</strong> ${requestScope.contract.admin.name}</p>
                                 <p><strong>Accountant:</strong> ${requestScope.contract.accountant.name}</p>
                                 <p><strong>Company:</strong> ${requestScope.contract.company.name}</p>
-                                <p><strong>Sign Date:</strong> ${requestScope.contract.signDate}</p>
-                                <p><strong>Start Date:</strong> ${requestScope.contract.startDate}</p>
-                                <p><strong>End Date:</strong> ${requestScope.contract.endDate}</p>
+                                <p><strong>Sign Date:</strong> ${requestScope.contract.formatSigndate()}</p>
+                                <p><strong>Start Date:</strong> ${requestScope.contract.formatStartdate()}</p>
+                                <p><strong>End Date:</strong> ${requestScope.contract.formatEnddate()}</p>
                                 <p><strong>Description:</strong> ${requestScope.contract.description}</p>
                             </div>
 

@@ -111,7 +111,7 @@ public class UpdateStaffInfor extends HttpServlet {
         String role = request.getParameter("role");
         String startDate = request.getParameter("startDate");
         String endDate = request.getParameter("endDate");
-
+        String ischief_raw=request.getParameter("ischief");
         StaffDAO daoSt = new StaffDAO();
         CompanyDAO daoCp = new CompanyDAO();
         RoleDAO daoR = new RoleDAO();
@@ -221,6 +221,7 @@ public class UpdateStaffInfor extends HttpServlet {
             request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
             return;
         }
+        salary_raw = salary_raw.replaceAll("\\.", "");
         int salary = Integer.parseInt(salary_raw);
         int status = Integer.parseInt(status_raw);
         if (salary <= 0) {
@@ -229,6 +230,7 @@ public class UpdateStaffInfor extends HttpServlet {
             request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
             return;
         }
+        int ischief=Integer.parseInt(ischief_raw);
         Staff st = new Staff();
         st.setId(id);
         st.setAddress(address);
@@ -248,6 +250,7 @@ public class UpdateStaffInfor extends HttpServlet {
         }
         st.setStartDate(startDate);
         st.setStatus(status);
+        st.setIschief(ischief);
         if (daoSt.updateStaffInfor(st)) {
             request.setAttribute("status", "true");
             request.setAttribute("message", "Staff updated successfully!");

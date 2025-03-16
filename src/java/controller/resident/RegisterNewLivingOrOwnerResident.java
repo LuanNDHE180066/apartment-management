@@ -18,10 +18,12 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import model.Account;
 import model.RequestChangeResident;
 import model.Resident;
 import model.SendEmail;
@@ -93,20 +95,22 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         LivingApartmentDAO lDAO = new LivingApartmentDAO();
         RequestChangeResidentDAO requestChangeDAO = new RequestChangeResidentDAO();
         RoleDAO rDAO = new RoleDAO();
+        HttpSession session=request.getSession();
+        Account a =(Account)session.getAttribute("account");
 
         String aid = request.getParameter("apartment");
         String changeResident = request.getParameter("residentType");
         String residentExists = request.getParameter("residentExists");
 
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String formatDate = format.format(dateTime);
         String emailContent = "";
 
         Resident owner = oDAO.getOwnerByApartmentID(aid).getRid();
         if (residentExists != null) {
             String newResidentId = request.getParameter("newResidentId");
-            Resident newRe = reDAO.getById_v2(newResidentId);
+            Resident newRe = reDAO.getById(newResidentId);
             if (newRe == null) {
                 request.setAttribute("status", "false");
                 request.setAttribute("message", "Resident ID is not exist");
@@ -177,23 +181,23 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 return;
             }
 
-            if (reDAO.checkDuplicatePhone(phone)) {
+            if (reDAO.checkDuplicatePhone(phone,a.getpId())) {
                 request.setAttribute("message", "Phone is existed.");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
-            if (reDAO.checkDuplicateEmail(email)) {
+            if (reDAO.checkDuplicateEmail(email,a.getpId())) {
                 request.setAttribute("message", "Email is existed..");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
-            if (reDAO.checkDuplicateID(id)) {
+            if (reDAO.checkDuplicateID(id,a.getpId())) {
                 request.setAttribute("message", "ID is existed..");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
 
-            if (reDAO.checkDuplicateUser(username)) {
+            if (reDAO.checkDuplicateUser(username,a.getpId())) {
                 request.setAttribute("message", "Username is existed.");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;

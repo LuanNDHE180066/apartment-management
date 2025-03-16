@@ -130,25 +130,31 @@
                     margin-top: 5px;
                     display: block;
                 }
+                input[type="radio"]:focus {
+                    outline: none;
+                    box-shadow: none;
+                    border: none;
+                }
+
 
             </style>
         </head>
         <body class="inner_page tables_page">
             <div class="full_container">
                 <div class="inner_container">
-                    <!-- Sidebar  -->
+                    <!-- Sidebar -->
                     <%@include file="sidebar.jsp" %>
-                    <!-- end sidebar -->
-                    <!-- right content -->
+                    <!-- End sidebar -->
                     <div id="content">
-                        <!-- topbar -->
+                        <!-- Topbar -->
                         <%@include file="topbar.jsp" %>
-                        <!-- end topbar -->
+                        <!-- End topbar -->
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
                                     <h1 style="font-weight: bold">Add New Resident</h1>
                                     <form action="addNewResident" method="post">
+                                        <!-- Personal Information -->
                                         <div class="form-group">
                                             <div class="three-cols">
                                                 <div class="col">
@@ -163,25 +169,45 @@
                                                     <label>Gender</label>
                                                     <div class="gender-options">
                                                         <label for="male">
-                                                            <input type="radio" id="male" name="gender" value="M" required />
-                                                            Male
+                                                            <input type="radio" id="male" name="gender" value="M" required /> Male
                                                         </label>
                                                         <label for="female">
-                                                            <input type="radio" id="female" name="gender" value="F" required />
-                                                            Female
+                                                            <input type="radio" id="female" name="gender" value="F" required /> Female
                                                         </label>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
 
+                                        <!-- Address -->
                                         <div class="form-group">
-                                            <div class="one-col">
-                                                <label for="address">Address</label>
-                                                <input type="text" id="address" name="address" placeholder="Enter address" required />
+                                            <label for="address">Address</label>
+                                            <input type="text" id="address" name="address" placeholder="Enter address" required />
+                                        </div>
+
+                                        <!-- ID and Homeowner Status -->
+                                        <div class="form-group">
+                                            <div class="two-cols">
+                                                <div class="col">
+                                                    <label for="id">ID</label>
+                                                    <input type="number" id="id" name="id" placeholder="Enter ID" />
+                                                    <span id="id-error" class="error-message"></span>
+                                                </div>
+                                                <div class="col">
+                                                    <label>Homeowner</label>
+                                                    <div class="homeowner-options">
+                                                        <label for="homeowner-yes">
+                                                            <input type="radio" id="homeowner-yes" name="isHomeOwner" value="yes" onclick="toggleFields(true)" required /> Yes
+                                                        </label>
+                                                        <label for="homeowner-no">
+                                                            <input type="radio" id="homeowner-no" name="isHomeOwner" value="no" onclick="toggleFields(false)" required /> No
+                                                        </label>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
 
+                                        <!-- Contact Information -->
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col">
@@ -189,7 +215,7 @@
                                                     <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required />
                                                     <span id="phone-error" class="error-message"></span>
                                                 </div>
-                                                <div class="col">
+                                                <div class="col" id="email-container" style="display: none">
                                                     <label for="email">Email</label>
                                                     <input type="email" id="email" name="email" placeholder="Enter email" required />
                                                     <span id="email-error" class="error-message"></span>
@@ -197,178 +223,143 @@
                                             </div>
                                         </div>
 
-                                        <div class="form-group">
-                                            <div class="three-cols">
-                                                <div class="col">
-                                                    <label for="id">ID</label>
-                                                    <input type="number" id="id" name="id" placeholder="Enter ID" required />
-                                                    <span id="id-error" class="error-message"></span>
-                                                </div>
-                                                <div class="col">
-                                                    <label for="username">Username</label>
-                                                    <input type="text" id="username" name="username" placeholder="Enter username" required />
-                                                    <span id="username-error" class="error-message"></span>
-                                                </div>
-                                            </div>
+                                        <!-- Username (Visible Only for Homeowners) -->
+                                        <div class="form-group" id="username-container" style="display: none;">
+                                            <label for="username">Username</label>
+                                            <input type="text" id="username" name="username" placeholder="Enter username" />
+                                            <span id="username-error" class="error-message"></span>
                                         </div>
 
+                                        <!-- Submit Button -->
                                         <div class="form-button">
                                             <button type="submit">Add Resident</button>
                                         </div>
-
                                     </form>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- end dashboard inner -->
+                        <!-- JavaScript -->
+                        <script src="js/jquery.min.js"></script>
+                        <script src="js/popper.min.js"></script>
+                        <script src="js/bootstrap.min.js"></script>
+                        <script src="js/custom.js"></script>
+                        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+                        <script>
+                                                                function toggleFields(show) {
+                                                                    const usernameContainer = document.getElementById("username-container");
+                                                                    const emailContainer = document.getElementById("email-container");
+                                                                    const usernameInput = document.getElementById("username");
+                                                                    const emailInput = document.getElementById("email");
+
+                                                                    if (show) {
+                                                                        usernameContainer.style.display = "block";
+                                                                        emailContainer.style.display = "block";
+                                                                        usernameInput.setAttribute("required", "true");
+                                                                        emailInput.setAttribute("required", "true");
+                                                                    } else {
+                                                                        usernameContainer.style.display = "none";
+                                                                        emailContainer.style.display = "none";
+                                                                        usernameInput.removeAttribute("required");
+                                                                        emailInput.removeAttribute("required");
+                                                                        usernameInput.value = "";
+                                                                        emailInput.value = "";
+                                                                    }
+                                                                }
+
+                                                                $(document).ready(function () {
+                                                                    const submitButton = $('button[type="submit"]');
+
+                                                                    function updateSubmitButtonState() {
+                                                                        if (
+                                                                                $("#email-error").text() ||
+                                                                                $("#phone-error").text() ||
+                                                                                $("#id-error").text() ||
+                                                                                $("#username-error").text()
+                                                                                ) {
+                                                                            submitButton.prop("disabled", true);
+                                                                        } else {
+                                                                            submitButton.prop("disabled", false);
+                                                                        }
+                                                                    }
+
+                                                                    function checkDuplicate(type, value, errorField) {
+                                                                        if (value) {
+                                                                            $.ajax({
+                                                                                url: "checkDuplicateResidentInfor",
+                                                                                type: "GET",
+                                                                                data: {type: type, value: value},
+                                                                                success: function (response) {
+                                                                                    if (response.exists) {
+                                                                                        $(errorField).text(type.charAt(0).toUpperCase() + type.slice(1) + " already exists.");
+                                                                                    } else {
+                                                                                        $(errorField).text("");
+                                                                                    }
+                                                                                    updateSubmitButtonState();
+                                                                                }
+                                                                            });
+                                                                        } else {
+                                                                            $(errorField).text("");
+                                                                            updateSubmitButtonState();
+                                                                        }
+                                                                    }
+
+                                                                    $("#email").on("input", function () {
+                                                                        checkDuplicate("email", $(this).val(), "#email-error");
+                                                                    });
+
+                                                                    $("#phone").on("input", function () {
+                                                                        checkDuplicate("phone", $(this).val(), "#phone-error");
+                                                                    });
+
+                                                                    $("#id").on("input", function () {
+                                                                        checkDuplicate("id", $(this).val(), "#id-error");
+                                                                    });
+
+                                                                    $("#username").on("input", function () {
+                                                                        if ($(this).val().includes(" ")) {
+                                                                            $("#username-error").text("Username cannot contain spaces.");
+                                                                        } else {
+                                                                            checkDuplicate("username", $(this).val(), "#username-error");
+                                                                        }
+                                                                        updateSubmitButtonState();
+                                                                    });
+
+                                                                    $("form").on("submit", function (event) {
+                                                                        let phone = $("#phone").val();
+                                                                        let id = $("#id").val();
+                                                                        let username = $("#username").val();
+                                                                        let usernameContainer = $("#username-container").css("display") !== "none";
+
+                                                                        let phonePattern = /^\d{10}$/;
+                                                                        let idPattern = /^\d{12}$/;
+                                                                        let usernamePattern = /^.{4,}$/;
+
+                                                                        let valid = true;
+
+                                                                        if (!phonePattern.test(phone)) {
+                                                                            $("#phone-error").text("Phone number must be exactly 10 digits.");
+                                                                            valid = false;
+                                                                        }
+
+                                                                        if (!idPattern.test(id)) {
+                                                                            $("#id-error").text("ID must be exactly 12 digits.");
+                                                                            valid = false;
+                                                                        }
+
+                                                                        if (usernameContainer && !usernamePattern.test(username)) {
+                                                                            $("#username-error").text("Username must be at least 4 characters.");
+                                                                            valid = false;
+                                                                        }
+
+                                                                        if (!valid)
+                                                                            event.preventDefault();
+                                                                    });
+                                                                });
+                        </script>
                     </div>
                 </div>
-                <!-- jQuery -->
-                <script src="js/jquery.min.js"></script>
-                <script src="js/popper.min.js"></script>
-                <script src="js/bootstrap.min.js"></script>
-                <script src="js/custom.js"></script>
-                <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-                <script>
-                    $(document).ready(function () {
-                        const submitButton = $('button[type="submit"]');
-
-                        // Function to update the submit button's disabled state
-                        function updateSubmitButtonState() {
-                            if (
-                                    $("#email-error").text() ||
-                                    $("#phone-error").text() ||
-                                    $("#id-error").text() ||
-                                    $("#username-error").text()
-                                    ) {
-                                submitButton.prop("disabled", true);
-                            } else {
-                                submitButton.prop("disabled", false);
-                            }
-                        }
-
-                        $("#email").on("input", function () {
-                            var email = $(this).val();
-                            if (email) {
-                                $.ajax({
-                                    url: "checkDuplicateResidentInfor",
-                                    type: "GET",
-                                    data: {type: "email", value: email},
-                                    success: function (response) {
-                                        if (response.exists) {
-                                            $("#email-error").text("Email already exists.");
-                                        } else {
-                                            $("#email-error").text("");
-                                        }
-                                        updateSubmitButtonState();
-                                    }
-                                });
-                            } else {
-                                $("#email-error").text("");
-                                updateSubmitButtonState();
-                            }
-                        });
-
-                        $("#phone").on("input", function () {
-                            var phone = $(this).val();
-                            if (phone) {
-                                $.ajax({
-                                    url: "checkDuplicateResidentInfor",
-                                    type: "GET",
-                                    data: {type: "phone", value: phone},
-                                    success: function (response) {
-                                        if (response.exists) {
-                                            $("#phone-error").text("Phone number already exists.");
-                                        } else {
-                                            $("#phone-error").text("");
-                                        }
-                                        updateSubmitButtonState();
-                                    }
-                                });
-                            } else {
-                                $("#phone-error").text("");
-                                updateSubmitButtonState();
-                            }
-                        });
-
-                        $("#id").on("input", function () {
-                            var id = $(this).val();
-                            if (id) {
-                                $.ajax({
-                                    url: "checkDuplicateResidentInfor",
-                                    type: "GET",
-                                    data: {type: "id", value: id},
-                                    success: function (response) {
-                                        if (response.exists) {
-                                            $("#id-error").text("ID already exists.");
-                                        } else {
-                                            $("#id-error").text("");
-                                        }
-                                        updateSubmitButtonState();
-                                    }
-                                });
-                            } else {
-                                $("#id-error").text("");
-                                updateSubmitButtonState();
-                            }
-                        });
-
-                        $("#username").on("input", function () {
-                            var username = $(this).val();
-                            if (username.includes(" ")) {
-                                $("#username-error").text("Username cannot contain spaces.");
-                            } else {
-                                $.ajax({
-                                    url: "checkDuplicateResidentInfor",
-                                    type: "GET",
-                                    data: {type: "username", value: username},
-                                    success: function (response) {
-                                        if (response.exists) {
-                                            $("#username-error").text("Username already exists.");
-                                        } else {
-                                            $("#username-error").text("");
-                                        }
-                                        updateSubmitButtonState();
-                                    }
-                                });
-                            }
-                            updateSubmitButtonState();
-                        });
-                    });
-                </script>
-                <script>
-                    document.querySelector("form").addEventListener("submit", function (event) {
-                        let phone = document.getElementById("phone").value;
-                        let id = document.getElementById("id").value;
-                        let phoneError = document.getElementById("phone-error");
-                        let idError = document.getElementById("id-error");
-
-                        let phonePattern = /^\d{10}$/;
-                        let idPattern = /^\d{12}$/;
-
-                        let valid = true;
-
-                        if (!phonePattern.test(phone)) {
-                            phoneError.textContent = "Phone number must be exactly 10 digits.";
-                            valid = false;
-                        } else {
-                            phoneError.textContent = "";
-                        }
-
-                        if (!idPattern.test(id)) {
-                            idError.textContent = "ID must be exactly 12 digits.";
-                            valid = false;
-                        } else {
-                            idError.textContent = "";
-                        }
-
-                        if (!valid) {
-                            event.preventDefault();
-                        }
-                    });
-                </script>
-
-
+            </div>
         </body>
     </html>

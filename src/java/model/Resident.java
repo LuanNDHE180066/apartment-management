@@ -4,6 +4,9 @@
  */
 package model;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  *
  * @author thanh
@@ -20,11 +23,35 @@ public class Resident {
     private String name, cccd;
     private String phone, email, bod, address, username, password, status, note;
     private Role role;
-    private String gender,image;
+    private String gender, image;
+
+    private List<Apartment> apartmentNumber;
+
+
+
+    private boolean isHomeOwner;
 
     public Resident() {
     }
 
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String gender, String image, boolean isHomeOwner) {
+        this.pId = pId;
+        this.name = name;
+        this.cccd = cccd;
+        this.phone = phone;
+        this.email = email;
+        this.bod = bod;
+        this.address = address;
+        this.username = username;
+        this.password = password;
+        this.status = status;
+        this.note = note;
+        this.role = role;
+        this.gender = gender;
+        this.image = image;
+        this.isHomeOwner = isHomeOwner;
+    }
+    
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role) {
         this.pId = pId;
         this.name = name;
@@ -39,7 +66,8 @@ public class Resident {
         this.note = note;
         this.role = role;
     }
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role,String image) {
+
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String image) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -79,7 +107,6 @@ public class Resident {
         this.gender = gender;
     }
 
-
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender) {
         this.pId = pId;
         this.name = name;
@@ -91,8 +118,8 @@ public class Resident {
         this.image = image;
         this.gender = gender;
     }
-    
-       public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
+
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -106,15 +133,15 @@ public class Resident {
     }
 
     public Resident(String pId, String email, String phone, String address) {
-        this.pId=pId;
-        this.email=email;
-        this.phone=phone;
-        this.address=address;
-        
+        this.pId = pId;
+        this.email = email;
+        this.phone = phone;
+        this.address = address;
+
     }
 
     public Resident(String pId) {
-        this.pId=pId;
+        this.pId = pId;
     }
 
     public String getGender() {
@@ -140,6 +167,13 @@ public class Resident {
 
     public String getUsername() {
         return username;
+    }
+    public boolean isIsHomeOwner() {
+        return isHomeOwner;
+    }
+
+    public void setIsHomeOwner(boolean isHomeOwner) {
+        this.isHomeOwner = isHomeOwner;
     }
 
     public void setUsername(String username) {
@@ -233,5 +267,35 @@ public class Resident {
     public void setImage(String image) {
         this.image = image;
     }
+    public List<Apartment> getApartmentNumber() {
+        return apartmentNumber;
+    }
+
+    public void setApartmentNumber(List<Apartment> apartmentNumber) {
+        this.apartmentNumber = apartmentNumber;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 23 * hash + Objects.hashCode(this.pId);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Resident other = (Resident) obj;
+        return Objects.equals(this.pId, other.pId);
+    }
+    
 
 }

@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -44,6 +45,9 @@
                 text-align: center; /* Căn giữa tên cột */
                 background-color: #6B90DA; /* Màu nền cho tiêu đề cột */
                 color: black; /* Màu chữ trắng để nổi bật trên nền xanh */
+            }
+            td{
+                color: black;
             }
         </style>
         <!--[if lt IE 9]>
@@ -118,11 +122,13 @@
                                                             <c:forEach items="${requestScope.nonPaidList}" var="item">
                                                                 <tr>
                                                                     <td>${item.id}</td>
-                                                                    <td>${item.total}</td> 
-                                                                    <td>${item.invoiceDate}</td>
-                                                                    <td>${item.dueDate}</td>
-                                                                    <td>${item.description}</td>
-                                                                    <td>${item.apartment.id}</td>
+                                                                    <td style="text-align: right">
+                                                                        <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
+                                                                    </td> 
+                                                                    <td style="text-align: center">${item.invoiceDateFormat}</td>
+                                                                    <td style="text-align: center">${item.dueDateFormat}</td>
+                                                                    <td style="text-align: left">${item.description}</td>
+                                                                    <td style="text-align: center">${item.apartment.id}</td>
                                                                     <td style="text-align: center">
                                                                         <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                     </td>
@@ -141,15 +147,21 @@
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
                                                                                     <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
+                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
                                                                                 <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                     <tr style="border-bottom: 1px solid #ddd;">
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.name}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd;text-align: left">${detail.serviceName}</td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.unit}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.quantity * detail.service.unitPrice}</td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
+                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
+                                                                                        </td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
+                                                                                        </td>
+                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                     </tr>
                                                                                 </c:forEach>
                                                                             </tbody>
@@ -164,28 +176,44 @@
                                                     <h3 style="margin-bottom: 20px; font-size: 24px; font-weight: bold; color: #2c3e50; display: inline-block; border-bottom: 3px solid #3498db; padding-bottom: 5px;">
                                                         Tra cứu hóa đơn
                                                     </h3>
-                                                    <div style="display: flex; align-items: center; gap: 10px;margin-bottom: 20px">
-                                                        <form action="view-invoice-staff" method="post" style="display: flex; align-items: center; gap: 10px;">
-                                                            <select required="" name="yearSelected" 
-                                                                    style="height: 40px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer;">
-                                                                <c:forEach begin="${requestScope.startYear}" end="${currentYear}" var="year">
-                                                                    <option ${year== requestScope.usingYear?'selected':''} value="${year}">${year}</option>
+                                                    <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
+                                                        <form action="view-invoice-staff" method="get" style="display: flex; align-items: center; gap: 10px;">
+                                                            <select required name="apartmentSelected" 
+                                                                    style="height: 42px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer;">
+                                                                <option value="all">All</option>
+                                                                <c:forEach items="${requestScope.apartmentList}" var="item">
+                                                                    <option ${item.id == requestScope.usingApartment ? 'selected' : ''} value="${item.id}">${item.id}</option>
                                                                 </c:forEach>
                                                             </select>
 
-                                                            <select required="" name="apartmentSelected" 
-                                                                    style="height: 40px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc; background: white; cursor: pointer;">
-                                                                <c:forEach items="${requestScope.apartmentList}" var="item">
-                                                                    <option ${item.id== requestScope.usingApartment?'selected':''} value="${item.id}">${item.id}</option>
-                                                                </c:forEach>
-                                                            </select>
+                                                            <input type="date" value="${requestScope.usingFrom}" name="from" style="height: 42px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc;">
+                                                            <input type="date" value="${requestScope.usingTo}" name="to" style="height: 42px; padding: 5px 10px; border-radius: 5px; border: 1px solid #ccc;">
 
                                                             <button type="submit" 
                                                                     style="height: 42px; padding: 5px 15px; border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer;">
                                                                 Find
                                                             </button>
                                                         </form>
+                                                        <form action="export-invoice-staff" method="get">
+                                                            <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
+                                                            <input hidden="" name="from" value="${requestScope.usingFrom}"/>
+                                                            <input hidden="" name="to" value="${requestScope.usingTo}"/>
+                                                            <button type="submit" 
+                                                                    style="height: 42px; padding: 5px 15px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer;">
+                                                                Xuất file
+                                                            </button>
+                                                        </form>
+                                                        <form action="export-invoice-staff" method="post">
+                                                            <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
+                                                            <input hidden="" name="from" value="${requestScope.usingFrom}"/>
+                                                            <input hidden="" name="to" value="${requestScope.usingTo}"/>
+                                                            <button type="submit" 
+                                                                    style="height: 42px; padding: 5px 15px; border: none; background: #28a745; color: white; border-radius: 5px; cursor: pointer;">
+                                                                Xuất file chi tiết
+                                                            </button>
+                                                        </form>
                                                     </div>
+
 
                                                     <table class="table w-100">
                                                         <thead>
@@ -200,15 +228,17 @@
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <c:forEach items="${requestScope.historyInvoice}" var="item">
+                                                            <c:forEach items="${requestScope.paidList}" var="item">
                                                                 <c:if test="${item.status==1}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
-                                                                        <td>${item.total}</td> 
-                                                                        <td>${item.invoiceDate}</td>
-                                                                        <td>${item.dueDate}</td>
-                                                                        <td>${item.description}</td>
-                                                                        <td>${item.apartment.id}</td>
+                                                                        <td style="text-align: right">
+                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
+                                                                        </td> 
+                                                                        <td style="text-align: center">${item.invoiceDateFormat}</td>
+                                                                        <td style="text-align: center">${item.dueDateFormat}</td>
+                                                                        <td style="text-align: left">${item.description}</td>
+                                                                        <td style="text-align: center">${item.apartment.id}</td>
                                                                         <td style="text-align: center">
                                                                             <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                         </td>
@@ -223,15 +253,21 @@
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
                                                                                         <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
+                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
                                                                                     </tr>
                                                                                 </thead>
                                                                                 <tbody>
                                                                                     <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                         <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.name}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left">${detail.serviceName}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.service.unit}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.quantity * detail.service.unitPrice}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
+                                                                                                 <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                         </tr>
                                                                                     </c:forEach>
                                                                                 </tbody>
@@ -243,6 +279,17 @@
                                                             </c:forEach>
                                                         </tbody>
                                                     </table>
+                                                    <form style="text-align: right" action="view-invoice-staff" method="post">
+                                                        <input hidden="" name="apartmentSelected" value="${requestScope.usingApartment}"/>
+                                                        <input hidden="" name="from" value="${requestScope.usingFrom}"/>
+                                                        <input hidden="" name="to" value="${requestScope.usingTo}"/>
+                                                        <select onchange="this.form.submit()" name="page" style="width: 60px; padding: 5px; border: 1px solid #ccc; border-radius: 5px;">
+                                                            <c:forEach begin="1" end="${requestScope.endPage}" var="item">
+                                                                <option ${item == requestScope.selectedPage ? 'selected':''} value="${item}" style="background-color: #f8f9fa; color: #333; padding: 5px;">${item}</option>
+                                                            </c:forEach>    
+                                                        </select>
+
+                                                    </form>
                                                 </div>
                                             </div>
                                         </div>
@@ -264,18 +311,18 @@
             <script src="js/custom.js"></script>
     </body>
     <script>
-        document.querySelectorAll(".fa-plus").forEach(button => {
-            button.addEventListener("click", function () {
-                let detailRow = this.closest("tr").nextElementSibling;
+                                                            document.querySelectorAll(".fa-plus").forEach(button => {
+                                                                button.addEventListener("click", function () {
+                                                                    let detailRow = this.closest("tr").nextElementSibling;
 
-                // Toggle hiển thị
-                detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
+                                                                    // Toggle hiển thị
+                                                                    detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
 
-                // Đổi icon giữa dấu "+" và "-"
-                this.classList.toggle("fa-plus");
-                this.classList.toggle("fa-minus");
-            });
-        });
+                                                                    // Đổi icon giữa dấu "+" và "-"
+                                                                    this.classList.toggle("fa-plus");
+                                                                    this.classList.toggle("fa-minus");
+                                                                });
+                                                            });
 
     </script>
 </html>

@@ -113,7 +113,7 @@
 
                 <!-- Ngày đăng & tác giả -->
                 <p class="news-meta text-muted">
-                    <i class="far fa-calendar-alt"></i> ${requestScope.news.date} &nbsp; | &nbsp;
+                    <i class="far fa-calendar-alt"></i> ${requestScope.news.formatdate()} &nbsp; | &nbsp;
                     <i class="fas fa-user"></i> ${requestScope.news.staff.name}
                 </p>
 
