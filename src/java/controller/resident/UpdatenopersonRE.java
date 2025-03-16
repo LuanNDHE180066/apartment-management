@@ -5,6 +5,7 @@
 package controller.resident;
 
 import dao.ApartmentDAO;
+import dao.LivingApartmentDAO;
 import dao.RoomTypeDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import java.util.List;
 import model.Apartment;
+import model.LivingApartment;
 import model.RoomType;
 import util.Util;
 
@@ -65,17 +67,19 @@ public class UpdatenopersonRE extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         HttpSession session = request.getSession();
-        String id = request.getParameter("id");
+        String aid = request.getParameter("id");
+        LivingApartmentDAO laDAO = new LivingApartmentDAO();
 
         RoomTypeDAO roomTypeDAO = new RoomTypeDAO();
 
         List<RoomType> listRoomType = roomTypeDAO.getAll();
         session.setAttribute("listRoomType", listRoomType);
-        if (id != null && !id.isEmpty()) {
+        List<LivingApartment> listLivingPerson = laDAO.getActiveLivingResidentByApartmentID(aid);
+        if (aid != null && !aid.isEmpty()) {
             ApartmentDAO daoA = new ApartmentDAO();
-            Apartment apartment = daoA.getById(id);
+            Apartment apartment = daoA.getById(aid);
             if (apartment != null) {
-
+                request.setAttribute("livingPersons", listLivingPerson);
                 request.setAttribute("apartment", apartment);
                 request.getRequestDispatcher("updatenopersonapartment.jsp").forward(request, response);
             } else {

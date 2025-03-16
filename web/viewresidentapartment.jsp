@@ -231,7 +231,7 @@
                                                             <th style="width: 15%;">Apartment Number </th>
                                                             <th style="width: 15%;">Number of Person</th>
                                                             <th style="width: 10%;">Floor</th>
-                                                            <th style="width: 20%;">Living Person</th>
+                                                          
                                                             <th style="width: 30%;">Information</th>
                                                             <th style="width: 5%;">Other</th>
                                                         </tr>
@@ -239,21 +239,17 @@
                                                     <tbody>
                                                     <h3>${requestScope.message}</h3>
                                                     <h3 style="color: red">${requestScope.error}</h3>
+                                                    <jsp:useBean id="laDAO" class="dao.LivingApartmentDAO" scope="page"></jsp:useBean>
                                                     <c:forEach items="${sessionScope.listapartment}" var="listapartment">
                                                         <tr>
+
                                                             <td>${listapartment.id}</td>
-                                                            <td>${listapartment.numberOfPerson}</td>
+                                                            <td>${laDAO.getNumberOfLivingPerson(listapartment.id)}</td>
                                                             <td>${listapartment.floor.number}</td>
-                                                            <td>
-                                                                <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.livingPerson.pId}">
-                                                                    ${listapartment.livingPerson.name}
-                                                                </a>
-                                                            </td>
+                                                           
                                                             <td>${listapartment.infor}</td>
                                                             <td style="text-align: center">
-                                                                <a href="#" data-toggle="modal" data-target="#apartmentDetail${listapartment.id}">
-                                                                    <i class="fa fa-home" aria-hidden="true"></i>
-                                                                </a>
+                                                               
                                                                 <a href="updatenopersonre?id=${listapartment.id}"><i class="fa-solid fa-pen-to-square"></i></a>   
                                                             </td>
 
@@ -357,7 +353,7 @@
                     </div>
                     <form method="get" action="view-all-resident-apartment" style="display: flex; align-items: center; gap: 10px;">
                         <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-                        
+
                         <input type="text" name="filterType" value="${param.filterType}" hidden=""><!-- comment -->
                         <input type="text" name="floor" value="${param.floor}" hidden=""><!-- comment -->
                         <select id="page" name="page" onchange="this.form.submit()" 
@@ -382,10 +378,26 @@
                 </div>
             </div>
         </div>
+    
+
         <!-- jQuery -->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
         <script src="js/custom.js"></script>
+        <script>
+                                    $(document).ready(function () {
+                                        // When the modal is shown
+                                        $('.modal').on('show.bs.modal', function () {
+                                            // You can add any specific styles here if needed
+                                        });
+
+                                        // When the modal is hidden
+                                        $('.modal').on('hidden.bs.modal', function () {
+                                            // Clear all styles from the body
+                                            $('body').removeAttr('style');
+                                        });
+                                    });
+        </script>
     </body>
 </html>

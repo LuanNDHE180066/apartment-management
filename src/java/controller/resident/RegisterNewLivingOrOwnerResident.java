@@ -103,7 +103,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         String residentExists = request.getParameter("residentExists");
 
         LocalDateTime dateTime = LocalDateTime.now();
-        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy/MM/dd");
         String formatDate = format.format(dateTime);
         String emailContent = "";
 

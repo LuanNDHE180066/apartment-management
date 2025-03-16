@@ -15,6 +15,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.List;
+import model.Resident;
 
 /**
  *
@@ -68,10 +70,14 @@ public class ViewDetailApartmentServlet extends HttpServlet {
         OwnerApartmentDAO od = new OwnerApartmentDAO();
         ResidentDAO residentDAO = new ResidentDAO();
 
+        List<Resident> listLivingResident = ld.getLivingResidentList(aid);
+
         request.setAttribute("apartmentId", aid);
-        request.setAttribute("historyOfLiving", ld.getByApartmentID(aid));
-        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
+       // request.setAttribute("historyOfLiving", ld.getByApartmentID(aid, "", ""));
+//        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
         request.setAttribute("apartmentDetail", ad.getById(aid));
+        request.setAttribute("livingResidents", listLivingResident);
+
         if (ld.getLivingResidentByApartmentID(aid) != null) {
             request.setAttribute("livingPerson", residentDAO.getById(ld.getLivingResidentByApartmentID(aid).getRid().getpId()));
         }

@@ -30,6 +30,37 @@ public class ResidentDAO extends DBContext {
     public boolean checkConnection() {
         return connection == null;
     }
+    
+    public Resident getById_v2(String pId) {
+        String sql = "select  * from resident where id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, pId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String bod = rs.getDate("bod").toString();
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                String cccd = rs.getString("cccd");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Role role = new Role("1", "resident", "--");
+                String status = String.valueOf(rs.getInt("active"));
+                String gender = rs.getString("gender");
+                String image = rs.getString("image");
+                Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
+                Resident re = new Resident(id, name, cccd, phone, email, bod, address, image, gender, username);
+
+                return re;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public List<Resident> getAll() {
         String sql = "select  * from resident";
@@ -67,6 +98,38 @@ public class ResidentDAO extends DBContext {
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String na = rs.getString("name");
+                String bod = rs.getDate("bod").toString();
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                String cccd = rs.getString("cccd");
+                String usernameE = rs.getString("username");
+                String password = rs.getString("password");
+                Role role = new Role("1", "resident", "--");
+                String st = String.valueOf(rs.getInt("active"));
+                String gender = rs.getString("gender");
+                String image = rs.getString("image");
+                Resident resident = new Resident(id, na, cccd, phone, email, bod, address, usernameE, password, st, null, role, image);
+                resident.setGender(gender);
+                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                resident.setIsHomeOwner(isHomeOwner);
+                return resident;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+    
+        public Resident getResidentById(String Cccd) {
+        String sql = "select * from Resident where cccd = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, Cccd);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 String id = rs.getString("id");
