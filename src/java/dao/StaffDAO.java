@@ -181,7 +181,8 @@ public class StaffDAO extends DBContext {
                 String startDate = rs.getString("startdate");
                 String enddate = rs.getString("enddate");
                 String gender = rs.getString("gender");
-                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender);
+                int ischief=rs.getInt("ischief");
+                Staff s = new Staff(id, name, bod, Email, phone, address, cccd, salary, education, bank, status, username, password, r, cp, startDate, enddate, gender,ischief);
                 list.add(s);
             }
         } catch (Exception e) {
