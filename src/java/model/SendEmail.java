@@ -1,5 +1,6 @@
 package model;
 
+import dao.InvoiceDAO;
 import dto.response.EmailInvoice;
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -16,11 +17,14 @@ import java.util.concurrent.Executors;
 import javax.mail.Authenticator;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.Multipart;
 import javax.mail.PasswordAuthentication;
 import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 
 /**
  * Class to handle sending confirmation emails for orders and password recovery.
@@ -56,6 +60,8 @@ public class SendEmail {
     }
 
     public void sendEmailInvoiceToOne(EmailInvoice emailInvoice) {
+        InvoiceDAO ivd = new InvoiceDAO();
+        Invoice invoice = ivd.getByApartmentIdNow(emailInvoice.getAid());
         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
@@ -73,8 +79,43 @@ public class SendEmail {
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailInvoice.getEmail()));
             message.setSubject("Hóa đơn dịch vụ chung cư", "UTF-8");
-            String dataText = "Bạn có hóa đơn phòng " + emailInvoice.getAid() + " cần thanh toán, xem chi tiết tại ứng dụng";
-            message.setText(dataText, "UTF-8");
+            String dataText = "<html><body>"
+                    + "<p>Bạn có hóa đơn cần thanh toán cho phòng " + emailInvoice.getAid() + " ,xem chi tiết bên dưới:</p>"
+                    + "<table border='1' style='border-collapse: collapse; width: 100%;'>"
+                    + "<thead>"
+                    + "    <tr>"
+                    + "        <th style='width: 5%;'>Name</th>"
+                    + "        <th style='width: 15%;'>UnitPrice</th>"
+                    + "        <th style='width: 15%;'>Quantity</th>"
+                    + "        <th style='width: 15%;'>Date</th>"
+                    + "        <th style='width: 30%;'>Amount</th>"
+                    + "    </tr>"
+                    + "</thead>"
+                    + "<tbody>";
+
+// Nếu có danh sách hóa đơn, lặp qua danh sách và thêm vào bảng
+            for (int i = 0; i < invoice.getInvoiceDetail().size(); i++) {
+                InvoiceDetail idt = invoice.getInvoiceDetail().get(i);
+                dataText += "<tr>"
+                        + "<td>" + idt.getServiceName() + "</td>"
+                        + "<td>" + idt.getUnitPrice() + "</td>"
+                        + "<td>" + idt.getQuantity() + "</td>"
+                        + "<td>" + idt.getDate().toString() + "</td>"
+                        + "<td>" + idt.getAmount() + "</td>"
+                        + "</tr>";
+            }
+
+            dataText += "</tbody></table>";
+            dataText += "<h3>Total: " + invoice.getTotal() + "</h3>";
+            dataText += "</body></html>";
+
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(dataText, "text/html; charset=UTF-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            message.setContent(multipart);
 
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + emailInvoice.getEmail());
@@ -316,7 +357,7 @@ public class SendEmail {
         return false;
     }
 
-    public void sendEmail(String to, String residentName, String username, String residentPassword) {
+    public void sendEmailResidentAccount(String to, String residentName, String username, String residentPassword) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587"); // Use 587 for TLS

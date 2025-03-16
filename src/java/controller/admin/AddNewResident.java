@@ -81,7 +81,7 @@ public class AddNewResident extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-
+        
         String name = request.getParameter("name");
         String dob = request.getParameter("dob");
         String address = request.getParameter("address");
@@ -90,6 +90,7 @@ public class AddNewResident extends HttpServlet {
         String id = request.getParameter("id");
         String username = request.getParameter("username");
         String gender = request.getParameter("gender");
+        String HomeOwner = request.getParameter("isHomeOwner");
 
         // Validate phone number (11 digits) and ID (12 digits)
         if (!phone.matches("\\d{10}")) {
@@ -109,7 +110,7 @@ public class AddNewResident extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         RoleDAO roleD = new RoleDAO();
         String password_encript = encryptPassword(password);
-
+        
         Resident r = new Resident();
         r.setName(name);
         r.setBod(dob);
@@ -120,14 +121,17 @@ public class AddNewResident extends HttpServlet {
         r.setRole(roleD.getById("1"));
         r.setPassword(password_encript);
         r.setGender(gender);
-        r.setIsHomeOwner(username != null ? true : false);
-        r.setUsername(r.isIsHomeOwner() == true ? username : null);
-        int successful = rd.insertNewResident(r);
-        if (successful == 1 && username != null) {
-            SendEmail e = new SendEmail();
-            e.sendEmail(email, name, username, password);
+        r.setIsHomeOwner(HomeOwner.equals("yes") ? true : false);
+        if (r.isIsHomeOwner()) {
+            r.setUsername(username);
+           
         }
-
+        int successful = rd.insertNewResident(r);
+        if (successful == 0 && username != null) {
+            SendEmail e = new SendEmail();
+            e.sendEmailResidentAccount(email, name, username, password);
+        }
+        
         response.sendRedirect("view-resident");
     }
 

@@ -72,7 +72,7 @@
                                     <form action="update-service-staff" method="post" style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background: #f9f9f9; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                                         <div class="form-group" style="margin-bottom: 15px;">
                                             <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">Name</label>
-                                            <input type="text" id="name" name="name" value="${requestScope.service.name}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
+                                            <input type="text" readonly="" id="name" name="name" value="${requestScope.service.name}" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">

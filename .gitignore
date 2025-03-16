@@ -12,3 +12,4 @@ nbdist/
 .nb-gradle/
 src/java/config/GoogleConfig.java
 # End of https://www.toptal.com/developers/gitignore/api/netbeans
+*.xlsx

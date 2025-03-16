@@ -90,7 +90,7 @@ public class RequestChangeResidentDAO extends DBContext {
                 String created_at = rs.getString("created_at");
 
                 Resident r = new Resident(newPersonId, cccd, phone, email, dob, address, username, null, roleDAO.getById("1"), gender);
-                RequestChangeResident rc = new RequestChangeResident(id, residentDAO.getById_v2(ownerId), r,
+                RequestChangeResident rc = new RequestChangeResident(id, residentDAO.getById(ownerId), r,
                         roomId, changeType, isExistPerson, admin_status, created_at);
 
                 list.add(rc);
@@ -140,7 +140,7 @@ public class RequestChangeResidentDAO extends DBContext {
                 String created_at = rs.getString("created_at");
 
                 Resident r = new Resident(newPersonId, cccd, phone, email, dob, address, username, null, roleDAO.getById("1"), gender);
-                RequestChangeResident rc = new RequestChangeResident(rid, residentDAO.getById_v2(ownerId), r,
+                RequestChangeResident rc = new RequestChangeResident(rid, residentDAO.getById(ownerId), r,
                         roomId, changeType, isExistPerson, admin_status, created_at);
                 return rc;
             }
@@ -154,7 +154,7 @@ public class RequestChangeResidentDAO extends DBContext {
 
         ResidentDAO dao = new ResidentDAO();
         Resident owner = dao.getById("P102");
-        Resident newRe = dao.getById_v2("P106");
+        Resident newRe = dao.getById("P106");
         //System.out.println(newRe.getGender());
         LocalDateTime lc = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
