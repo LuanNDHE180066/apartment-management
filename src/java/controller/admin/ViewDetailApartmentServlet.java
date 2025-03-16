@@ -71,13 +71,13 @@ public class ViewDetailApartmentServlet extends HttpServlet {
         ResidentDAO residentDAO = new ResidentDAO();
 
         List<Resident> listLivingResident = ld.getLivingResidentList(aid);
-        
+
         request.setAttribute("apartmentId", aid);
-        request.setAttribute("historyOfLiving", ld.getByApartmentID(aid));
-        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
+       // request.setAttribute("historyOfLiving", ld.getByApartmentID(aid, "", ""));
+//        request.setAttribute("historyOfOwner", od.getByApartmentID(aid));
         request.setAttribute("apartmentDetail", ad.getById(aid));
         request.setAttribute("livingResidents", listLivingResident);
-        
+
         if (ld.getLivingResidentByApartmentID(aid) != null) {
             request.setAttribute("livingPerson", residentDAO.getById(ld.getLivingResidentByApartmentID(aid).getRid().getpId()));
         }

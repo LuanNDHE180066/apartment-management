@@ -122,27 +122,22 @@
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
-                                            <form action="view-apartment-admin" method="GET">
+                                            <form action="apartment-living-history" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input type="date"  class="form-control" name="startDate" >
-                                                    </div>
-                                                      <div class="col-md-2">
-                                                        <input type="date"  class="form-control" name="endDate" >
+                                                        <input type="date" value="${param.startDate}"  class="form-control" name="startDate" >
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <select class="form-control" name="filterStatus">
-                                                            <option value="">Filter by Status</option>
-                                                            <option value="1" ${requestScope.filterStatus == '1' ? 'selected' : ''}>Active</option>
-                                                            <option value="0" ${requestScope.filterStatus == '0' ? 'selected' : ''}>InActive</option>
-                                                        </select>
+                                                        <input type="date" value="${param.endDate}"   class="form-control" name="endDate" >
                                                     </div>
+                                                    
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                     </div>
                                                 </div>
+                                                  <input type="text" value="${param.aid}" name="aid" hidden="">
                                             </form>
-                                                        <span  style="font-style: italic; margin-top: 10px">*Search by start living date</span>
+                                            <span  style="font-style: italic; margin-top: 10px">*Search by start living date</span>
                                         </div>
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
@@ -200,6 +195,26 @@
                                 </div>
                             </div>
                         </div>
+                        <form method="get" action="apartment-living-history" style="display: flex; align-items: center; gap: 10px;">
+                            <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                          
+                             <input type="text" name="startDate" value="${param.startDate}" hidden=""><!-- comment -->
+                                <input type="text" name="endDate" value="${param.endDate}" hidden=""><!-- comment -->
+                                <input type="text" name="aid" value="${param.aid}" hidden="">
+                            <select id="page" name="page" onchange="this.form.submit()" 
+                                    style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                                <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                    <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                        ${page}
+                                    </option>
+                                </c:forEach>
+                                <!-- comment -->
+                            </select>
+<!--                             <input type="text" value="${param.filterStatus}" hidden="">
+                              <input type="text" value="${param.filterStatus}" hidden="">
+                               <input type="text" value="${param.searchName}" hidden="">
+                               <input type="text" value="${param.searchName}" hidden="">-->
+                        </form>
                         <div class="container-fluid">
                             <div class="footer">
                                 <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
@@ -212,18 +227,18 @@
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/custom.js"></script>
                 <script>
-                    $(document).ready(function () {
-                        // When the modal is shown
-                        $('.modal').on('show.bs.modal', function () {
-                            // You can add any specific styles here if needed
-                        });
+                                $(document).ready(function () {
+                                    // When the modal is shown
+                                    $('.modal').on('show.bs.modal', function () {
+                                        // You can add any specific styles here if needed
+                                    });
 
-                        // When the modal is hidden
-                        $('.modal').on('hidden.bs.modal', function () {
-                            // Clear all styles from the body
-                            $('body').attr('style', '');
-                        });
-                    });
+                                    // When the modal is hidden
+                                    $('.modal').on('hidden.bs.modal', function () {
+                                        // Clear all styles from the body
+                                        $('body').attr('style', '');
+                                    });
+                                });
                 </script>
             </div>
         </div>

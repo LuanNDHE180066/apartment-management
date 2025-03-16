@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.LivingApartment;
 import model.OwnerApartment;
+import util.Util;
 
 /**
  *
@@ -61,10 +62,33 @@ public class ApartmentOwnerHistory extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
         String aid = request.getParameter("aid");
+        String page = request.getParameter("page");
+        String startDate = request.getParameter("startDate");
+        String endDate = request.getParameter("endDate");
         OwnerApartmentDAO od = new OwnerApartmentDAO();
-        List<OwnerApartment> historyOfOwner = od.getByApartmentID(aid);
-        request.setAttribute("historyOfOwner", historyOfOwner);
-        request.getRequestDispatcher("historyownerapartment.jsp").forward(request, response);
+        if (startDate == null) {
+            startDate = "";
+        }
+        if (endDate == null) {
+            endDate = "";
+        }
+        System.out.println( startDate + "     x    " +endDate);
+        
+        List<OwnerApartment> historyOfOwner = od.getByApartmentID(aid,startDate, endDate);
+        Util u = new Util();
+        if (historyOfOwner.size() != 0) {
+            int totalPage = u.getTotalPage(historyOfOwner, 5);
+            historyOfOwner = u.getListPerPage(historyOfOwner, 5, page);
+            request.setAttribute("currentPage", page != null ? page : "1");
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("historyOfOwner", historyOfOwner);
+            request.getRequestDispatcher("historyownerapartment.jsp").forward(request, response);
+            return;
+        } else{
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("totalPage", 1);
+            request.getRequestDispatcher("historyownerapartment.jsp").forward(request, response);
+        }
     } 
 
     /** 
