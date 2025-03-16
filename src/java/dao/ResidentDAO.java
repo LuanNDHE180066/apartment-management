@@ -30,6 +30,37 @@ public class ResidentDAO extends DBContext {
     public boolean checkConnection() {
         return connection == null;
     }
+    
+    public Resident getById_v2(String pId) {
+        String sql = "select  * from resident where id = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, pId);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String bod = rs.getDate("bod").toString();
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                String cccd = rs.getString("cccd");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Role role = new Role("1", "resident", "--");
+                String status = String.valueOf(rs.getInt("active"));
+                String gender = rs.getString("gender");
+                String image = rs.getString("image");
+                Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
+                Resident re = new Resident(id, name, cccd, phone, email, bod, address, image, gender, username);
+
+                return re;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
 
     public List<Resident> getAll() {
         String sql = "select  * from resident";
