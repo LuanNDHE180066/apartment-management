@@ -130,7 +130,7 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
         //Lấy thông tin hiển thị ở index
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             ResidentDAO rd = new ResidentDAO();
             Resident re = rd.getById(ac.getpId());
             session.setAttribute("person", re);

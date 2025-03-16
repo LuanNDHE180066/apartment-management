@@ -109,7 +109,7 @@
                     <li><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Rule of apartment</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-categoryservice-staff"><i class="fas fa-cube"></i><span>Types of service</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-roomtype"><i class="fa-solid fa-house-flag"></i><span>Room Types</span></a></li>
-                    <li class="${sessionScope.account.roleId != 1? 'display-none':''}"><a href="view-all-resident-apartment"><i class="fa-solid fa-house-flag"></i><span>My apartment</span></a></li>
+                    <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6 ? 'display-none':''}"><a href="view-all-resident-apartment"><i class="fa-solid fa-house-flag"></i><span>My apartment</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-floor-staff"><i class="fa-solid fa-building"></i><span>Floor Information</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="${ut.getSiteToViewApartment(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Apartment Information</span></a>
@@ -129,7 +129,7 @@
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}">
                         <a href="dashboard-request"><i class="fa-solid fa-repeat"></i> <span>Dash Board Request</span></a>
                     </li>
-                    <li class="${sessionScope.account.roleId != 1? 'display-none':''}">
+                    <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6? 'display-none':''}">
                         <a  href="view-service-resident"><i class="fa fa-headset"></i><span>Sử dụng dịch vụ</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 2? 'display-none':''}">
@@ -138,7 +138,7 @@
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="view-apartmentservice-staff"><i class="fa fa-headset"></i><span>Theo dõi sử dụng dịch vụ</span></a>
                     </li>
-                    <li class="${sessionScope.account.roleId != 1? 'display-none':''}">
+                    <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6? 'display-none':''}">
                         <a href="view-invoice-resident"><i class="fa fa-money-bill-wave"></i><span>Invoice</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">

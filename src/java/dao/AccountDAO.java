@@ -25,7 +25,7 @@ public class AccountDAO extends DBContext {
 
     public String getcheckTable(int roleId) {
         String table = "Empty";
-        if(roleId == 1){
+        if(roleId == 1 || roleId ==6){
             table = "Resident";
         }else{
             table = "Staff";
@@ -169,7 +169,7 @@ public class AccountDAO extends DBContext {
     
     public static void main(String[] args) {
         AccountDAO dao = new AccountDAO();
-        System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
+        System.out.println(""+dao.getAccountByUsernameandRole("bob", 6));
     }
 
 }
