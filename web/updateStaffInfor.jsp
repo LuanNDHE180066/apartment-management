@@ -225,12 +225,12 @@
                                                     <input
                                                         type="text" 
                                                         id="salary"
-                                                    name="salary"
-                                                    placeholder="Enter salary"
-                                                    required
-                                                    value="${requestScope.staff.salary}"
-                                                    oninput="formatSalary(this)"
-                                                    />
+                                                        name="salary"
+                                                        placeholder="Enter salary"
+                                                        required
+                                                        value="${requestScope.staff.salary}"
+                                                        oninput="formatSalary(this)"
+                                                        />
                                                     <span style="color: red">${requestScope.salaryerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
@@ -281,10 +281,13 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="status">Status</label>
+                                                    <c:set var="today" value="<%= new java.text.SimpleDateFormat(\"yyyy-MM-dd\").format(new java.util.Date()) %>" />
+
                                                     <select id="status" name="status">
-                                                        <option value="1" ${requestScope.staff.status == '1' ? 'selected' : ''}>Active</option>
-                                                        <option value="0" ${requestScope.staff.status == '0' ? 'selected' : ''}>Inactive</option>
+                                                        <option value="1" ${requestScope.staff.status == '1' && (requestScope.staff.endDate == null || requestScope.staff.endDate > today) ? 'selected' : ''}>Active</option>
+                                                        <option value="0" ${requestScope.staff.status == '0' || requestScope.staff.endDate == today ? 'selected' : ''}>Inactive</option>
                                                     </select>
+
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="role">Role</label>
