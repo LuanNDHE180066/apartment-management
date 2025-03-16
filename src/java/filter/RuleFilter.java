@@ -48,7 +48,7 @@ public class RuleFilter implements Filter {
         }
 
         if (uri.contains("view-rule-resident")) {
-            if (a.getRoleId() != 1) {
+            if (a.getRoleId() != 1 && a.getRoleId()!=6) {
                 res.sendRedirect("404_error.jsp");
                 return;
             }

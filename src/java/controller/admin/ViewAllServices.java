@@ -71,7 +71,7 @@ public class ViewAllServices extends HttpServlet {
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CompanyDAO cd = new CompanyDAO();
         List<Company> listCompany = cd.getAll();
-        List<Service> listServices = sd.getAll();
+        List<Service> listServices = sd.getAllActive();
         List<CategoryService> listCategory = csd.getAll();
 
         request.setAttribute("listServices", listServices);
@@ -99,8 +99,8 @@ public class ViewAllServices extends HttpServlet {
         if (name == null) {
             name = "";
         }
-        if (status == null) {
-            status = "";
+        if (status == null || status.isEmpty()) {
+            status = "1";
         }
         if (category == null) {
             category = "";

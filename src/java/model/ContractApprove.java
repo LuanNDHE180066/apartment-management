@@ -12,47 +12,45 @@ public class ContractApprove {
     private int id;
     private Contract contractId;
     private Integer adminApproval;      
-    private Integer accountantApproval; 
     private int status;                 
     private String createdAt;
     private String updatedAt;
     private Staff admin;
-    private Staff accountant;
+
 
     public ContractApprove() {
     }
 
-    public ContractApprove(int id, Contract contractId, Integer adminApproval, Integer accountantApproval, int status, String createdAt, String updatedAt, Staff admin, Staff accountant) {
+    public ContractApprove(int id, Contract contractId, Integer adminApproval, int status, String createdAt, String updatedAt, Staff admin) {
         this.id = id;
         this.contractId = contractId;
         this.adminApproval = adminApproval;
-        this.accountantApproval = accountantApproval;
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.admin = admin;
-        this.accountant = accountant;
     }
 
-    public ContractApprove(Contract contractId, Integer adminApproval, Integer accountantApproval, int status, String createdAt, String updatedAt,Staff accountant,Staff admin) {
+    public ContractApprove( Contract contractId, Integer adminApproval,  int status, String createdAt, String updatedAt, Staff admin) {
+
         this.contractId = contractId;
         this.adminApproval = adminApproval;
-        this.accountantApproval = accountantApproval;
+
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
-        this.accountant = accountant;
         this.admin = admin;
-        
+
     }
 
-    public ContractApprove(int id, Contract contractId, Staff admin, Staff accountant, Integer adminApproval, Integer accountantApproval, int status, String createdAt, String updatedAt) {
+
+    public ContractApprove(int id, Contract contractId, Staff admin, Integer adminApproval, int status, String createdAt, String updatedAt) {
         this.id = id;
         this.contractId = contractId;
         this.admin = admin;
-        this.accountant = accountant;
+
         this.adminApproval = adminApproval;
-        this.accountantApproval = accountantApproval;
+
         this.status = status;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
@@ -87,14 +85,6 @@ public class ContractApprove {
         this.adminApproval = adminApproval;
     }
 
-    public Integer getAccountantApproval() {
-        return accountantApproval;
-    }
-
-    public void setAccountantApproval(Integer accountantApproval) {
-        this.accountantApproval = accountantApproval;
-    }
-
     public int getStatus() {
         return status;
     }
@@ -126,15 +116,5 @@ public class ContractApprove {
     public void setAdmin(Staff admin) {
         this.admin = admin;
     }
-
-    public Staff getAccountant() {
-        return accountant;
-    }
-
-    public void setAccountant(Staff accountant) {
-        this.accountant = accountant;
-    }
-
-    
     
 }

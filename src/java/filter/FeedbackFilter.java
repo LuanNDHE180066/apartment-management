@@ -117,7 +117,7 @@ public class FeedbackFilter implements Filter {
             }
         }
         if (uri.contains("view-feed-back-user")) {
-            if (a.getRoleId() != 1) {
+            if (a.getRoleId() != 1 && a.getRoleId() !=6) {
                 res.sendRedirect("404_error.jsp");
             }
         }

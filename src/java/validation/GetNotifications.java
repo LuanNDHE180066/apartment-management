@@ -2,33 +2,31 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package authentication;
+package validation;
 
 import com.google.gson.Gson;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import config.GoogleConfig;
 import dao.AccountDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import java.io.FileInputStream;
-import java.util.Properties;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import model.Account;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.fluent.Form;
-import org.apache.http.client.fluent.Request;
 import util.Util;
 
 /**
  *
- * @author thanh
+ * @author PC
  */
-public class LoginByGoogleServlet extends HttpServlet {
+@WebServlet(name = "GetNotifications", urlPatterns = {"/get-notifications"})
+public class GetNotifications extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -47,10 +45,10 @@ public class LoginByGoogleServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet LoginByGoogleServlet</title>");
+            out.println("<title>Servlet GetNotifications</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet LoginByGoogleServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet GetNotifications at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -68,47 +66,28 @@ public class LoginByGoogleServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        String code = request.getParameter("code");
-        String accessToken = getToken(code);
-        String email = getEmailUser(accessToken);
-        Util util = new Util();
-        if (!util.getAllEmail().contains(email)) {
-            request.setAttribute("error", "Email is not exist");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
-            return;
-        }
         AccountDAO ad = new AccountDAO();
-        Account account = ad.getByEmail(email);
         HttpSession session = request.getSession();
-        session.setAttribute("account", account);
-        response.sendRedirect("index.jsp");
-    }
-
-    public String getToken(String code) throws ClientProtocolException, IOException {
-        String CIENT_ID = GoogleConfig.CLIENT_ID;
-        String CLIENT_SECRET = GoogleConfig.CLIENT_SECRET;
-        String REDIRECT_URI = "http://localhost:8080/apartment-management/login-google";
-        String LINK_GET_TOKEN = "https://accounts.google.com/o/oauth2/token";
-        String GRANT_TYPE = "authorization_code";
-        String response = Request.Post(LINK_GET_TOKEN)
-                .bodyForm(Form.form().add("client_id", CIENT_ID)
-                        .add("client_secret", CLIENT_SECRET)
-                        .add("redirect_uri", REDIRECT_URI).add("code", code)
-                        .add("grant_type", GRANT_TYPE).build())
-                .execute().returnContent().asString();
-
-        JsonObject jobj = new Gson().fromJson(response, JsonObject.class);
-        String accessToken = jobj.get("access_token").toString().replaceAll("\"", "");
-        return accessToken;
-    }
-
-    public String getEmailUser(String accessToken) throws ClientProtocolException, IOException {
-        String LINK_GET_USER_INFO = "https://www.googleapis.com/oauth2/v1/userinfo?access_token=";
-        String link = LINK_GET_USER_INFO + accessToken;
-        String response = Request.Get(link).execute().returnContent().asString();
-        JsonObject jsonObject = new JsonParser().parse(response).getAsJsonObject();
-        String email = jsonObject.get("email").getAsString();
-        return email;
+        Account ac = (Account) session.getAttribute("account");
+        List<String> notifications = ad.getNotificationsByRoleAndPid(ac.getRoleId(), ac.getpId());
+        // Đặt kiểu dữ liệu trả về là JSON
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        // Sử dụng PrintWriter để gửi dữ liệu JSON trả về
+        PrintWriter out = response.getWriter();
+        Util util = new Util();
+        List<Map<String, String>> result = new ArrayList<>();
+        for (String notification : notifications) {
+            Map<String, String> notificationData = new HashMap<>();
+            notificationData.put("notification", notification);
+            notificationData.put("url", util.getSiteViewByNofication(notification));  // Trả về URL cho từng thông báo
+            result.add(notificationData);
+        }
+// Trả về dữ liệu JSON
+        Gson gson = new Gson();
+        String jsonResponse = gson.toJson(result);
+        out.write(jsonResponse);
+        out.flush();
     }
 
     /**
@@ -122,7 +101,7 @@ public class LoginByGoogleServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//        
     }
 
     /**

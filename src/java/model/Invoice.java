@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import util.Util;
 
 /**
  *
@@ -65,16 +66,23 @@ public class Invoice {
         this.total = total;
     }
 
-    public String getInvoiceDate() {
-        return invoiceDate;
+    public String getInvoiceDateFormat(){
+        return Util.formatDate(invoiceDate);
     }
-
     public void setInvoiceDate(String invoiceDate) {
         this.invoiceDate = invoiceDate;
     }
 
+    public String getInvoiceDate() {
+        return invoiceDate;
+    }
+
     public String getDueDate() {
         return dueDate;
+    }
+
+    public String getDueDateFormat() {
+        return Util.formatDate(dueDate);
     }
 
     public void setDueDate(String dueDate) {

@@ -4,6 +4,8 @@
     Author     : thanh
 --%>
 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib
     prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -94,8 +96,10 @@
                                 </tr>
                                 <c:forEach items="${requestScope.data}" var="item">
                                     <tr style="background-color: #f9f9f9;">
-                                        <td style="padding: 10px; border: 1px solid #ddd;">${item.time}</td>
-                                        <td style="padding: 10px; border: 1px solid #ddd;">${item.price}</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;text-align: center">${item.time}</td>
+                                        <td style="padding: 10px; border: 1px solid #ddd;text-align: right">
+                                            <fmt:formatNumber currencyCode="VND" type="currency" value="${item.price}" maxFractionDigits="0"/>
+                                        </td>
                                     </tr>
                                 </c:forEach>
                             </table>

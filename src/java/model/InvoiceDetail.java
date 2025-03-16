@@ -6,6 +6,7 @@ package model;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import util.Util;
 
 /**
  *
@@ -73,6 +74,9 @@ public class InvoiceDetail {
 
     public LocalDateTime getDate() {
         return date;
+    }
+    public String getDateFormat() {
+        return Util.formatDate(date.toLocalDate().toString());
     }
 
     public void setDate(LocalDateTime date) {

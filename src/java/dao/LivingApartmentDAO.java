@@ -282,7 +282,7 @@ public class LivingApartmentDAO extends DBContext {
     }
 
     public List<EmailInvoice> getEmailInvoicesActiveResident() {
-        String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1";
+        String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1 and r.isHomeOwner =1 ";
         List<EmailInvoice> list = new ArrayList<>();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -298,8 +298,8 @@ public class LivingApartmentDAO extends DBContext {
         return list;
     }
 
-    public List<LivingApartment> getAllActiveLivingApartmentObejct() {
-        String sql = "select * from LivingAparment where status =1";
+    public List<LivingApartment> getAllActiveOwnerLivingApartmentObejct() {
+        String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1 and r.isHomeOwner = 1";
         List<LivingApartment> list = new ArrayList<>();
         ApartmentDAO ad = new ApartmentDAO();
         ResidentDAO rd = new ResidentDAO();

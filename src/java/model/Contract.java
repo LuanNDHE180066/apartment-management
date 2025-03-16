@@ -4,6 +4,10 @@
  */
 package model;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 /**
  *
  * @author quang
@@ -118,7 +122,20 @@ public class Contract {
     public String getEndDate() {
         return endDate;
     }
+    public String formatEnddate() {
+        if (endDate == null || endDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(endDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     @Override
     public String toString() {
         return "Company: "+ company ;
@@ -131,7 +148,20 @@ public class Contract {
     public String getStartDate() {
         return startDate;
     }
+    public String formatStartdate() {
+        if (startDate == null || startDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(startDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
@@ -139,7 +169,20 @@ public class Contract {
     public String getPaymentTems() {
         return paymentTems;
     }
+    public String formatPaydate() {
+        if (paymentTems == null || paymentTems.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(paymentTems);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setPaymentTems(String paymentTems) {
         this.paymentTems = paymentTems;
     }
@@ -147,7 +190,20 @@ public class Contract {
     public String getSignDate() {
         return signDate;
     }
+    public String formatSigndate() {
+        if (signDate == null || signDate.isEmpty()) {
+            return "";
+        }
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(signDate);
 
+            SimpleDateFormat outputFormat = new SimpleDateFormat("dd-MM-yyyy");
+            return outputFormat.format(date);
+        } catch (ParseException e) {
+            return "";
+        }
+    }
     public void setSignDate(String signDate) {
         this.signDate = signDate;
     }

@@ -117,14 +117,14 @@
                                                             <c:forEach items="${requestScope.invoiceNotPaidList}" var="item">
                                                                 <c:if test="${item.status==0}">
                                                                     <tr>
-                                                                        <td>${item.id}</td>
-                                                                        <td>
+                                                                        <td style="text-align: center">${item.id}</td>
+                                                                        <td style="text-align: right">
                                                                             <fmt:formatNumber value="${item.total}" type="currency" currencyCode="VND" maxFractionDigits="0"/>
                                                                         </td> 
-                                                                        <td>${item.invoiceDate}</td>
-                                                                        <td>${item.dueDate}</td>
-                                                                        <td>${item.description}</td>
-                                                                        <td>${item.apartment.id}</td>
+                                                                        <td style="text-align: center">${item.invoiceDateFormat}</td>
+                                                                        <td style="text-align: center">${item.dueDateFormat}</td>
+                                                                        <td style="text-align: left">${item.description}</td>
+                                                                        <td style="text-align: center">${item.apartment.id}</td>
                                                                         <td style="text-align: center">
                                                                             <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                         </td>
@@ -158,11 +158,15 @@
                                                                                 <tbody>
                                                                                     <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                         <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left">${detail.serviceName}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center">${detail.quantity}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" maxFractionDigits="0"/>
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" maxFractionDigits="0" value="${detail.amount}"/>
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                         </tr>
                                                                                     </c:forEach>
                                                                                 </tbody>
@@ -207,15 +211,15 @@
                                                                 <c:if test="${item.status==1}">
                                                                     <tr>
                                                                         <td>${item.id}</td>
-                                                                        <td>
+                                                                        <td style="text-align: right">
                                                                             <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
                                                                         </td> 
-                                                                        <td>
-                                                                            <fmt:formatDate value="${item.invoiceDate}" pattern="dd-MM-yyyy"/>
+                                                                        <td style="text-align: center">
+                                                                            ${item.invoiceDateFormat}
                                                                         </td>
-                                                                        <td>${item.dueDate}</td>
-                                                                        <td>${item.description}</td>
-                                                                        <td>${item.apartment.id}</td>
+                                                                        <td style="text-align: center">${item.dueDateFormat}</td>
+                                                                        <td style="text-align: left">${item.description}</td>
+                                                                        <td style="text-align: center">${item.apartment.id}</td>
                                                                         <td style="text-align: center">
                                                                             <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                         </td>
@@ -236,11 +240,15 @@
                                                                                 <tbody>
                                                                                     <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                         <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.serviceName}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd;text-align: left">${detail.serviceName}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;">${detail.unitPrice}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.amount}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">${detail.date}</td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" maxFractionDigits="0"/>
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left;">
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" maxFractionDigits="0" value="${detail.amount}"/>
+                                                                                            </td>
+                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                         </tr>
                                                                                     </c:forEach>
                                                                                 </tbody>

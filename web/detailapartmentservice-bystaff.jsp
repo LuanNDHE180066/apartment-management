@@ -1,3 +1,4 @@
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <!DOCTYPE html>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -91,10 +92,12 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listService}" var="item">
                                                             <tr>
-                                                                <td>${item.service.name}</td>
-                                                                <td>${item.quantity}</td> 
-                                                                <td>${item.service.unitPrice}</td>
-                                                                <td>${item.service.company.name}</td>
+                                                                <td style="text-align: left">${item.service.name}</td>
+                                                                <td style="text-align: center">${item.quantity}</td> 
+                                                                <td style="text-align: right">
+                                                                    <fmt:formatNumber currencyCode="VND" type="currency" maxFractionDigits="0" value="${item.service.unitPrice}"/>
+                                                                </td>
+                                                                <td style="text-align: left">${item.service.company.name}</td>
                                                             </tr>
                                                         </c:forEach>
                                                     </tbody>

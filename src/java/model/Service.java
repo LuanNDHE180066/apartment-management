@@ -7,6 +7,7 @@ package model;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import util.Util;
 
 /**
  *
@@ -44,16 +45,24 @@ public class Service {
         this.unit = unit;
     }
     
-    public String getStartDate(){
-        return startDate;
+    public String getStartDateFormat(){
+        return Util.formatDate(startDate);
     }
 
     public void setStartDate(String startDate) {
         this.startDate = startDate;
     }
 
+    public String getStartDate() {
+        return startDate;
+    }
+
     public String getEndDate() {
         return endDate;
+    }
+
+    public String getEndDateFormat() {
+        return Util.formatDate(endDate);
     }
 
     public void setEndDate(String endDate) {

@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,7 +26,7 @@ public class AccountDAO extends DBContext {
 
     public String getcheckTable(int roleId) {
         String table = "Empty";
-        if(roleId == 1){
+        if(roleId == 1 || roleId ==6){
             table = "Resident";
         }else{
             table = "Staff";
@@ -167,9 +168,40 @@ public class AccountDAO extends DBContext {
         }
     }
     
+    public List<String> getNotificationsByRoleAndPid(int role,String pid){
+        String sql ="select id ";
+        List<String> list = new ArrayList<>();
+        switch(role){
+            case 2:
+                sql += "from request where Status = 0";
+                break;
+            case 4:
+                sql += "from request where sid = '"+pid+"'";
+                break;
+            case 5:
+                sql += "from request where sid = '"+pid+"'";
+                break;
+            default:break;
+        }
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                list.add(rs.getString("id"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+    
     public static void main(String[] args) {
         AccountDAO dao = new AccountDAO();
-        System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
+        //System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
+        List<String> list = dao.getNotificationsByRoleAndPid(2, "S1015");
+        for (String string : list) {
+            System.out.println(""+string);
+        }
     }
 
 }

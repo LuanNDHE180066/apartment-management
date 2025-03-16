@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <html lang="en">
     <head>
         <!-- basic -->
@@ -97,7 +98,8 @@
                                                             <th>Email</th>                                               
                                                             <th>Address</th>
                                                             <th>Role</th>
-                                                            <th>Status</th> 
+                                                            <th>Status</th>
+                                                            <th>Is Chief</th>
                                                             <th>Detail</th>
                                                             <th>Option</th>
                                                         </tr>
@@ -111,6 +113,7 @@
                                                                 <td>${staff.address}</td>
                                                                 <td>${staff.role.name}</td>
                                                                 <td>${staff.status==1?'Working':'Retired'}</td>
+                                                                <td>${staff.ischief==1?'Yes':'No'}</td>
                                                                 <td style="text-align: center">
                                                                     <a href="#" data-toggle="modal" data-target="#staffDetail${staff.id}">
                                                                         <i class="fa fa-user" aria-hidden="true"></i>
@@ -138,7 +141,7 @@
                                                                                 <div class="col-md-6">
                                                                                     <p><strong>ID:</strong> ${staff.id}</p>
                                                                                     <p><strong>Name:</strong> ${staff.name}</p>
-                                                                                    <p><strong>DOB:</strong> ${staff.bod}</p>
+                                                                                    <p><strong>DOB:</strong>${staff.formatBod()}</p>
                                                                                     <p><strong>Email:</strong> ${staff.email}</p>
                                                                                     <p><strong>Phone:</strong> ${staff.phone}</p>
                                                                                     <p><strong>Address:</strong> ${staff.address}</p>
@@ -146,11 +149,11 @@
                                                                                 </div>
                                                                                 <div class="col-md-6">
                                                                                     
-                                                                                    <p><strong>Salary:</strong> ${staff.salary} VND</p>
+                                                                                    <p><strong>Salary:</strong> <fmt:formatNumber value="${staff.salary}" type="number" groupingUsed="true"/> VND</p> 
                                                                                     <p><strong>Education:</strong> ${staff.education}</p>
                                                                                     <p><strong>Bank:</strong> ${staff.bank}</p>
-                                                                                    <p><strong>Start Date:</strong> ${staff.startDate}</p>
-                                                                                    <p><strong>End Date:</strong> ${staff.endDate}</p>
+                                                                                    <p><strong>Start Date:</strong> ${staff.formatStartdate()}</p>
+                                                                                    <p><strong>End Date:</strong> ${staff.formatEndate()}</p>
                                                                                     <p><strong>Role:</strong> ${staff.role.name}</p>
                                                                                     <p><strong>Status:</strong> 
                                                                                         <span class="badge ${staff.status == 1 ? 'badge-success' : 'badge-secondary'}">

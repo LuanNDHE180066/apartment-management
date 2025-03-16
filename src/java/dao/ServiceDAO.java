@@ -53,6 +53,36 @@ public class ServiceDAO extends DBContext {
         } catch (SQLException e) {
             System.out.println(e);
         }
+        return list;
+    }
+     public List<Service> getAllActive() {
+        String sql = "Select * from Service where status =1 ";
+        List<Service> list = new ArrayList<>();
+        CompanyDAO cd = new CompanyDAO();
+        CategoryServiceDAO csd = new CategoryServiceDAO();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                double price = rs.getDouble("unitprice");
+                String des = rs.getString("description");
+                CategoryService ct = csd.getByCategoryId(rs.getString("scid"));
+                Company c = cd.getById(rs.getString("cid"));
+                int status = rs.getInt("status");
+                Service s = new Service(id, name, price, des, ct, c, status);
+                s.setStartDate(rs.getDate("startdate").toString());
+                if (rs.getDate("enddate") != null) {
+                    s.setEndDate(rs.getDate("enddate").toString());
+                }
+                s.setUnit(rs.getString("unit"));
+                list.add(s);
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
         return null;
     }
 
@@ -84,7 +114,7 @@ public class ServiceDAO extends DBContext {
 //        return list;
 //    }
     public List<Service> filterByNameAndCompanyAndCategoryAndStatus(String name, String category, String company, String status) {
-        String sql = "Select * from Service where name like '%" + name + "%'";
+        String sql = "Select * from Service where name like N'%" + name + "%'";
         List<Service> list = new ArrayList<>();
         CompanyDAO cd = new CompanyDAO();
         CategoryServiceDAO csd = new CategoryServiceDAO();

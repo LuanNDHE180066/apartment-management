@@ -273,6 +273,13 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
+                                                    <label for="ischief">Is chief</label>
+                                                    <select id="ischief" name="ischief">
+                                                        <option value="0" ${requestScope.staff.ischief == '0' ? 'selected' : ''}>Isn't chief</option>
+                                                        <option value="1" ${requestScope.staff.ischief == '1' ? 'selected' : ''}>Is chief</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="status">Status</label>
                                                     <select id="status" name="status">
                                                         <option value="1" ${requestScope.staff.status == '1' ? 'selected' : ''}>Active</option>
@@ -306,5 +313,17 @@
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/custom.js"></script>
+                <script>
+                    function formatSalary(input) {
+                        // Remove any non-numeric characters (except dots and digits)
+                        let value = input.value.replace(/\D/g, "");
+
+                        // Convert to a number and format with dot separators
+                        value = Number(value).toLocaleString("en").replace(/,/g, ".");
+
+                        // Update input field with formatted value
+                        input.value = value;
+                    }
+                </script>
         </body>
     </html>

@@ -286,7 +286,7 @@ public class InvoiceDAO extends DBContext {
     public void generateInvoice() {
         InvoiceDetalDAO idd = new InvoiceDetalDAO();
         LivingApartmentDAO ld = new LivingApartmentDAO();
-        List<LivingApartment> listAciveApartment = ld.getAllActiveLivingApartmentObejct();
+        List<LivingApartment> listAciveApartment = ld.getAllActiveOwnerLivingApartmentObejct();
         for (int i = 0; i < listAciveApartment.size(); i++) {
             LivingApartment la = listAciveApartment.get(i);
             String aid = la.getAid().getId();
@@ -349,6 +349,8 @@ public class InvoiceDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
             st.executeUpdate();
+            FundDAO fd = new FundDAO();
+            fd.revenueFundByInvoice(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
