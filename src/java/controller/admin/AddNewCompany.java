@@ -80,7 +80,7 @@ public class AddNewCompany extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Util u= new Util();
-        HttpSession session = request.getSession();
+
         String name =u.stringNomalize(request.getParameter("name")) ;
         String phone = request.getParameter("phone");
         String contactPhone = request.getParameter("contactPhone");
@@ -97,10 +97,7 @@ public class AddNewCompany extends HttpServlet {
         
 
         CompanyDAO cd = new CompanyDAO();
-        List<Company> listCompany = cd.getAll();
-        if (listCompany == null) {
-            listCompany = new ArrayList<>();
-        }
+        
 
         Company newC = new Company(name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address);
         CompanyValidation companyValidation = new CompanyValidation(newC);
@@ -191,7 +188,7 @@ public class AddNewCompany extends HttpServlet {
         if (cd.insertNewCompany(newC)) {
             request.setAttribute("status", "true");
             request.setAttribute("message", "New company added successfully!");
-            session.removeAttribute("companies");
+
         } else {
             request.setAttribute("status", "false");
             request.setAttribute("message", "Failed to add new company!");

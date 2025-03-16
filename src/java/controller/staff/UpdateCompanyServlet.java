@@ -67,9 +67,7 @@ public class UpdateCompanyServlet extends HttpServlet {
         String id = request.getParameter("id");
         Company company = cd.getById(id);
         request.setAttribute("company", company);
-        request.setAttribute("pageName", "Update");
-        request.setAttribute("url", "update-company");
-        request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
+        request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
     }
 
     /**
@@ -83,118 +81,157 @@ public class UpdateCompanyServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Util u= new Util();
+        Util u = new Util();
         String id = request.getParameter("id");
-        String name =u.stringNomalize(getSafeParameter(request, "name")) ;
-        String phone = getSafeParameter(request, "phone");
-        String contactPhone = getSafeParameter(request, "contactPhone");
-        String fax = getSafeParameter(request, "fax");
-        String email = getSafeParameter(request, "email");
-        String contactEmail = getSafeParameter(request, "contactemail");
-        String website = getSafeParameter(request, "website");
-        String taxCode = getSafeParameter(request, "taxCode");
-        String bank = getSafeParameter(request, "bank");
-        String address =u.stringNomalize(getSafeParameter(request, "address")) ;
-        String description =u.stringNomalize(getSafeParameter(request, "description")) ;
+        String name = u.stringNomalize(request.getParameter("name"));
+        String phone = request.getParameter("phone");
+        String contactPhone = request.getParameter("contactPhone");
+        String fax = request.getParameter("fax");
+        String email = request.getParameter("email");
+        String contactEmail = request.getParameter("contactemail");
+        String website = request.getParameter("website");
+        String taxCode = request.getParameter("taxCode");
+        String bank = request.getParameter("bank");
+        String address = u.stringNomalize(request.getParameter("address"));
+        String description = u.stringNomalize(request.getParameter("description"));
+        String status_raw = request.getParameter("status");
+        int status = Integer.parseInt(status_raw);
 
-        boolean hasError = false;
-                Company company = new Company(id, name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address);
-
+        CompanyDAO daoCompany = new CompanyDAO();
+        Company company = daoCompany.getById(id);
         CompanyValidation companyValidation = new CompanyValidation(company);
-        // Validation errors
         if (name.trim().isEmpty()) {
             request.setAttribute("nameError", "Name cannot be blank.");
-            hasError = true;
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
         }
         if (!phone.matches("0[0-9]{9}")) {
             request.setAttribute("phoneError", "Phone number must be exactly 10 digits.");
-            hasError = true;
-        }
-        if (!contactPhone.matches("0[0-9]{9}")) {
-            request.setAttribute("contactPhoneError", "Contact phone must be exactly 10 digits.");
-            hasError = true;
-        }
-        if (!fax.matches("[0-9]{10}")) {
-            request.setAttribute("faxError", "Fax must be exactly 10 digits.");
-            hasError = true;
-        }
-        if (!taxCode.matches("[0-9]{10}")) {
-            request.setAttribute("taxCodeError", "Tax code must be exactly 10 digits.");
-            hasError = true;
-        }
-        if(email.trim().isEmpty()){
-            request.setAttribute("emailError", "Email must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistEmail(email)) {
-            request.setAttribute("emailError", "Email is existed");
-            hasError = true;
-        }
-        if(address.trim().isEmpty()){
-            request.setAttribute("addressError", "address must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistAddress(address)) {
-            request.setAttribute("addressError", "address is existed");
-            hasError = true;
-        }
-        if(bank.trim().isEmpty()){
-            request.setAttribute("bankError", "Bank must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistBank(bank)) {
-            request.setAttribute("bankError", "Bank is existed");
-            hasError = true;
-        }
-        if(contactEmail.trim().isEmpty()){
-            request.setAttribute("contactEmailError", "ContactEmail must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistContactEmail(contactEmail)) {
-            request.setAttribute("contactEmailError", "ContactEmail is existed");
-            hasError = true;
-        }
-        if (companyValidation.isExistContactPhone(contactPhone)) {
-            request.setAttribute("contactPhoneError", "ContactPhone is existed");
-            hasError = true;
-        }
-        if (companyValidation.isExistFax(fax)) {
-            request.setAttribute("faxError", "Fax is existed");
-            hasError = true;
-        }
-        if (companyValidation.isExistName(name)) {
-            request.setAttribute("nameError", "Name is existed");
-            hasError = true;
-        }
-        if (companyValidation.isExistPhone(phone)) {
-            request.setAttribute("phoneError", "Phone is existed");
-            hasError = true;
-        }
-        if (companyValidation.isExistTaxCode(taxCode)) {
-            request.setAttribute("taxCodeError", "TaxCode is existed");
-            hasError = true;
-        }
-        if(website.trim().isEmpty()){
-            request.setAttribute("webError", "Web Site must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistWebsite(website)) {
-            request.setAttribute("webError", "Web Site is existed");
-            hasError = true;
-        }
-        if (hasError) {
-            request.setAttribute("company", new Company(id, name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address));
-            request.setAttribute("pageName", "Update");
-            request.setAttribute("url", "update-company?id=" + id);
-            request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
-        CompanyDAO cd = new CompanyDAO();
-        cd.updateCompany(company);
-        List<Company> list = cd.getAll();
-        HttpSession session = request.getSession();
-        session.setAttribute("companies", list);
-        response.sendRedirect("view-all-company");
+        if (!company.getPhone().equals(phone) && companyValidation.isExistPhone(phone)) {
+            request.setAttribute("phoneError", "Phone number exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!contactPhone.matches("0[0-9]{9}")) {
+            request.setAttribute("contactPhoneError", "Contact phone number must be exactly 10 digits.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getContactPhone().equals(contactPhone) && companyValidation.isExistContactPhone(contactPhone)) {
+            request.setAttribute("contactPhoneError", "Phone number exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!fax.matches("[0-9]{10}")) {
+            request.setAttribute("faxError", "Contact phone number must be exactly 10 digits.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getFax().equals(fax) && companyValidation.isExistFax(fax)) {
+            request.setAttribute("faxError", "Fax is existed");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (email.trim().isEmpty()) {
+            request.setAttribute("emailError", "Email cannot be empty.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getEmail().equals(email) && companyValidation.isExistEmail(email)) {
+            request.setAttribute("emailError", "Email exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if(contactEmail.trim().isEmpty()) {
+            request.setAttribute("contactEmailError", "Contact Email must not be empty.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getContactemail().equals(contactEmail) && companyValidation.isExistContactEmail(contactEmail)) {
+            request.setAttribute("contactEmailError", "Contact Email already exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+
+        if (website.trim().isEmpty()) {
+            request.setAttribute("webError", "Website must not be empty.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getWebsite().equals(website) && companyValidation.isExistWebsite(website)) {
+            request.setAttribute("webError", "Website already exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+
+        if (!taxCode.matches("[0-9]{10}")) {
+            request.setAttribute("taxCodeError", "Tax Code must be exactly 10 digits.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getTaxCode().equals(taxCode) && companyValidation.isExistTaxCode(taxCode)) {
+            request.setAttribute("taxCodeError", "Tax Code already exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+
+        if (bank.trim().isEmpty()) {
+            request.setAttribute("bankError", "Bank must not be empty.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+        if (!company.getBank().equals(bank) && companyValidation.isExistBank(bank)) {
+            request.setAttribute("bankError", "Bank already exists.");
+            request.setAttribute("company", company);
+            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+            return;
+        }
+
+        Company updatedCompany = new Company();
+        updatedCompany.setId(id);
+        updatedCompany.setName(name);
+        updatedCompany.setPhone(phone);
+        updatedCompany.setContactPhone(contactPhone);
+        updatedCompany.setFax(fax);
+        updatedCompany.setEmail(email);
+        updatedCompany.setContactemail(contactEmail);
+        updatedCompany.setWebsite(website);
+        updatedCompany.setTaxCode(taxCode);
+        updatedCompany.setBank(bank);
+        updatedCompany.setAddress(address);
+        updatedCompany.setDescription(description);
+        updatedCompany.setStatus(status);
+
+        if (daoCompany.updateCompany(updatedCompany)) {
+            request.setAttribute("status", "true");
+            request.setAttribute("message", "Company updated successfully!");
+        } else {
+            request.setAttribute("status", "false");
+            request.setAttribute("message", "Failed to update company.");
+        }
+        company = daoCompany.getById(id);
+        request.setAttribute("company", company);
+        request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
+
     }
 
     /**
@@ -205,11 +242,6 @@ public class UpdateCompanyServlet extends HttpServlet {
      * Utility method to safely get request parameters and avoid
      * NullPointerException
      */
-    private String getSafeParameter(HttpServletRequest request, String paramName) {
-        String value = request.getParameter(paramName);
-        return (value != null) ? value.trim() : "";
-    }
-
     /**
      * Returns a short description of the servlet.
      *
