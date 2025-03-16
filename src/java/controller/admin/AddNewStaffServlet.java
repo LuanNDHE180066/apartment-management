@@ -31,6 +31,7 @@ import model.SendEmail;
 import model.Staff;
 import util.Util;
 import static util.Util.encryptPassword;
+import validation.CommonValidation;
 
 /**
  *
@@ -124,7 +125,7 @@ public class AddNewStaffServlet extends HttpServlet {
             listStaff = new ArrayList<>();
         }
         
-
+        CommonValidation valid=new CommonValidation();
         String password = u.generatePassword();
         String password2 = password;
 
@@ -133,6 +134,7 @@ public class AddNewStaffServlet extends HttpServlet {
         Staff s = null;
         boolean hasError = false;
         try {
+            salary_raw = salary_raw.replaceAll("\\.", "");
             int salary = Integer.parseInt(salary_raw);
             if (salary <= 0) {
                 request.setAttribute("salaryerror", "Salary must be greater than 0.");
@@ -198,6 +200,10 @@ public class AddNewStaffServlet extends HttpServlet {
                         request.setAttribute("usernameerror", "Username not empty");
                         hasError = true;
                     }
+                    if(!valid.isValidUsername(username)){
+                        request.setAttribute("usernameerror", "Username too short");
+                        hasError = true;
+                    }
                     if (st.getUsername().equals(s.getUsername())) {
                         request.setAttribute("usernameerror", "Username already exists.");
                         hasError = true;
@@ -221,7 +227,7 @@ public class AddNewStaffServlet extends HttpServlet {
                     hasError = true;
                 }
             }
-            if (!s.getPhone().matches("0[0-9]a-zA-Z")) {
+            if (!s.getPhone().matches("0[0-9]{9}")) {
                 request.setAttribute("phoneerror", "Please enter a valid phone number: 10 digits starting with 0!");
                 hasError = true;
             }

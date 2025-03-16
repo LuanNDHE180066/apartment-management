@@ -14,6 +14,20 @@ public class Company {
     private String name;
     private String phone;
 
+    public Company(String name, String phone, String contactPhone, String fax, String email, String contactemail, String website, String taxCode, String bank, String description, String address) {
+        this.name = name;
+        this.phone = phone;
+        this.contactPhone = contactPhone;
+        this.fax = fax;
+        this.email = email;
+        this.contactemail = contactemail;
+        this.website = website;
+        this.taxCode = taxCode;
+        this.bank = bank;
+        this.description = description;
+        this.address = address;
+    }
+
     public String getDescription() {
         return description;
     }
@@ -35,6 +49,7 @@ public class Company {
     private String bank;
     private String description;
     private String address;
+    private int status;
 
     public Company() {
     }
@@ -51,7 +66,7 @@ public class Company {
         this.id = id;
     }
 
-    public Company(String id, String name, String phone, String contactPhone, String fax, String email, String contactemail, String website, String taxCode, String bank, String description, String address) {
+    public Company(String id, String name, String phone, String contactPhone, String fax, String email, String contactemail, String website, String taxCode, String bank, String description, String address, int status) {
         this.id = id;
         this.name = name;
         this.phone = phone;
@@ -64,9 +79,10 @@ public class Company {
         this.bank = bank;
         this.description = description;
         this.address = address;
+        this.status = status;
     }
 
-    public Company(String name, String phone, String contactPhone, String fax, String email, String contactemail, String website, String taxCode, String bank, String description, String address) {
+    public Company(String name, String phone, String contactPhone, String fax, String email, String contactemail, String website, String taxCode, String bank, String description, String address, int status) {
         this.name = name;
         this.phone = phone;
         this.contactPhone = contactPhone;
@@ -78,6 +94,7 @@ public class Company {
         this.bank = bank;
         this.description = description;
         this.address = address;
+        this.status = status;
     }
 
     public String getId() {
@@ -167,4 +184,13 @@ public class Company {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
 }

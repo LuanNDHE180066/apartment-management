@@ -114,7 +114,7 @@
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="${ut.getSiteToViewApartment(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Apartment Information</span></a>
                     </li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
+                    <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-all-contract"><i class="fa-solid fa-book"></i><span>View contract</span></a>
                     </li>
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">

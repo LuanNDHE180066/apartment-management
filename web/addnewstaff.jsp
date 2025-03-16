@@ -225,6 +225,7 @@
                                                         name="salary"
                                                         placeholder="Enter salary"
                                                         value="${param.salary}" required=""
+                                                        oninput="formatSalary(this)"
                                                         />
                                                     <span style="color: red">${requestScope.salaryerror}</span>
                                                 </div>
@@ -301,5 +302,17 @@
             <script src="js/bootstrap.min.js"></script>
             <!-- custom js -->
             <script src="js/custom.js"></script>
+            <script>
+                    function formatSalary(input) {
+                        // Remove any non-numeric characters (except dots and digits)
+                        let value = input.value.replace(/\D/g, "");
+
+                        // Convert to a number and format with dot separators
+                        value = Number(value).toLocaleString("en").replace(/,/g, ".");
+
+                        // Update input field with formatted value
+                        input.value = value;
+                    }
+                </script>
     </body>
 </html>

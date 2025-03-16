@@ -40,7 +40,8 @@ public class CompanyDAO extends DBContext {
                 String bank = rs.getString("bank");
                 String description = rs.getString("description");
                 String address = rs.getString("address");
-                Company cp = new Company(id, name, phone, contactphone, fax, email, contactEmail, website, taxCode, bank, description, address);
+                int status=rs.getInt("status");
+                Company cp = new Company(id, name, phone, contactphone, fax, email, contactEmail, website, taxCode, bank, description, address,status);
                 list.add(cp);
             }
         } catch (Exception e) {
@@ -48,12 +49,30 @@ public class CompanyDAO extends DBContext {
         return list;
     }
 
-    public Company getById(String id) {
-        List<Company> all = this.getAll();
-        for (int i = 0; i < all.size(); i++) {
-            if (all.get(i).getId().equalsIgnoreCase(id)) {
-                return all.get(i);
+    public Company getById(String idc) {
+        String sql="select * from company where id=?";
+        try {
+            PreparedStatement ps= connection.prepareStatement(sql);
+            ps.setString(1, idc);
+            ResultSet rs=ps.executeQuery();
+            while(rs.next()){
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String phone = rs.getString("phone");
+                String contactphone = rs.getString("contactphone");
+                String fax = rs.getString("fax");
+                String email = rs.getString("email");
+                String contactEmail = rs.getString("contactemail");
+                String website = rs.getString("website");
+                String taxCode = rs.getString("taxcode");
+                String bank = rs.getString("bank");
+                String description = rs.getString("description");
+                String address = rs.getString("address");
+                int status=rs.getInt("status");
+                Company cp = new Company(id, name, phone, contactphone, fax, email, contactEmail, website, taxCode, bank, description, address,status);
+                return cp;
             }
+        } catch (Exception e) {
         }
         return null;
     }
@@ -77,7 +96,8 @@ public class CompanyDAO extends DBContext {
                 String bank = rs.getString("bank");
                 String description = rs.getString("description");
                 String address = rs.getString("address");
-                Company cp = new Company(id, name, phone, contactphone, fax, email, contactEmail, website, taxCode, bank, description, address);
+                int status=rs.getInt("status");
+                Company cp = new Company(id, name, phone, contactphone, fax, email, contactEmail, website, taxCode, bank, description, address,status);
                 list.add(cp);
             }
         } catch (Exception e) {
@@ -100,8 +120,8 @@ public class CompanyDAO extends DBContext {
 
 //    id, name, phone, contactphone, fax, email, website, taxCode, bank, description, address
     public boolean insertNewCompany(Company com) {
-        String sql = "insert into Company(id,name,phone,contactphone,fax,email,contactemail,website,taxcode,bank,description,address)\n"
-                + "Values(?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "insert into Company(id,name,phone,contactphone,fax,email,contactemail,website,taxcode,bank,description,address,status)\n"
+                + "Values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
         List<Company> list = this.getAll();
         Util u = new Util();
         String newId = "";
@@ -132,6 +152,7 @@ public class CompanyDAO extends DBContext {
             ps.setString(10, com.getBank());
             ps.setString(11, com.getdescription());
             ps.setString(12, com.getAddress());
+            ps.setInt(13, 1);
 
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
@@ -140,9 +161,9 @@ public class CompanyDAO extends DBContext {
         return false;
     }
 
-    public void updateCompany(Company company) {
+    public boolean updateCompany(Company company) {
         String sql = "update company set name=?, phone=?,contactphone=?,fax=?,email=?,contactemail=?,"
-                + "website=?,taxcode=?,bank=?,description=?,address=?"
+                + "website=?,taxcode=?,bank=?,description=?,address=?,status=?"
                 + " where id=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -157,16 +178,19 @@ public class CompanyDAO extends DBContext {
             st.setString(9, company.getBank());
             st.setString(10, company.getdescription());
             st.setString(11, company.getAddress());
-            st.setString(12, company.getId());
+            st.setInt(12, company.getStatus());
+            st.setString(13, company.getId());
             st.executeUpdate();
+            return true;
         } catch (SQLException e) {
             System.out.println(e);
         }
+        return false;
     }
 
     public Company getByServiceId(String id) {
         String sql = "select c.id,c.name,c.phone,c.contactphone,c.fax,c.email,c.contactemail,"
-                + "c.website,c.taxcode,c.bank,c.Description,c.address "
+                + "c.website,c.taxcode,c.bank,c.Description,c.address,c.status "
                 + "from Company c join Service s on s.cId=c.id where s.Id=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -186,6 +210,7 @@ public class CompanyDAO extends DBContext {
                 c.setBank(rs.getString(10));
                 c.setdescription(rs.getString(11));
                 c.setAddress(rs.getString(12));
+                c.setStatus(rs.getInt(13));
                 return c;
             }
         } catch (SQLException e) {
@@ -197,9 +222,9 @@ public class CompanyDAO extends DBContext {
 
     public static void main(String[] args) {
         CompanyDAO dao = new CompanyDAO();
-//        Company cp = new Company("324ss", "09113467", "091231247", "142322312", "caon4cass@gmail.com", "caon2s4ca@gmail.com", "xx",
+//        Company cp = new Company("324ss", "0911346700", "0912312470", "1423223102", "caon4cass@gmail.com", "caon2s4ca@gmail.com", "xx",
 //                "c4scccwc",
-//                "12143813", "", "agfffsf");
-        System.out.println(dao.getById("C001"));
+//                "12143813", "123", "agfffsf",1);
+        System.out.println(dao.getById("C006"));
     }
 }

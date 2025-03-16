@@ -217,25 +217,21 @@ public class AddContract extends HttpServlet {
             ContractApprove contractApprove = new ContractApprove(
                     latestContract,
                     null,
-                    null,
                     1,
                     created,
                     updated,
-                    std.getById(accountant),
                     std.getById(admin)
             );
             ContractApproveDAO ctdApprove = new ContractApproveDAO();
             ctdApprove.addApprove(contractApprove);
 
+            request.setAttribute("status", "true");
             request.setAttribute("message", "Add new contract successfully");
-
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
         } else {
+            request.setAttribute("status", "false");
             request.setAttribute("message", "Add new contract failed");
-
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("addcontract.jsp").forward(request, response);
     }
 
     /**
