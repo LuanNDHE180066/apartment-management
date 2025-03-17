@@ -62,6 +62,11 @@
             .checkbox-column {
                 width: 40px;
             }
+            body.modal-open {
+                overflow-y: auto !important;
+                padding-right: 0 !important;
+            }
+
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -85,12 +90,27 @@
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
-                                        <div class="full graph_head">
+                                        <div class="full graph_head d-flex align-items-center justify-content-between">
+                                            <!-- Header -->
                                             <div class="heading1 margin_0">
                                                 <h2>Resident Information</h2>
                                             </div>
+
+                                            <!-- Export Buttons -->
+                                            <div class="d-flex gap-2" style="margin-right: 30px">
+                                                <form action="${pageContext.request.contextPath}/export-residents" method="POST" style="margin-right: 20px" >
+                                                    <input type="hidden" name="exportType" value="all">
+                                                    <button type="submit" class="btn btn-info">Export All</button>
+                                                </form>
+                                                <form action="${pageContext.request.contextPath}/export-residents" method="POST" id="exportSelectedForm">
+                                                    <input type="hidden" name="exportType" value="selected">
+                                                    <button type="submit" class="btn btn-info" onclick="return validateSelection()">Export Selected</button>
+                                                </form>
+                                            </div>
                                         </div>
+
                                         <div style="margin-left: 40px;">
+
                                             <form action="view-resident" method="GET">
                                                 <div class="row align-items-center">
                                                     <!-- Search by Name -->
@@ -107,32 +127,28 @@
                                                         </select>
                                                     </div>
                                                     <!-- Filter by Home Owner -->
-                                                    <div class="col-md-2">
-                                                        <select class="form-control" name="isRepresent">
-                                                            <option value="" ${empty sessionScope.isRepresent ? 'selected' : ''}>Filter by Apartment Representative</option>
-                                                            <option value="1" ${sessionScope.isRepresent == '1' ? 'selected' : ''}>Representative</option>
-                                                            <option value="0" ${sessionScope.isRepresent == '0' ? 'selected' : ''}>Not Representative</option>
+                                                    <!-- Filter by Home Owner -->
+                                                    <div class="col-md-3">
+                                                        <select class="form-control" name="aptNumber">
+                                                            <option value="" ${empty sessionScope.aptNumber ? 'selected' : ''}>Select Apartment Number</option>
+                                                            <c:forEach items="${requestScope.listApt}" var="apt">
+                                                                <option value="${apt.id}" ${sessionScope.aptNumber == apt.id ? 'selected' : ''}>${apt.id}</option>
+                                                            </c:forEach>
                                                         </select>
                                                     </div>
                                                     <!-- Export Buttons -->
-                                                    <div class="col-md-3 export-buttons">
-                                                        <form action="${pageContext.request.contextPath}/export-residents" method="POST">
-                                                            <input type="hidden" name="exportType" value="all">
-                                                            <button type="submit" class="btn btn-info">Export All to Excel</button>
-                                                        </form>
-                                                        <form action="${pageContext.request.contextPath}/export-residents" method="POST" id="exportSelectedForm">
-                                                            <input type="hidden" name="exportType" value="selected">
-                                                            <button type="submit" class="btn btn-info" onclick="return validateSelection()">Export Selected to Excel</button>
-                                                        </form>
-                                                    </div>
+
                                                     <!-- Submit & Reset -->
                                                     <div class="col-md-3 d-flex align-items-center">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="addNewResident" class="btn btn-primary" style="margin-right: 5px;">Add new Resident</a>
+                                                        <a href="addNewResident" class="btn btn-primary" style="margin-right: 5px;">Add new</a>
                                                         <a href="view-resident" class="btn btn-secondary">Reset</a>
                                                     </div>
                                                 </div>
                                             </form>
+
+
+
                                         </div>
                                         <!-- Table Section -->
                                         <div class="table_section padding_infor_info">
@@ -293,6 +309,10 @@
                                         }
                                         return true;
                                     }
+                                    $('.modal').on('hidden.bs.modal', function () {
+                                        $(this).find('.modal-body').scrollTop(0);
+                                    });
+
             </script>
     </body>
 </html>

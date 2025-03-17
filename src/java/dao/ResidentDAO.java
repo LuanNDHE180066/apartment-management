@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import jdbc.DBContext;
 import model.Account;
 import model.Role;
@@ -533,24 +534,35 @@ public class ResidentDAO extends DBContext {
         }
         return listpage;
     }
-    
 
-    public List<Resident> filterListResident(String name, String status, String homeOwner) {
-        String sql = "SELECT * FROM resident WHERE 1=1 ";
+    public List<Resident> filterListResident(String name, String status, String aptNumber) {
+        String sql = "SELECT * FROM resident WHERE 1=1";
+        List<Resident> resultList = new ArrayList<>();
+        LivingApartmentDAO lad = new LivingApartmentDAO();
 
+        // Build SQL query with name and status filters
         if (name != null && !name.isEmpty()) {
-            sql += "AND name LIKE N'%" + name + "%' ";
+            sql += " AND name LIKE ?";
         }
         if (status != null && !status.isEmpty()) {
-            sql += "AND active = " + status + " ";
+            sql += " AND active = ?";
         }
-        sql += "ORDER BY id DESC";
+        sql += " ORDER BY id DESC";
 
         try {
-            List<Resident> list = new ArrayList<>();
+            // Prepare statement with parameters to prevent SQL injection
             PreparedStatement ps = connection.prepareStatement(sql);
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                ps.setString(paramIndex++, "%" + name + "%");
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setInt(paramIndex++, Integer.parseInt(status));
+            }
+
+            // Get base resident list
             ResultSet rs = ps.executeQuery();
-            LivingApartmentDAO lad = new LivingApartmentDAO();
             while (rs.next()) {
                 String id = rs.getString("id");
                 String na = rs.getString("name");
@@ -565,16 +577,35 @@ public class ResidentDAO extends DBContext {
                 String st = String.valueOf(rs.getInt("active"));
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Resident resident = new Resident(id, na, cccd, phone, email, bod, address, username, password, st, name, role, image);
-                resident.setGender(gender);;
+
+                Resident resident = new Resident(id, na, cccd, phone, email, bod, address,
+                        username, password, st, na, role, image);
+                resident.setGender(gender);
                 resident.setApartmentNumber(lad.getApartmentsByResidentId(id));
-                list.add(resident);
+                resultList.add(resident);
             }
-            return list;
+
+            // Apply apartment filter if specified
+            if (aptNumber != null && !aptNumber.isEmpty()) {
+                List<Resident> residentApt = lad.getLivingResidentList(aptNumber);
+                if (!residentApt.isEmpty()) {
+                    // Keep only residents whose IDs match with residentApt list
+                    resultList.retainAll(residentApt.stream()
+                            .filter(aptResident -> resultList.stream()
+                            .anyMatch(r -> r.getpId().equals(aptResident.getpId())))
+                            .collect(Collectors.toList()));
+                } else {
+                    // If no residents found for this apartment, clear the list
+                    resultList.clear();
+                }
+            }
+
+            return resultList;
+
         } catch (SQLException ex) {
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 
     public boolean editResidentStatus(String id, String status) {
@@ -712,7 +743,7 @@ public class ResidentDAO extends DBContext {
         ResidentDAO dao = new ResidentDAO();
         Resident r = dao.getById("P116");
         r.setName("thanh");
-       String[] id = {"P110", "P111"};
+        String[] id = {"P110", "P111"};
         System.out.println(dao.getAll());
 
     }
