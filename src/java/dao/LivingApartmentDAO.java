@@ -334,7 +334,7 @@ public class LivingApartmentDAO extends DBContext {
         String sql = "select * from LivingAparment where status = 1 and aId = ? and isRepresent = 0";
         ApartmentDAO ad = new ApartmentDAO();
         ResidentDAO rd = new ResidentDAO();
-        List<LivingApartment>list = new ArrayList<>();
+        List<LivingApartment> list = new ArrayList<>();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, aid);
@@ -390,6 +390,34 @@ public class LivingApartmentDAO extends DBContext {
             Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public boolean checkIsRepresent(String pid) {
+        String sql = "select * from LivingAparment where rId = ? and status = 1  and isRepresent = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+    public void changeIsRepresent(String rid, String aid, String status) {
+        String sql = "update LivingAparment set isRepresent = 0 where rId = ? and aId = ? and status = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, rid);
+            ps.setString(2, aid);
+            ps.setString(3, status);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     public int getNumberLivingResident() {

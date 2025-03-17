@@ -18,6 +18,7 @@ import java.util.List;
 import model.LivingApartment;
 import model.OwnerApartment;
 import model.Resident;
+import util.Util;
 
 /**
  *
@@ -91,12 +92,34 @@ public class ChangeRepresentResident extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-       String aid = request.getParameter("aid");
-       String oldRepresentId = request.getParameter("oldRepresent");
-       String newRepresentId  = request.getParameter("newRepresent");
-       
-       ResidentDAO reDAO = new ResidentDAO();
-       Resident oleResidentId = request.
+        String aid = request.getParameter("aid");
+        String oldRepresentId = request.getParameter("oldRepresent");
+        String newRepresentId = request.getParameter("newRepresent");
+        String username = request.getParameter("username");
+
+        LivingApartmentDAO laDAO = new LivingApartmentDAO();
+        ResidentDAO reDAO = new ResidentDAO();
+
+        Util u = new Util();
+        if (reDAO.checkDuplicatateUsername(username)) {
+            request.setAttribute("message", "Username is existed");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
+            return;
+        } else {
+            request.setAttribute("message", "Add request successful");
+            request.setAttribute("status", "true");
+        }
+
+        laDAO.changeIsRepresent(oldRepresentId, aid, "0");
+        laDAO.changeIsRepresent(newRepresentId, aid, "1");
+
+        if (!laDAO.checkIsRepresent(oldRepresentId)) {
+            reDAO.setNullUsernameAndPassword(oldRepresentId);
+        }
+
+        request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
+
     }
 
     /**

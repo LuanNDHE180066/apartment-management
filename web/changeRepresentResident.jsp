@@ -84,11 +84,15 @@
             .form-button button:hover {
                 background-color: #357ab8;
             }
-            .error-message {
-                color: red;
-                font-size: 14px;
+            .gender-options {
+                display: flex;
+                gap: 15px;
                 margin-top: 5px;
-                display: block;
+            }
+            .gender-options label {
+                display: flex;
+                align-items: center;
+                gap: 5px;
             }
         </style>
     </head>
@@ -108,7 +112,6 @@
                             <div class="form-container">
                                 <h1 style="font-weight: bold">Register New Living Resident Or Owner</h1>
 
-
                                 <form action="change-represent-resident" method="get" id="apartmentForm">
                                     <div class="form-group">
                                         <div class="one-col">
@@ -124,7 +127,6 @@
                                         </div>
                                     </div>
                                 </form>
-
 
                                 <form action="change-represent-resident" method="post">
                                     <input hidden="" name="aid" type="text" value="${requestScope.aid}">
@@ -155,6 +157,23 @@
                                         </div>
                                     </div>
 
+                                    <div class="form-group">
+                                        <div class="gender-options">
+                                            <label>Does the account exist?</label>
+                                            <label for="account-exists">
+                                                <input type="checkbox" id="account-exists" name="accountExist" onclick="disableUsername()" />
+                                                Yes
+                                            </label>
+                                        </div>
+                                    </div>  
+
+                                    <div class="form-group">
+                                        <div class="one-col">
+                                            <label for="new-username">New username</label>
+                                            <input type="text" id="new-username" name="username" />
+                                        </div>
+                                    </div>
+
                                     <div class="form-button">
                                         <button type="submit">Submit</button>
                                         <h5 style="color:${status == "true" ? "green" : "red"}; text-align:center;">${requestScope.message}</h5>
@@ -167,33 +186,37 @@
             </div>
             <script src="js/jquery.min.js"></script>
             <script>
-                                                function updateResidentNames() {
-                                                    const apartmentSelect = document.getElementById('apartment');
-                                                    const selectedApartmentId = apartmentSelect.value;
-                                                    const options = apartmentSelect.getElementsByTagName('option');
+                function updateResidentNames() {
+                    const apartmentSelect = document.getElementById('apartment');
+                    const selectedApartmentId = apartmentSelect.value;
+                    const options = apartmentSelect.getElementsByTagName('option');
 
-                                                    let representativeResidentName = "";
-                                                    let representativeResidentId = "";
-                                                    let ownerResident = "";
+                    let representativeResidentName = "";
+                    let representativeResidentId = "";
+                    let ownerResident = "";
 
-                                                    for (let i = 0; i < options.length; i++) {
-                                                        if (options[i].value === selectedApartmentId) {
-                                                            representativeResidentName = options[i].getAttribute('data-representative-name') || "";
-                                                            representativeResidentId = options[i].getAttribute('data-representative-id') || "";
-                                                            ownerResident = options[i].getAttribute('data-owner') || "";
-                                                            break;
-                                                        }
-                                                    }
+                    for (let i = 0; i < options.length; i++) {
+                        if (options[i].value === selectedApartmentId) {
+                            representativeResidentName = options[i].getAttribute('data-representative-name') || "";
+                            representativeResidentId = options[i].getAttribute('data-representative-id') || "";
+                            ownerResident = options[i].getAttribute('data-owner') || "";
+                            break;
+                        }
+                    }
 
-                                                    document.getElementById('representative-resident').value = representativeResidentName;
-                                                    document.getElementById('representative-id').value = representativeResidentId;
-                                                    document.getElementById('owner-resident').value = ownerResident;
-                                                }
+                    document.getElementById('representative-resident').value = representativeResidentName;
+                    document.getElementById('representative-id').value = representativeResidentId;
+                    document.getElementById('owner-resident').value = ownerResident;
+                }
 
+                function disableUsername() {
+                    const checkBox = document.getElementById('account-exists').checked;
+                    document.getElementById('new-username').disabled = checkBox; // S?a l?i cú pháp ? ?ây
+                }
 
-                                                window.onload = function () {
-                                                    updateResidentNames();
-                                                };
+                window.onload = function () {
+                    updateResidentNames();
+                };
             </script>
         </div>
     </body>
