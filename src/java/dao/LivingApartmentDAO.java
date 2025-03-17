@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -215,7 +216,7 @@ public class LivingApartmentDAO extends DBContext {
             ps.setString(5, null);
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
         }
         return false;
     }
@@ -392,6 +393,7 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getByApartmentID("A001", "2025-03-15", "2025-03-16").size());
+        Date date = new Date(System.currentTimeMillis());
+        System.out.println(dao.insertLivingApartment("P115", "A018", date.toString()));
     }
 }

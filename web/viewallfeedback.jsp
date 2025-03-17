@@ -233,7 +233,7 @@
                                                                 <tr class="accordion-toggle ${feedback.status == 1 ? 'blurred' : ''}" data-target="#feedbackDetail${loop.index}">
 
                                                                     <td>${feedback.resident.name}</td>
-                                                                    <td>${feedback.requestType.name}</td>
+                                                                    <td>${feedback.services.name}</td>
                                                                     <c:set var="util" value="${util}" />
                                                                     <td>${util.FormatDateTime(feedback.date)}</td>
                                                                     <td>
@@ -277,7 +277,7 @@
                                                                         <c:if test="${sessionScope.account.getRoleId()==2}">
                                                                             <td>${feedback.resident.name}</td>
                                                                         </c:if>
-                                                                        <td>${feedback.requestType.name}</td>
+                                                                        <td>${feedback.services.name}</td>
                                                                         <c:set var="util" value="${util}" />
                                                                         <td>${util.FormatDateTime(feedback.date)}</td>
                                                                         <td>

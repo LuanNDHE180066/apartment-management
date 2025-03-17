@@ -132,7 +132,7 @@ public class ViewAllFeedback extends HttpServlet {
         Account acc = (Account) session.getAttribute("account");
         FeedbackDAO daoF = new FeedbackDAO();
 
-        List<Feedback> listFeedback = daoF.getFeedbackByRole(String.valueOf(acc.getRoleId()));
+        List<Feedback> listFeedback = daoF.getAllFeedback();
         request.setAttribute("oneDayAgo", new Timestamp(System.currentTimeMillis()));
         session.setAttribute("listFeedback", listFeedback);
 

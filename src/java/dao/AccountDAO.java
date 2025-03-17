@@ -198,10 +198,10 @@ public class AccountDAO extends DBContext {
     public static void main(String[] args) {
         AccountDAO dao = new AccountDAO();
         //System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
-        List<String> list = dao.getNotificationsByRoleAndPid(2, "S1015");
-        for (String string : list) {
-            System.out.println(""+string);
-        }
+//        List<String> list = dao.getNotificationsByRoleAndPid(2, "S1015");
+//        for (String string : list) {
+//            System.out.println(""+string);
+//        }
     }
 
 }

@@ -4,6 +4,8 @@
  */
 package controller.admin;
 
+import dao.ApartmentDAO;
+import dao.LivingApartmentDAO;
 import dao.ResidentDAO;
 import dao.RoleDAO;
 import java.io.IOException;
@@ -14,7 +16,10 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.sql.Date;
+import java.util.List;
 import model.Account;
+import model.Apartment;
 import model.Resident;
 import model.SendEmail;
 import util.Util;
@@ -65,6 +70,9 @@ public class AddNewResident extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        ApartmentDAO aptDAO = new ApartmentDAO();
+        List<Apartment> apts = aptDAO.getAll();
+        request.setAttribute("apts", apts);
         request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
     }
 
@@ -81,7 +89,7 @@ public class AddNewResident extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-        
+        String aptNumber = request.getParameter("apartment");
         String name = request.getParameter("name");
         String dob = request.getParameter("dob");
         String address = request.getParameter("address");
@@ -90,8 +98,13 @@ public class AddNewResident extends HttpServlet {
         String id = request.getParameter("id");
         String username = request.getParameter("username");
         String gender = request.getParameter("gender");
-        String HomeOwner = request.getParameter("isHomeOwner");
+        String Representative = request.getParameter("isRepresent");
 
+        if (aptNumber == null || aptNumber.isEmpty()) {
+            request.setAttribute("error", "Apartment number couldn't empty");
+            request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
+            return;
+        }
         // Validate phone number (11 digits) and ID (12 digits)
         if (!phone.matches("\\d{10}")) {
             request.setAttribute("error", "Phone number must be exactly 10 digits.");
@@ -107,31 +120,43 @@ public class AddNewResident extends HttpServlet {
         //generate random password then send to new user
         String password = u.generatePassword();
         //insert to database with encryted password
+
         ResidentDAO rd = new ResidentDAO();
         RoleDAO roleD = new RoleDAO();
+        LivingApartmentDAO lad = new LivingApartmentDAO();
+
+        //insert to living apartment
         String password_encript = encryptPassword(password);
-        
+
         Resident r = new Resident();
         r.setName(name);
         r.setBod(dob);
         r.setAddress(address);
         r.setPhone(phone);
-        r.setEmail(email != null ? email : null);
         r.setCccd(id != null ? id : null);
         r.setRole(roleD.getById("1"));
         r.setPassword(password_encript);
         r.setGender(gender);
-        r.setIsHomeOwner(HomeOwner.equals("yes") ? true : false);
-        if (r.isIsHomeOwner()) {
+        if (Representative!=null) {
             r.setUsername(username);
-           
+            r.setEmail(email != null ? email : null);
+
         }
-        int successful = rd.insertNewResident(r);
-        if (successful == 0 && username != null) {
+        //insert to db
+        String newResidentID = rd.insertNewResident(r);
+        if (newResidentID != null && username != null) {
+             //insert resident to apartment
+            Date date = new Date(System.currentTimeMillis());
+            if (!lad.insertLivingApartment(newResidentID, aptNumber, date.toString())) {
+                request.setAttribute("error", "Add to apartment unsuccessful");
+                request.getRequestDispatcher("addnewresident.jsp").forward(request, response);
+            }
+            
+            
             SendEmail e = new SendEmail();
             e.sendEmailResidentAccount(email, name, username, password);
         }
-        
+
         response.sendRedirect("view-resident");
     }
 

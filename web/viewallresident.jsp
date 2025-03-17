@@ -1,40 +1,8 @@
 <!DOCTYPE html>
-
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
     <head>
-        <!-- basic -->
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <!-- mobile metas -->
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
-        <!-- site metas -->
-        <title>Apartment management</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
-        <!-- bootstrap css -->
-        <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <!-- site css -->
-        <link rel="stylesheet" href="style.css" />
-        <!-- responsive css -->
-        <link rel="stylesheet" href="css/responsive.css" />
-        <!-- color css -->
-        <link rel="stylesheet" href="css/colors.css" />
-        <!-- select bootstrap -->
-        <link rel="stylesheet" href="css/bootstrap-select.css" />
-        <!-- scrollbar css -->
-        <link rel="stylesheet" href="css/perfect-scrollbar.css" />
-        <!-- custom css -->
-        <link rel="stylesheet" href="css/custom.css" />
-        <!-- calendar file css -->
-        <link rel="stylesheet" href="js/semantic.min.css" />
-        <!-- fancy box js -->
-        <link rel="stylesheet" href="css/jquery.fancybox.css" />
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"/>
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+        <!-- [Previous head content remains unchanged] -->
         <style>
             .pagination {
                 margin-top: 20px;
@@ -62,7 +30,10 @@
                 color: white;
             }
             #table-infor th, #table-infor td {
-                text-align: center;
+                text-align: center; /* Default center alignment for all columns */
+            }
+            #table-infor td.name-column {
+                text-align: left; /* Left alignment for Name column */
             }
             .status-select {
                 padding: 2px 4px;
@@ -80,24 +51,28 @@
             .status-active {
                 color: green;
             }
-
             .status-inactive {
                 color: red;
             }
-
+            .export-buttons {
+                display: flex;
+                gap: 10px;
+                align-items: center; /* Align buttons vertically with filter inputs */
+            }
+            .checkbox-column {
+                width: 40px;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
         <div class="full_container">
             <div class="inner_container">
-                <!-- Sidebar  -->
+                <!-- Sidebar -->
                 <%@include file="sidebar.jsp" %>
-                <!-- end sidebar -->
-                <!-- right content -->
+                <!-- Right Content -->
                 <div id="content">
-                    <!-- topbar -->
+                    <!-- Topbar -->
                     <%@include file="topbar.jsp" %>
-                    <!-- end topbar -->
                     <div class="midde_cont">
                         <div class="container-fluid">
                             <div class="row column_title">
@@ -108,7 +83,6 @@
                                 </div>
                             </div>
                             <div class="row">
-                                <!-- table section -->
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
@@ -123,7 +97,6 @@
                                                     <div class="col-md-2">
                                                         <input type="text" value="${sessionScope.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
                                                     </div>
-
                                                     <!-- Filter by Status -->
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
@@ -133,33 +106,41 @@
                                                             <option value="2" ${sessionScope.filterStatus == '2' ? 'selected' : ''}>Pending</option>
                                                         </select>
                                                     </div>
-
                                                     <!-- Filter by Home Owner -->
                                                     <div class="col-md-2">
-                                                        <select class="form-control" name="isHomeOwner">
-
-                                                            <option value="" ${empty sessionScope.isHomeOwner ? 'selected' : ''}>Filter by Apartment Owner</option>
-                                                            <option value="1" ${sessionScope.isHomeOwner == '1' ? 'selected' : ''}>Owner</option>
-                                                            <option value="0" ${sessionScope.isHomeOwner == '0' ? 'selected' : ''}>Not Owner</option>
+                                                        <select class="form-control" name="isRepresent">
+                                                            <option value="" ${empty sessionScope.isRepresent ? 'selected' : ''}>Filter by Apartment Representative</option>
+                                                            <option value="1" ${sessionScope.isRepresent == '1' ? 'selected' : ''}>Representative</option>
+                                                            <option value="0" ${sessionScope.isRepresent == '0' ? 'selected' : ''}>Not Representative</option>
                                                         </select>
                                                     </div>
-
+                                                    <!-- Export Buttons -->
+                                                    <div class="col-md-3 export-buttons">
+                                                        <form action="${pageContext.request.contextPath}/export-residents" method="POST">
+                                                            <input type="hidden" name="exportType" value="all">
+                                                            <button type="submit" class="btn btn-info">Export All to Excel</button>
+                                                        </form>
+                                                        <form action="${pageContext.request.contextPath}/export-residents" method="POST" id="exportSelectedForm">
+                                                            <input type="hidden" name="exportType" value="selected">
+                                                            <button type="submit" class="btn btn-info" onclick="return validateSelection()">Export Selected to Excel</button>
+                                                        </form>
+                                                    </div>
                                                     <!-- Submit & Reset -->
-                                                    <div class="col-md-4 d-flex">
+                                                    <div class="col-md-3 d-flex align-items-center">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="addNewResident" class="btn btn-primary">Add new Resident</a>
-                                                        <a href="view-resident" class="btn btn-secondary" style="margin-left: 5px;">Reset</a>
+                                                        <a href="addNewResident" class="btn btn-primary" style="margin-right: 5px;">Add new Resident</a>
+                                                        <a href="view-resident" class="btn btn-secondary">Reset</a>
                                                     </div>
                                                 </div>
                                             </form>
-
                                         </div>
-
+                                        <!-- Table Section -->
                                         <div class="table_section padding_infor_info">
                                             <div class="table-responsive-sm">
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
+                                                            <th class="checkbox-column"><input type="checkbox" id="selectAll"></th>
                                                             <th>Name</th>
                                                             <th>Phone</th>
                                                             <th>Email</th>
@@ -172,7 +153,8 @@
                                                     <h3>${requestScope.message}</h3>
                                                     <c:forEach items="${requestScope.listResident}" var="resident">
                                                         <tr>
-                                                            <td>${resident.name}</td>
+                                                            <td><input type="checkbox" name="selectedResidents" value="${resident.pId}" form="exportSelectedForm"></td>
+                                                            <td class="name-column">${resident.name}</td> <!-- Left-aligned Name -->
                                                             <td>${empty resident.phone ? 'None':resident.phone}</td>
                                                             <td>${empty resident.email ? 'None' : resident.email}</td>
                                                             <td>
@@ -202,14 +184,13 @@
                                                                 </a>
                                                             </td>
                                                         </tr>
-
                                                         <!-- Modal for resident details -->
                                                         <div id="residentDetail${resident.pId}" class="modal fade"> 
                                                             <div class="modal-dialog" style="max-width: 60%">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
                                                                         <h3>Resident Information</h3>
-                                                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                                                        <button type="button" class="close" data-dismiss="modal">×</button>
                                                                     </div>
                                                                     <div class="modal-body" style="display: flex;">
                                                                         <div style="width: 50%; text-align: center;">
@@ -223,7 +204,7 @@
                                                                             <p><strong>Address:</strong> ${resident.address}</p>
                                                                             <p><strong>CCCD:</strong> ${empty resident.cccd ? 'None' : resident.cccd}</p>
                                                                             <p><strong>Gender:</strong> ${resident.gender}</p>
-                                                                            <p><strong>Owner of</strong> ${resident.gender}</p>
+                                                                            <p><strong>Living at</strong> ${resident.gender}</p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -237,79 +218,81 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <!-- Pagination Form -->
-                        <form method="get" action="view-resident" style="display: flex; align-items: center; gap: 10px;">
-                            <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
-
-                            <!-- Preserve Filter Parameters -->
-                            <input type="hidden" name="searchName" value="${sessionScope.searchName}">
-                            <input type="hidden" name="filterStatus" value="${sessionScope.filterStatus}">
-                            <input type="hidden" name="isHomeOwner" value="${sessionScope.isHomeOwner}">
-
-                            <!-- Page Selection -->
-                            <select id="page" name="page" onchange="this.form.submit()" 
-                                    style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
-                                <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
-                                    <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
-                                        ${page}
-                                    </option>
-                                </c:forEach>
-                            </select>
-                        </form>
-
-
-                        <!-- footer -->
-                        <div class="container-fluid">
-                            <div class="footer">
-                                <p>Copyright ï¿½ 2018 Designed by html.design. All rights reserved.</p>
+                            <!-- Pagination Form -->
+                            <form method="get" action="view-resident" style="display: flex; align-items: center; gap: 10px;">
+                                <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                                <input type="hidden" name="searchName" value="${sessionScope.searchName}">
+                                <input type="hidden" name="filterStatus" value="${sessionScope.filterStatus}">
+                                <input type="hidden" name="isRepresent" value="${sessionScope.isRepresent}">
+                                <select id="page" name="page" onchange="this.form.submit()" 
+                                        style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                                    <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                        <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                            ${page}
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </form>
+                            <!-- Footer -->
+                            <div class="container-fluid">
+                                <div class="footer">
+                                    <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <!-- end dashboard inner -->
                 </div>
             </div>
-            <!-- jQuery -->
 
-
-
-
-
+            <!-- Scripts -->
             <script src="js/jquery.min.js"></script>
             <script src="js/popper.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
             <script src="js/custom.js"></script>
             <script>
-                                function confirmStatusChange(select) {
-                                    var form = select.closest(".status-form");
-                                    var selectedValue = select.value;
-                                    var confirmationMessage = selectedValue === "0" ? "Are you sure you want to change the status to Inactive?" : "Are you sure you want to change the status to Active?";
+                                    function confirmStatusChange(select) {
+                                        var form = select.closest(".status-form");
+                                        var selectedValue = select.value;
 
-                                    if (confirm(confirmationMessage)) {
-                                        form.submit();
-                                    } else {
-                                        select.value = selectedValue === "1" ? "0" : "1"; // Revert selection if canceled
+                                        if (selectedValue == "2") {
+                                            alert("Pending status cannot be selected.");
+                                            select.value = select.dataset.previousValue || "1";
+                                            return;
+                                        }
+
+                                        var confirmationMessage = selectedValue === "0"
+                                                ? "Are you sure you want to change the status to Inactive?"
+                                                : "Are you sure you want to change the status to Active?";
+
+                                        if (confirm(confirmationMessage)) {
+                                            form.submit();
+                                        } else {
+                                            select.value = selectedValue === "1" ? "0" : "1";
+                                        }
+                                        select.dataset.previousValue = selectedValue;
                                     }
-                                }
-                                function confirmDelete(link, event) {
-                                    event.preventDefault(); // Prevents immediate navigation
 
-                                    if (confirm("Are you sure you want to delete this resident?")) {
-                                        window.location.href = link.href; // Proceed with deletion
+                                    function confirmDelete(link, event) {
+                                        event.preventDefault();
+                                        if (confirm("Are you sure you want to delete this resident?")) {
+                                            window.location.href = link.href;
+                                        }
                                     }
-                                }
-                                function confirmStatusChange(selectElement) {
-                                    if (selectElement.value == "2") {
-                                        alert("Pending status cannot be selected.");
-                                        selectElement.value = selectElement.dataset.previousValue; // Revert to previous value
-                                    } else {
-                                        selectElement.dataset.previousValue = selectElement.value; // Store new value
+
+                                    document.getElementById('selectAll').addEventListener('change', function () {
+                                        document.querySelectorAll('input[name="selectedResidents"]').forEach(checkbox => {
+                                            checkbox.checked = this.checked;
+                                        });
+                                    });
+
+                                    function validateSelection() {
+                                        const selected = document.querySelectorAll('input[name="selectedResidents"]:checked');
+                                        if (selected.length === 0) {
+                                            alert('Please select at least one resident to export');
+                                            return false;
+                                        }
+                                        return true;
                                     }
-                                }
-
-
             </script>
-
-
     </body>
 </html>

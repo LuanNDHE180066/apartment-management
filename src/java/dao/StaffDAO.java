@@ -673,7 +673,7 @@ public class StaffDAO extends DBContext {
 //        System.out.println("" + dao.getStaffbyStatus());
 //        System.out.println("" + dao.getWorkingStaff("4"));
 //        System.out.println("" + dao.getWorkingStaff("5"));
-        System.out.println(dao.getById("S1002"));
+        System.out.println(dao.getActiveStaffbyRole("2"));
     }
 
 }

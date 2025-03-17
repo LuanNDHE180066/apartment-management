@@ -24,17 +24,12 @@ public class Resident {
     private String phone, email, bod, address, username, password, status, note;
     private Role role;
     private String gender, image;
-
     private List<Apartment> apartmentNumber;
-
-
-
-    private boolean isHomeOwner;
 
     public Resident() {
     }
 
-    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String gender, String image, boolean isHomeOwner) {
+    public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String gender, String image) {
         this.pId = pId;
         this.name = name;
         this.cccd = cccd;
@@ -49,7 +44,7 @@ public class Resident {
         this.role = role;
         this.gender = gender;
         this.image = image;
-        this.isHomeOwner = isHomeOwner;
+        
     }
     
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role) {
@@ -168,13 +163,8 @@ public class Resident {
     public String getUsername() {
         return username;
     }
-    public boolean isIsHomeOwner() {
-        return isHomeOwner;
-    }
-
-    public void setIsHomeOwner(boolean isHomeOwner) {
-        this.isHomeOwner = isHomeOwner;
-    }
+   
+   
 
     public void setUsername(String username) {
         this.username = username;

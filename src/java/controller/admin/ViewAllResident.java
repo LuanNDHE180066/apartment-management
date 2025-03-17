@@ -66,9 +66,10 @@ public class ViewAllResident extends HttpServlet {
         Util u = new Util();
 
         // Retrieve filter parameters
+        
         String name = request.getParameter("searchName");
         String status = request.getParameter("filterStatus");
-        String isHomeOwner = request.getParameter("isHomeOwner");
+        String isRepresent = request.getParameter("isRepresent");
         String page = request.getParameter("page");
 
         // Normalize name input
@@ -89,15 +90,15 @@ public class ViewAllResident extends HttpServlet {
             status = "";
         }
 
-        if (isHomeOwner != null && !isHomeOwner.trim().isEmpty()) {
-            session.setAttribute("isHomeOwner", isHomeOwner);
+        if (isRepresent != null && !isRepresent.trim().isEmpty()) {
+            session.setAttribute("isRepresent", isRepresent);
         } else {
-            session.removeAttribute("isHomeOwner");
-            isHomeOwner = "";
+            session.removeAttribute("isRepresent");
+            isRepresent = "";
         }
 
         // Fetch residents based on filters
-        List<Resident> listResident = daoR.filterListResident(name, status, isHomeOwner);
+        List<Resident> listResident = daoR.filterListResident(name, status, isRepresent);
 
         // Handle pagination
         if (page == null) {
