@@ -112,7 +112,7 @@ public class StaffFilter implements Filter {
         HttpSession session = req.getSession();
 
         Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() == 1) {
+        if (a.getRoleId() == 1 || a.getRoleId()==6) {
             res.sendRedirect("401_error.jsp");
             return;
         } 

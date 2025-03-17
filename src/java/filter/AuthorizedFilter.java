@@ -71,7 +71,7 @@ public class AuthorizedFilter implements Filter {
         }
 
         // Handle authenticated users with roleId == 1 and status == "2"
-        if (a != null && a.getRoleId() == 1) {
+        if (a != null && (a.getRoleId() == 1 || a.getRoleId()==6) ) {
             ResidentDAO rd = new ResidentDAO();
             Resident r = rd.getById(a.getpId());
             if (r != null && "2".equals(r.getStatus())) {

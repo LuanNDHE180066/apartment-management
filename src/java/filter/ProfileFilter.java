@@ -115,12 +115,12 @@ public class ProfileFilter implements Filter {
 
         String uri = req.getServletPath();
         if (uri.contains("view-profile-staff") || uri.contains("editprofileSTServlet")) {
-            if (a.getRoleId() == 1) {
+            if (a.getRoleId() == 1 || a.getRoleId()==6) {
                 res.sendRedirect("404_error.jsp");
             }
         } else {
 
-            if (a.getRoleId() != 1) {
+            if (a.getRoleId() != 1 && a.getRoleId()!=6) {
                 res.sendRedirect("404_error.jsp");
             }
         }

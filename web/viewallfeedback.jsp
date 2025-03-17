@@ -197,7 +197,7 @@
                                                     <div class=" text-center mt-3">
                                                         <button type="submit" class="btn btn-primary">Filter</button>
                                                     </div>
-                                                    <c:if test="${sessionScope.account.getRoleId()==1}">
+                                                    <c:if test="${sessionScope.account.getRoleId()==1 || sessionScope.account.getRoleId()==6}">
                                                         <div class=" text-center mt-3" style="padding-left: 30px">
                                                             <a href="view-feed-back-user" class="btn btn-primary">Đánh giá của bạn</a>
                                                         </div>

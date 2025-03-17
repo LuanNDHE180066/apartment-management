@@ -269,12 +269,11 @@ public class ExpenditureDAO extends DBContext {
                 Staff chiefAccountant = sdao.getById(rs.getString("chiefAccountantId"));
                 Staff currentAdminId = sdao.getById(rs.getString("currentAdminId"));
                 String createdDate = rs.getString("createdDate");
-                
+
 //                SimpleDateFormat formatt = new SimpleDateFormat("dd/MM/yyy");
 //                java.util.Date date = format.parse(createdDate);
 //                String formatDate = formatt.format(date);
 //                
-                
                 Expenditure ne = new Expenditure(id, titleE,
                         accountChiefApprove,
                         currentAdminApprove, approveddate, paymentdate,
@@ -368,6 +367,66 @@ public class ExpenditureDAO extends DBContext {
             Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public int getNumberOfExpenditureByApproveDateAndExpenseCategory(String startDate, String endDate, String categoryId) {
+        String sql = "select count (*) as [noe] from \n"
+                + "Expenditure where 1= 1 ";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != "") {
+            Date date = Date.valueOf(startDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate >= '" + formatDate + "'";
+        }
+
+        if (endDate != "") {
+            Date date = Date.valueOf(endDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate <= '" + formatDate + "'";
+        }
+        if (categoryId != "") {
+            sql += " and categoryid = " + categoryId;
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("noe");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
+    }
+
+    public double getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(String startDate, String endDate, String categoryId) {
+        String sql = "select sum(totalPrice) as [totalFees] from \n"
+                + "Expenditure where 1= 1 ";
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        if (startDate != "") {
+            Date date = Date.valueOf(startDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate >= '" + formatDate + "'";
+        }
+
+        if (endDate != "") {
+            Date date = Date.valueOf(endDate);
+            String formatDate = format.format(date);
+            sql += " and approveddate <= '" + formatDate + "'";
+        }
+        if (categoryId != "") {
+            sql += " and categoryid = " + categoryId;
+        }
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("totalFees");
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return 0;
     }
 
     public static void main(String[] args) {
