@@ -406,18 +406,19 @@ public class LivingApartmentDAO extends DBContext {
         return false;
     }
 
-    public void changeIsRepresent(String rid, String aid, String status) {
-        String sql = "update LivingAparment set isRepresent = 0 where rId = ? and aId = ? and status = ?";
+    public String changeIsRepresent(String isRepresent, String rid, String aid) {
+        String sql = "update LivingAparment set isRepresent = ? where rId = ? and aId = ? and status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, rid);
-            ps.setString(2, aid);
-            ps.setString(3, status);
-
-            ps.executeUpdate();
+            ps.setString(1, isRepresent);
+            ps.setString(2, rid);
+            ps.setString(3, aid);
+            return sql;
+//            ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
+        return null;
     }
 
     public int getNumberLivingResident() {
@@ -486,6 +487,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getAllNonRepresentResident("A001").get(0).getRid().getName());
+        System.out.println(dao.changeIsRepresent("P110", "A001", "1"));
     }
 }

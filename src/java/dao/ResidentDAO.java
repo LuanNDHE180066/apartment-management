@@ -96,7 +96,7 @@ public class ResidentDAO extends DBContext {
     public void setNullUsernameAndPassword(String rid) {
         String sql = "Update Resident set password = null, username = null where Id = ?";
         try {
-            PreparedStatement ps = connection.prepareStatement(rid);
+            PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, rid);
 
             ps.executeUpdate();

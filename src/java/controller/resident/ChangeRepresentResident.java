@@ -96,6 +96,7 @@ public class ChangeRepresentResident extends HttpServlet {
         String oldRepresentId = request.getParameter("oldRepresent");
         String newRepresentId = request.getParameter("newRepresent");
         String username = request.getParameter("username");
+        String accountExist = request.getParameter("accountExist");
 
         LivingApartmentDAO laDAO = new LivingApartmentDAO();
         ResidentDAO reDAO = new ResidentDAO();
@@ -111,8 +112,8 @@ public class ChangeRepresentResident extends HttpServlet {
             request.setAttribute("status", "true");
         }
 
-        laDAO.changeIsRepresent(oldRepresentId, aid, "0");
-        laDAO.changeIsRepresent(newRepresentId, aid, "1");
+//        laDAO.changeIsRepresent("0", oldRepresentId, aid);
+//        laDAO.changeIsRepresent("1", newRepresentId, aid);
 
         if (!laDAO.checkIsRepresent(oldRepresentId)) {
             reDAO.setNullUsernameAndPassword(oldRepresentId);
