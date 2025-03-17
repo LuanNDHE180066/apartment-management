@@ -487,6 +487,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.changeIsRepresent("1", "P110", "A001"));
+        //System.out.println(dao.changeIsRepresent("1", "P110", "A001"));
     }
 }

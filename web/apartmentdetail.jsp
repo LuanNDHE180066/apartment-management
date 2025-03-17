@@ -67,7 +67,6 @@
             .living-residents span {
                 margin-right: 10px; /* Space between label and buttons */
             }
-
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -85,7 +84,6 @@
                         <div class="container-fluid">
                             <div class="row column_title">
                                 <div class="col-md-12">
-
                                 </div>
                             </div>
                             <div class="row">
@@ -168,7 +166,6 @@
                     </div>
                 </div>
 
-
                 <!-- Modal for Apartment Owner -->
                 <div class="modal fade" id="ownerModal" tabindex="-1" role="dialog">
                     <div class="modal-dialog" style="max-width: 50%">
@@ -199,5 +196,20 @@
                 <script src="js/popper.min.js"></script>
                 <script src="js/bootstrap.min.js"></script>
                 <script src="js/custom.js"></script>
+
+                <script>
+                    $(document).ready(function () {
+                        // When the modal is shown
+                        $('.modal').on('show.bs.modal', function () {
+                            // You can add any specific styles here if needed
+                        });
+
+                        // When the modal is hidden
+                        $('.modal').on('hidden.bs.modal', function () {
+                            // Clear all styles from the body
+                            $('body').attr('style', '');
+                        });
+                    });
+                </script>
                 </body>
                 </html>
