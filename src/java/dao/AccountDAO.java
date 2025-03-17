@@ -181,7 +181,8 @@ public class AccountDAO extends DBContext {
             case 5:
                 sql += "from request where sid = '"+pid+"'";
                 break;
-            default:break;
+            default:
+                return list;
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);

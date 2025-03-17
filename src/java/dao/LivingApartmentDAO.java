@@ -330,6 +330,68 @@ public class LivingApartmentDAO extends DBContext {
         return list;
     }
 
+    public List<LivingApartment> getAllNonRepresentResident(String aid) {
+        String sql = "select * from LivingAparment where status = 1 and aId = ? and isRepresent = 0";
+        ApartmentDAO ad = new ApartmentDAO();
+        ResidentDAO rd = new ResidentDAO();
+        List<LivingApartment>list = new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                String startDate = rs.getDate("startDate").toString();
+                String endDate;
+                if (rs.getDate("enddate") == null) {
+                    endDate = null;
+                } else {
+                    endDate = rs.getDate("enddate").toString();
+                }
+                int status = rs.getInt("status");
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
+                list.add(la);
+            }
+            return list;
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
+    public LivingApartment getRepresentedResidentByAid(String aid) {
+        String sql = "select * from LivingAparment where status = 1 and aId = ? and isRepresent = 1";
+        ApartmentDAO ad = new ApartmentDAO();
+        ResidentDAO rd = new ResidentDAO();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, aid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                Resident re = rd.getById(rs.getString("rid"));
+                Apartment a = ad.getById(rs.getString("aid"));
+                String startDate = rs.getDate("startDate").toString();
+                String endDate;
+                if (rs.getDate("enddate") == null) {
+                    endDate = null;
+                } else {
+                    endDate = rs.getDate("enddate").toString();
+                }
+                int status = rs.getInt("status");
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
+                return la;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return null;
+    }
+
     public int getNumberLivingResident() {
         String sql = "select  count(*) as no from LivingAparment where status =1 ";
         try {
@@ -396,6 +458,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.getByApartmentID("A001", "2025-03-15", "2025-03-16").size());
+        System.out.println(dao.getAllNonRepresentResident("A001").get(0).getRid().getName());
     }
 }

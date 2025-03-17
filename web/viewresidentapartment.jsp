@@ -217,7 +217,7 @@
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
                                                         <a href="register-new-living-or-owner-resident" class="btn btn-primary">Register living/owner resident</a>
-                                                        <a style="margin-left: 5px" href="register-new-living-or-owner-resident" class="btn btn-primary">Change represented living resident</a>
+                                                        <a style="margin-left: 5px" href="change-represent-resident" class="btn btn-primary">Change represented living resident</a>
                                                     </div>
                                                 </div>
                                             </form>
