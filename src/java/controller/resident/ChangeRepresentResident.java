@@ -6,7 +6,9 @@ package controller.resident;
 
 import dao.LivingApartmentDAO;
 import dao.OwnerApartmentDAO;
+import dao.RepresentResidentChangeRequestDAO;
 import dao.ResidentDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,10 +16,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
 import java.util.List;
 import model.LivingApartment;
 import model.OwnerApartment;
+import model.RepresentResidentChangeRequest;
 import model.Resident;
+import model.SendEmail;
+import model.Staff;
 import util.Util;
 
 /**
@@ -97,26 +103,55 @@ public class ChangeRepresentResident extends HttpServlet {
         String newRepresentId = request.getParameter("newRepresent");
         String username = request.getParameter("username");
         String accountExist = request.getParameter("accountExist");
+        String owner = request.getParameter("owner-id");
 
         LivingApartmentDAO laDAO = new LivingApartmentDAO();
         ResidentDAO reDAO = new ResidentDAO();
+        StaffDAO stDAO = new StaffDAO();
 
+        if (username != null) {
+            username = username.trim();
+        }
         Util u = new Util();
-        if (reDAO.checkDuplicatateUsername(username)) {
+        if (reDAO.checkDuplicatateUsername(username) || stDAO.checkDuplicatateUsername(username)) {
             request.setAttribute("message", "Username is existed");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
             return;
-        } else {
-            request.setAttribute("message", "Add request successful");
-            request.setAttribute("status", "true");
+        } else if (accountExist != null && reDAO.getById_v2(newRepresentId).getUsername() == null) {
+            request.setAttribute("message", "New represent person is not has account");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
+            return;
+        } else if (accountExist == null && reDAO.getById_v2(newRepresentId).getUsername() != null) {
+            request.setAttribute("message", "New represent person is already has account");
+            request.setAttribute("status", "false");
+            request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
+            return;
         }
 
-//        laDAO.changeIsRepresent("0", oldRepresentId, aid);
-//        laDAO.changeIsRepresent("1", newRepresentId, aid);
-
-        if (!laDAO.checkIsRepresent(oldRepresentId)) {
-            reDAO.setNullUsernameAndPassword(oldRepresentId);
+        LocalDate lc = LocalDate.now();
+        String stringDate = lc.toString();
+        RepresentResidentChangeRequest re = null;
+        RepresentResidentChangeRequestDAO rrcDAO = new RepresentResidentChangeRequestDAO();
+        if (accountExist == null && reDAO.getById_v2(newRepresentId).getUsername() == null) {
+            re = new RepresentResidentChangeRequest(reDAO.getById_v2(oldRepresentId),
+                    reDAO.getById_v2(newRepresentId), aid, 0,
+                    stringDate, accountExist == null ? 0 : 1, username, reDAO.getById_v2(owner));
+        } else {
+            re = new RepresentResidentChangeRequest(reDAO.getById_v2(oldRepresentId),
+                    reDAO.getById_v2(newRepresentId), aid, 0,
+                    stringDate, accountExist == null ? 0 : 1, username, reDAO.getById_v2(owner));
+        }
+        if (rrcDAO.insertNewRequest(re)) {
+            request.setAttribute("message", "Add request successful");
+            SendEmail send = new SendEmail();
+            List<Staff> eStaff = stDAO.getAllAdmin();
+            send.sendEmailToWorkingAdmin(eStaff, "REQUEST CHANGE REPRESENT PERSON FROM " + re.getaId() + " is created at " + re.getRequestDate());
+            request.setAttribute("status", "true");
+        } else {
+            request.setAttribute("message", "Failed to insert request");
+            request.setAttribute("status", "false");
         }
 
         request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);

@@ -27,16 +27,16 @@ import model.Resident;
  * @author thanh
  */
 public class LivingApartmentDAO extends DBContext {
-
+    
     private ResidentDAO residenDAO = new ResidentDAO();
-
+    
     public List<LivingApartment> getByApartmentID(String aid, String startDate1, String endDate1) {
         String sql = "select * from LivingAparment where aId = ? ";
 //                +"order by status desc, enddate desc";
         ResidentDAO rd = new ResidentDAO();
         List<LivingApartment> list = new ArrayList<>();
         ApartmentDAO ad = new ApartmentDAO();
-
+        
         if (startDate1 != "") {
             sql += " and startDate >=  '" + startDate1 + "' ";
         }
@@ -69,7 +69,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public List<LivingApartment> getActiveLivingResidentByApartmentID(String aid) {
         String sql = "select * from LivingAparment where aId=? and status = 1 order by startDate";
         ResidentDAO rd = new ResidentDAO();
@@ -100,11 +100,11 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public LivingApartment getLivingResidentByApartmentID(String aid) {
         String sql = "select * from LivingAparment where aId= ? and status  = 1";
         ResidentDAO rd = new ResidentDAO();
-
+        
         ApartmentDAO ad = new ApartmentDAO();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -131,7 +131,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public String generateID() {
         String sql = "select id from LivingAparment";
         List<Integer> list = new ArrayList<>();
@@ -143,11 +143,11 @@ public class LivingApartmentDAO extends DBContext {
             }
             return (Collections.max(list) + 1) + "";
         } catch (SQLException ex) {
-
+            
         }
         return null;
     }
-
+    
     public String getLivingResidentName(String aid) {
         String sql = "select rId from LivingAparment where aId = ? and status = 1";
         try {
@@ -157,9 +157,9 @@ public class LivingApartmentDAO extends DBContext {
             StringBuilder str = new StringBuilder();
             while (rs.next()) {
                 str.append(residenDAO.getById(rs.getString("rid")).getName());
-
+                
                 str.append(",");
-
+                
             }
             return str.toString().trim();
         } catch (SQLException ex) {
@@ -167,7 +167,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public List<Resident> getLivingResidentList(String aid) {
         String sql = " select * from LivingAparment where  aId = ? and status = 1";
         List<Resident> list = new ArrayList<>();
@@ -175,7 +175,7 @@ public class LivingApartmentDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, aid);
             ResultSet rs = ps.executeQuery();
-
+            
             while (rs.next()) {
                 Resident r = residenDAO.getById_v2(rs.getString("rid"));
                 list.add(r);
@@ -186,7 +186,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public String getLivingResidentId(String aid) {
         String sql = "select rId from LivingAparment where aId = ? and status = 1";
         try {
@@ -196,9 +196,9 @@ public class LivingApartmentDAO extends DBContext {
             StringBuilder str = new StringBuilder();
             while (rs.next()) {
                 str.append(rs.getString("rid"));
-
+                
                 str.append(",");
-
+                
             }
             return str.toString().trim();
         } catch (SQLException ex) {
@@ -206,7 +206,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public boolean insertLivingApartment(String rid, String aid, String startDate) {
         String sql = "insert into LivingAparment(id,rid,aid,Startdate, Enddate, status) values(?,?,?,?,?,1)";
         try {
@@ -218,14 +218,14 @@ public class LivingApartmentDAO extends DBContext {
             ps.setString(5, null);
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
-
+            
         }
         return false;
     }
-
+    
     public int getNumberOfLivingPerson(String aid) {
         String sql = "select count (*) as nop from LivingAparment where aId = ? and status  = 1";
-
+        
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, aid);
@@ -238,7 +238,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return 0;
     }
-
+    
     public boolean updateEndLivingApartment(String endDate, String aid, String rid) {
         String sql = "update LivingAparment set Enddate = ?, status = 0 where aid = ? and status = 1 and rId = ? ";
         try {
@@ -252,7 +252,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return false;
     }
-
+    
     public List<Apartment> getApartmentsByResidentId(String id) {
         ApartmentDAO ad = new ApartmentDAO();
         List<Apartment> list = new ArrayList<>();
@@ -269,7 +269,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public List<String> getAllActiveApartment() {
         String sql = "select distinct(aid) as aid from LivingAparment where status =1";
         List<String> list = new ArrayList<>();
@@ -283,7 +283,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public List<EmailInvoice> getEmailInvoicesActiveResident() {
         String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1 and r.isHomeOwner =1 ";
         List<EmailInvoice> list = new ArrayList<>();
@@ -300,7 +300,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public List<LivingApartment> getAllActiveOwnerLivingApartmentObejct() {
         String sql = "select * from LivingAparment la join Resident r on la.rId=r.Id where status =1 and r.isHomeOwner = 1";
         List<LivingApartment> list = new ArrayList<>();
@@ -329,7 +329,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    
     public List<LivingApartment> getAllNonRepresentResident(String aid) {
         String sql = "select * from LivingAparment where status = 1 and aId = ? and isRepresent = 0";
         ApartmentDAO ad = new ApartmentDAO();
@@ -361,7 +361,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public LivingApartment getRepresentedResidentByAid(String aid) {
         String sql = "select * from LivingAparment where status = 1 and aId = ? and isRepresent = 1";
         ApartmentDAO ad = new ApartmentDAO();
@@ -391,11 +391,12 @@ public class LivingApartmentDAO extends DBContext {
         }
         return null;
     }
-
+    
     public boolean checkIsRepresent(String pid) {
         String sql = "select * from LivingAparment where rId = ? and status = 1  and isRepresent = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, pid);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 return true;
@@ -405,22 +406,21 @@ public class LivingApartmentDAO extends DBContext {
         }
         return false;
     }
-
-    public String changeIsRepresent(String isRepresent, String rid, String aid) {
+    
+    public void changeIsRepresent(String isRepresent, String rid, String aid) {
         String sql = "update LivingAparment set isRepresent = ? where rId = ? and aId = ? and status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, isRepresent);
             ps.setString(2, rid);
             ps.setString(3, aid);
-            return sql;
-//            ps.executeUpdate();
+            ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(LivingApartmentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
-        return null;
+ 
     }
-
+    
     public int getNumberLivingResident() {
         String sql = "select  count(*) as no from LivingAparment where status =1 ";
         try {
@@ -433,7 +433,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return 0;
     }
-
+    
     public int getNumberLivingByTime(int month, int year) {
         String sql = "		DECLARE @month INT = ?;  -- Tháng cần kiểm tra\\n\"\n"
                 + "                DECLARE @year INT = ?; -- Năm cần kiểm tra\\n\"\n"
@@ -454,7 +454,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return 0;
     }
-
+    
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
         ResidentDAO daoR = new ResidentDAO();
@@ -487,6 +487,6 @@ public class LivingApartmentDAO extends DBContext {
 //        System.out.println(dao.updateEndLivingApartment("2025-2-16", "A001"));
 //        System.out.println(dao.getApartmentsByResidentId("P101").size());
 //        System.out.println(dao.getAllActiveLivingApartmentObejct().size());
-        System.out.println(dao.changeIsRepresent("P110", "A001", "1"));
+        System.out.println(dao.changeIsRepresent("1", "P110", "A001"));
     }
 }

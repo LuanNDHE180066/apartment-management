@@ -142,6 +142,7 @@
                                         <div class="one-col">
                                             <label for="owner-resident">Owner Resident</label>
                                             <input type="text" value="${requestScope.owner.rid}" id="owner-resident" name="ownerResident" placeholder="Owner Resident Name" readonly />
+                                            <input hidden="" type="text" value="${requestScope.owner.rid.pId}" id="owner-resident" name="owner-id" placeholder="Owner Resident Name" readonly />
                                         </div>
                                     </div>
 

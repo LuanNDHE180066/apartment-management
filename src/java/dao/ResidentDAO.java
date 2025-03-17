@@ -31,6 +31,20 @@ public class ResidentDAO extends DBContext {
         return connection == null;
     }
 
+    public boolean setUsernameAndPassword(String username, String password, String id) {
+        String sql = "update Resident set username = ? , password = ? where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public Resident getById_v2(String pId) {
         String sql = "select  * from resident where id = ?";
         try {
@@ -706,6 +720,6 @@ public class ResidentDAO extends DBContext {
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
         System.out.println(dao.checkDuplicatateUsername("Quang"));
-      
+
     }
 }
