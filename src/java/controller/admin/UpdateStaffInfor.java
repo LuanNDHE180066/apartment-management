@@ -229,20 +229,17 @@ public class UpdateStaffInfor extends HttpServlet {
         int salary = Integer.parseInt(salary_raw);
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-            Date today = new Date();
-            today = sdf.parse(sdf.format(today));
+            String todayStr = sdf.format(new Date());
 
-            if (endDate == null || endDate.trim().isEmpty()) {
-                status_raw = "1"; 
+            if ("0".equals(status_raw)) {
+                endDate = todayStr;
             } else {
-                Date endD = sdf.parse(endDate);
-                if (endD.equals(today)) {
-                    status_raw = "0"; 
-                }
+                endDate = null;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+
         int status = Integer.parseInt(status_raw);
         if (salary <= 0) {
             request.setAttribute("salaryerror", "Salary must be greater than 0.");

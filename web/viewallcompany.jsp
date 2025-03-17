@@ -92,7 +92,6 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Name</th>
-                                                            <th>Description</th>
                                                             <th>Phone</th>
                                                             <th>Contact Phone</th>
                                                             <th>Fax</th>
@@ -110,7 +109,6 @@
                                                             <tr>
                                                                 <td>${o.id}</td>
                                                                 <td>${o.name}</td>
-                                                                <td>${o.description}</td>
                                                                 <td>${o.phone}</td>
                                                                 <td>${o.contactPhone}</td>
                                                                 <td>${o.fax}</td>

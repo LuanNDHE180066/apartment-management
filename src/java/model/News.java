@@ -13,13 +13,36 @@ import java.util.Date;
  * @author quang
  */
 public class News {
+
     private String id, title, content, source, category, image;
     private Staff staff;
     private String date;
 
+    public News(String title, String content, String source, String category, Staff staff, String date) {
+        this.title = title;
+        this.content = content;
+        this.source = source;
+        this.category = category;
+
+        this.staff = staff;
+        this.date = date;
+    }
+
+    public News(String id, String title, String content, String source, String date, String category, Staff staff) {
+        this.id = id;
+        this.title = title;
+        this.content = content;
+        this.source = source;
+        this.date = date;
+        this.category = category;
+        this.staff = staff;
+        
+    }
+
     public String getDate() {
         return date;
     }
+
     public String formatdate() {
         if (date == null || date.isEmpty()) {
             return "";
@@ -34,6 +57,7 @@ public class News {
             return "";
         }
     }
+
     public void setDate(String date) {
         this.date = date;
     }
@@ -59,14 +83,7 @@ public class News {
         this.date = date;
     }
 
-    public News(String id, String title, String content, String source, String category, String image, Staff staff) {
-        this.id = id;
-        this.title = title;
-        this.content = content;
-        this.source = source;
-        this.category = category;
-        this.image = image;
-        this.staff = staff;
+    public News() {
     }
 
     public String getId() {
@@ -124,6 +141,5 @@ public class News {
     public void setStaff(Staff staff) {
         this.staff = staff;
     }
-    
-    
+
 }

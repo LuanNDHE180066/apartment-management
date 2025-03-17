@@ -5,6 +5,7 @@
 package controller.staff;
 
 import dao.CompanyDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -224,6 +225,9 @@ public class UpdateCompanyServlet extends HttpServlet {
         if (daoCompany.updateCompany(updatedCompany)) {
             request.setAttribute("status", "true");
             request.setAttribute("message", "Company updated successfully!");
+            StaffDAO std= new StaffDAO();
+            Company c= daoCompany.getById(id);
+            std.updatewhenchangecompanystatus(c.getStatus(), c.getId());
         } else {
             request.setAttribute("status", "false");
             request.setAttribute("message", "Failed to update company.");

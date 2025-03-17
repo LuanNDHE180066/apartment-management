@@ -39,6 +39,7 @@
         <link rel="stylesheet" href="js/semantic.min.css" />
         <!-- fancy box js -->
         <link rel="stylesheet" href="css/jquery.fancybox.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/decoupled-document/ckeditor.js"></script>
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -112,6 +113,21 @@
             }
         </style>
     </head>
+    <script>
+        DecoupledEditor
+                .create(document.querySelector('#editor'))
+                .then(editor => {
+                    window.editorInstance = editor;
+                    document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
+                })
+                .catch(error => {
+                    console.error('CKEditor l?i:', error);
+                });
+                document.querySelector('form').addEventListener('submit', () => {
+    document.querySelector('#hiddenContent').value = editor.getData();
+});
+
+    </script>
     <body class="dashboard dashboard_1">
         <div class="full_container">
             <div class="inner_container">
@@ -134,9 +150,17 @@
                                             <input value="${requestScope.news.title}" type="text" id="title" name="title" placeholder="Enter new title" required />
                                             <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
+                                        <!--                                        <div class="form-group">
+                                                                                    <label for="detail">Content</label>
+                                                                                    <textarea value="" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required>${requestScope.news.content}</textarea>
+                                                                                    <span style="color: red">${requestScope.contenterror}</span>
+                                                                                </div>-->
                                         <div class="form-group">
-                                            <label for="detail">Content</label>
-                                            <textarea value="" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required>${requestScope.news.content}</textarea>
+                                            <label for="content">Content</label>
+                                            <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
+                                            <div id="editor">${requestScope.news != null ? requestScope.news.content : ""}</div>
+
+                                            <input type="hidden" name="content" id="hiddenContent"> <!-- Input ?n ?? l?u d? li?u -->
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
                                         <div class="form-group">
@@ -160,11 +184,11 @@
                                                 </c:forEach>                                   
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="file">Image</label>
-                                            <input value="${requestScope.news.image}" style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
-                                            <span style="color: red">${requestScope.fileerror}</span>
-                                        </div>
+                                        <!--                                        <div class="form-group">
+                                                                                    <label for="file">Image</label>
+                                                                                    <input value="${requestScope.news.image}" style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                                                                    <span style="color: red">${requestScope.fileerror}</span>
+                                                                                </div>-->
                                         <div class="form-group">
                                             <label for="auther">Author</label>
                                             <select id="auther" name="auther" required>
@@ -193,5 +217,25 @@
         <script src="js/bootstrap.min.js"></script>
         <!-- custom js -->
         <script src="js/custom.js"></script>
+        <script>
+        DecoupledEditor
+                .create(document.querySelector('#editor'), {
+                    ckfinder: {
+                        uploadUrl: '/uploadImage' // Servlet x? lý upload ?nh
+                    }
+                })
+                .then(editor => {
+                    window.editorInstance = editor;
+                    document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
+                    document.querySelector('form').addEventListener('submit', () => {
+                        document.querySelector('#hiddenContent').value = editor.getData();
+                    });
+                })
+                .catch(error => {
+                    console.error('CKEditor l?i:', error);
+                });
+
+
+        </script>
     </body>
 </html>

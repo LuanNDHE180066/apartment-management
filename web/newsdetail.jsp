@@ -19,73 +19,110 @@
         <!-- Google Fonts -->
         <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
         <style>
-            .news-container {
-    background: #ffffff;
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
-}
+        /* Thiết lập font chữ và nền */
+        body {
+            font-family: 'Merriweather', serif;
+            background-color: #f8f9fa;
+        }
 
-.news-title {
-    font-size: 28px;
-    color: #004175;
-}
+        /* Container chính của bài báo */
+        .news-container {
+            background: #fff;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-.news-meta {
-    font-size: 14px;
-    color: #6c757d;
-}
+        /* Tiêu đề bài viết */
+        .news-title {
+            font-size: 34px;
+            font-weight: bold;
+            color: #333;
+            text-align: center;
+            margin-bottom: 10px;
+        }
 
-.news-image {
-    max-width: 100%;
-    height: auto;
-    border-radius: 10px;
-    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.2);
-}
+        /* Thông tin ngày đăng và tác giả */
+        .news-meta {
+            font-size: 14px;
+            color: #888;
+            text-align: center;
+            margin-bottom: 20px;
+        }
 
-.news-content {
-    font-size: 18px;
-    line-height: 1.6;
-}
+        /* Nội dung bài viết */
+        .news-content {
+            font-size: 18px;
+            line-height: 1.8;
+            color: #333;
+            text-align: justify;
+        }
 
-.news-source a {
-    font-size: 16px;
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+        /* Định dạng ảnh trong nội dung */
+        .news-content img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 20px auto;
+            border-radius: 5px;
+        }
 
-.news-source a:hover {
-    color: #ff6600;
-}
+        /* Trích dẫn đặc biệt */
+        blockquote {
+            font-style: italic;
+            border-left: 4px solid #007bff;
+            padding-left: 15px;
+            margin: 20px 0;
+            color: #555;
+        }
 
-.related-links h4 {
-    color: #333;
-}
+        /* Link nguồn tin */
+        .news-source a {
+            font-size: 16px;
+            font-weight: bold;
+            color: #007bff;
+            text-decoration: none;
+        }
 
-.list-group-item a {
-    text-decoration: none;
-    transition: color 0.3s ease;
-}
+        .news-source a:hover {
+            text-decoration: underline;
+        }
 
-.list-group-item a:hover {
-    color: #ff6600;
-}
+        /* Tiêu đề danh sách bài viết liên quan */
+        .related-links h4 {
+            font-size: 20px;
+            margin-top: 30px;
+            font-weight: bold;
+        }
 
-.btn-warning {
-    background-color: #f39c12;
-    border: none;
-}
+        /* Danh sách bài viết liên quan */
+        .list-group-item a {
+            text-decoration: none;
+            color: #333;
+            font-size: 16px;
+        }
 
-.btn-primary {
-    background-color: #007bff;
-    border: none;
-}
+        .list-group-item a:hover {
+            color: #ff6600;
+        }
 
-.btn-primary:hover {
-    background-color: #0056b3;
-}
+        /* Nút quay lại */
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 16px;
+            font-weight: bold;
+        }
 
-        </style>
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+    </style>
     </head>
     <div class="full_container">
         <div class="inner_container">
@@ -96,71 +133,63 @@
                 <%@ include file="topbar.jsp" %>
                 <!-- end topbar -->
                 <!-- News Detail -->
-                <div class="container mt-5"> 
-    <div class="row">
-        <div class="col-lg-8 offset-lg-2"> 
-            <div class="news-container p-4 rounded shadow-sm bg-white">
-                
-                <!-- Chỉ admin mới có nút Update -->
-                <c:if test="${sessionScope.account.roleId == 2}">
-                    <button id="btn-update" class="btn btn-warning mb-3" onclick="window.location = 'update-news?id=${param.id}';">
-                        ✏️ Update News
-                    </button>
-                </c:if>
+                <div class="container">
+        <div class="news-container">
 
-                <!-- Tiêu đề bài viết -->
-                <h1 class="news-title text-dark fw-bold">${requestScope.news.title}</h1>
+            <!-- Chỉ admin mới có nút Update -->
+            <c:if test="${sessionScope.account.roleId == 2}">
+                <button class="btn btn-warning mb-3 float-end" onclick="window.location = 'update-news?id=${param.id}';">
+                    ✏️ Update News
+                </button>
+            </c:if>
 
-                <!-- Ngày đăng & tác giả -->
-                <p class="news-meta text-muted">
-                    <i class="far fa-calendar-alt"></i> ${requestScope.news.formatdate()} &nbsp; | &nbsp;
-                    <i class="fas fa-user"></i> ${requestScope.news.staff.name}
-                </p>
+            <!-- Tiêu đề bài viết -->
+            <h1 class="news-title">${requestScope.news.title}</h1>
 
-                <!-- Hình ảnh bài viết -->
-                <div class="text-center mb-4">
-                    <img src="${requestScope.news.image}" class="news-image img-fluid rounded shadow" width="80%"/>
-                </div>
+            <!-- Ngày đăng & tác giả -->
+            <p class="news-meta">
+                🕒 ${requestScope.news.formatdate()} | ✍ ${requestScope.news.staff.name}
+            </p>
 
-                <!-- Nội dung bài viết -->
-                <p class="news-content text-justify fs-5">
-                    ${requestScope.news.content}
-                </p>
-
-                <!-- Nguồn tin -->
-                <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
-                    <p class="news-source">
-                        📌 <a href="${requestScope.news.source}" target="_blank" class="text-primary fw-bold">
-                            Read more <i class="fas fa-external-link-alt"></i>
-                        </a>
-                    </p>
-                </c:if>
-
-                <!-- Bài viết liên quan -->
-                <div class="related-links mt-4">
-                    <h4 class="fw-bold">📰 Related Articles</h4>
-                    <ul class="list-group">
-                        <c:forEach items="${requestScope.listOtherNews}" var="n">
-                            <li class="list-group-item">
-                                <a href="news-detail?id=${n.id}" class="text-dark fw-semibold">
-                                    ➜ ${n.title}
-                                </a>
-                            </li>
-                        </c:forEach>
-                    </ul>
-                </div>
-
-                <!-- Nút quay lại danh sách -->
-                <div class="mt-4 text-center">
-                    <button class="btn btn-primary" onclick="window.location = 'view-news';">
-                        ⬅️ Back to News List
-                    </button>
-                </div>
-
+            <!-- Nội dung bài viết (có thể chứa ảnh trong content) -->
+            <div class="news-content">
+                ${requestScope.news.content}
             </div>
+
+            <!-- Trích dẫn đặc biệt (nếu có) -->
+
+            <!-- Nguồn tin -->
+            <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
+                <p class="news-source">
+                    📌 <a href="${requestScope.news.source}" target="_blank">
+                        Read more <i class="fas fa-external-link-alt"></i>
+                    </a>
+                </p>
+            </c:if>
+
+            <!-- Bài viết liên quan -->
+            <div class="related-links">
+                <h4>📖 Related Articles</h4>
+                <ul class="list-group">
+                    <c:forEach items="${requestScope.listOtherNews}" var="n">
+                        <li class="list-group-item">
+                            <a href="news-detail?id=${n.id}">
+                                ➜ ${n.title}
+                            </a>
+                        </li>
+                    </c:forEach>
+                </ul>
+            </div>
+
+            <!-- Nút quay lại danh sách -->
+            <div class="mt-4 text-center">
+                <button class="btn btn-primary" onclick="window.location = 'view-news';">
+                    ⬅️ Back to News List
+                </button>
+            </div>
+
         </div>
     </div>
-</div>
 
                 <!-- end news detail -->
             </div>

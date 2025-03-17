@@ -649,7 +649,17 @@ public class StaffDAO extends DBContext {
         return false;
 
     }
-
+    public boolean updatewhenchangecompanystatus(int status, String cID){
+        String sql="  update Staff set status =?  where cID= ?";
+        try {
+            PreparedStatement ps= connection.prepareStatement(sql);
+            ps.setInt(1, status);
+            ps.setString(2, cID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
     public static void main(String[] args) {
 
         StaffDAO dao = new StaffDAO();
