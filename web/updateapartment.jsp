@@ -294,10 +294,12 @@
         </div>
 
         <script>
+
+            const representativeId = '${requestScope.representPersonId}';
             // Initialize selected residents from server
             let selectedResidents = [
             <c:forEach items="${livingResidents}" var="resident">
-            {id: '${resident.pId}', name: '${resident.name}'},
+                {id: '${resident.pId}', name: '${resident.name}'},
             </c:forEach>
             ];
 
@@ -324,8 +326,14 @@
             }
 
             function removeResident(residentId) {
-                selectedResidents = selectedResidents.filter(r => r.id !== residentId);
-                updateSelectedResidentsDisplay();
+                const isRepresentative = representativeId === residentId;
+                if (isRepresentative) {
+                    alert("Cannot remove representative.");
+                    return;
+                } else {
+                    selectedResidents = selectedResidents.filter(r => r.id !== residentId);
+                    updateSelectedResidentsDisplay();
+                }
             }
 
             function openResidentModal() {
