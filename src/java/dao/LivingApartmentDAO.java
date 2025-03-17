@@ -60,7 +60,8 @@ public class LivingApartmentDAO extends DBContext {
                     endDate = rs.getDate("enddate").toString();
                 }
                 int status = rs.getInt("status");
-                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
                 list.add(la);
             }
         } catch (SQLException e) {
@@ -90,7 +91,8 @@ public class LivingApartmentDAO extends DBContext {
                     endDate = rs.getDate("enddate").toString();
                 }
                 int status = rs.getInt("status");
-                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
                 list.add(la);
             }
         } catch (SQLException e) {
@@ -120,7 +122,8 @@ public class LivingApartmentDAO extends DBContext {
                     endDate = rs.getDate("enddate").toString();
                 }
                 int status = rs.getInt("status");
-                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
                 return la;
             }
         } catch (SQLException e) {
@@ -318,7 +321,8 @@ public class LivingApartmentDAO extends DBContext {
                     endDate = rs.getDate("enddate").toString();
                 }
                 int status = rs.getInt("status");
-                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status);
+                int isRepresent = rs.getInt("isRepresent");
+                LivingApartment la = new LivingApartment(id, re, a, startDate, endDate, status, isRepresent);
                 list.add(la);
             }
         } catch (SQLException e) {
