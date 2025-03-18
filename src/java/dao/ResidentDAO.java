@@ -30,7 +30,21 @@ public class ResidentDAO extends DBContext {
     public boolean checkConnection() {
         return connection == null;
     }
-    
+
+    public boolean setUsernameAndPassword(String username, String password, String id) {
+        String sql = "update Resident set username = ? , password = ? where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public Resident getById_v2(String pId) {
         String sql = "select  * from resident where id = ?";
         try {
@@ -93,6 +107,18 @@ public class ResidentDAO extends DBContext {
         return list;
     }
 
+    public void setNullUsernameAndPassword(String rid) {
+        String sql = "Update Resident set password = null, username = null where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, rid);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public Resident getResidentByUsername(String username) {
         String sql = "select * from Resident where username = ?";
         try {
@@ -124,8 +150,8 @@ public class ResidentDAO extends DBContext {
         }
         return null;
     }
-    
-        public Resident getResidentById(String Cccd) {
+
+    public Resident getResidentById(String Cccd) {
         String sql = "select * from Resident where cccd = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -446,6 +472,21 @@ public class ResidentDAO extends DBContext {
         return false;
     }
 
+    public boolean checkDuplicatateUsername(String username) {
+        String sql = "select * from Resident where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public boolean checkDuplicateID(String id, String reId) {
         String sql = "SELECT * FROM Resident WHERE Cccd = ? AND id NOT LIKE ?";
         try {
@@ -678,9 +719,7 @@ public class ResidentDAO extends DBContext {
 
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-        Resident r=dao.getById("P116");
-        r.setName("thanh");
-        dao.updateRE(r);
+        System.out.println(dao.checkDuplicatateUsername("Quang"));
 
     }
 }
