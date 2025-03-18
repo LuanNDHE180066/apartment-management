@@ -34,6 +34,19 @@ public class Contract {
         this.admin=admin;
         this.image=image;
     }
+    public Contract(Staff staff, Company company, String startDate, String endDate, String paymentTems, String signDate, String title, String description, Staff accountant , Staff admin) {
+        this.staff=staff;
+        this.company=company;
+        this.startDate=startDate;
+        this.endDate=endDate;
+        this.paymentTems=paymentTems;
+        this.signDate=signDate;
+        this.title=title;
+        this.description=description;
+        this.accountant=accountant;
+        this.admin=admin;
+
+    }
 
     public Contract(String valueOf, Staff byId) {
     }

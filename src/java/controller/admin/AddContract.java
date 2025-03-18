@@ -25,6 +25,8 @@ import java.nio.file.Paths;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import model.Company;
 import model.Contract;
@@ -117,32 +119,53 @@ public class AddContract extends HttpServlet {
         String admin = request.getParameter("admin");
         String accountant = request.getParameter("accountant");
         String sid = request.getParameter("sid");
-        Part filePart = request.getPart("file");
-        String image = "";
-        if (filePart != null && filePart.getSize() > 0) {
-            String filename = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileExtention = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
-            if (!fileExtention.matches("jpg|jpeg")) {
-                request.setAttribute("fileerror", "Only jpg");
+        Collection<Part> fileParts = request.getParts();
+        List<String> imagePaths = new ArrayList<>();
+        boolean hasFile = false;
+        for (Part filePart : fileParts) {
+            String submittedFileName = filePart.getSubmittedFileName();
+
+            // Kiểm tra nếu filePart không có file nào được chọn
+            if (submittedFileName == null || submittedFileName.isEmpty()) {
+                continue; // Bỏ qua file rỗng
+            }
+
+            hasFile = true;
+            String filename = Paths.get(submittedFileName).getFileName().toString();
+            String fileExtension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
+
+            // Kiểm tra định dạng file ảnh
+            if (!fileExtension.matches("jpg|jpeg")) {
+                request.setAttribute("fileerror", "Only JPG files are allowed.");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
-            String uploadpath = getServletContext().getRealPath("/") + "images/contract";
-            File uploadDir = new File(uploadpath);
+
+            // Thư mục lưu ảnh
+            String uploadPath = getServletContext().getRealPath("/") + "images/contract";
+            File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
-            File file = new File(uploadDir, filename);
+
+            // Đổi tên file tránh trùng lặp
+            String newFilename = System.currentTimeMillis() + "_" + filename;
+            File file = new File(uploadDir, newFilename);
+
+            // Ghi file vào thư mục
             try (InputStream fileContent = filePart.getInputStream(); FileOutputStream outputStream = new FileOutputStream(file)) {
                 byte[] buffer = new byte[1024];
-                int byteread;
-                while ((byteread = fileContent.read(buffer)) != -1) {
-                    outputStream.write(buffer, 0, byteread);
+                int bytesRead;
+                while ((bytesRead = fileContent.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
                 }
-
             }
-            image = "images/contract/" + filename;
+
+            // Lưu đường dẫn ảnh vào danh sách
+            imagePaths.add("images/contract/" + newFilename);
+            System.out.println("Uploaded image: " + newFilename); // Debug log
         }
+
         if (company == null) {
             request.setAttribute("companyerror", "Company not found");
             request.getRequestDispatcher("addcontract.jsp").forward(request, response);
@@ -194,24 +217,31 @@ public class AddContract extends HttpServlet {
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
-            if (image.isEmpty()) {
-                request.setAttribute("fileerror", "Please upload an image");
+//            if (image.isEmpty()) {
+//                request.setAttribute("fileerror", "Please upload an image");
+//                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+//                return;
+//            }
+            // Kiểm tra nếu không có ảnh nào được tải lên
+            if (!hasFile) {
+                request.setAttribute("fileerror", "Please upload at least one image.");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
+
         } catch (Exception e) {
             e.printStackTrace();
         }
         CompanyDAO cpd = new CompanyDAO();
         StaffDAO std = new StaffDAO();
-        Contract contract = new Contract(std.getById(sid), cpd.getById(company), startDate, endDate, paydate, signdate, title, description, std.getById(accountant), std.getById(admin), image);
+        Contract contract = new Contract(std.getById(sid), cpd.getById(company), startDate, endDate, paydate, signdate, title, description, std.getById(accountant), std.getById(admin));
         ContractDAO ctd = new ContractDAO();
         LocalDateTime lc = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
         String formattedDate = lc.format(format);
         String created = formattedDate;
         String updated = formattedDate;
-        if (ctd.addContract(contract)) {
+        if (ctd.addContract(contract, imagePaths)) {
             Contract latestContract = ctd.getLastInsertedContract();
 
             ContractApprove contractApprove = new ContractApprove(

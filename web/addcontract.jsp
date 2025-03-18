@@ -205,8 +205,21 @@
                                             <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" />
                                         </div>
                                         <div class="form-group">
-                                            <label for="file">Image</label>
-                                            <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                            <label class="font-weight-bold">Upload Images (Optional)</label>
+                                            <div id="uploadContainer" class="upload-container">
+                                                <div class="upload-area" data-index="0">
+                                                    <div class="upload-content">
+                                                        <div class="upload-icon">+</div>
+                                                        <p>Click or Drag an Image</p>
+                                                    </div>
+                                                    <input type="file" name="images[]" accept="image/jpeg" multiple>
+
+
+                                                    <div class="upload-preview"></div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="add-upload-btn" id="addUpload">+</button>
+                                            <small class="form-text text-muted">You can add multiple upload areas and select multiple images.</small>
                                             <span style="color: red">${requestScope.fileerror}</span>
                                         </div>
                                         <div class="form-button">
@@ -233,5 +246,31 @@
         <script src="js/bootstrap.min.js"></script>
         <!-- custom js -->
         <script src="js/custom.js"></script>
+        <script>
+            document.addEventListener("DOMContentLoaded", function () {
+                let uploadContainer = document.getElementById("uploadContainer");
+                let addUploadBtn = document.getElementById("addUpload");
+                let index = 1; // B?t ??u t? 1 vì index=0 ?ã có s?n
+
+                addUploadBtn.addEventListener("click", function () {
+                    let uploadArea = document.createElement("div");
+                    uploadArea.className = "upload-area";
+                    uploadArea.setAttribute("data-index", index);
+
+                    uploadArea.innerHTML = `
+            <div class="upload-content">
+                <div class="upload-icon">+</div>
+                <p>Click or Drag an Image</p>
+            </div>
+            <input type="file" name="images[]" accept="image/jpeg" multiple>
+            <div class="upload-preview"></div>
+        `;
+
+                    uploadContainer.appendChild(uploadArea);
+                    index++;
+                });
+            });
+
+        </script>
     </body>
 </html>

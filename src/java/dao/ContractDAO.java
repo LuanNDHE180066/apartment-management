@@ -4,6 +4,7 @@
  */
 package dao;
 
+import java.beans.Statement;
 import java.sql.Date;
 import jdbc.DBContext;
 import java.sql.PreparedStatement;
@@ -142,7 +143,19 @@ public class ContractDAO extends DBContext {
         }
         return list;
     }
-
+    public List<String> getallimgbyID(String id){
+        String sql="  select * from [ContractImages] where [contractId]= "+id;
+        List<String> list=new ArrayList<>();
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ResultSet rs=ps.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("imageUrl"));
+            }
+        } catch (Exception e) {
+        }
+        return list;
+    }
     public Contract getById(String id) {
         String sql = "select * from Contract where id  = " + id;
         CompanyDAO daoCP = new CompanyDAO();
@@ -199,35 +212,54 @@ public class ContractDAO extends DBContext {
         return null;
     }
 
-    public boolean addContract(Contract c) {
-        String sql = "insert into Contract (sId,cId,Startdate,Enddate,paymenttems,signdate,title,Description,status,id,accountantId,adminId,image) values(?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        Util u = new Util();
-        ContractDAO ctd = new ContractDAO();
+    public boolean addContract(Contract c, List<String> images) {
+    String sqlContract = "INSERT INTO Contract (sId, cId, Startdate, Enddate, paymenttems, signdate, title, Description, status, id, accountantId, adminId) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    String sqlImage="INSERT INTO ContractImages(contractId, imageUrl) values (?,?)";
+    ContractDAO ctd = new ContractDAO();
         List<Contract> listCont = ctd.getAll();
         int lastNum = 0;
         if (listCont.size() != 0) {
-            lastNum = listCont.size()+1;
+            lastNum = listCont.size()+1;}
+    try {
+
+        PreparedStatement ps = connection.prepareStatement(sqlContract);
+        ps.setString(1, c.getStaff().getId());
+        ps.setString(2, c.getCompany().getId());
+        ps.setString(3, c.getStartDate());
+        ps.setString(4, c.getEndDate());
+        ps.setString(5, c.getPaymentTems());
+        ps.setString(6, c.getSignDate());
+        ps.setString(7, c.getTitle());
+        ps.setString(8, c.getDescription());
+        ps.setInt(9, 0); // status mặc định là 0
+        ps.setString(10, (lastNum + 1) + "");
+        ps.setString(11, c.getAccountant().getId());
+        ps.setString(12, c.getAdmin().getId());
+
+        int affectedRows = ps.executeUpdate();
+        if (affectedRows == 0) {
+            return false;
         }
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, c.getStaff().getId());
-            ps.setString(2, c.getCompany().getId());
-            ps.setString(3, c.getStartDate());
-            ps.setString(4, c.getEndDate());
-            ps.setString(5, c.getPaymentTems());
-            ps.setString(6, c.getSignDate());
-            ps.setString(7, c.getTitle());
-            ps.setString(8, c.getDescription());
-            ps.setInt(9, 0);
-            ps.setString(10, (lastNum + 1) + "");
-            ps.setString(11, c.getAccountant().getId());
-            ps.setString(12, c.getAdmin().getId());
-            ps.setString(13, c.getImage());
-            return ps.executeUpdate() > 0;
-        } catch (Exception e) {
+
+        
+
+        if ( !images.isEmpty()) {
+            PreparedStatement psImage = connection.prepareStatement(sqlImage);
+            for (String imagePath : images) {
+                psImage.setString(1, (lastNum + 1) + "");
+                psImage.setString(2, imagePath);
+                psImage.executeUpdate();
+            }
         }
-        return false;
+
+        return true;
+    } catch (Exception e) {
+        e.printStackTrace();
     }
+    return false;
+}
+
+
     public boolean updateStatus(String id) {
     String sql = "UPDATE Contract SET status = ? WHERE id = ?";
     try {
@@ -246,8 +278,8 @@ public class ContractDAO extends DBContext {
         ContractDAO dap = new ContractDAO();
         StaffDAO std = new StaffDAO();
         CompanyDAO cpd = new CompanyDAO();
-        Contract c = new Contract(std.getById("S1003"), cpd.getById("C001"), "2025-02-12", "2025-02-12", "2025-02-12", "2025-02-12", "hehe", "hehe", std.getById("S1004"), std.getById("S1003"), "images/avatar/anh.jpg");
+//        Contract c = new Contract(std.getById("S1003"), cpd.getById("C001"), "2025-02-12", "2025-02-12", "2025-02-12", "2025-02-12", "hehe", "hehe", std.getById("S1004"), std.getById("S1003"), "images/avatar/anh.jpg");
         //System.out.println(dap.filterContract("", "", "2025-3-27").size());
-        System.out.println(dap.updateStatus("9"));
+        System.out.println(dap.getallimgbyID("26"));
     }
 }

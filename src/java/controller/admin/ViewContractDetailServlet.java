@@ -13,6 +13,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
+import java.util.List;
 import model.Contract;
 
 /**
@@ -61,7 +63,10 @@ public class ViewContractDetailServlet extends HttpServlet {
        ContractDAO daoCt = new ContractDAO();
        
        Contract c = daoCt.getById(id);
+       List<String> listimg=new ArrayList<>();
+       listimg=daoCt.getallimgbyID(id);
        request.setAttribute("contract", c);
+       request.setAttribute("listimg", listimg);
        request.getRequestDispatcher("contractdetail.jsp").forward(request, response);
     } 
 
