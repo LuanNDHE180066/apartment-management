@@ -162,6 +162,15 @@ public class MonthlyServiceDAO extends DBContext {
         }
          return list;
     }
+    public void resetUsage(){
+        String sql ="update MonthlyInvoice set quantity =1 ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
     public static void main(String[] args) {
         MonthlyServiceDAO dao = new MonthlyServiceDAO();
         System.out.println(dao.getByApartmentId("A01_01").size());
