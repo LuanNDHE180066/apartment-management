@@ -26,7 +26,7 @@ public class AccountDAO extends DBContext {
 
     public String getcheckTable(int roleId) {
         String table = "Empty";
-        if(roleId == 1 || roleId ==6){
+        if(roleId == 1 || roleId == 6){
             table = "Resident";
         }else{
             table = "Staff";
@@ -49,7 +49,12 @@ public class AccountDAO extends DBContext {
 //        }
         }
         else{
-            sql = "SELECT * FROM "+table+" WHERE [username]=? and roleid = ?";
+            sql = "SELECT * FROM "+table+" WHERE [username]=? and roleid = ? ";
+        }
+        if(table.equalsIgnoreCase("Resident")){
+            sql += " and active = "+1;
+        }else{
+            sql += " and status = "+1;
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
@@ -181,7 +186,8 @@ public class AccountDAO extends DBContext {
             case 5:
                 sql += "from request where sid = '"+pid+"'";
                 break;
-            default:break;
+            default:
+                return list;
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);

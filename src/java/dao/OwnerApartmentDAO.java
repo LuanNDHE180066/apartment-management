@@ -27,6 +27,21 @@ import model.Resident;
  */
 public class OwnerApartmentDAO extends DBContext {
 
+    public boolean isHomeOwner(String rid) {
+        String sql = "select * from AparmentOwner where rId = ? and status = 1";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, rid);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            java.util.logging.Logger.getLogger(OwnerApartmentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public List<OwnerApartment> getByApartmentID(String aid, String startDate1, String endDate1) {
         String sql = "select * from AparmentOwner where aId=?";
         ResidentDAO rd = new ResidentDAO();

@@ -80,7 +80,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         OwnerApartmentDAO daoAO = new OwnerApartmentDAO();
         RoomTypeDAO daoRT = new RoomTypeDAO();
         ResidentDAO daoR = new ResidentDAO();
-
+        
         List<Resident> listResident = daoR.getAllResident();
         List<RoomType> listRoomType = daoRT.getAll();
         Apartment a = dao.getById(aid);
@@ -89,7 +89,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         String livingResidentName = daoLA.getLivingResidentName(aid);
         String livingResidentIds = daoLA.getLivingResidentId(aid);
         List<Resident> listLivingResident = daoLA.getLivingResidentList(aid);
-
+        
         request.setAttribute("livingResidents", listLivingResident);
         request.setAttribute("apartment", a);
         request.setAttribute("livingResidentNames", livingResidentName);
@@ -98,9 +98,9 @@ public class UpdateApartmentServlet extends HttpServlet {
         request.setAttribute("ownerApartment", oa);
 //        session.setAttribute("roomTypes", listRoomType);
         request.setAttribute("listResident", listResident);
-
+        request.setAttribute("representPersonId", daoLA.getRepresentPersonId(aid));
         request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
-
+        
     }
 
     /**
@@ -114,7 +114,7 @@ public class UpdateApartmentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
+        
         String livingResidentId = request.getParameter("livingResidentIds");
 //        PrintWriter out  = response.getWriter();
 //        if(livingResidentId.trim().isBlank()){
@@ -206,7 +206,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                 }
             }
         }
-
+        
         List<Resident> listNewLivingResident = new ArrayList<>();
         List<Resident> listOldLivingResident = daoLA.getLivingResidentList(aid);
         if (!livingResidentId.trim().isBlank()) {
@@ -215,7 +215,7 @@ public class UpdateApartmentServlet extends HttpServlet {
                 listNewLivingResident.add(daoR.getById_v2(i));
             }
         }
-
+        
         if (listNewLivingResident.size() != 0) {
 
 //            PrintWriter out = response.getWriter();
@@ -264,13 +264,13 @@ public class UpdateApartmentServlet extends HttpServlet {
             }
             daoLA.insertLivingApartment(ownerResident.getpId(), aid, date);
         }
-
+        
         List<Resident> listResident = daoR.getAllResident();
         List<RoomType> listRoomType = daoRT.getAll();
         String livingResidentName = daoLA.getLivingResidentName(aid);
         String livingResidentIds = daoLA.getLivingResidentId(aid);
         List<Resident> listLivingResident = daoLA.getLivingResidentList(aid);
-
+        
         request.setAttribute("livingResidents", listLivingResident);
         request.setAttribute("apartment", a);
         request.setAttribute("livingResidentNames", livingResidentName);
@@ -281,7 +281,7 @@ public class UpdateApartmentServlet extends HttpServlet {
         request.setAttribute("status", "true");
         request.setAttribute("message", "Update successfully");
         request.setAttribute("listResident", listResident);
-
+        
         request.getRequestDispatcher("updateapartment.jsp").forward(request, response);
 
 //

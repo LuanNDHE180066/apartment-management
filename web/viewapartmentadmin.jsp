@@ -138,8 +138,8 @@
                                                     </div>
                                                     <div class="col-md-4 d-flex">
                                                         <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="add-new-apartment"  class="btn btn-primary">Add new Apartment</a>
-                                                        <a style="margin-left: 5px" href="view-change-resident-request"  class="btn btn-primary">View pending change Living/Request request</a>
+                                                        <a href="view-pending-change-represent-preson"  class="btn btn-primary">Change represent person</a>
+                                                        <a style="margin-left: 5px" href="view-change-resident-request"  class="btn btn-primary">Pending change Living/Owner</a>
                                                     </div>
                                                 </div>
                                             </form>

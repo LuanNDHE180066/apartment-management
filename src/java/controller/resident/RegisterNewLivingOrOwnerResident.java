@@ -168,7 +168,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             String phone = request.getParameter("phone").trim();
             String email = request.getParameter("email").trim();
             String id = request.getParameter("id").trim();
-            String username = request.getParameter("username").trim();
+            String username = request.getParameter("username");
 
             if (!phone.matches("\\d{10}")) {
                 request.setAttribute("message", "Phone number must be exactly 10 digits.");
@@ -207,7 +207,10 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formatDate);
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
+            } else{
+                newRe.setUsername(username.trim());
             }
+            
             re.setNewPersonExists(0);
             requestChangeDAO.addNewRequestChange(re);
 //            String message = "Request change " + (re.getChangeType() == 1 ? "Living person" : "Owner") + " from apartment " + re.getRoomNumber() + ". "

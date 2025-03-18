@@ -2,12 +2,9 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-package controller.resident;
+package controller.admin;
 
-import dao.ApartmentDAO;
-import dao.RequestDAO;
-import dao.RequestTypeDAO;
-import dao.StaffDAO;
+import dao.RepresentResidentChangeRequestDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -15,23 +12,16 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
 import java.util.List;
-import model.Account;
-import model.Apartment;
-import model.Request;
-import model.RequestType;
-import model.SendEmail;
-import model.Staff;
+import model.RepresentResidentChangeRequest;
 import util.Util;
-import validation.BadWordFilter;
 
 /**
  *
- * @author thanh
+ * @author quang
  */
-@WebServlet(name = "AddRequestServlet", urlPatterns = {"/resident-add-request"})
-public class AddRequestServlet extends HttpServlet {
+@WebServlet(name = "ViewPedingChangeRepresentPersonRequest", urlPatterns = {"/view-pending-change-represent-preson"})
+public class ViewPedingChangeRepresentPersonRequest extends HttpServlet {
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -50,10 +40,10 @@ public class AddRequestServlet extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddRequestServlet</title>");
+            out.println("<title>Servlet ViewPedingChangeRepresentPersonRequest</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddRequestServlet at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet ViewPedingChangeRepresentPersonRequest at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -71,15 +61,25 @@ public class AddRequestServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        RequestTypeDAO rtd = new RequestTypeDAO();
-        ApartmentDAO ad= new ApartmentDAO();
-        List<RequestType> listTypeRquest = rtd.getAll();
-        Account ac = (Account)session.getAttribute("account");
-        List<Apartment> listApartment = ad.GetAllApartmentfromOwnerAndLivingByRId(ac.getpId());
-        request.setAttribute("listApartment", listApartment);
-        request.setAttribute("listTypeRquest", listTypeRquest);
-        request.getRequestDispatcher("addrequest.jsp").forward(request, response);
+        String page = request.getParameter("page");
+        RepresentResidentChangeRequestDAO rrcDAO = new RepresentResidentChangeRequestDAO();
+        List<RepresentResidentChangeRequest> listChangeRepresentPerson = rrcDAO.getAllPendingList();
+
+        Util u = new Util();
+
+        if (listChangeRepresentPerson.size() != 0) {
+            int totalPage = u.getTotalPage(listChangeRepresentPerson, 5);
+            listChangeRepresentPerson = u.getListPerPage(listChangeRepresentPerson, 5, page);
+            request.setAttribute("totalPage", totalPage);
+            request.setAttribute("currentPage", page != null ? page : "1");
+            request.setAttribute("listChangeRepresentPerson", listChangeRepresentPerson);
+            request.getRequestDispatcher("viewPendingChangeRepresentPerson.jsp").forward(request, response);
+            return;
+        } else {
+            request.setAttribute("totalPage", 1);
+            request.setAttribute("currentPage", 1);
+            request.getRequestDispatcher("viewPendingChangeRepresentPerson.jsp").forward(request, response);
+        }
     }
 
     /**
@@ -93,34 +93,7 @@ public class AddRequestServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession();
-        Account account = (Account) session.getAttribute("account");
-        String rid = account.getpId();
-        String detail = Util.stringNomalize(request.getParameter("detail")) ;
-        String typeRequestId = request.getParameter("typeRequest");
-        String aid = request.getParameter("aparment");
-        if(detail.isBlank()){
-            request.setAttribute("message","Content is not allow blank");
-            doGet(request, response);
-            return;
-        }
-        String realPath = getServletContext().getRealPath("/asset/badwords.txt");
-        BadWordFilter bwf = new BadWordFilter(realPath);
-        if (bwf.containsBadWord(detail.toLowerCase())) {
-            request.setAttribute("errorMessage", "Your request detail must not contain bad words!");
-            doGet(request, response);
-            return;
-        }
-        RequestTypeDAO rtd = new RequestTypeDAO();
-        RequestDAO rd = new RequestDAO();
-        StaffDAO sd = new StaffDAO();
-        SendEmail email = new SendEmail();
-        int addRequest = rd.addRequest(rid, detail, typeRequestId,aid);
-        List<Staff> staffs = sd.getActiveStaffbyRole("2");
-        email.sendEmailToWorkingStaff(staffs,detail,aid);
-        request.setAttribute("status", true);
-        request.setAttribute("message","Add new request successful.");
-        doGet(request, response);
+        processRequest(request, response);
     }
 
     /**
