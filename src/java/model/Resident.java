@@ -4,6 +4,7 @@
  */
 package model;
 
+import dao.LivingApartmentDAO;
 import java.util.List;
 import java.util.Objects;
 
@@ -19,12 +20,13 @@ public class Resident {
   Subemail    varchar(255) unique NOT NULL, 
   [Status] varchar(255) NOT NULL, 
   PRIMARY KEY (pId));*/
+    private final LivingApartmentDAO lad = new LivingApartmentDAO();
     private String pId;
     private String name, cccd;
     private String phone, email, bod, address, username, password, status, note;
     private Role role;
     private String gender, image;
-    private List<Apartment> apartmentNumber;
+    private List<Apartment> livingApartment;
 
     public Resident() {
     }
@@ -44,9 +46,10 @@ public class Resident {
         this.role = role;
         this.gender = gender;
         this.image = image;
-        
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
+
     }
-    
+
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role) {
         this.pId = pId;
         this.name = name;
@@ -60,6 +63,7 @@ public class Resident {
         this.status = status;
         this.note = note;
         this.role = role;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String image) {
@@ -76,6 +80,7 @@ public class Resident {
         this.note = note;
         this.role = role;
         this.image = image;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status) {
@@ -87,6 +92,7 @@ public class Resident {
         this.bod = bod;
         this.address = address;
         this.status = status;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String name, String cccd, String phone, String email, String bod, String address, String username, String password, Role role, String gender) {
@@ -100,6 +106,7 @@ public class Resident {
         this.password = password;
         this.role = role;
         this.gender = gender;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender) {
@@ -112,6 +119,7 @@ public class Resident {
         this.address = address;
         this.image = image;
         this.gender = gender;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
@@ -125,6 +133,7 @@ public class Resident {
         this.image = image;
         this.gender = gender;
         this.username = username;
+        this.livingApartment = lad.getApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String email, String phone, String address) {
@@ -163,8 +172,6 @@ public class Resident {
     public String getUsername() {
         return username;
     }
-   
-   
 
     public void setUsername(String username) {
         this.username = username;
@@ -257,12 +264,13 @@ public class Resident {
     public void setImage(String image) {
         this.image = image;
     }
-    public List<Apartment> getApartmentNumber() {
-        return apartmentNumber;
+
+    public List<Apartment> getLivingApartment() {
+        return livingApartment;
     }
 
-    public void setApartmentNumber(List<Apartment> apartmentNumber) {
-        this.apartmentNumber = apartmentNumber;
+    public void setLivingApartment(String id) {
+        this.livingApartment = lad.getApartmentsByResidentId(id);
     }
 
     @Override
@@ -286,6 +294,5 @@ public class Resident {
         final Resident other = (Resident) obj;
         return Objects.equals(this.pId, other.pId);
     }
-    
 
 }

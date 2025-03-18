@@ -19,6 +19,7 @@
                 text-decoration: none;
                 border-radius: 5px;
                 text-align: center;
+                font-size: 14px;
             }
             .pagination a:hover {
                 background-color: #007bff;
@@ -30,17 +31,21 @@
                 color: white;
             }
             #table-infor th, #table-infor td {
-                text-align: center; /* Default center alignment for all columns */
+                text-align: center;
+                font-size: 15px;
+                line-height: 1.5;
+                color: #333;
             }
             #table-infor td.name-column {
-                text-align: left; /* Left alignment for Name column */
+                text-align: left;
+                font-size: 16px;
             }
             .status-select {
-                padding: 2px 4px;
+                padding: 4px 6px;
                 border-radius: 12px;
                 border: 1px solid #ccc;
                 background-color: #f8f9fa;
-                font-size: 12px;
+                font-size: 14px;
                 cursor: pointer;
             }
             .status-select:focus {
@@ -49,15 +54,16 @@
                 box-shadow: 0 0 3px rgba(0, 123, 255, 0.5);
             }
             .status-active {
-                color: green;
+                color: #2E7D32; /* Darker green for Active */
             }
+            /* Corrected class name and applied to both Inactive and Pending */
             .status-inactive {
-                color: red;
+                color: #D32F2F; /* Red for Inactive and Pending */
             }
             .export-buttons {
                 display: flex;
                 gap: 10px;
-                align-items: center; /* Align buttons vertically with filter inputs */
+                align-items: center;
             }
             .checkbox-column {
                 width: 40px;
@@ -66,7 +72,80 @@
                 overflow-y: auto !important;
                 padding-right: 0 !important;
             }
-
+            /* Styling for apartment number links */
+            #table-infor td a[href*="viewdetailapartment-admin"] {
+                display: inline-block;
+                padding: 6px 12px;
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+                border-radius: 4px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                font-size: 14px;
+            }
+            #table-infor td a[href*="viewdetailapartment-admin"]:hover {
+                background-color: #2196F3;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            /* Styling for table headers */
+            #table-infor th {
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+                padding: 12px 15px;
+                border-bottom: 2px solid #1A7A6E;
+                text-transform: uppercase;
+                letter-spacing: 1px;
+                transition: background-color 0.3s ease;
+                font-size: 16px;
+            }
+            #table-infor th:hover {
+                background-color: #2196F3;
+                cursor: default;
+            }
+            /* Modal styling for better readability */
+            .modal-content {
+                background-color: #f9f9f9;
+                color: #333;
+                font-size: 15px;
+                line-height: 1.6;
+            }
+            .modal-header h3 {
+                color: #007bff;
+                font-size: 20px;
+                font-weight: bold;
+            }
+            .modal-body p {
+                margin-bottom: 10px;
+                color: #444;
+            }
+            .modal-body p strong {
+                color: #0056b3;
+            }
+            .modal-body a[href*="viewdetailapartment-admin"] {
+                display: inline-block;
+                padding: 6px 12px;
+                background-color: #007bff;
+                color: white;
+                font-weight: bold;
+                border-radius: 4px;
+                text-decoration: none;
+                transition: all 0.3s ease;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                font-size: 14px;
+            }
+            .modal-body a[href*="viewdetailapartment-admin"]:hover {
+                background-color: #2196F3;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            }
+            .modal-body img {
+                max-width: 100%;
+                height: auto;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -160,6 +239,7 @@
                                                             <th>Name</th>
                                                             <th>Phone</th>
                                                             <th>Email</th>
+                                                            <th>Apartment Number</th>
                                                             <th>Status</th>
                                                             <th>View Detail</th>
                                                             <th>Update</th>
@@ -173,6 +253,11 @@
                                                             <td class="name-column">${resident.name}</td> <!-- Left-aligned Name -->
                                                             <td>${empty resident.phone ? 'None':resident.phone}</td>
                                                             <td>${empty resident.email ? 'None' : resident.email}</td>
+                                                            <td>
+                                                                <c:forEach items="${resident.livingApartment}" var="aptNumber">
+                                                                    <a href="viewdetailapartment-admin?apartmentId=${aptNumber.id}">${aptNumber.id}</a>
+                                                                </c:forEach>
+                                                            </td>
                                                             <td>
                                                                 <form action="updateResidentStatus" method="POST" class="status-form">
                                                                     <input type="hidden" name="id" value="${resident.pId}">
@@ -220,7 +305,11 @@
                                                                             <p><strong>Address:</strong> ${resident.address}</p>
                                                                             <p><strong>CCCD:</strong> ${empty resident.cccd ? 'None' : resident.cccd}</p>
                                                                             <p><strong>Gender:</strong> ${resident.gender}</p>
-                                                                            <p><strong>Living at</strong> ${resident.gender}</p>
+                                                                            <p><strong>Living at</strong>
+                                                                                <c:forEach items="${resident.livingApartment}" var="aptNumber">
+                                                                                    <a href="viewdetailapartment-admin?apartmentId=${aptNumber.id}">${aptNumber.id}</a>
+                                                                                </c:forEach>
+                                                                            </p>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -248,13 +337,7 @@
                                         </option>
                                     </c:forEach>
                                 </select>
-                            </form>
-                            <!-- Footer -->
-                            <div class="container-fluid">
-                                <div class="footer">
-                                    <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
-                                </div>
-                            </div>
+                            </form>            
                         </div>
                     </div>
                 </div>

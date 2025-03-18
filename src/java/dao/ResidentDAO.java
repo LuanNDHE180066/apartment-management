@@ -417,22 +417,23 @@ public class ResidentDAO extends DBContext {
     }
 
     public String insertNewResident(Resident r) {
-        String sql = "INSERT INTO [dbo].[Resident]\n"
-                + "           ([Id]\n"
-                + "           ,[Name]\n"
-                + "           ,[Bod]\n"
-                + "           ,[Email]\n"
-                + "           ,[Phone]\n"
-                + "           ,[Address]\n"
-                + "           ,[CCCD]\n"
-                + "           ,[username]\n"
-                + "           ,[password]\n"
-                + "           ,[roleId]\n"
-                + "           ,[active]\n"
-                + "           ,[gender]\n"
-                + "           ,[image]\n"
-                + "     VALUES\n"
-                + "           (?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        String sql = "INSERT INTO [dbo].[Resident] (\n"
+                + "    [Id],\n"
+                + "    [Name],\n"
+                + "    [Bod],\n"
+                + "    [Email],\n"
+                + "    [Phone],\n"
+                + "    [Address],\n"
+                + "    [CCCD],\n"
+                + "    [username],\n"
+                + "    [password],\n"
+                + "    [roleId],\n"
+                + "    [active],\n"
+                + "    [gender],\n"
+                + "    [image]\n"
+                + ") VALUES (\n"
+                + "    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?\n"
+                + ")";
 
         Util u = new Util();
         List<Resident> listResident = getAll();
@@ -622,7 +623,6 @@ public class ResidentDAO extends DBContext {
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address,
                         username, password, st, na, role, image);
                 resident.setGender(gender);
-                resident.setApartmentNumber(lad.getApartmentsByResidentId(id));
                 resultList.add(resident);
             }
 
@@ -782,7 +782,7 @@ public class ResidentDAO extends DBContext {
 
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-        System.out.println(dao.checkDuplicatateUsername("Quang"));
+        System.out.println(dao.editResidentStatus("P100", "2"));
 
     }
 }

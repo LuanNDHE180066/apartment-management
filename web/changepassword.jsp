@@ -98,7 +98,7 @@
                             <div class="col-md-12">
                                 <div class="form-container">
                                     <h1>Change Password</h1>
-                                    <form action="update-password-resident" method="post" onsubmit="return validatePassword()">
+                                    <form action="update-password-resident" method="post">
                                         <c:if test="${sessionScope.account.getActive() != 2}">
                                             <div class="form-group">
                                                 <label for="oldPassword">Old Password:</label>
@@ -107,25 +107,26 @@
                                         </c:if>
                                         <div class="form-group">
                                             <label for="newPassword">New Password:</label>
-                                            <input type="password" id="newPassword" name="newPassword" required onblur="checkPasswordStrength()" />
+                                            <input type="password" id="newPassword" name="newPassword" required oninput="checkPasswordStrength()" />
                                             <p id="passwordError" class="password-error" style="display:none; color: red;">
-                                                Password must be at least 6 characters, contain an uppercase letter, a number, and a special character.
+                                                Password must be at least 6 characters, contain at least 1 uppercase letter, 1 letter, 1 number, and 1 special character.
                                             </p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="cfnewPassword">Confirm Password:</label>
-                                            <input type="password" id="cfnewPassword" name="cfnewPassword" required onblur="checkPasswordMatch()" />
+                                            <input type="password" id="cfnewPassword" name="cfnewPassword" required oninput="checkPasswordMatch()" />
                                             <p id="confirmError" class="password-error" style="display:none; color: red;">
                                                 Passwords do not match.
                                             </p>
                                         </div>
 
-
-
                                         <div class="form-button">
                                             <button type="submit" id="saveButton" disabled>Save</button>
-                                            <h5 class="error-msg">${requestScope.msg}</h5>
+                                            <c:if test="${not empty sessionScope.errorMessage}">
+                                                <h5 class="error-msg">${sessionScope.errorMessage}</h5>
+                                                <% session.removeAttribute("errorMessage"); %>
+                                            </c:if>
                                         </div>
                                     </form>
                                 </div>
@@ -142,40 +143,66 @@
         <script src="js/custom.js"></script>
 
         <script>
-                                                function checkPasswordStrength() {
-                                                    let password = document.getElementById("newPassword").value;
-                                                    let passwordError = document.getElementById("passwordError");
-                                                    let saveButton = document.getElementById("saveButton");
+            function checkPasswordStrength() {
+                let password = document.getElementById("newPassword").value;
+                let passwordError = document.getElementById("passwordError");
+                let saveButton = document.getElementById("saveButton");
 
-                                                    // Regex for password validation
-                                                    let passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{6,}$/;
+                // Updated regex based on Java method
+                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>?/\\|`~]{6,}$/;
 
-                                                    if (!passwordRegex.test(password)) {
-                                                        passwordError.style.display = "block";
-                                                        saveButton.disabled = true; // Disable button
-                                                    } else {
-                                                        passwordError.style.display = "none";
-                                                        saveButton.disabled = false; // Enable button if other conditions are met
-                                                    }
-                                                    checkPasswordMatch(); // Also check match after validation
-                                                }
+                // Check if password meets the format requirements
+                let isPasswordValid = passwordRegex.test(password);
 
-                                                function checkPasswordMatch() {
-                                                    let password = document.getElementById("newPassword").value;
-                                                    let confirmPassword = document.getElementById("cfnewPassword").value;
-                                                    let confirmError = document.getElementById("confirmError");
-                                                    let saveButton = document.getElementById("saveButton");
+                // Show or hide the error message based on validity
+                if (password && !isPasswordValid) {
+                    passwordError.style.display = "block";
+                } else {
+                    passwordError.style.display = "none";
+                }
 
-                                                    if (password !== confirmPassword || confirmPassword === "") {
-                                                        confirmError.style.display = "block";
-                                                        saveButton.disabled = true; // Disable button
-                                                    } else {
-                                                        confirmError.style.display = "none";
-                                                        saveButton.disabled = false; // Enable button if other conditions are met
-                                                    }
-                                                }
+                // Update Save button state
+                updateSaveButtonState();
+            }
+
+            function checkPasswordMatch() {
+                let password = document.getElementById("newPassword").value;
+                let confirmPassword = document.getElementById("cfnewPassword").value;
+                let confirmError = document.getElementById("confirmError");
+                let saveButton = document.getElementById("saveButton");
+
+                // Check if confirm password matches new password
+                let isMatch = password === confirmPassword && confirmPassword !== "";
+
+                // Show or hide the error message based on match
+                if (confirmPassword && !isMatch) {
+                    confirmError.style.display = "block";
+                } else {
+                    confirmError.style.display = "none";
+                }
+
+                // Update Save button state
+                updateSaveButtonState();
+            }
+
+            function updateSaveButtonState() {
+                let password = document.getElementById("newPassword").value;
+                let confirmPassword = document.getElementById("cfnewPassword").value;
+                let saveButton = document.getElementById("saveButton");
+
+                // Regex for password validation
+                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>?/\\|`~]{6,}$/;
+                let isPasswordValid = passwordRegex.test(password);
+                let isMatch = password === confirmPassword && confirmPassword !== "";
+
+                // Enable Save button only if both conditions are met
+                saveButton.disabled = !(isPasswordValid && isMatch);
+            }
+
+            // Ensure initial state on page load
+            window.onload = function () {
+                updateSaveButtonState();
+            };
         </script>
-
-
     </body>
 </html>

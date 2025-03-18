@@ -76,11 +76,11 @@ public class ViewAllResident extends HttpServlet {
         if (page == null) {
             page = "1";
         }
-        int totalPage = u.getTotalPage(listResident, 5);
+        int totalPage = u.getTotalPage(listResident, 8);
 
         // Paginate results
         if (!listResident.isEmpty()) {
-            listResident = u.getListPerPage(listResident, 5, page);
+            listResident = u.getListPerPage(listResident, 8, page);
             request.setAttribute("listResident", listResident);
             request.setAttribute("totalPage", totalPage);
             request.setAttribute("currentPage", Integer.parseInt(page));

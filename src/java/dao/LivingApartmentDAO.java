@@ -270,7 +270,6 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
     public List<String> getAllActiveApartment() {
         String sql = "select distinct(aid) as aid from LivingAparment where status =1";
         List<String> list = new ArrayList<>();
