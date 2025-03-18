@@ -39,9 +39,9 @@ import util.Util;
 public class FeedbackDAO extends DBContext {
 
     public List<Feedback> getAllFeedback() {
-        String sql = "SELECT * FROM Feedback";
+        String sql = "SELECT * FROM Feedback order by Date desc";
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         List<Feedback> list = new ArrayList<>();
 
         try {
@@ -55,7 +55,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -83,25 +83,8 @@ public class FeedbackDAO extends DBContext {
         return null;
 
     }
-
-    public List<Feedback> getFeedbackByRole(String role) {
-        FeedbackDAO dao = new FeedbackDAO();
-        List<Feedback> list = dao.getAllFeedback();
-        List<Feedback> listFeedbackGetByRole = new ArrayList<>();
-        if (role.equals("2")) {
-            return list;
-        }
-        for (Feedback f : list) {
-            if (f.getRequestType().getDestination().getId().equals(role)) {
-                listFeedbackGetByRole.add(f);
-            }
-        }
-        return listFeedbackGetByRole;
-    }
-
-   
-    public int sendFeedback(String detail, String rID, String tID, int rate, List<String> img) {
-        String sql = "INSERT INTO Feedback (Id, Detail, Date, rId, tId, rate) VALUES (?, ?, ?, ?, ?, ?)";
+    public int sendFeedback(String detail, String rID, String servicesId, int rate, List<String> img) {
+        String sql = "INSERT INTO Feedback (Id, Detail, Date, rId, servicesId, rate) VALUES (?, ?, ?, ?, ?, ?)";
 
         String lastId = getLastId();
 
@@ -118,7 +101,7 @@ public class FeedbackDAO extends DBContext {
             st.setString(2, detail);
             st.setTimestamp(3, currentTime);
             st.setString(4, rID);
-            st.setString(5, tID);
+            st.setString(5, servicesId);
             st.setInt(6, rate);
 
             st.executeUpdate();
@@ -135,7 +118,7 @@ public class FeedbackDAO extends DBContext {
     public List<Feedback> getAllFeedbackUser(String residentID, int page, int pageSize) {
         String sql = "SELECT * FROM Feedback WHERE rId = ? ORDER BY date desc OFFSET ? ROWS FETCH NEXT ? ROWS ONLY";
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         List<Feedback> list = new ArrayList<>();
 
         try {
@@ -152,7 +135,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -187,7 +170,7 @@ public class FeedbackDAO extends DBContext {
         String sql = "select * from Feedback f join Resident r on r.Id = f.rId  where name like '%" + name + "%'";
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -198,7 +181,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -226,7 +209,7 @@ public class FeedbackDAO extends DBContext {
         }
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -237,7 +220,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -251,10 +234,10 @@ public class FeedbackDAO extends DBContext {
     }
 
     public List<Feedback> getByServiceType(List<Feedback> listFeedback, String serviceId) {
-        String sql = "select * from Feedback where tid = '" + serviceId + "'";
+        String sql = "select * from Feedback where servicesId = '" + serviceId + "'";
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -265,7 +248,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -288,7 +271,7 @@ public class FeedbackDAO extends DBContext {
         }
 
         if (serviceId != null && !serviceId.trim().isEmpty()) {
-            sql += " AND f.tid = ?";
+            sql += " AND f.servicesId = ?";
             params.add(serviceId);
         }
 
@@ -312,7 +295,7 @@ public class FeedbackDAO extends DBContext {
 
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
 
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             for (int i = 0; i < params.size(); i++) {
@@ -327,10 +310,10 @@ public class FeedbackDAO extends DBContext {
                             rs.getString(2),
                             rs.getString(3),
                             daoR.getById(rs.getString(4)),
-                            daoRT.getById(rs.getString(5)),
-                            rs.getInt(6),
+                            daoRT.getById(rs.getString(7)),
+                            rs.getInt(5),
                             img,
-                            rs.getInt(7)
+                            rs.getInt(6)
                     ));
                 }
             }
@@ -383,12 +366,12 @@ public class FeedbackDAO extends DBContext {
         return false;
     }
 
-    public List<Feedback> getByResidentIDAndDateAndTypeRequest(String id, String from, String to, String requestType) {
+    public List<Feedback> getByResidentIDAndDateAndTypeRequest(String id, String from, String to, String servicesID) {
         String sql = "SELECT * FROM feedback WHERE rId = ?";
         List<Object> params = new ArrayList<>();
         List<Feedback> list = new ArrayList<>();
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
 
         params.add(id);
 
@@ -407,9 +390,9 @@ public class FeedbackDAO extends DBContext {
         }
 
         // Handle requestType filtering
-        if (requestType != null && !requestType.trim().isEmpty()) {
-            sql += " AND tId = ?";
-            params.add(requestType);
+        if (servicesID != null && !servicesID.trim().isEmpty()) {
+            sql += " AND servicesId = ?";
+            params.add(servicesID);
         }
 
         sql += " ORDER BY date DESC";
@@ -427,7 +410,7 @@ public class FeedbackDAO extends DBContext {
                             rs.getString("detail"),
                             rs.getString("date"),
                             daoR.getById(rs.getString("rid")),
-                            daoRT.getById(rs.getString("tid")),
+                            daoRT.getById(rs.getString("servicesId")),
                             rs.getInt("rate"),
                             img,
                             rs.getInt("Status")
@@ -483,7 +466,7 @@ public class FeedbackDAO extends DBContext {
     public Feedback getById(String id) {
         String sql = "Select * from Feedback where id=?";
         ResidentDAO daoR = new ResidentDAO();
-        RequestTypeDAO daoRT = new RequestTypeDAO();
+        ServiceDAO daoRT = new ServiceDAO();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, id);
@@ -495,7 +478,7 @@ public class FeedbackDAO extends DBContext {
                         rs.getString("detail"),
                         rs.getString("date"),
                         daoR.getById(rs.getString("rid")),
-                        daoRT.getById(rs.getString("tid")),
+                        daoRT.getById(rs.getString("servicesId")),
                         rs.getInt("rate"),
                         img,
                         rs.getInt("Status")
@@ -515,7 +498,7 @@ public class FeedbackDAO extends DBContext {
                 + "SET \n"
                 + "    Detail=?,\n"
                 + "    [Date]=?,\n"
-                + "    tId=?,\n"
+                + "    servicesId=?,\n"
                 + "    rate=?,\n"
                 + "Status=?\n"
                 + "WHERE id=?;";
@@ -523,7 +506,7 @@ public class FeedbackDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, f.getDetail());
             st.setString(2, f.getDate());
-            st.setString(3, f.getRequestType().getId());
+            st.setString(3, f.getServices().getId());
             st.setInt(4, f.getRate());
             st.setInt(5, f.getStatus());
             st.setString(6, f.getId());
@@ -552,9 +535,7 @@ public class FeedbackDAO extends DBContext {
     public static void main(String[] args) {
         FeedbackDAO dao = new FeedbackDAO();
         Feedback f=dao.getById("F20");
-        f.setStatus(1);
-        System.out.println(f.getStatus());
-        System.out.println(dao.editFeedback(f));
+        System.out.println(dao.getById("F0"));
         
     }
 }

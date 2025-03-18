@@ -241,7 +241,7 @@
                                                         <c:forEach items="${requestScope.listFeedbackU}" var="feedback" varStatus="loop">
                                                             <!-- First row: Author with blue background and rounded corners -->
                                                             <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}">
-                                                                <td>${feedback.requestType.name}</td>
+                                                                <td>${feedback.services.name}</td>
                                                                 <c:set var="util" value="${util}" />
                                                                 <td>${util.FormatDateTime(feedback.date)}</td>
                                                                 <td>
@@ -258,7 +258,7 @@
                                                                     <c:set var="showButton" value="${util.compareFeedbackDateToCurrentTime(feedback.date, 3)}"/>
                                                                     <c:if test="${showButton}">
                                                                         <div class="dropdown-content">
-                                                                            <a href="update-feed-back?id=${feedback.id}">✏ Edit</a>
+                                                                            <a href="update-feed-back?fid=${feedback.id}">✏ Edit</a>
                                                                             <a href="deletefeedback?id=${feedback.id}" onclick="return confirm('Are you sure to delete this feedback?')">🗑 Delete</a>
                                                                         </div>
                                                                     </c:if>

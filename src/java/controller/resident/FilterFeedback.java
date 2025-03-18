@@ -1,7 +1,7 @@
 package controller.resident;
 
 import dao.FeedbackDAO;
-import dao.RequestTypeDAO;
+import dao.ServiceDAO;
 import dao.ResidentDAO;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
@@ -16,6 +16,7 @@ import java.util.List;
 import model.Account;
 import model.Feedback;
 import model.RequestType;
+import model.Service;
 import util.Util;
 
 @WebServlet(name = "FilterFeedback", urlPatterns = {"/filterfeedback"})
@@ -24,9 +25,9 @@ public class FilterFeedback extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestTypeDAO rtd = new RequestTypeDAO();
+        ServiceDAO rtd = new ServiceDAO();
 
-        List<RequestType> listTypeRequest = rtd.getAll();
+        List<Service> listTypeRequest = rtd.getAll();
         request.setAttribute("listTypeRequest", listTypeRequest);
         request.getRequestDispatcher("filter-user-feedback.jsp").forward(request, response);
     }
@@ -52,8 +53,8 @@ public class FilterFeedback extends HttpServlet {
 
         ResidentDAO rd = new ResidentDAO();
         FeedbackDAO fbd = new FeedbackDAO();
-        RequestTypeDAO rtd = new RequestTypeDAO(); // Fetch request types again
-        List<RequestType> listTypeRequest = rtd.getAll(); // Get request types
+        ServiceDAO rtd = new ServiceDAO(); // Fetch request types again
+        List<Service> listTypeRequest = rtd.getAll(); // Get request types
         List<Feedback> listFeedback = new ArrayList<>();
 
         // Apply filters

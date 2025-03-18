@@ -5,7 +5,7 @@
 package controller.resident;
 
 import dao.FeedbackDAO;
-import dao.RequestTypeDAO;
+import dao.ServiceDAO;
 import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,6 +27,7 @@ import java.util.UUID;
 import model.Account;
 import model.RequestType;
 import model.SendEmail;
+import model.Service;
 import model.Staff;
 import validation.BadWordFilter;
 
@@ -80,10 +81,10 @@ public class SendFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestTypeDAO rt = new RequestTypeDAO();
+        ServiceDAO rt = new ServiceDAO();
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-        List<RequestType> listTypeOfRequest = rt.getAll();
+        List<Service> listTypeOfRequest = rt.getAll();
         String rID = account.getpId();
         request.setAttribute("listOfTypeRequest", listTypeOfRequest);
         request.setAttribute("rID", rID);
@@ -104,6 +105,9 @@ public class SendFeedback extends HttpServlet {
             throws ServletException, IOException {
 
         // Fetch form fields
+        HttpSession session = request.getSession();
+        Account account = (Account) session.getAttribute("account");
+        ServiceDAO rt = new ServiceDAO();
         String rID = request.getParameter("rID");
         String tID = request.getParameter("typeOfRequest");
         String detail = request.getParameter("content");
@@ -122,6 +126,9 @@ public class SendFeedback extends HttpServlet {
         BadWordFilter bwf = new BadWordFilter(realPath);
 
         if (bwf.containsBadWord(detail.toLowerCase())) {
+            List<Service> listTypeOfRequest = rt.getAll();
+            request.setAttribute("rID", rID);
+            request.setAttribute("listOfTypeRequest", listTypeOfRequest);
             request.setAttribute("errorMessage", "Your feedback content must not contain offensive words!");
             request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
             return;
@@ -157,15 +164,22 @@ public class SendFeedback extends HttpServlet {
         if (hasUploadedImages) {
             fd.sendFeedback(detail, rID, tID, rate, imagePaths);
         } else {
-            fd.sendFeedback(detail, rID, tID, rate, null);
+            int succes = fd.sendFeedback(detail, rID, tID, rate, null);
+            if (succes != 0) {
+                List<Service> listTypeOfRequest = rt.getAll();
+                request.setAttribute("rID", rID);
+                request.setAttribute("listOfTypeRequest", listTypeOfRequest);
+                request.setAttribute("errorMessage", "error");
+                request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
+            }
         }
 
         // Send email alert if rate < 3
         if (rate < 3) {
             SendEmail email = new SendEmail();
             StaffDAO s = new StaffDAO();
-            RequestTypeDAO rtd = new RequestTypeDAO();
-            List<Staff> staffs = s.getActiveStaffbyRole(rtd.getById(tID).getDestination().getId());
+
+            List<Staff> staffs = s.getActiveStaffbyRole("2");
             List<String> emails = new ArrayList<>();
             for (Staff staff : staffs) {
                 emails.add(staff.getEmail());
