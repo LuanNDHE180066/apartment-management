@@ -88,7 +88,7 @@ public class LoginServlet extends HttpServlet {
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
-        if (Util.isCorrectPassword(pass, ac.getPassword())) {
+        if (user.equalsIgnoreCase(ac.getUsername()) && Util.isCorrectPassword(pass, ac.getPassword())) {
             session.setAttribute("account", ac);
             String remember = request.getParameter("remember");
             if ("on".equals(remember)) {

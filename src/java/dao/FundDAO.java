@@ -11,6 +11,7 @@ import java.util.List;
 import jdbc.DBContext;
 import model.Fund;
 import model.FundHistory;
+import model.HistoryExpenditure;
 import model.Invoice;
 import model.InvoiceDetail;
 
@@ -39,19 +40,38 @@ public class FundDAO extends DBContext{
         Fund f = this.getById("1");
         Invoice iv = ivd.getById(id);
         List<InvoiceDetail> ivds = ivdd.getByInvoiceId(id);
-        fhd.insertFundHistory(ivds, iv.getResident(), 1);
+        fhd.insertInvoiceFundHistory(ivds, iv.getResident(), 1);
+    }
+    public void updaterevenueFundByInvoice(float value){
         String sql = "update Fund set value = ?, ChangeDate=? where id = 1";
         try {
             PreparedStatement st =connection.prepareStatement(sql);
-            st.setFloat(1, f.getValue()+iv.getTotal());
+            st.setFloat(1,value);
             st.setDate(2,new java.sql.Date(System.currentTimeMillis()));
             st.executeUpdate();
+            st.close();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public void expendFundByInvoice(HistoryExpenditure he){
+        FundHistoryDAO fhd = new FundHistoryDAO();
+        fhd.insertExpendFundHistory(he, 1);
+        String sql = "update Fund set value = ?, ChangeDate=? where id = 1";
+        Fund f = this.getById("1");
+        try {
+            PreparedStatement st =connection.prepareStatement(sql);
+            st.setFloat(1,f.getValue() - he.getTotalPrice());
+            st.setDate(2,new java.sql.Date(System.currentTimeMillis()));
+            st.executeUpdate();
+            st.close();
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
     public static void main(String[] args) {
         FundDAO dao = new FundDAO();
-        System.out.println(""+dao.getById("1"));
+        dao.revenueFundByInvoice("IV10");
+        System.out.println("");
     }
 }
