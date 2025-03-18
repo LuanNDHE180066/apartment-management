@@ -24,6 +24,7 @@ import model.RequestType;
 import model.SendEmail;
 import model.Staff;
 import util.Util;
+import validation.BadWordFilter;
 
 /**
  *
@@ -100,6 +101,13 @@ public class AddRequestServlet extends HttpServlet {
         String aid = request.getParameter("aparment");
         if(detail.isBlank()){
             request.setAttribute("message","Content is not allow blank");
+            doGet(request, response);
+            return;
+        }
+        String realPath = getServletContext().getRealPath("/asset/badwords.txt");
+        BadWordFilter bwf = new BadWordFilter(realPath);
+        if (bwf.containsBadWord(detail.toLowerCase())) {
+            request.setAttribute("errorMessage", "Your request detail must not contain bad words!");
             doGet(request, response);
             return;
         }

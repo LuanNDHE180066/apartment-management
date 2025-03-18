@@ -117,6 +117,7 @@ public class ExpenditureDAO extends DBContext {
     }
 
     public boolean addExpenditure(HistoryExpenditure he) {
+        FundDAO fd = new FundDAO();
         String sql = "INSERT INTO [dbo].[Expenditure]\n"
                 + "           ([Id]\n"
                 + "           ,[Approveddate]\n"
@@ -150,8 +151,8 @@ public class ExpenditureDAO extends DBContext {
             ps.setInt(12, he.getChiefAccountantApproveStatus());
             ps.setInt(13, he.getCurrentAdminApproveStatus());
             ps.setString(14, he.getCreatedDate());
-
-            return ps.executeUpdate() > 0;
+            fd.expendFundByInvoice(he);
+            return true;
         } catch (SQLException ex) {
             Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
         }

@@ -205,7 +205,7 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
                 resident.setGender(gender);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                //boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
                 return resident;
             }
         } catch (SQLException ex) {
