@@ -76,7 +76,7 @@ public class AddRequestServlet extends HttpServlet {
         ApartmentDAO ad= new ApartmentDAO();
         List<RequestType> listTypeRquest = rtd.getAll();
         Account ac = (Account)session.getAttribute("account");
-        List<Apartment> listApartment = ad.GetAllApartmentfromOwnerAndLivingByRId(ac.getpId());
+        List<Apartment> listApartment = ad.GetApartmentisLivingByResidentIDisRepresent(ac.getpId());
         request.setAttribute("listApartment", listApartment);
         request.setAttribute("listTypeRquest", listTypeRquest);
         request.getRequestDispatcher("addrequest.jsp").forward(request, response);
