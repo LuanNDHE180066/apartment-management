@@ -73,7 +73,7 @@ public class CheckDuplicateResidentInfor extends HttpServlet {
             case "phone":
                 exists = rd.checkDuplicatePhone(value,a.getpId());
                 break;
-            case "id":
+            case "cccd":
                 exists = rd.checkDuplicateID(value,a.getpId());
                 break;
             case "username":

@@ -3,159 +3,353 @@ package controller.admin;
 import dao.ApartmentDAO;
 import dao.LivingApartmentDAO;
 import dao.ResidentDAO;
-import dao.RoleDAO;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
+import jakarta.servlet.http.Part;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
-import model.Account;
 import model.Apartment;
 import model.Resident;
+import model.Role;
 import model.SendEmail;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import util.Util;
 import static util.Util.encryptPassword;
 
-@WebServlet(name = "AddNewResident", urlPatterns = {"/addNewResident"})
+@WebServlet("/addNewResident")
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 1, // 1 MB
+        maxFileSize = 1024 * 1024 * 10, // 10 MB
+        maxRequestSize = 1024 * 1024 * 50 // 50 MB
+)
 public class AddNewResident extends HttpServlet {
 
-    private static final String JSP_PAGE = "addnewresident.jsp";
-    private static final String VIEW_RESIDENT_REDIRECT = "view-resident";
+    private ResidentDAO residentDAO = new ResidentDAO();
+    private LivingApartmentDAO lvd = new LivingApartmentDAO();
+
+    @Override
+    public void init() throws ServletException {
+        residentDAO = new ResidentDAO();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        try {
-            ApartmentDAO aptDAO = new ApartmentDAO();
-            List<Apartment> apts = aptDAO.getAll();
-            request.setAttribute("apts", apts);
-            request.getRequestDispatcher(JSP_PAGE).forward(request, response);
-        } catch (Exception e) {
-            request.setAttribute("error", "An error occurred while loading the page.");
-            request.getRequestDispatcher(JSP_PAGE).forward(request, response);
-        }
+        List<Apartment> apartments = new ApartmentDAO().getAll();
+        request.setAttribute("apts", apartments);
+        request.getRequestDispatcher("/addnewresident.jsp").forward(request, response);
     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        response.setContentType("text/html;charset=UTF-8");
-        HttpSession session = request.getSession();
-        Account acc = (Account) session.getAttribute("account");
-
-        // Parameter extraction and validation
-        String aptNumber = request.getParameter("apartment");
-        String name = request.getParameter("name");
-        String dob = request.getParameter("dob");
-        String address = request.getParameter("address");
-        String phone = request.getParameter("phone");
-        String email = request.getParameter("email");
-        String id = request.getParameter("id");
-        String username = request.getParameter("username");
-        String gender = request.getParameter("gender");
-        String isRepresent = request.getParameter("isRepresent");
-        String role = request.getParameter("role");
-
-        // Input validation
-        if (isInvalidInput(aptNumber, name, dob, phone, id, isRepresent, role)) {
-            handleValidationError(request, response, "All required fields must be provided.");
-            return;
+        String contentType = request.getContentType();
+        if (contentType != null && contentType.contains("application/json")) {
+            handleMultipleResidents(request, response);
+        } else {
+            handleSingleResident(request, response);
         }
+    }
 
-        if (!phone.matches("\\d{10}")) {
-            handleValidationError(request, response, "Phone number must be exactly 10 digits.");
-            return;
-        }
+    private void handleSingleResident(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        try {
+            // Extract form data
+            String name = request.getParameter("name");
+            String dob = request.getParameter("bod");
+            String gender = request.getParameter("gender");
+            String phone = request.getParameter("phone");
+            String address = request.getParameter("address");
+            String apartment = request.getParameter("apartment");
+            String roleId = request.getParameter("role");
+            String cccd = request.getParameter("cccd");
+            String isRepresent = request.getParameter("isRepresent");
+            String username = request.getParameter("username");
+            String email = request.getParameter("email");
 
-        if (!id.matches("\\d{12}")) {
-            handleValidationError(request, response, "ID must be exactly 12 digits.");
-            return;
-        }
-
-        Util util = new Util();
-        ResidentDAO residentDAO = new ResidentDAO();
-        RoleDAO roleDAO = new RoleDAO();
-        LivingApartmentDAO livingApartmentDAO = new LivingApartmentDAO();
-
-        // Prepare resident object
-        Resident resident = new Resident();
-        resident.setName(name);
-        resident.setBod(dob); // Assuming dob is in a parseable format
-        resident.setAddress(address);
-        resident.setPhone(phone);
-        resident.setCccd(id);
-        resident.setRole(roleDAO.getById(role));
-        resident.setGender(gender);
-
-        // Handle representative-specific fields
-        String password = util.generatePassword();
-        if ("yes".equalsIgnoreCase(isRepresent)) {
-            if (username == null || username.isEmpty() || email == null || email.isEmpty()) {
-                handleValidationError(request, response, "Username and email are required for representatives.");
+            // Validate required fields
+            if (name == null || name.trim().isEmpty() || dob == null || dob.trim().isEmpty()
+                    || gender == null || gender.trim().isEmpty() || phone == null || phone.trim().isEmpty()
+                    || address == null || address.trim().isEmpty() || apartment == null || apartment.trim().isEmpty()
+                    || roleId == null || roleId.trim().isEmpty()) {
+                request.setAttribute("error", "All required fields must be filled.");
+                forwardToForm(request, response);
                 return;
             }
-            resident.setUsername(username);
-            resident.setPassword(encryptPassword(password));
-            resident.setEmail(email);
+
+            // New constraint: If isRepresent is "yes", username and email must be provided
+            if ("yes".equalsIgnoreCase(isRepresent)) {
+                if (username == null || username.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+                    request.setAttribute("error", "Username and email are required when the resident is a representative.");
+                    forwardToForm(request, response);
+                    return;
+                }
+            }
+
+            // Validate phone, CCCD, and username (if provided)
+            if (!phone.matches("\\d{10}")) {
+                request.setAttribute("error", "Phone number must be exactly 10 digits.");
+                forwardToForm(request, response);
+                return;
+            }
+            if (cccd != null && !cccd.trim().isEmpty() && !cccd.matches("\\d{12}")) {
+                request.setAttribute("error", "CCCD must be exactly 12 digits.");
+                forwardToForm(request, response);
+                return;
+            }
+            if (username != null && !username.trim().isEmpty() && username.contains(" ")) {
+                request.setAttribute("error", "Username cannot contain spaces.");
+                forwardToForm(request, response);
+                return;
+            }
+            // Check for duplicates
+            if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
+                request.setAttribute("error", "Email already exists.");
+                forwardToForm(request, response);
+                return;
+            }
+            if (residentDAO.checkDuplicatePhone(phone)) {
+                request.setAttribute("error", "Phone number already exists.");
+                forwardToForm(request, response);
+                return;
+            }
+            if (cccd != null && !cccd.trim().isEmpty() && residentDAO.checkDuplicateID(cccd)) {
+                request.setAttribute("error", "CCCD already exists.");
+                forwardToForm(request, response);
+                return;
+            }
+            if (username != null && !username.trim().isEmpty() && residentDAO.checkDuplicatateUsername(username)) {
+                request.setAttribute("error", "Username already exists.");
+                forwardToForm(request, response);
+                return;
+            }
+
+            // Create Resident object
+            Resident resident = new Resident();
+            resident.setName(name);
+            resident.setBod(dob);
+            resident.setGender(gender);
+            resident.setPhone(phone);
+            resident.setAddress(address);
+            resident.setCccd(cccd);
+            resident.setUsername("yes".equalsIgnoreCase(isRepresent) ? username : null);
+            resident.setEmail("yes".equalsIgnoreCase(isRepresent) ? email : null);
+
+            Util u = new Util();
+            String password = u.generatePassword();
+            if (email != null && !email.trim().isEmpty()) {
+                resident.setPassword(encryptPassword(password));
+            }
+
+            Role role = new Role();
+            role.setId(roleId);
+            resident.setRole(role);
+            String insertedId = residentDAO.insertNewResident(resident);
+
+            if (insertedId != null) {
+                lvd.insertLivingApartment(insertedId, apartment, new Date(System.currentTimeMillis()).toString());
+                if (email != null && !email.trim().isEmpty()) {
+                    SendEmail e = new SendEmail();
+                    e.sendEmailResidentAccount(email, name, username, password);
+                }
+                request.setAttribute("successMessage", "Resident added successfully!");
+            } else {
+                System.out.println("DEBUG: Failed to insert resident: " + resident.toString());
+                request.setAttribute("error", "Failed to add resident.");
+            }
+
+        } catch (Exception e) {
+            System.out.println("DEBUG: Exception in handleSingleResident: " + e.getMessage());
+            e.printStackTrace();
+            request.setAttribute("error", "An error occurred: " + e.getMessage());
         }
+
+        forwardToForm(request, response);
+    }
+
+    private void handleMultipleResidents(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        JSONObject jsonResponse = new JSONObject();
 
         try {
-            // Insert resident and get new ID
-            String newResidentId = residentDAO.insertNewResident(resident);
-            if (newResidentId == null) {
-                handleValidationError(request, response, "Failed to add new resident.");
+            StringBuilder sb = new StringBuilder();
+            String line;
+            BufferedReader reader = request.getReader();
+            while ((line = reader.readLine()) != null) {
+                sb.append(line);
+            }
+            String jsonString = sb.toString();
+
+            JSONObject jsonRequest = new JSONObject(jsonString);
+            JSONArray residentsArray = jsonRequest.getJSONArray("residents");
+
+            List<Resident> residents = new ArrayList<>();
+            List<String> apartmentIds = new ArrayList<>();
+            List<String> emails = new ArrayList<>();
+            List<String> usernames = new ArrayList<>();
+            List<String> passwords = new ArrayList<>();
+            List<String> residentNames = new ArrayList<>();
+            List<String> errors = new ArrayList<>();
+
+            for (int i = 0; i < residentsArray.length(); i++) {
+                JSONObject residentJson = residentsArray.getJSONObject(i);
+                int rowNum = i + 1;
+
+                String name = residentJson.optString("name", null);
+                String dob = residentJson.optString("dob", null);
+                String gender = residentJson.optString("gender", null);
+                String phone = residentJson.optString("phone", null);
+                String address = residentJson.optString("address", null);
+                String apartment = residentJson.optString("apartment", null);
+                String role = residentJson.optString("role", null);
+                String cccd = residentJson.optString("cccd", null);
+                String username = residentJson.optString("username", null);
+                String email = residentJson.optString("email", null);
+                String isRepresent = residentJson.optString("isRepresent", "no");
+
+                // Validate required fields
+                if (name == null || name.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Name is required.");
+                }
+                if (dob == null || dob.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Date of Birth (DOB) is required.");
+                }
+                if (gender == null || gender.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Gender is required.");
+                }
+                if (phone == null || phone.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Phone number is required.");
+                }
+                if (address == null || address.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Address is required.");
+                }
+                if (apartment == null || apartment.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Apartment is required.");
+                }
+                if (role == null || role.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Role is required.");
+                }
+
+                // validate if is Representative
+                if ("yes".equalsIgnoreCase(isRepresent)) {
+                    if (username == null || username.trim().isEmpty() || email == null || email.trim().isEmpty()) {
+                        errors.add("Row " + rowNum + ": Username and email are required when the resident is a representative.");
+                    }
+                }
+
+                // Validate phone, CCCD, and username formats
+                if (phone != null && !phone.trim().isEmpty() && !phone.matches("\\d{10}")) {
+                    errors.add("Row " + rowNum + ": Phone number must be exactly 10 digits.");
+                }
+                if (cccd != null && !cccd.trim().isEmpty() && !cccd.matches("\\d{12}")) {
+                    errors.add("Row " + rowNum + ": CCCD must be exactly 12 digits.");
+                }
+                if (username != null && !username.trim().isEmpty() && username.contains(" ")) {
+                    errors.add("Row " + rowNum + ": Username cannot contain spaces.");
+                }
+
+                // Check for duplicates
+                if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
+                    errors.add("Row " + rowNum + ": Email '" + email + "' already exists.");
+                }
+                if (phone != null && !phone.trim().isEmpty() && residentDAO.checkDuplicatePhone(phone)) {
+                    errors.add("Row " + rowNum + ": Phone number '" + phone + "' already exists.");
+                }
+                if (cccd != null && !cccd.trim().isEmpty() && residentDAO.checkDuplicateID(cccd)) {
+                    errors.add("Row " + rowNum + ": CCCD '" + cccd + "' already exists.");
+                }
+                if (username != null && !username.trim().isEmpty() && residentDAO.checkDuplicatateUsername(username)) {
+                    errors.add("Row " + rowNum + ": Username '" + username + "' already exists.");
+                }
+
+                Resident resident = new Resident();
+                resident.setName(name);
+                resident.setBod(dob);
+                resident.setGender(gender);
+                resident.setPhone(phone);
+                resident.setAddress(address);
+                resident.setCccd(cccd);
+                resident.setUsername("yes".equalsIgnoreCase(isRepresent) ? username : null);
+                resident.setEmail("yes".equalsIgnoreCase(isRepresent) ? email : null);
+
+                Util u = new Util();
+                String password = u.generatePassword();
+                if (email != null && !email.trim().isEmpty()) {
+                    resident.setPassword(encryptPassword(password));
+                }
+
+                Role roleObj = new Role();
+                roleObj.setId(role);
+                resident.setRole(roleObj);
+
+                apartmentIds.add(apartment);
+                residents.add(resident);
+                if (email != null && !email.trim().isEmpty()) {
+                    emails.add(email);
+                    passwords.add(password);
+                    usernames.add(username);
+                    residentNames.add(name);
+                }
+            }
+
+            if (!errors.isEmpty()) {
+                jsonResponse.put("success", false);
+                jsonResponse.put("errors", new JSONArray(errors));
+                response.getWriter().write(jsonResponse.toString());
                 return;
             }
 
-            // Insert living apartment association
-            Date currentDate = new Date(System.currentTimeMillis());
-            if (!livingApartmentDAO.insertLivingApartment(newResidentId, aptNumber, currentDate.toString())) {
-                residentDAO.deleteResident(newResidentId); // Rollback resident insertion
-                handleValidationError(request, response, "Failed to associate resident with apartment.");
-                return;
+            List<String> insertedIds = residentDAO.insertMultipleResidents(residents);
+            SendEmail e = new SendEmail();
+            if (insertedIds != null) {
+                for (int i = 0; i < insertedIds.size(); i++) {
+                    lvd.insertLivingApartment(insertedIds.get(i), apartmentIds.get(i), new Date(System.currentTimeMillis()).toString());
+                    if(residentDAO.getById(insertedIds.get(i)).getUsername()!=null){
+                       lvd.changeIsRepresent("1", insertedIds.get(i), apartmentIds.get(i));
+                    }
+                }
+                if (!emails.isEmpty()) {
+                    e.sendMultipleResident(emails, residentNames, usernames, passwords);
+                }
+                jsonResponse.put("success", true);
+                jsonResponse.put("insertedIds", new JSONArray(insertedIds));
+            } else {
+                System.out.println("DEBUG: Failed to insert multiple residents: " + residents.toString());
+                jsonResponse.put("success", false);
+                jsonResponse.put("error", "Failed to insert residents into the database.");
             }
 
-            // Send email if representative
-            if ("yes".equalsIgnoreCase(isRepresent) && email != null) {
-                SendEmail sendEmail = new SendEmail();
-                sendEmail.sendEmailResidentAccount(email, name, username, password);
-            }
-
-            // Set success flag and forward to JSP to show modal
-            request.setAttribute("successMessage", "Resident added successfully!");
-            ApartmentDAO aptDAO = new ApartmentDAO();
-            request.setAttribute("apts", aptDAO.getAll());
-            request.getRequestDispatcher(JSP_PAGE).forward(request, response);
+        } catch (JSONException e) {
+            System.out.println("DEBUG: JSONException in handleMultipleResidents: " + e.getMessage());
+            e.printStackTrace();
+            jsonResponse.put("success", false);
+            jsonResponse.put("error", e.getMessage());
         } catch (Exception e) {
-            request.setAttribute("error", "An error occurred during processing: " + e.getMessage());
-            request.getRequestDispatcher(JSP_PAGE).forward(request, response);
+            System.out.println("DEBUG: Exception in handleMultipleResidents: " + e.getMessage());
+            e.printStackTrace();
+            jsonResponse.put("success", false);
+            jsonResponse.put("error", "An unexpected error occurred: " + e.getMessage());
         }
+
+        response.getWriter().write(jsonResponse.toString());
     }
 
-    private boolean isInvalidInput(String aptNumber, String name, String dob, String phone, String id, String isRepresent, String role) {
-        return aptNumber == null || aptNumber.isEmpty()
-                || name == null || name.isEmpty()
-                || dob == null || dob.isEmpty()
-                || phone == null || phone.isEmpty()
-                || id == null || id.isEmpty()
-                || isRepresent == null || isRepresent.isEmpty()
-                || role == null || role.isEmpty();
-    }
-
-    private void handleValidationError(HttpServletRequest request, HttpServletResponse response, String errorMessage)
+    private void forwardToForm(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        ApartmentDAO aptDAO = new ApartmentDAO();
-        request.setAttribute("apts", aptDAO.getAll());
-        request.setAttribute("error", errorMessage);
-        request.getRequestDispatcher(JSP_PAGE).forward(request, response);
-    }
-
-    @Override
-    public String getServletInfo() {
-        return "Handles adding a new resident and associating them with an apartment.";
+        List<Apartment> apartments = new ApartmentDAO().getAll();
+        request.setAttribute("apts", apartments);
+        request.getRequestDispatcher("/addnewresident.jsp").forward(request, response);
     }
 }
