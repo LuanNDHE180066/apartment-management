@@ -113,21 +113,7 @@
             }
         </style>
     </head>
-    <script>
-        DecoupledEditor
-                .create(document.querySelector('#editor'))
-                .then(editor => {
-                    window.editorInstance = editor;
-                    document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
-                })
-                .catch(error => {
-                    console.error('CKEditor l?i:', error);
-                });
-                document.querySelector('form').addEventListener('submit', () => {
-    document.querySelector('#hiddenContent').value = editor.getData();
-});
 
-    </script>
     <body class="dashboard dashboard_1">
         <div class="full_container">
             <div class="inner_container">
@@ -158,11 +144,13 @@
                                         <div class="form-group">
                                             <label for="content">Content</label>
                                             <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
-                                            <div id="editor">${requestScope.news != null ? requestScope.news.content : ""}</div>
+                                            <div id="editor">${requestScope.news != null ? requestScope.news.content : ""}</div> 
 
-                                            <input type="hidden" name="content" id="hiddenContent"> <!-- Input ?n ?? l?u d? li?u -->
+                                            <!-- Input ?n ?? l?u n?i dung khi submit -->
+                                            <input type="hidden" name="content" id="hiddenContent"> 
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
+
                                         <div class="form-group">
                                             <label for="date">Date</label>
                                             <input value="${requestScope.news.date}" type="date" id="date" name="date" required />
@@ -218,23 +206,71 @@
         <!-- custom js -->
         <script src="js/custom.js"></script>
         <script>
-        DecoupledEditor
-                .create(document.querySelector('#editor'), {
-                    ckfinder: {
-                        uploadUrl: '/uploadImage' // Servlet x? lý upload ?nh
-                    }
+            class MyUploadAdapter {
+    constructor(loader) {
+        this.loader = loader;
+    }
+
+    upload() {
+        return this.loader.file
+            .then(file => new Promise((resolve, reject) => {
+                const formData = new FormData();
+                formData.append('upload', file); // Trùng v?i request.getPart("upload") trong Servlet
+
+                fetch('http://localhost:8080/apartment-management/upload-img-news', { // URL servlet upload
+                    method: 'POST',
+                    body: formData
                 })
-                .then(editor => {
-                    window.editorInstance = editor;
-                    document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
-                    document.querySelector('form').addEventListener('submit', () => {
-                        document.querySelector('#hiddenContent').value = editor.getData();
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
+                    }
+                    return response.json();
+                })
+                .then(result => {
+                    if (!result || !result.url) {
+                        return reject('Upload ?nh th?t b?i!');
+                    }
+                    resolve({
+                        default: result.url  // ???ng d?n ?nh tr? v? t? server
                     });
                 })
                 .catch(error => {
-                    console.error('CKEditor l?i:', error);
+                    console.error('L?i upload ?nh:', error);
+                    reject('Không th? upload ?nh!');
                 });
+            }));
+    }
+}
 
+// Gán plugin upload ?nh vào CKEditor
+function MyCustomUploadAdapterPlugin(editor) {
+    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+        return new MyUploadAdapter(loader);
+    };
+}
+
+// Kh?i t?o CKEditor
+DecoupledEditor
+    .create(document.querySelector("#editor"), {
+        extraPlugins: [MyCustomUploadAdapterPlugin] // Plugin upload ?nh
+    })
+    .then(editor => {
+        const toolbarContainer = document.querySelector("#toolbar-container");
+        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+
+        // Load n?i dung t? requestScope vào CKEditor
+        editor.setData(document.querySelector("#editor").innerHTML);
+
+        // Khi submit form, l?y n?i dung t? CKEditor và gán vào input ?n
+        document.querySelector("form").addEventListener("submit", function () {
+            document.querySelector("#hiddenContent").value = editor.getData();
+        });
+
+    })
+    .catch(error => {
+        console.error("CKEditor l?i:", error);
+    });
 
         </script>
     </body>

@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  *
@@ -79,31 +80,40 @@ public class UploadimageNews extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        Part filePart = request.getPart("upload"); // CKEditor gửi file với name="upload"
-        String filename = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-        
-        // Định nghĩa thư mục lưu ảnh
-        String uploadPath = getServletContext().getRealPath("/") + "images/news";
-        File uploadDir = new File(uploadPath);
-        if (!uploadDir.exists()) {
-            uploadDir.mkdirs();
-        }
-
-        // Ghi file vào thư mục
-        File file = new File(uploadDir, filename);
-        try (InputStream fileContent = filePart.getInputStream();
-             FileOutputStream outputStream = new FileOutputStream(file)) {
-            byte[] buffer = new byte[1024];
-            int bytesRead;
-            while ((bytesRead = fileContent.read(buffer)) != -1) {
-                outputStream.write(buffer, 0, bytesRead);
-            }
-        }
-
-        // Trả về JSON cho CKEditor
         response.setContentType("application/json");
-        response.getWriter().write("{ \"url\": \"images/news/" + filename + "\" }");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            Part filePart = request.getPart("upload"); // CKEditor gửi file với name="upload"
+            String filename = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            
+            // Định nghĩa thư mục lưu ảnh
+            String uploadPath = getServletContext().getRealPath("/") + "images/news";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Ghi file vào thư mục
+            File file = new File(uploadDir, filename);
+            try (InputStream fileContent = filePart.getInputStream();
+                 FileOutputStream outputStream = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fileContent.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+
+            // Trả về JSON cho CKEditor
+            String fileUrl = request.getContextPath() + "/images/news/" + filename;
+            response.getWriter().write("{\"url\": \"" + fileUrl + "\"}");
+
+        } catch (Exception e) {
+            response.getWriter().write("{\"error\": \"Upload ảnh thất bại!\"}");
+        }
     }
+    
     
 
     /** 

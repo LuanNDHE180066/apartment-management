@@ -115,17 +115,7 @@
 
 
     </head>
-    <script>
-        DecoupledEditor
-                .create(document.querySelector('#editor'))
-                .then(editor => {
-                    window.editorInstance = editor;
-                    document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
-                })
-                .catch(error => {
-                    console.error('CKEditor l?i:', error);
-                });
-    </script>
+
 
     <body class="dashboard dashboard_1">
         <div class="full_container">
@@ -153,7 +143,9 @@
                                             <label for="content">Content</label>
                                             <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
                                             <div id="editor">${param.content != null ? param.content : ""}</div>
-                                            <input type="hidden" name="content" id="hiddenContent"> <!-- Input ?n ?? l?u d? li?u -->
+                                            <input type="hidden" name="content" id="hiddenContent">
+
+
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
 
@@ -178,11 +170,11 @@
                                                 </c:forEach>                                   
                                             </select>
                                         </div>
-<!--                                        <div class="form-group">
-                                            <label for="file">Image</label>
-                                            <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
-                                            <span style="color: red">${requestScope.fileerror}</span>
-                                        </div>-->
+                                        <!--                                        <div class="form-group">
+                                                                                    <label for="file">Image</label>
+                                                                                    <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                                                                    <span style="color: red">${requestScope.fileerror}</span>
+                                                                                </div>-->
                                         <div class="form-group">
                                             <label for="author">Author</label>
                                             <input type="text" id="author" name="author" value="${sessionScope.person.name}"  readonly />
@@ -209,25 +201,71 @@
         <!-- custom js -->
         <script src="js/custom.js"></script>
         <script>
-    DecoupledEditor
-    .create(document.querySelector('#editor'), {
-        ckfinder: {
-            uploadUrl: '/uploadImage' // Servlet x? lý upload ?nh
-        }
-    })
-    .then(editor => {
-        window.editorInstance = editor;
-        document.querySelector('#toolbar-container').appendChild(editor.ui.view.toolbar.element);
-        document.querySelector('form').addEventListener('submit', () => {
-            document.querySelector('#hiddenContent').value = editor.getData();
-        });
-    })
-    .catch(error => {
-        console.error('CKEditor l?i:', error);
-    });
+            // Hàm upload ?nh
+            class MyUploadAdapter {
+                constructor(loader) {
+                    this.loader = loader;
+                }
 
+                upload() {
+                    return this.loader.file
+                            .then(file => new Promise((resolve, reject) => {
+                                    const formData = new FormData();
+                                    formData.append('upload', file); // Ph?i trùng v?i request.getPart("upload") trong Servlet
 
-</script>
+                                    fetch('http://localhost:8080/apartment-management/upload-img-news', {// URL servlet upload
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(result => {
+                                                if (!result || !result.url) {
+                                                    return reject('Upload ?nh th?t b?i!');
+                                                }
+                                                resolve({
+                                                    default: result.url  // ???ng d?n ?nh tr? v? t? server
+                                                });
+                                            })
+                                            .catch(error => {
+                                                console.error('L?i upload ?nh:', error);
+                                                reject('Không th? upload ?nh!');
+                                            });
+                                }));
+                }
+            }
+
+// Gán plugin upload ?nh vào CKEditor
+            function MyCustomUploadAdapterPlugin(editor) {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader);
+                };
+            }
+
+// Kh?i t?o CKEditor
+            DecoupledEditor
+                    .create(document.querySelector('#editor'), {
+                        extraPlugins: [MyCustomUploadAdapterPlugin]
+                    })
+                    .then(editor => {
+                        const toolbarContainer = document.querySelector('#toolbar-container');
+                        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+
+                        // L?u n?i dung vào input ?n khi submit form
+                        document.querySelector("form").addEventListener("submit", function () {
+                            document.querySelector("#hiddenContent").value = editor.getData();
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error('CKEditor l?i:', error);
+                    });
+
+        </script>
 
     </body>
 </html>
