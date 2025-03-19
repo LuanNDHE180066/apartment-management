@@ -162,14 +162,19 @@
                                         <div class="form-group">
                                             <label for="category">Category</label>
                                             <select id="category" name="category" required>
-                                                <c:if test="${requestScope.categories == null}">
-                                                    <option value="Apartment News">Apartment News</option>
-                                                </c:if>
-                                                <c:forEach items="${requestScope.categories}" var="category">
-                                                    <option value="${category}">${category}</option>   
-                                                </c:forEach>                                   
+                                                <c:set var="selectedCategory" value="${not empty requestScope.news ? requestScope.news.category : ''}"/>
+
+                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Apartment News</option>
+                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Events</option>
+                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Maintenance Updates</option>
+                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Community Announcements</option>
+                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>General Notices</option>
                                             </select>
                                         </div>
+
+
+
+
                                         <!--                                        <div class="form-group">
                                                                                     <label for="file">Image</label>
                                                                                     <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">

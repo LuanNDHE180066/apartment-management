@@ -164,14 +164,18 @@
                                         <div class="form-group">
                                             <label for="category">Category</label>
                                             <select id="category" name="category" required>
-                                                <c:if test="${requestScope.categories == null}">
-                                                    <option value="Apartment News">Apartment News</option>
-                                                </c:if>
-                                                <c:forEach items="${sessionScope.categories}" var="category">
-                                                    <option ${requestScope.news.category == category?'selected':''} value="${category}">${category}</option>   
-                                                </c:forEach>                                   
+                                                <c:set var="selectedCategory" value="${not empty requestScope.news ? requestScope.news.category : ''}"/>
+
+                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Apartment News</option>
+                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Events</option>
+                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Maintenance Updates</option>
+                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Community Announcements</option>
+                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>General Notices</option>
                                             </select>
                                         </div>
+
+
+
                                         <!--                                        <div class="form-group">
                                                                                     <label for="file">Image</label>
                                                                                     <input value="${requestScope.news.image}" style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
@@ -207,70 +211,70 @@
         <script src="js/custom.js"></script>
         <script>
             class MyUploadAdapter {
-    constructor(loader) {
-        this.loader = loader;
-    }
+                constructor(loader) {
+                    this.loader = loader;
+                }
 
-    upload() {
-        return this.loader.file
-            .then(file => new Promise((resolve, reject) => {
-                const formData = new FormData();
-                formData.append('upload', file); // Trùng v?i request.getPart("upload") trong Servlet
+                upload() {
+                    return this.loader.file
+                            .then(file => new Promise((resolve, reject) => {
+                                    const formData = new FormData();
+                                    formData.append('upload', file); // Trùng v?i request.getPart("upload") trong Servlet
 
-                fetch('http://localhost:8080/apartment-management/upload-img-news', { // URL servlet upload
-                    method: 'POST',
-                    body: formData
-                })
-                .then(response => {
-                    if (!response.ok) {
-                        throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
-                    }
-                    return response.json();
-                })
-                .then(result => {
-                    if (!result || !result.url) {
-                        return reject('Upload ?nh th?t b?i!');
-                    }
-                    resolve({
-                        default: result.url  // ???ng d?n ?nh tr? v? t? server
-                    });
-                })
-                .catch(error => {
-                    console.error('L?i upload ?nh:', error);
-                    reject('Không th? upload ?nh!');
-                });
-            }));
-    }
-}
+                                    fetch('http://localhost:8080/apartment-management/upload-img-news', {// URL servlet upload
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(result => {
+                                                if (!result || !result.url) {
+                                                    return reject('Upload ?nh th?t b?i!');
+                                                }
+                                                resolve({
+                                                    default: result.url  // ???ng d?n ?nh tr? v? t? server
+                                                });
+                                            })
+                                            .catch(error => {
+                                                console.error('L?i upload ?nh:', error);
+                                                reject('Không th? upload ?nh!');
+                                            });
+                                }));
+                }
+            }
 
 // Gán plugin upload ?nh vào CKEditor
-function MyCustomUploadAdapterPlugin(editor) {
-    editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
-        return new MyUploadAdapter(loader);
-    };
-}
+            function MyCustomUploadAdapterPlugin(editor) {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader);
+                };
+            }
 
 // Kh?i t?o CKEditor
-DecoupledEditor
-    .create(document.querySelector("#editor"), {
-        extraPlugins: [MyCustomUploadAdapterPlugin] // Plugin upload ?nh
-    })
-    .then(editor => {
-        const toolbarContainer = document.querySelector("#toolbar-container");
-        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+            DecoupledEditor
+                    .create(document.querySelector("#editor"), {
+                        extraPlugins: [MyCustomUploadAdapterPlugin] // Plugin upload ?nh
+                    })
+                    .then(editor => {
+                        const toolbarContainer = document.querySelector("#toolbar-container");
+                        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
 
-        // Load n?i dung t? requestScope vào CKEditor
-        editor.setData(document.querySelector("#editor").innerHTML);
+                        // Load n?i dung t? requestScope vào CKEditor
+                        editor.setData(document.querySelector("#editor").innerHTML);
 
-        // Khi submit form, l?y n?i dung t? CKEditor và gán vào input ?n
-        document.querySelector("form").addEventListener("submit", function () {
-            document.querySelector("#hiddenContent").value = editor.getData();
-        });
+                        // Khi submit form, l?y n?i dung t? CKEditor và gán vào input ?n
+                        document.querySelector("form").addEventListener("submit", function () {
+                            document.querySelector("#hiddenContent").value = editor.getData();
+                        });
 
-    })
-    .catch(error => {
-        console.error("CKEditor l?i:", error);
-    });
+                    })
+                    .catch(error => {
+                        console.error("CKEditor l?i:", error);
+                    });
 
         </script>
     </body>

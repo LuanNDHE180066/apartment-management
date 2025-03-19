@@ -122,6 +122,9 @@
         .btn-primary:hover {
             background-color: #0056b3;
         }
+        .news-category{
+            text-align: center;
+        }
     </style>
     </head>
     <div class="full_container">
@@ -145,11 +148,13 @@
 
             <!-- Tiêu đề bài viết -->
             <h1 class="news-title">${requestScope.news.title}</h1>
-
+            
             <!-- Ngày đăng & tác giả -->
-            <p class="news-meta">
+            
+            <h5><p class="news-meta">
                 🕒 ${requestScope.news.formatdate()} | ✍ ${requestScope.news.staff.name}
-            </p>
+            </p></h5>
+            <h5 class="news-category">${requestScope.news.category}</h5>
 
             <!-- Nội dung bài viết (có thể chứa ảnh trong content) -->
             <div class="news-content">
