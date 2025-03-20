@@ -176,11 +176,9 @@
                                             </div>
 
                                             <!-- Export Buttons -->
-                                            <div class="d-flex gap-2" style="margin-right: 30px">
-                                                <form action="${pageContext.request.contextPath}/export-residents" method="POST" style="margin-right: 20px" >
-                                                    <input type="hidden" name="exportType" value="all">
-                                                    <button type="submit" class="btn btn-info">Export All</button>
-                                                </form>
+                                            <!-- Export Buttons -->
+                                            <div class="d-flex gap-2" style="margin-right: 30px; align-items: center;">
+                                                <button id="exportAllClient" class="btn btn-info">Export All </button>
                                                 <form action="${pageContext.request.contextPath}/export-residents" method="POST" id="exportSelectedForm">
                                                     <input type="hidden" name="exportType" value="selected">
                                                     <button type="submit" class="btn btn-info" onclick="return validateSelection()">Export Selected</button>
@@ -394,6 +392,53 @@
                                     }
                                     $('.modal').on('hidden.bs.modal', function () {
                                         $(this).find('.modal-body').scrollTop(0);
+                                    });
+
+                                    document.getElementById('exportAllClient').addEventListener('click', async () => {
+                                        try {
+                                            // Fetch the Excel file from the server
+                                            const response = await fetch('${pageContext.request.contextPath}/export-residents', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'Content-Type': 'application/x-www-form-urlencoded',
+                                                },
+                                                body: 'exportType=all'
+                                            });
+
+                                            if (!response.ok) {
+                                                throw new Error('Failed to fetch the file');
+                                            }
+
+                                            const blob = await response.blob();
+
+                                            // Use File System Access API to let user pick a location
+                                            if ('showSaveFilePicker' in window) {
+                                                const handle = await window.showSaveFilePicker({
+                                                    suggestedName: 'residents_export.xlsx',
+                                                    types: [{
+                                                            description: 'Excel File',
+                                                            accept: {'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx']},
+                                                        }]
+                                                });
+                                                const writable = await handle.createWritable();
+                                                await writable.write(blob);
+                                                await writable.close();
+                                                alert('File saved successfully!');
+                                            } else {
+                                                // Fallback to standard download if API isn?t supported
+                                                const url = window.URL.createObjectURL(blob);
+                                                const a = document.createElement('a');
+                                                a.href = url;
+                                                a.download = 'residents_export.xlsx';
+                                                document.body.appendChild(a);
+                                                a.click();
+                                                document.body.removeChild(a);
+                                                window.URL.revokeObjectURL(url);
+                                            }
+                                        } catch (error) {
+                                            console.error('Error exporting file:', error);
+                                            alert('Failed to export file: ' + error.message);
+                                        }
                                     });
 
             </script>

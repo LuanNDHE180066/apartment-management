@@ -1,4 +1,3 @@
-
 import dao.ResidentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
@@ -9,6 +8,7 @@ import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import model.Resident;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
@@ -20,35 +20,32 @@ import java.util.logging.Logger;
 public class ExportResidentsServlet extends HttpServlet {
 
     private final ResidentDAO residentDAO = new ResidentDAO();
-    
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         String exportType = request.getParameter("exportType");
-     
 
         try {
             List<Resident> residents;
             if ("all".equals(exportType)) {
                 residents = residentDAO.getAll();
-            
             } else if ("selected".equals(exportType)) {
                 String[] selectedIds = request.getParameterValues("selectedResidents");
-              
                 if (selectedIds == null || selectedIds.length == 0) {
-            
+                    response.setContentType("text/html");
+                    response.getWriter().write("<script>alert('Please select at least one resident to export'); window.history.back();</script>");
                     return;
                 }
                 residents = residentDAO.getByMultipleID(selectedIds);
-      
             } else {
                 response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid export type");
                 return;
             }
 
             if (residents == null || residents.isEmpty()) {
-                response.sendError(HttpServletResponse.SC_NOT_FOUND, "No residents found to export");
+                response.setContentType("text/html");
+                response.getWriter().write("<script>alert('No residents found to export'); window.history.back();</script>");
                 return;
             }
 
@@ -63,19 +60,21 @@ public class ExportResidentsServlet extends HttpServlet {
         Workbook workbook = new XSSFWorkbook();
         Sheet sheet = workbook.createSheet("Residents");
 
-        // Create header row
-        String[] headers = {"Name", "Phone", "Email", "Status", "BOD", "Address", "CCCD", "Gender"};
+        String[] headers = {"Name", "Phone", "Email", "Status", "BOD", "Address", "CCCD", "Gender", "Apartment Number"};
         Row headerRow = sheet.createRow(0);
+        CellStyle headerStyle = workbook.createCellStyle();
+        headerStyle.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
+        headerStyle.setFillPattern(FillPatternType.SOLID_FOREGROUND);
+        Font headerFont = workbook.createFont();
+        headerFont.setBold(true);
+        headerStyle.setFont(headerFont);
+
         for (int i = 0; i < headers.length; i++) {
             Cell cell = headerRow.createCell(i);
             cell.setCellValue(headers[i]);
-            CellStyle style = workbook.createCellStyle();
-            style.setFillForegroundColor(IndexedColors.GREY_25_PERCENT.getIndex());
-            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
-            cell.setCellStyle(style);
+            cell.setCellStyle(headerStyle);
         }
 
-        // Fill data
         int rowNum = 1;
         for (Resident resident : residents) {
             Row row = sheet.createRow(rowNum++);
@@ -87,35 +86,43 @@ public class ExportResidentsServlet extends HttpServlet {
             row.createCell(5).setCellValue(resident.getAddress());
             row.createCell(6).setCellValue(resident.getCccd() != null ? resident.getCccd() : "None");
             row.createCell(7).setCellValue(resident.getGender());
+            StringBuilder aptNumbers = new StringBuilder();
+            if (resident.getLivingApartment() != null) {
+                resident.getLivingApartment().forEach(apt -> {
+                    if (aptNumbers.length() > 0) aptNumbers.append(", ");
+                    aptNumbers.append(apt.getId());
+                });
+            }
+            row.createCell(8).setCellValue(aptNumbers.length() > 0 ? aptNumbers.toString() : "None");
         }
 
-        // Auto-size columns
         for (int i = 0; i < headers.length; i++) {
             sheet.autoSizeColumn(i);
         }
 
-        // Set response headers
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        workbook.write(baos);
+        byte[] bytes = baos.toByteArray();
+
         response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
         response.setHeader("Content-Disposition", "attachment; filename=residents_export_"
-                + java.time.LocalDate.now() + ".xlsx");
+                + java.time.LocalDateTime.now().format(java.time.format.DateTimeFormatter.ofPattern("yyyyMMdd_HHmmss"))
+                + ".xlsx");
+        response.setContentLength(bytes.length);
 
-        // Write to output stream
         try (OutputStream out = response.getOutputStream()) {
-            workbook.write(out);
+            out.write(bytes);
+            out.flush();
         }
         workbook.close();
     }
 
     private String getStatusText(String status) {
         switch (status) {
-            case "0":
-                return "Inactive";
-            case "1":
-                return "Active";
-            case "2":
-                return "Pending";
-            default:
-                return "Unknown";
+            case "0": return "Inactive";
+            case "1": return "Active";
+            case "2": return "Pending";
+            default: return "Unknown";
         }
     }
 }
