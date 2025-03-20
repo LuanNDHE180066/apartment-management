@@ -124,16 +124,16 @@ public class SendEmail {
         }
     }
     
-    public void sendEmailToWorkingStaff(List<Staff> list,String detail,String aid){
+    public void sendEmailToWorkingStaff(List<Staff> list,String detail,String aid,String rName){
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (Staff ei : list) {
-            executor.execute(() -> sendEmailStaffToOne(ei,detail,aid));
+            executor.execute(() -> sendEmailStaffToOne(ei,detail,aid,rName));
         }
         executor.shutdown();
     }
     
-    public void sendEmailStaffToOne(Staff estaff,String detail,String aid){
+    public void sendEmailStaffToOne(Staff estaff,String detail,String aid,String rName){
          try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
@@ -149,7 +149,7 @@ public class SendEmail {
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(estaff.getEmail()));
             message.setSubject("Công việc yêu cầu từ dân cư","UTF-8");
-            String dataText = "Bạn có yêu cầu từ "+estaff.getName()+"tại phòng "+aid +" cần giải quyết: "+detail+", xem chi tiết tại ứng dụng";
+            String dataText = "Bạn có yêu cầu từ "+rName+"tại "+aid +" cần giải quyết: "+detail+", xem chi tiết tại ứng dụng";
             message.setText(dataText,"UTF-8");
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + estaff.getEmail());

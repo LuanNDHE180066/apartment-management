@@ -14,6 +14,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.ArrayList;
 import java.util.List;
 import model.Request;
 import model.SendEmail;
@@ -71,18 +72,20 @@ public class AssignRequest extends HttpServlet {
         RequestDAO rd = new RequestDAO();
         StaffDAO daoSt = new StaffDAO();
         Staff s = daoSt.getById(staffid);
+        Request rq = rd.getById(requestid);
         if (shift.equals("")) {
             request.setAttribute("error_staff", "Need choose shift for Employee");
             request.getRequestDispatcher("view-all-request").forward(request, response);
             return;
         }
-        Request rq = new Request();
         rq.setShift(shift);
         if (rd.checkShiftStaff(staffid, shift)) {
             request.setAttribute("error_staff", s.getName() + " already has a assign in " + rq.getShift());
         } else {
             SendEmail send = new SendEmail();
-            send.sendEmail(s.getEmail(), "Assign Request From Resident", "You have a request in" + rq.getShift());
+            List<Staff> staffs = new ArrayList<>();
+            staffs.add(s);
+            send.sendEmailToWorkingStaff(staffs, "tại khung giờ "+rq.getShift(), rq.getAid().getId(),rq.getResidentId().getName());
             rd.AssignRequest(requestid, staffid, shift);
         }
         request.getRequestDispatcher("view-all-request").forward(request, response);
