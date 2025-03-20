@@ -320,6 +320,51 @@ public class SendEmail {
             e.printStackTrace();
         }
     }
+    public void sendMultipleResident(List<String> emailList, List<String> name, List<String> account, List<String> residentPassword) {
+        if (emailList.size() != name.size() || emailList.size() != account.size() || emailList.size() != residentPassword.size()) {
+            throw new IllegalArgumentException("All lists must have the same size");
+        }
+
+        try {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(from, password);
+                }
+            });
+
+            for (int i = 0; i < emailList.size(); i++) {
+                String recipientEmail = emailList.get(i);
+                String recipientName = name.get(i);
+                String recipientAccount = account.get(i);
+                String recipientPassword = residentPassword.get(i);
+
+                MimeMessage message = new MimeMessage(session);
+                message.setFrom(new InternetAddress(from));
+                message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(recipientEmail));
+                message.setSubject("Bavi Apartment New Account", "UTF-8");
+
+                String emailContent = "<html><body>"
+                        + "<h3>New Account</h3>"
+                        + "<p><strong>Dear Mr/Mrs</strong> " + recipientName + "</p>"
+                        + "<p><strong>Account:</strong> " + recipientAccount + "</p>"
+                        + "<p><strong>Password:</strong> " + recipientPassword + "</p>"
+                        + "</body></html>";
+
+                message.setContent(emailContent, "text/html; charset=UTF-8");
+
+                Transport.send(message);
+                System.out.println("Email sent to: " + recipientEmail);
+            }
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
 
     public boolean sendEmail(String to, String subject, String content) {
         // Kiểm tra xem địa chỉ email có tồn tại không trước khi gửi\

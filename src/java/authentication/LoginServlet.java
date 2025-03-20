@@ -68,6 +68,8 @@ public class LoginServlet extends HttpServlet {
         String user = request.getParameter("username");
         String pass = request.getParameter("password");
         String checkrole = request.getParameter("role");
+      
+
         int role;
         if (checkrole == null) {
             request.setAttribute("error", "Role is not allowed to be blank");
@@ -126,11 +128,12 @@ public class LoginServlet extends HttpServlet {
                 response.sendRedirect("index.jsp");
             }
         } else {
+
             request.setAttribute("error", "Username or Password is incorrect");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
         //Lấy thông tin hiển thị ở index
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             ResidentDAO rd = new ResidentDAO();
             Resident re = rd.getById(ac.getpId());
             session.setAttribute("person", re);

@@ -406,13 +406,42 @@ public class ResidentDAO extends DBContext {
     }
 
     public void deleteResident(String pId) {
-        String sql = "delete Resident where id=?";
+        String sql2 = "DELETE FROM LivingAparment WHERE rId=?"; // Execute first
+        String sql1 = "DELETE FROM Resident WHERE id=?"; // Execute second
+
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, pId);
-            ps.executeUpdate();
+            // Use auto-commit off to ensure both queries succeed together
+            connection.setAutoCommit(false);
+
+            // First delete from LivingAparment
+            try (PreparedStatement ps2 = connection.prepareStatement(sql2)) {
+                ps2.setString(1, pId);
+                ps2.executeUpdate();
+            }
+
+            // Then delete from Resident
+            try (PreparedStatement ps1 = connection.prepareStatement(sql1)) {
+                ps1.setString(1, pId);
+                ps1.executeUpdate();
+            }
+
+            // Commit both deletions
+            connection.commit();
         } catch (SQLException ex) {
+            try {
+                // Rollback in case of error
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, "Rollback failed", rollbackEx);
+            }
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                // Restore auto-commit mode
+                connection.setAutoCommit(true);
+            } catch (SQLException autoCommitEx) {
+                Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, "Failed to restore auto-commit", autoCommitEx);
+            }
         }
     }
 
@@ -485,12 +514,118 @@ public class ResidentDAO extends DBContext {
         return null;
     }
 
+    public List<String> insertMultipleResidents(List<Resident> residents) {
+        String sql = "INSERT INTO [dbo].[Resident] (\n"
+                + "    [Id],\n"
+                + "    [Name],\n"
+                + "    [Bod],\n"
+                + "    [Email],\n"
+                + "    [Phone],\n"
+                + "    [Address],\n"
+                + "    [CCCD],\n"
+                + "    [username],\n"
+                + "    [password],\n"
+                + "    [roleId],\n"
+                + "    [active],\n"
+                + "    [gender],\n"
+                + "    [image]\n"
+                + ") VALUES (\n"
+                + "    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?\n"
+                + ")";
+
+        Util u = new Util();
+        List<Resident> listResident = getAll();
+        int lastID = u.getNumberFromText(listResident.get(listResident.size() - 1).getpId());
+        List<String> insertedIds = new ArrayList<>();
+
+        try {
+            connection.setAutoCommit(false); // Start transaction
+            PreparedStatement st = connection.prepareStatement(sql);
+
+            for (Resident r : residents) {
+                lastID++; // Increment ID for each resident
+                String newId = "P" + lastID;
+
+                st.setString(1, newId);
+                st.setString(2, r.getName());
+                st.setString(3, r.getBod());
+                if (r.getEmail() == null || r.getEmail().trim().isEmpty()) {
+                    st.setNull(4, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(4, r.getEmail());
+                }
+                if (r.getPhone() == null || r.getPhone().trim().isEmpty()) {
+                    st.setNull(5, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(5, r.getPhone());
+                }
+                st.setString(6, r.getAddress());
+                if (r.getCccd() == null || r.getCccd().trim().isEmpty()) {
+                    st.setNull(7, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(7, r.getCccd());
+                }
+                if (r.getUsername() == null || r.getUsername().trim().isEmpty()) {
+                    st.setNull(8, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(8, r.getUsername());
+                }
+                st.setString(9, r.getPassword());
+                st.setString(10, r.getRole().getId());
+                if (r.getUsername() != null) {
+                    st.setInt(11, 2); // Active status 2 for representatives
+                } else {
+                    st.setInt(11, 1); // Active status 1 for non-representatives
+                }
+                st.setString(12, r.getGender());
+                st.setString(13, "images/avatar/person.jpg");
+
+                st.addBatch(); // Add to batch
+                insertedIds.add(newId);
+            }
+
+            st.executeBatch(); // Execute all insertions
+            connection.commit(); // Commit transaction
+            return insertedIds;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(); // Rollback on error
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            return null;
+        } finally {
+            try {
+                connection.setAutoCommit(true); // Reset auto-commit
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
     public boolean checkDuplicateEmail(String email, String reId) {
         String sql = "select * from Resident where Email=? and id not like ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, email);
             st.setString(2, reId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean checkDuplicateEmail(String email) {
+        String sql = "select * from Resident where Email=? ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, email);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return true;
@@ -517,6 +652,22 @@ public class ResidentDAO extends DBContext {
         return false;
     }
 
+    public boolean checkDuplicatePhone(String phone) {
+        String sql = "SELECT * FROM Resident WHERE Phone = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, phone);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
     public boolean checkDuplicatateUsername(String username) {
         String sql = "select * from Resident where username = ?";
         try {
@@ -533,11 +684,26 @@ public class ResidentDAO extends DBContext {
     }
 
     public boolean checkDuplicateID(String id, String reId) {
-        String sql = "SELECT * FROM Resident WHERE Cccd = ? AND id NOT LIKE ?";
+        String sql = "SELECT * FROM Resident WHERE CCCD = ? AND id NOT LIKE ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
             st.setString(2, reId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean checkDuplicateID(String id) {
+        String sql = "SELECT * FROM Resident WHERE CCCD = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return true;
@@ -782,7 +948,8 @@ public class ResidentDAO extends DBContext {
 
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-        System.out.println(dao.editResidentStatus("P100", "2"));
+//        System.out.println(dao.editResidentStatus("P100", "2"));
+       dao.deleteResident("P130");
 
     }
 }

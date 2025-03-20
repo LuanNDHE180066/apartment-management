@@ -9,6 +9,7 @@ import dao.LivingApartmentDAO;
 import dao.OwnerApartmentDAO;
 import dao.RequestChangeResidentDAO;
 import dao.ResidentDAO;
+import dao.RoleDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -59,6 +60,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
     }
 //1 LA LIVING 0 LAF OWNER
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
+
     /**
      * Handles the HTTP <code>GET</code> method.
      *
@@ -77,6 +79,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
         OwnerApartmentDAO oaDAO = new OwnerApartmentDAO();
         LivingApartmentDAO liDAO = new LivingApartmentDAO();
         RequestChangeResidentDAO rcDAO = new RequestChangeResidentDAO();
+        RoleDAO roleDAO = new RoleDAO();
 
         RequestChangeResident r = rcDAO.getRequestChangeById(id);
         String emailContent = "<div class=\"container\">\n"
@@ -119,7 +122,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 newResident.setPhone(r.getNewPerson().getPhone());
                 newResident.setEmail(r.getNewPerson().getEmail());
                 newResident.setCccd(r.getNewPerson().getCccd());
-                newResident.setRole(r.getNewPerson().getRole());
+                newResident.setRole(roleDAO.getById("6"));
 //                newResident.setUsername(r.getNewPerson().getUsername());
 //                newResident.setPassword(password);
                 newResident.setGender(r.getNewPerson().getGender());
@@ -127,11 +130,20 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 reDAO.insertNewResident(newResident);
                 Resident rNew = reDAO.getResidentById(newResident.getCccd());
                 if (r.getChangeType() == 1) {
-                   // liDAO.updateEndLivingApartment(date, r.getRoomNumber());
+                    // liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
                 } else {
                     oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
                     oaDAO.insertOwnerApartment(rNew.getpId(), r.getRoomNumber(), date);
+                    if (liDAO.checkIsRepresentOfThisApartment(r.getOwner().getpId(), r.getRoomNumber())) {
+                        liDAO.changeIsRepresent("0", r.getOwner().getpId(), r.getRoomNumber());
+                    }
+                    if (!oaDAO.isHomeOwner(r.getOwner().getpId()) && !liDAO.checkIsRepresent(r.getOwner().getpId())) {
+                        reDAO.setNullUsernameAndPassword(r.getOwner().getpId());
+                        liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
+                        liDAO.changeIsRepresent("1", rNew.getpId(), r.getRoomNumber());
+                    }
+
                 }
             } else {
                 Resident existedResident = reDAO.getResidentById(r.getNewPerson().getCccd());
