@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.sql.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -218,10 +219,58 @@ public class LivingApartmentDAO extends DBContext {
             ps.setString(5, null);
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
         }
         return false;
     }
+    public boolean insertMultipleLivingApartments(List<String> residentIds, List<String> apartmentIds, String startDate) {
+    String sql = "INSERT INTO LivingAparment(id, rid, aid, Startdate, Enddate, status) VALUES (?, ?, ?, ?, ?, 1)";
+    
+    try {
+        connection.setAutoCommit(false); // Start transaction
+        PreparedStatement ps = connection.prepareStatement(sql);
+
+        if (residentIds.size() != apartmentIds.size()) {
+            throw new IllegalArgumentException("Mismatch between resident IDs and apartment IDs count.");
+        }
+
+        for (int i = 0; i < residentIds.size(); i++) {
+            ps.setString(1, generateID()); // Assuming generateID() creates a unique ID
+            ps.setString(2, residentIds.get(i));
+            ps.setString(3, apartmentIds.get(i));
+            ps.setString(4, startDate);
+            ps.setNull(5, java.sql.Types.VARCHAR); // Enddate is null
+            ps.addBatch(); // Add to batch
+        }
+
+        int[] results = ps.executeBatch(); // Execute all insertions
+        connection.commit(); // Commit transaction
+
+        // Check if all insertions were successful
+        for (int result : results) {
+            if (result <= 0) {
+                throw new SQLException("One or more insertions failed.");
+            }
+        }
+        return true;
+
+    } catch (SQLException | IllegalArgumentException e) {
+        e.printStackTrace();
+        try {
+            connection.rollback(); // Rollback on error
+        } catch (SQLException rollbackEx) {
+            rollbackEx.printStackTrace();
+        }
+        return false;
+    } finally {
+        try {
+            connection.setAutoCommit(true); // Reset auto-commit
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+}
+    
 
     public int getNumberOfLivingPerson(String aid) {
         String sql = "select count (*) as nop from LivingAparment where aId = ? and status  = 1";
@@ -269,7 +318,22 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
-
+    public List<Apartment> getLivingApartmentsByResidentId(String id) {
+        ApartmentDAO ad = new ApartmentDAO();
+        List<Apartment> list = new ArrayList<>();
+        String sql = "select * from LivingAparment where rid =? and status =1";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(ad.getById(rs.getString("aid")));
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return list;
+    }
     public List<String> getAllActiveApartment() {
         String sql = "select distinct(aid) as aid from LivingAparment where status =1";
         List<String> list = new ArrayList<>();

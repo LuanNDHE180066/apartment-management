@@ -7,6 +7,7 @@ package dao;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import jdbc.DBContext;
 import model.Fund;
@@ -19,21 +20,39 @@ import model.InvoiceDetail;
  *
  * @author PC
  */
-public class FundDAO extends DBContext{
-    public Fund getById(String id){
-        String sql = "select * from Fund where id ="+id;
-        try{
+public class FundDAO extends DBContext {
+
+    public Fund getById(String id) {
+        String sql = "select * from Fund where id =" + id;
+        try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
-            while(rs.next()){
-                return new Fund(rs.getInt("id"),rs.getString("name"),rs.getString("description"),rs.getString("startdate"),rs.getFloat("value"));
+            while (rs.next()) {
+                return new Fund(rs.getInt("id"), rs.getString("name"), rs.getString("description"), rs.getString("startdate"), rs.getFloat("value"));
             }
-        }catch(SQLException e){
+        } catch (SQLException e) {
             System.out.println(e);
         }
         return null;
     }
-    public void revenueFundByInvoice(String id){
+
+    public List<Fund> getAll() {
+        String sql = "select * from Fund";
+        List<Fund> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                list.add(new Fund(rs.getInt("id"), rs.getString("name"), rs.getString("description"), rs.getString("startdate"), rs.getFloat("value")));
+            }
+            return list;
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return null;
+    }
+
+    public void revenueFundByInvoice(String id) {
         InvoiceDAO ivd = new InvoiceDAO();
         InvoiceDetalDAO ivdd = new InvoiceDetalDAO();
         FundHistoryDAO fhd = new FundHistoryDAO();
@@ -69,6 +88,7 @@ public class FundDAO extends DBContext{
             System.out.println(e);
         }
     }
+
     public static void main(String[] args) {
         FundDAO dao = new FundDAO();
         dao.revenueFundByInvoice("IV10");

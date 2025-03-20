@@ -8,6 +8,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 import jdbc.DBContext;
+import java.sql.ResultSet;
+import java.util.ArrayList;
+import model.FundHistory;
 import model.Fund;
 import model.HistoryExpenditure;
 import model.InvoiceDetail;
@@ -58,5 +61,37 @@ public class FundHistoryDAO extends DBContext {
         } catch (SQLException e) {
             System.out.println(e);
         }
+    }
+
+    public List<FundHistory> getByFundID(int id) {
+        String sql = "select * from FundHistory where fundid=? ";
+        FundDAO fd = new FundDAO();
+        List<FundHistory> list = new ArrayList<>();
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setInt(1, id);
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                FundHistory fh = new FundHistory();
+                fh.setId(rs.getInt(1));
+                fh.setValue_befor(rs.getFloat(2));
+                fh.setValue_after(rs.getFloat(3));
+                fh.setDate(rs.getString(4));
+                fh.setName(rs.getString(5));
+                fh.setFundid(fd.getById(rs.getString(6)));
+                list.add(fh);
+
+            }
+            return list;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+
+    }
+
+    public static void main(String[] args) {
+        FundHistoryDAO fd = new FundHistoryDAO();
+        System.out.println(fd.getByFundID(1));
     }
 }

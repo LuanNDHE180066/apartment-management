@@ -55,11 +55,6 @@ public class RoleDAO extends DBContext {
         return null;
     }
 
-    public static void main(String[] args) {
-
-        RoleDAO dao = new RoleDAO();
-        System.out.println(dao.getById("3"));
-    }
 
     public List<Role> getAllExcludeResident() {
         String sql = "select * from role where not id='1'";
@@ -78,5 +73,6 @@ public class RoleDAO extends DBContext {
         }
         return list;
     }
+  
 
 }

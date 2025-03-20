@@ -5,7 +5,7 @@
 package controller.resident;
 
 import dao.FeedbackDAO;
-import dao.RequestTypeDAO;
+import dao.ServiceDAO;
 import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -27,6 +27,8 @@ import model.Account;
 import model.Feedback;
 import model.RequestType;
 import java.sql.Timestamp;
+import model.Service;
+import validation.BadWordFilter;
 
 /**
  *
@@ -78,16 +80,16 @@ public class UpdateFeedback extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        RequestTypeDAO rt = new RequestTypeDAO();
+        ServiceDAO rt = new ServiceDAO();
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
-        List<RequestType> listTypeOfRequest = rt.getAll();
+        List<Service> listServices = rt.getAll();
         String rID = account.getpId();
 
-        String id = request.getParameter("id");
+        String id = request.getParameter("fid");
         FeedbackDAO fd = new FeedbackDAO();
         Feedback f = fd.getById(id);
-        request.setAttribute("listOfTypeRequest", listTypeOfRequest);
+        request.setAttribute("listOfTypeRequest", listServices);
         request.setAttribute("rID", rID);
         request.setAttribute("feedback", f);
         request.getRequestDispatcher("editFeedback.jsp").forward(request, response);
@@ -104,6 +106,9 @@ public class UpdateFeedback extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        ServiceDAO rt = new ServiceDAO();
+        HttpSession session = request.getSession();
+        Account account = (Account) session.getAttribute("account");
         String id = null, tID = null, detail = null, rate_raw = null;
 
         // Retrieve text fields from form data using Part
@@ -132,6 +137,23 @@ public class UpdateFeedback extends HttpServlet {
             System.out.println("Error parsing rate: " + e);
         }
 
+        String realPath = getServletContext().getRealPath("/asset/badwords.txt");
+        BadWordFilter bwf = new BadWordFilter(realPath);
+
+        if (bwf.containsBadWord(detail.toLowerCase())) {
+            List<Service> listServices = rt.getAll();
+            String rID = account.getpId();
+
+            String fid = request.getParameter("fID");
+            FeedbackDAO fd = new FeedbackDAO();
+            Feedback f = fd.getById(fid);
+            request.setAttribute("listOfTypeRequest", listServices);
+            request.setAttribute("rID", rID);
+            request.setAttribute("feedback", f);
+            request.setAttribute("errorMessage", "Your feedback content must not contain offensive words!");
+            request.getRequestDispatcher("editFeedback.jsp").forward(request, response);
+            return;
+        }
         // Directory to save uploaded files
         String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
         File uploadDir = new File(uploadPath);
@@ -141,7 +163,7 @@ public class UpdateFeedback extends HttpServlet {
 
         // Retrieve existing images from database
         FeedbackDAO fd = new FeedbackDAO();
-        RequestTypeDAO rtd = new RequestTypeDAO();
+        ServiceDAO rtd = new ServiceDAO();
         List<String> existingImages = fd.getFeedbackImgs(id);
 
         // List to store new uploaded images
@@ -189,7 +211,7 @@ public class UpdateFeedback extends HttpServlet {
 
         // Update feedback details
         Feedback feedback = fd.getById(id);
-        feedback.setRequestType(rtd.getById(tID));
+        feedback.setServices(rtd.getById(tID));
         feedback.setDetail(detail);
         feedback.setRate(rate);
         feedback.setStatus(0);

@@ -116,7 +116,7 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/custom.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script>
+<!--        <script>
             jQuery(document).ready(function ($) {
                 function fetchNotifications() {
                     $.ajax({
@@ -137,7 +137,7 @@
                 fetchNotifications();
                 setInterval(fetchNotifications, 3000);
             });
-        </script>
+        </script>-->
 
 
         <!--                <script>

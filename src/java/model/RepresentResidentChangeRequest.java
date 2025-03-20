@@ -24,6 +24,11 @@ public class RepresentResidentChangeRequest {
         return newUsername;
     }
 
+    @Override
+    public String toString() {
+        return "RepresentResidentChangeRequest{" + "id=" + id + ", oldRepresentPerson=" + oldRepresentPerson + ", newRepresentPerson=" + newRepresentPerson + ", aId=" + aId + ", adminApprove=" + adminApprove + ", requestDate=" + requestDate + ", isExistAccount=" + isExistAccount + ", newUsername=" + newUsername + ", owner=" + owner + '}';
+    }
+
     public void setNewUsername(String newUsername) {
         this.newUsername = newUsername;
     }

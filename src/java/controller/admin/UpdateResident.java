@@ -121,7 +121,6 @@ public class UpdateResident extends HttpServlet {
             resident.setPhone(phone);
             if (resident.getUsername() == null) {
                 resident.setStatus("2");
-                resident.setIsHomeOwner(true);
                 resident.setUsername(username != null ? username.trim() : null);
                 resident.setEmail(email != null ? email.trim() : null);
                 String password_encript = encryptPassword(password);
