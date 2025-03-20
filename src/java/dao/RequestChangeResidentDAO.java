@@ -41,6 +41,9 @@ public class RequestChangeResidentDAO extends DBContext {
                 + "[gender], [room_number], [change_type], "
                 + "[new_person_exists], [admin_status], [created_at]) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        LocalDateTime currentDateTime = LocalDateTime.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = currentDateTime.format(formatter);
 
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -58,7 +61,7 @@ public class RequestChangeResidentDAO extends DBContext {
             ps.setInt(12, re.getChangeType());
             ps.setInt(13, re.getNewPersonExists());
             ps.setInt(14, re.getAdminStatus());
-            ps.setString(15, re.getCreatedAt());
+            ps.setString(15, "2025-03-18");
             ps.executeUpdate();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
@@ -153,7 +156,7 @@ public class RequestChangeResidentDAO extends DBContext {
     public static void main(String[] args) {
 
         ResidentDAO dao = new ResidentDAO();
-        Resident owner = dao.getById("P102");
+        Resident owner = dao.getById("P110");
         Resident newRe = dao.getById("P106");
         //System.out.println(newRe.getGender());
         LocalDateTime lc = LocalDateTime.now();
@@ -163,6 +166,6 @@ public class RequestChangeResidentDAO extends DBContext {
                 "A008", 0, 1, 0, formattedDate);
         RequestChangeResidentDAO daoR = new RequestChangeResidentDAO();
 //        System.out.println(daoR.addNewRequestChange(re));
-        System.out.println(daoR.getRequestChangeById("15"));
+        daoR.addNewRequestChange(re);
     }
 }
