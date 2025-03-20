@@ -203,7 +203,7 @@ public class InvoiceDAO extends DBContext {
     public Invoice getByApartmentIdNow(String aid) {
         ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();
-        String sql = "select * from invoice where status=1 and aid=? and MONTH(invoicedate) =? and year(invoicedate) = ?";
+        String sql = "select * from invoice where status=0 and aid=? and MONTH(invoicedate) =? and year(invoicedate) = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, aid);
@@ -282,7 +282,7 @@ public class InvoiceDAO extends DBContext {
         System.out.println(sql);
         return list;
     }
-
+    
     public void generateInvoice() {
         InvoiceDetalDAO idd = new InvoiceDetalDAO();
         LivingApartmentDAO ld = new LivingApartmentDAO();
