@@ -107,7 +107,7 @@ public class AddRequestServlet extends HttpServlet {
         String realPath = getServletContext().getRealPath("/asset/badwords.txt");
         BadWordFilter bwf = new BadWordFilter(realPath);
         if (bwf.containsBadWord(detail.toLowerCase())) {
-            request.setAttribute("errorMessage", "Your request detail must not contain bad words!");
+            request.setAttribute("message", "Your request detail must not contain bad words!");
             doGet(request, response);
             return;
         }

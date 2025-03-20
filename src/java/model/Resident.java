@@ -46,7 +46,7 @@ public class Resident {
         this.role = role;
         this.gender = gender;
         this.image = image;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
 
     }
 
@@ -63,7 +63,7 @@ public class Resident {
         this.status = status;
         this.note = note;
         this.role = role;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String username, String password, String status, String note, Role role, String image) {
@@ -80,7 +80,7 @@ public class Resident {
         this.note = note;
         this.role = role;
         this.image = image;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String status) {
@@ -92,7 +92,7 @@ public class Resident {
         this.bod = bod;
         this.address = address;
         this.status = status;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String name, String cccd, String phone, String email, String bod, String address, String username, String password, Role role, String gender) {
@@ -106,7 +106,7 @@ public class Resident {
         this.password = password;
         this.role = role;
         this.gender = gender;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender) {
@@ -119,7 +119,7 @@ public class Resident {
         this.address = address;
         this.image = image;
         this.gender = gender;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String name, String cccd, String phone, String email, String bod, String address, String image, String gender, String username) {
@@ -133,7 +133,7 @@ public class Resident {
         this.image = image;
         this.gender = gender;
         this.username = username;
-        this.livingApartment = lad.getApartmentsByResidentId(pId);
+        this.livingApartment = lad.getLivingApartmentsByResidentId(pId);
     }
 
     public Resident(String pId, String email, String phone, String address) {
