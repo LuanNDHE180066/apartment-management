@@ -382,7 +382,7 @@ public class StaffDAO extends DBContext {
 
     public List<Account> getAllStaffAccount() {
         List<Account> list = new ArrayList<>();
-        String sql = "select username, password, email, id,roleId from Staff";
+        String sql = "select username, password, email, id,roleId from Staff where status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

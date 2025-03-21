@@ -318,7 +318,7 @@ public class ResidentDAO extends DBContext {
 
     public List<Account> getAllResidentAccount() {
         List<Account> list = new ArrayList<>();
-        String sql = "select username, password, email, id, roleId from Resident";
+        String sql = "select username, password, email, id, roleId from Resident where active = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();

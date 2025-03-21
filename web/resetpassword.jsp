@@ -47,7 +47,7 @@
                             </div>
                         </div>
                         <div class="login_form">
-                            <form action=""request-password" method="post">
+                            <form action="reset-password" method="post">
                                 <fieldset>
                                     <div class="field">
                                         <label class="label_field">Username</label>

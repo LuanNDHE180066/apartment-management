@@ -182,11 +182,11 @@ public class AccountDAO extends DBContext {
                 nofi +="từ dân cư "; 
                 break;
             case 4:
-                sql += "from request where sid = '" + pid + "'";
+                sql += "from request where sid = '" + pid + "' and status = 1";
                 nofi +="từ trung cư "; 
                 break;
             case 5:
-                sql += "from request where sid = '" + pid + "'";
+                sql += "from request where sid = '" + pid + "' and status = 1";
                 nofi +="từ trung cư "; 
                 break;
             default:
@@ -212,7 +212,7 @@ public class AccountDAO extends DBContext {
 //            System.out.println(""+string);
 //        }
         //System.out.println(dao.getAccountByUsernameandRole("alice", 1).getRoleId());
-        List<String> sts = dao.getNotificationsByRoleAndPid(2, "");
+        List<String> sts = dao.getNotificationsByRoleAndPid(4, "S1006");
         for (String st : sts) {
             System.out.println(""+st);
             Util util = new Util();
