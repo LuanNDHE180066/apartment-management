@@ -9,6 +9,8 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import config.GoogleConfig;
 import dao.AccountDAO;
+import dao.ResidentDAO;
+import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -19,6 +21,8 @@ import jakarta.servlet.http.HttpSession;
 import java.io.FileInputStream;
 import java.util.Properties;
 import model.Account;
+import model.Resident;
+import model.Staff;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.fluent.Form;
 import org.apache.http.client.fluent.Request;
@@ -78,8 +82,18 @@ public class LoginByGoogleServlet extends HttpServlet {
             return;
         }
         AccountDAO ad = new AccountDAO();
-        Account account = ad.getByEmail(email);
         HttpSession session = request.getSession();
+        Account account = ad.getByEmail(email);
+        //Lấy thông tin hiển thị ở index
+        if (account.getRoleId() == 1 || account.getRoleId() == 6) {
+            ResidentDAO rd = new ResidentDAO();
+            Resident re = rd.getById(account.getpId());
+            session.setAttribute("person", re);
+        } else {
+            StaffDAO sd = new StaffDAO();
+            Staff staff = sd.getById(account.getpId());
+            session.setAttribute("person", staff);
+        }
         session.setAttribute("account", account);
         response.sendRedirect("index.jsp");
     }

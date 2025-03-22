@@ -175,15 +175,19 @@ public class AccountDAO extends DBContext {
     public List<String> getNotificationsByRoleAndPid(int role, String pid) {
         String sql = "select id ";
         List<String> list = new ArrayList<>();
+        String nofi = "Yêu cầu ";
         switch (role) {
             case 2:
                 sql += "from request where Status = 0";
+                nofi +="từ dân cư "; 
                 break;
             case 4:
-                sql += "from request where sid = '" + pid + "'";
+                sql += "from request where sid = '" + pid + "' and status = 1";
+                nofi +="từ trung cư "; 
                 break;
             case 5:
-                sql += "from request where sid = '" + pid + "'";
+                sql += "from request where sid = '" + pid + "' and status = 1";
+                nofi +="từ trung cư "; 
                 break;
             default:
                 return list;
@@ -192,7 +196,7 @@ public class AccountDAO extends DBContext {
             PreparedStatement pre = connection.prepareStatement(sql);
             ResultSet rs = pre.executeQuery();
             while (rs.next()) {
-                list.add(rs.getString("id"));
+                list.add(nofi+rs.getString("id"));
             }
         } catch (SQLException ex) {
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -207,7 +211,13 @@ public class AccountDAO extends DBContext {
 //        for (String string : list) {
 //            System.out.println(""+string);
 //        }
-        System.out.println(dao.getAccountByUsernameandRole("alice", 1).getRoleId());
+        //System.out.println(dao.getAccountByUsernameandRole("alice", 1).getRoleId());
+        List<String> sts = dao.getNotificationsByRoleAndPid(4, "S1006");
+        for (String st : sts) {
+            System.out.println(""+st);
+            Util util = new Util();
+            System.out.println(""+util.getSiteViewByNofication(st));
+        }
     }
 
 }

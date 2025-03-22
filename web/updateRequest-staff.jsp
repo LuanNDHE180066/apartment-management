@@ -185,7 +185,7 @@
                                                     id="response"
                                                     name="response"\
                                                     value="${requestScope.rq.response}"
-                                                    required=""
+                                                    
                                                     />
                                             </div>
                                         </div>

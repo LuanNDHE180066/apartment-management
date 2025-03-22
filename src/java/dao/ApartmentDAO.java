@@ -200,6 +200,35 @@ public class ApartmentDAO extends DBContext {
         return aparments;
     }
     
+    
+    public List<Apartment> GetApartmentisLivingByResidentIDisRepresent(String rid){
+        String sql = " select distinct Apartment.* from LivingAparment "
+                + "join Apartment on LivingAparment.aId = Apartment.Id "
+                + "where LivingAparment.status = 1 "
+                + "and LivingAparment.isRepresent = 1 "
+                + "and Apartment.status = 1 and LivingAparment.rId = '"+rid+"'";
+        List<Apartment> aparments = new ArrayList<>();
+        FloorDAO fd = new FloorDAO();
+        RoomTypeDAO rtd = new RoomTypeDAO();
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                int noPerson = rs.getInt("Noperson");
+                Floor floor = fd.getByNumber(rs.getInt("floor"));
+                String information = rs.getString("information");
+                RoomType rt = rtd.getRoomTypeById(rs.getString("rtId"));
+                int status = rs.getInt("status");
+                Apartment a = new Apartment(id, noPerson, floor, information, rt, status);
+                aparments.add(a);
+            }            
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return aparments;
+    }
+    
     public List<Apartment> GetREApartment(String reId) {
         String sql = "SELECT A.*, RT.*\n"
                 + "FROM AparmentOwner AO\n"

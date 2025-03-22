@@ -61,6 +61,12 @@
                 .dropdown-item{
                     color: black;
                 }
+                .dropdown-menu.notification {
+                    width: 250px; /* Điều chỉnh độ rộng phù hợp */
+                    word-wrap: break-word;
+                    white-space: normal;
+                    overflow-wrap: break-word;
+                }
             }
 
         </style>
@@ -89,7 +95,7 @@
                                             <i class="fa fa-bell-o" style="color:#fff;margin-left: 5px" ></i>
                                             <span class="notification-count" style="color:red;background-color: #214162">!</span>
                                         </a>
-                                        <div class="dropdown-menu notification" id="notification">
+                                        <div class="dropdown-menu notification" id="notification" style="width: 400%;">
                                         </div>
                                     </div>
                                 </li>
@@ -116,7 +122,7 @@
         <script src="js/bootstrap.min.js"></script>
         <script src="js/custom.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<!--        <script>
+        <script>
             jQuery(document).ready(function ($) {
                 function fetchNotifications() {
                     $.ajax({
@@ -126,7 +132,7 @@
                         success: function (response) {
                             $('#notification').empty();
                             $.each(response, function (index, notificationData) {
-                                $('#notification').append('<a class="dropdown-item" href="' + notificationData.url + '">' + notificationData.notification + '</a>');
+                                $('#notification').append('<a style="margin-left: 0px;width: 100%;" class="dropdown-item" href="' + notificationData.url + '"> <h8 style="font-size: 14px; display: block;padding: 8px;white-space: normal;word-break: break-word;">' + notificationData.notification + '</h8></a>');
                             });
                         },
                         error: function (error) {
@@ -137,29 +143,7 @@
                 fetchNotifications();
                 setInterval(fetchNotifications, 3000);
             });
-        </script>-->
-
-
-        <!--                <script>
-                            function fetchNotifications() {
-                                //var jq = $.noConflict();
-                                $.ajax({
-                                    url: 'get-notifications', // Địa chỉ đến servlet
-                                    method: 'GET',
-                                    dataType: 'json', // Kiểu dữ liệu trả về là JSON
-                                    success: function (response) {
-                                        $('#notification').empty();
-                                        $.each(response, function (index, notificationData) {
-                                            $('#notification').append('<a class="dropdown-item" href="' + notificationData.url + '">' + notificationData.notification + '</a>');
-                                        });
-                                    },
-                                    error: function (error) {
-                                        console.log('Lỗi khi lấy thông báo:', error);
-                                    }
-                                });
-                            }
-                            setInterval(fetchNotifications, 1000);
-                        </script>-->
+        </script>
         <script src="js/perfect-scrollbar.min.js"></script>
         <script>
             var ps = new PerfectScrollbar('#sidebar');

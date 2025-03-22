@@ -14,6 +14,7 @@ import java.util.List;
 import model.Account;
 import model.Request;
 import model.RequestType;
+import util.Util;
 
 @WebServlet(name = "ViewRequestHistory", urlPatterns = {"/viewrequest_history"})
 public class ViewRequestHistory extends HttpServlet {
@@ -25,25 +26,28 @@ public class ViewRequestHistory extends HttpServlet {
             throws ServletException, IOException {
         HttpSession session = request.getSession();
         Account acc = (Account) session.getAttribute("account");
-        int page = 1;
-        String pageParam = request.getParameter("page");
-        if (pageParam != null && !pageParam.isEmpty()) {
-            page = Integer.parseInt(pageParam);
+        String page = request.getParameter("page");
+        if (null == page) {
+            page = "1";
         }
+        int numberPerPage = 8;
+        Util u = new Util();
         RequestDAO rd = new RequestDAO();
         RequestTypeDAO rtd = new RequestTypeDAO();
         List<Request> allRequests = rd.getByResidentID(acc.getpId());
-        int totalRequests = allRequests.size();
-        int totalPages = (int) Math.ceil((double) totalRequests / PAGE_SIZE);
-        int start = (page - 1) * PAGE_SIZE;
-        int end = Math.min(start + PAGE_SIZE, totalRequests);
-        List<Request> paginatedRequests = allRequests.subList(start, end);
+        if(!allRequests.isEmpty()){
+            int totalPage_waiting = u.getTotalPage(allRequests, numberPerPage);
+            request.setAttribute("totalPage", totalPage_waiting);
+            request.setAttribute("currentPage", Integer.parseInt(page));
+        }else{
+            request.setAttribute("totalPage", 1);
+            request.setAttribute("currentPage", 1);
+        }
+        allRequests = rd.getPageByNumber(allRequests, Integer.parseInt(page), numberPerPage);
         List<RequestType> listTypeRequest = rtd.getAll();
         request.setAttribute("listType", listTypeRequest);
         request.setAttribute("rid", acc.getpId());
-        request.setAttribute("listRequest", paginatedRequests);
-        request.setAttribute("currentPage", page);
-        request.setAttribute("totalPages", totalPages);
+        request.setAttribute("listRequest", allRequests);
         request.getRequestDispatcher("view_request_history.jsp").forward(request, response);
     }
 
