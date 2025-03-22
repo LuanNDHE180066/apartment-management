@@ -7,6 +7,7 @@ package controller.resident;
 import dao.ApartmentDAO;
 import dao.RequestDAO;
 import dao.RequestTypeDAO;
+import dao.ResidentDAO;
 import dao.StaffDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -21,9 +22,11 @@ import model.Account;
 import model.Apartment;
 import model.Request;
 import model.RequestType;
+import model.Resident;
 import model.SendEmail;
 import model.Staff;
 import util.Util;
+import validation.BadWordFilter;
 
 /**
  *
@@ -75,7 +78,7 @@ public class AddRequestServlet extends HttpServlet {
         ApartmentDAO ad= new ApartmentDAO();
         List<RequestType> listTypeRquest = rtd.getAll();
         Account ac = (Account)session.getAttribute("account");
-        List<Apartment> listApartment = ad.GetAllApartmentfromOwnerAndLivingByRId(ac.getpId());
+        List<Apartment> listApartment = ad.GetApartmentisLivingByResidentIDisRepresent(ac.getpId());
         request.setAttribute("listApartment", listApartment);
         request.setAttribute("listTypeRquest", listTypeRquest);
         request.getRequestDispatcher("addrequest.jsp").forward(request, response);
@@ -103,13 +106,22 @@ public class AddRequestServlet extends HttpServlet {
             doGet(request, response);
             return;
         }
+        String realPath = getServletContext().getRealPath("/asset/badwords.txt");
+        BadWordFilter bwf = new BadWordFilter(realPath);
+        if (bwf.containsBadWord(detail.toLowerCase())) {
+            request.setAttribute("message", "Your request detail must not contain bad words!");
+            doGet(request, response);
+            return;
+        }
+        ResidentDAO rsd = new ResidentDAO();
         RequestTypeDAO rtd = new RequestTypeDAO();
         RequestDAO rd = new RequestDAO();
         StaffDAO sd = new StaffDAO();
         SendEmail email = new SendEmail();
+        Resident rs = rsd.getById(rid);
         int addRequest = rd.addRequest(rid, detail, typeRequestId,aid);
         List<Staff> staffs = sd.getActiveStaffbyRole("2");
-        email.sendEmailToWorkingStaff(staffs);
+        email.sendEmailToWorkingStaff(staffs,detail,"phòng "+aid,rs.getName());
         request.setAttribute("status", true);
         request.setAttribute("message","Add new request successful.");
         doGet(request, response);

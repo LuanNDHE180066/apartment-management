@@ -30,10 +30,10 @@ public class ApartmentDetailDAO extends DBContext {
     private FloorDAO floorDAO = new FloorDAO();
 
     public List<ApartmentDetail> getApartmentDetailByOwnerid(String ownerId, String floorN, String rtId) {
-        String sql = "select a.*,l.rId as living,  ao.rId  as owner, ao.status from AparmentOwner ao\n"
-                + "left join Apartment a on a.Id = ao.aId\n"
-                + "left join LivingAparment l \n"
-                + "on a.Id = l.aId  where ao.status = 1 and ao.rId = ? and l.status = 1 ";
+        String sql = "select a.*, ao.rid as owner, ao.status \n"
+                + "from AparmentOwner ao\n"
+                + "left join apartment a on a.id = ao.aid\n"
+                + "where ao.status = 1 and ao.rid = ?";
         List<ApartmentDetail> list = new ArrayList<>();
         if (floorN != "") {
             sql += " and a.rtId = " + floorN;
@@ -54,10 +54,9 @@ public class ApartmentDetailDAO extends DBContext {
                 String information = rs.getString("information");
                 RoomType rt = roomtypeDAO.getRoomTypeById(rs.getString("rtid"));
                 int status = rs.getInt("status");
-                Resident livingPerson = residentDAO.getById(rs.getString("living"));
                 Resident owner = residentDAO.getById(rs.getString("owner"));
                 ApartmentDetail ad = new ApartmentDetail(aid, numberOfPerson, floor,
-                        information, rt, status, owner, livingPerson);
+                        information, rt, status, owner, null);
                 list.add(ad);
             }
             return list;
@@ -68,10 +67,10 @@ public class ApartmentDetailDAO extends DBContext {
     }
 
     public List<ApartmentDetail> getApartmentDetailByOwnerid(String ownerId) {
-        String sql = "select a.*,l.rId as living,  ao.rId  as owner, ao.status from AparmentOwner ao\n"
-                + "left join Apartment a on a.Id = ao.aId\n"
-                + "left join LivingAparment l \n"
-                + "on a.Id = l.aId  where ao.status = 1 and ao.rId = ? and l.status = 1 ";
+        String sql = "select a.*, ao.rid as owner, ao.status \n"
+                + "from AparmentOwner ao\n"
+                + "left join apartment a on a.id = ao.aid\n"
+                + "where ao.status = 1 and ao.rid = ?";
         List<ApartmentDetail> list = new ArrayList<>();
 
         try {
@@ -85,10 +84,10 @@ public class ApartmentDetailDAO extends DBContext {
                 String information = rs.getString("information");
                 RoomType rt = roomtypeDAO.getRoomTypeById(rs.getString("rtid"));
                 int status = rs.getInt("status");
-                Resident livingPerson = residentDAO.getById(rs.getString("living"));
+               
                 Resident owner = residentDAO.getById(rs.getString("owner"));
                 ApartmentDetail ad = new ApartmentDetail(aid, numberOfPerson, floor,
-                        information, rt, status, owner, livingPerson);
+                        information, rt, status, owner, null);
                 list.add(ad);
             }
             return list;
@@ -100,6 +99,6 @@ public class ApartmentDetailDAO extends DBContext {
 
     public static void main(String[] args) {
         ApartmentDetailDAO dao = new ApartmentDetailDAO();
-        System.out.println(dao.getApartmentDetailByOwnerid("P105", "", "").size());
+        System.out.println(dao.getApartmentDetailByOwnerid("P110").size());
     }
 }

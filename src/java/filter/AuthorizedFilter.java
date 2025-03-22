@@ -70,13 +70,18 @@ public class AuthorizedFilter implements Filter {
             return;
         }
 
-        // Handle authenticated users with roleId == 1 and status == "2"
-        if (a != null && a.getRoleId() == 1) {
+        // Handle authenticated users with roleId == 1 or roleId == 6 and status == "2"
+        if (a != null && (a.getRoleId() == 1 || a.getRoleId() == 6)) {
             ResidentDAO rd = new ResidentDAO();
             Resident r = rd.getById(a.getpId());
             if (r != null && "2".equals(r.getStatus())) {
-       
-                if (uri.contains("changepassword.jsp") ||uri.contains("logout")) {
+                // Allowed URIs for users with status == "2"
+                if (uri.contains("changepassword.jsp") || uri.contains("update-password-resident")
+                        || uri.contains("login.jsp") || uri.contains("requestpassword.jsp")
+                        || uri.contains("reset-password") || uri.contains("request-password")
+                        || uri.contains("login-google") || uri.contains("login")
+                        || uri.contains("logout") || uri.contains("401_error.jsp")
+                        || uri.contains("404_error.jsp")) {
                     chain.doFilter(request, response);
                 } else {
                     // Redirect all other requests to changepassword.jsp

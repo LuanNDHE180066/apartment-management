@@ -4,6 +4,7 @@
  */
 package dao;
 
+import dto.response.EmailInvoice;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -25,9 +26,9 @@ public class AccountDAO extends DBContext {
 
     public String getcheckTable(int roleId) {
         String table = "Empty";
-        if(roleId == 1){
+        if (roleId == 1 || roleId == 6) {
             table = "Resident";
-        }else{
+        } else {
             table = "Staff";
         }
         return table;
@@ -46,9 +47,13 @@ public class AccountDAO extends DBContext {
 //        } else if (table.equals("Staff")) {
 //            sql = "SELECT * FROM Staff WHERE [username]=?";
 //        }
+        } else {
+            sql = "SELECT * FROM " + table + " WHERE [username]=? and roleid = ? ";
         }
-        else{
-            sql = "SELECT * FROM "+table+" WHERE [username]=? and roleid = ?";
+        if (table.equalsIgnoreCase("Resident")) {
+            sql += " and active != " + 0;
+        } else {
+            sql += " and status = " + 1;
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
@@ -59,7 +64,7 @@ public class AccountDAO extends DBContext {
                 s = new Account(rs.getString("username"), rs.getString("password"), rs.getString("Email"), rs.getString("Id"), rs.getInt("roleId"));
                 if (table.equals("Resident")) {
                     s.setActive(rs.getInt("active"));
-                }else{
+                } else {
                     s.setActive(rs.getInt("status"));
                 }
             }
@@ -68,7 +73,7 @@ public class AccountDAO extends DBContext {
         }
         return s;
     }
-    
+
     public void changePassword(String username, String password, int roleId) {
         String sql = "Update ";
         if (roleId == 1) {
@@ -80,9 +85,9 @@ public class AccountDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ps.setString(1, Util.encryptPassword(password));
             ps.setString(2, username);
-            ps.executeQuery();
+            ps.executeUpdate();
         } catch (SQLException ex) {
-
+            ex.printStackTrace();
         }
 
     }
@@ -148,28 +153,71 @@ public class AccountDAO extends DBContext {
         return null;
     }
 
-    public void changeImageByAccount(Account acc,String image){
+    public void changeImageByAccount(Account acc, String image) {
         String sql = "update ";
-        if(acc.getRoleId() == 1){
-            sql +="resident ";
-        }else{
-            sql +="staff ";
+        if (acc.getRoleId() == 1) {
+            sql += "resident ";
+        } else {
+            sql += "staff ";
         }
         sql += "set image=? where username=? and roleid=?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1,image);
-            ps.setString(2,acc.getUsername());
-            ps.setInt(3,acc.getRoleId());
+            ps.setString(1, image);
+            ps.setString(2, acc.getUsername());
+            ps.setInt(3, acc.getRoleId());
             ps.executeUpdate();
         } catch (SQLException ex) {
             Logger.getLogger(AccountDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
-    
+
+    public List<String> getNotificationsByRoleAndPid(int role, String pid) {
+        String sql = "select id ";
+        List<String> list = new ArrayList<>();
+        String nofi = "Yêu cầu ";
+        switch (role) {
+            case 2:
+                sql += "from request where Status = 0";
+                nofi +="từ dân cư "; 
+                break;
+            case 4:
+                sql += "from request where sid = '" + pid + "' and status = 1";
+                nofi +="từ trung cư "; 
+                break;
+            case 5:
+                sql += "from request where sid = '" + pid + "' and status = 1";
+                nofi +="từ trung cư "; 
+                break;
+            default:
+                return list;
+        }
+        try {
+            PreparedStatement pre = connection.prepareStatement(sql);
+            ResultSet rs = pre.executeQuery();
+            while (rs.next()) {
+                list.add(nofi+rs.getString("id"));
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return list;
+    }
+
     public static void main(String[] args) {
         AccountDAO dao = new AccountDAO();
-        System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
+        //System.out.println(""+dao.getAccountByUsernameandRole("userC", 0));
+//        List<String> list = dao.getNotificationsByRoleAndPid(2, "S1015");
+//        for (String string : list) {
+//            System.out.println(""+string);
+//        }
+        //System.out.println(dao.getAccountByUsernameandRole("alice", 1).getRoleId());
+        List<String> sts = dao.getNotificationsByRoleAndPid(4, "S1006");
+        for (String st : sts) {
+            System.out.println(""+st);
+            Util util = new Util();
+            System.out.println(""+util.getSiteViewByNofication(st));
+        }
     }
 
 }

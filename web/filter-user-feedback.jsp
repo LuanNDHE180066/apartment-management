@@ -229,7 +229,7 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 15%;">Người tạo đơn</th>
+                                                        
                                                             <th style="width: 20%;">Tên dịch vụ</th>
                                                             <th style="width: 10%;">Thời Gian</th>
                                                             <th style="width: 10%;">Mức độ hài lòng</th>
@@ -240,8 +240,8 @@
                                                         <c:forEach items="${requestScope.listFeedbackU}" var="feedback" varStatus="loop">
                                                             <!-- First row: Author with blue background and rounded corners -->
                                                             <tr class="accordion-toggle" data-target="#feedbackDetail${loop.index}" >
-                                                                <td>${feedback.resident.name}</td>
-                                                                <td>${feedback.requestType.name}</td>
+                                                              
+                                                                <td>${feedback.services.name}</td>
                                                                 <td>${feedback.date}</td>
                                                                 <td>
                                                                     <c:choose>

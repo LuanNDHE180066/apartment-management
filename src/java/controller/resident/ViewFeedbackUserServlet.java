@@ -5,7 +5,7 @@
 package controller.resident;
 
 import dao.FeedbackDAO;
-import dao.RequestTypeDAO;
+import dao.ServiceDAO;
 import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -20,6 +20,7 @@ import model.Account;
 import model.Feedback;
 import model.RequestType;
 import model.Resident;
+import model.Service;
 
 /**
  *
@@ -78,8 +79,8 @@ public class ViewFeedbackUserServlet extends HttpServlet {
         ResidentDAO rd = new ResidentDAO();
         Resident resident = rd.getById(account.getpId());
 
-        RequestTypeDAO rtd = new RequestTypeDAO();
-        List<RequestType> listTypeRquest = rtd.getAll();
+        ServiceDAO rtd = new ServiceDAO();
+        List<Service> listTypeRquest = rtd.getAll();
 
         // Get pagination parameters
         int page = 1;

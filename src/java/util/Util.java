@@ -30,6 +30,9 @@ public class Util {
             case 1:
                 destination = "resident";
                 break;
+            case 6:
+                destination = "resident";
+                break;
             default:
                 destination = "staff";
                 break;
@@ -38,40 +41,50 @@ public class Util {
     }
 
     public String getTableNameByRoleIdEdit(int role) {
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             return "editprofileRE.jsp";
         }
         return "editprofileST.jsp";
     }
 
     public String getSiteToViewRule(int role) {
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             return "view-rule-resident";
         }
         return "view-rule-admin";
     }
 
     public String getSiteToViewApartment(int role) {
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             return "view-apartment-resident";
         }
         return "view-apartment-admin";
     }
 
     public String getSiteToViewRequest(int role) {
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             return "viewrequest_history";
         }
         return "view-all-request";
     }
 
     public String getSiteToViewFeedBack(int role) {
-        if (role == 1) {
+        if (role == 1 || role ==6) {
             return "view-feed-back-user";
         }
         return "view-all-feedback";
     }
 
+    public String getSiteViewByNofication(String nofi){
+        String[] ids = nofi.split("\\s+");
+        String id = ids[ids.length-1];
+        id = id.replaceAll("[0-9]", "");
+        if(id.equalsIgnoreCase("R")){
+            return "view-all-request";
+        }
+        return "index.jsp";
+    }
+    
     public int getNumberFromText(String str) {
         return Integer.parseInt(str.substring(1));
     }
@@ -216,14 +229,18 @@ public class Util {
             return false;
         }
     }
-    public static String formatDate(String date){
-        if(date == null) return null;
+
+    public static String formatDate(String date) {
+        if (date == null) {
+            return null;
+        }
         String[] token = date.split("-");
         String temp = token[0];
         token[0] = token[2];
         token[2] = temp;
         return String.join("-", token);
     }
+
     public static String FormatDateTime(String date) {
         // Convert the stored date string to SQL Timestamp
         Timestamp timestamp = Timestamp.valueOf(date);

@@ -154,9 +154,8 @@
                                             <div class="one-col" style="padding: 0; margin-right: 5px; margin-bottom: 5%">
                                                 <label for="role">Destination</label>
                                                 <select  name="role">
-                                                    <option value="">Filter by Roles</option>
                                                     <c:forEach items="${requestScope.rolelist}" var="o">
-                                                        <c:if test="${o.id >= 4}">
+                                                        <c:if test="${o.id == 4 ||  o.id == 5}">
                                                             <option value="${o.id}">${o.name}</option>
                                                         </c:if>
                                                     </c:forEach>

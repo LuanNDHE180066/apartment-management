@@ -10,8 +10,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Collectors;
 import jdbc.DBContext;
 import model.Account;
 import model.Role;
@@ -30,7 +32,21 @@ public class ResidentDAO extends DBContext {
     public boolean checkConnection() {
         return connection == null;
     }
-    
+
+    public boolean setUsernameAndPassword(String username, String password, String id) {
+        String sql = "update Resident set username = ? , password = ? where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ps.setString(2, password);
+            ps.setString(3, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public Resident getById_v2(String pId) {
         String sql = "select  * from resident where id = ?";
         try {
@@ -93,6 +109,18 @@ public class ResidentDAO extends DBContext {
         return list;
     }
 
+    public void setNullUsernameAndPassword(String rid) {
+        String sql = "Update Resident set password = null, username = null where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, rid);
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public Resident getResidentByUsername(String username) {
         String sql = "select * from Resident where username = ?";
         try {
@@ -115,8 +143,7 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address, usernameE, password, st, null, role, image);
                 resident.setGender(gender);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
-                resident.setIsHomeOwner(isHomeOwner);
+
                 return resident;
             }
         } catch (SQLException ex) {
@@ -124,8 +151,8 @@ public class ResidentDAO extends DBContext {
         }
         return null;
     }
-    
-        public Resident getResidentById(String Cccd) {
+
+    public Resident getResidentById(String Cccd) {
         String sql = "select * from Resident where cccd = ?";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -147,8 +174,7 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, na, cccd, phone, email, bod, address, usernameE, password, st, null, role, image);
                 resident.setGender(gender);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
-                resident.setIsHomeOwner(isHomeOwner);
+
                 return resident;
             }
         } catch (SQLException ex) {
@@ -179,13 +205,63 @@ public class ResidentDAO extends DBContext {
                 String image = rs.getString("image");
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, name, role, image);
                 resident.setGender(gender);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+                //boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
                 return resident;
             }
         } catch (SQLException ex) {
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
         return null;
+    }
+
+    public List<Resident> getByMultipleID(String[] pIds) {
+        // If array is null or empty, return empty list
+        if (pIds == null || pIds.length == 0) {
+            return new ArrayList<>();
+        }
+
+        // Build the SQL query with dynamic number of placeholders
+        String placeholders = String.join(",", Collections.nCopies(pIds.length, "?"));
+        String sql = "SELECT * FROM resident WHERE id IN (" + placeholders + ")";
+
+        List<Resident> residents = new ArrayList<>();
+
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+
+            // Set all ID parameters
+            for (int i = 0; i < pIds.length; i++) {
+                st.setString(i + 1, pIds[i]);
+            }
+
+            ResultSet rs = st.executeQuery();
+            while (rs.next()) {
+                String id = rs.getString("id");
+                String name = rs.getString("name");
+                String bod = rs.getDate("bod") != null ? rs.getDate("bod").toString() : null;
+                String email = rs.getString("email");
+                String phone = rs.getString("phone");
+                String address = rs.getString("address");
+                String cccd = rs.getString("cccd");
+                String username = rs.getString("username");
+                String password = rs.getString("password");
+                Role role = new Role("1", "resident", "--");
+                String status = String.valueOf(rs.getInt("active"));
+                String gender = rs.getString("gender");
+                String image = rs.getString("image");
+
+                Resident resident = new Resident(id, name, cccd, phone, email, bod,
+                        address, username, password, status, name, role, image);
+                resident.setGender(gender);
+
+                residents.add(resident);
+            }
+
+            return residents;
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return residents; // Return whatever we have even if there's an error
     }
 
     public List<Resident> pagingResident(int n) {
@@ -211,8 +287,7 @@ public class ResidentDAO extends DBContext {
                 String gender = rs.getString("gender");
                 String img = rs.getString("image");
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, username, password, status, null, role, img);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
-                resident.setIsHomeOwner(isHomeOwner);
+
                 list.add(resident);
             }
             return list;
@@ -243,7 +318,7 @@ public class ResidentDAO extends DBContext {
 
     public List<Account> getAllResidentAccount() {
         List<Account> list = new ArrayList<>();
-        String sql = "select username, password, email, id, roleId from Resident";
+        String sql = "select username, password, email, id, roleId from Resident where active = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -319,9 +394,9 @@ public class ResidentDAO extends DBContext {
                 String status = String.valueOf(rs.getInt("active"));
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
+
                 Resident resident = new Resident(id, name, cccd, phone, email, bod, address, status, gender);
-                resident.setIsHomeOwner(isHomeOwner);
+
                 list.add(resident);
             }
         } catch (SQLException ex) {
@@ -331,34 +406,63 @@ public class ResidentDAO extends DBContext {
     }
 
     public void deleteResident(String pId) {
-        String sql = "delete Resident where id=?";
+        String sql2 = "DELETE FROM LivingAparment WHERE rId=?"; // Execute first
+        String sql1 = "DELETE FROM Resident WHERE id=?"; // Execute second
+
         try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ps.setString(1, pId);
-            ps.executeUpdate();
+            // Use auto-commit off to ensure both queries succeed together
+            connection.setAutoCommit(false);
+
+            // First delete from LivingAparment
+            try (PreparedStatement ps2 = connection.prepareStatement(sql2)) {
+                ps2.setString(1, pId);
+                ps2.executeUpdate();
+            }
+
+            // Then delete from Resident
+            try (PreparedStatement ps1 = connection.prepareStatement(sql1)) {
+                ps1.setString(1, pId);
+                ps1.executeUpdate();
+            }
+
+            // Commit both deletions
+            connection.commit();
         } catch (SQLException ex) {
+            try {
+                // Rollback in case of error
+                connection.rollback();
+            } catch (SQLException rollbackEx) {
+                Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, "Rollback failed", rollbackEx);
+            }
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        } finally {
+            try {
+                // Restore auto-commit mode
+                connection.setAutoCommit(true);
+            } catch (SQLException autoCommitEx) {
+                Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, "Failed to restore auto-commit", autoCommitEx);
+            }
         }
     }
 
-    public int insertNewResident(Resident r) {
-        String sql = "INSERT INTO [dbo].[Resident]\n"
-                + "           ([Id]\n"
-                + "           ,[Name]\n"
-                + "           ,[Bod]\n"
-                + "           ,[Email]\n"
-                + "           ,[Phone]\n"
-                + "           ,[Address]\n"
-                + "           ,[CCCD]\n"
-                + "           ,[username]\n"
-                + "           ,[password]\n"
-                + "           ,[roleId]\n"
-                + "           ,[active]\n"
-                + "           ,[gender]\n"
-                + "           ,[image]\n"
-                + "           ,[isHomeOwner])\n "
-                + "     VALUES\n"
-                + "           (?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+    public String insertNewResident(Resident r) {
+        String sql = "INSERT INTO [dbo].[Resident] (\n"
+                + "    [Id],\n"
+                + "    [Name],\n"
+                + "    [Bod],\n"
+                + "    [Email],\n"
+                + "    [Phone],\n"
+                + "    [Address],\n"
+                + "    [CCCD],\n"
+                + "    [username],\n"
+                + "    [password],\n"
+                + "    [roleId],\n"
+                + "    [active],\n"
+                + "    [gender],\n"
+                + "    [image]\n"
+                + ") VALUES (\n"
+                + "    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?\n"
+                + ")";
 
         Util u = new Util();
         List<Resident> listResident = getAll();
@@ -400,18 +504,105 @@ public class ResidentDAO extends DBContext {
             }
             st.setString(12, r.getGender());
             st.setString(13, "images/avatar/person.jpg");
-            if (r.isIsHomeOwner()) {
-                st.setInt(14, 2);
-            } else {
-                st.setInt(14, 1);
-            }
+
             st.executeUpdate();
-            return 0;
+            return "P" + (lastID + 1);
 
         } catch (SQLException e) {
-            System.out.println(e);
+            e.printStackTrace();
         }
-        return -1;
+        return null;
+    }
+
+    public List<String> insertMultipleResidents(List<Resident> residents) {
+        String sql = "INSERT INTO [dbo].[Resident] (\n"
+                + "    [Id],\n"
+                + "    [Name],\n"
+                + "    [Bod],\n"
+                + "    [Email],\n"
+                + "    [Phone],\n"
+                + "    [Address],\n"
+                + "    [CCCD],\n"
+                + "    [username],\n"
+                + "    [password],\n"
+                + "    [roleId],\n"
+                + "    [active],\n"
+                + "    [gender],\n"
+                + "    [image]\n"
+                + ") VALUES (\n"
+                + "    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?\n"
+                + ")";
+
+        Util u = new Util();
+        List<Resident> listResident = getAll();
+        int lastID = u.getNumberFromText(listResident.get(listResident.size() - 1).getpId());
+        List<String> insertedIds = new ArrayList<>();
+
+        try {
+            connection.setAutoCommit(false); // Start transaction
+            PreparedStatement st = connection.prepareStatement(sql);
+
+            for (Resident r : residents) {
+                lastID++; // Increment ID for each resident
+                String newId = "P" + lastID;
+
+                st.setString(1, newId);
+                st.setString(2, r.getName());
+                st.setString(3, r.getBod());
+                if (r.getEmail() == null || r.getEmail().trim().isEmpty()) {
+                    st.setNull(4, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(4, r.getEmail());
+                }
+                if (r.getPhone() == null || r.getPhone().trim().isEmpty()) {
+                    st.setNull(5, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(5, r.getPhone());
+                }
+                st.setString(6, r.getAddress());
+                if (r.getCccd() == null || r.getCccd().trim().isEmpty()) {
+                    st.setNull(7, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(7, r.getCccd());
+                }
+                if (r.getUsername() == null || r.getUsername().trim().isEmpty()) {
+                    st.setNull(8, java.sql.Types.VARCHAR);
+                } else {
+                    st.setString(8, r.getUsername());
+                }
+                st.setString(9, r.getPassword());
+                st.setString(10, r.getRole().getId());
+                if (r.getUsername() != null) {
+                    st.setInt(11, 2); // Active status 2 for representatives
+                } else {
+                    st.setInt(11, 1); // Active status 1 for non-representatives
+                }
+                st.setString(12, r.getGender());
+                st.setString(13, "images/avatar/person.jpg");
+
+                st.addBatch(); // Add to batch
+                insertedIds.add(newId);
+            }
+
+            st.executeBatch(); // Execute all insertions
+            connection.commit(); // Commit transaction
+            return insertedIds;
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(); // Rollback on error
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            return null;
+        } finally {
+            try {
+                connection.setAutoCommit(true); // Reset auto-commit
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 
     public boolean checkDuplicateEmail(String email, String reId) {
@@ -420,6 +611,21 @@ public class ResidentDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, email);
             st.setString(2, reId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean checkDuplicateEmail(String email) {
+        String sql = "select * from Resident where Email=? ";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, email);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return true;
@@ -446,12 +652,58 @@ public class ResidentDAO extends DBContext {
         return false;
     }
 
+    public boolean checkDuplicatePhone(String phone) {
+        String sql = "SELECT * FROM Resident WHERE Phone = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, phone);
+
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean checkDuplicatateUsername(String username) {
+        String sql = "select * from Resident where username = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, username);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
     public boolean checkDuplicateID(String id, String reId) {
-        String sql = "SELECT * FROM Resident WHERE Cccd = ? AND id NOT LIKE ?";
+        String sql = "SELECT * FROM Resident WHERE CCCD = ? AND id NOT LIKE ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
             st.setString(2, reId);
+            ResultSet rs = st.executeQuery();
+            if (rs.next()) {
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+
+    public boolean checkDuplicateID(String id) {
+        String sql = "SELECT * FROM Resident WHERE CCCD = ?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
             ResultSet rs = st.executeQuery();
             if (rs.next()) {
                 return true;
@@ -491,30 +743,34 @@ public class ResidentDAO extends DBContext {
         return listpage;
     }
 
-    public List<Resident> filterListResident(String name, String status, String homeOwner) {
-        String sql = "SELECT * FROM resident WHERE 1=1 ";
+    public List<Resident> filterListResident(String name, String status, String aptNumber) {
+        String sql = "SELECT * FROM resident WHERE 1=1";
+        List<Resident> resultList = new ArrayList<>();
+        LivingApartmentDAO lad = new LivingApartmentDAO();
 
+        // Build SQL query with name and status filters
         if (name != null && !name.isEmpty()) {
-            sql += "AND name LIKE N'%" + name + "%' ";
+            sql += " AND name LIKE ?";
         }
         if (status != null && !status.isEmpty()) {
-            sql += "AND active = " + status + " ";
+            sql += " AND active = ?";
         }
-        if (homeOwner != null && !homeOwner.isEmpty()) {
-            if ("1".equals(homeOwner)) {
-                sql += "And isHomeOwner=1";
-            } else {
-                sql += "And isHomeOwner=0";
-            }
-        }
-
-        sql += "ORDER BY id DESC";
+        sql += " ORDER BY id DESC";
 
         try {
-            List<Resident> list = new ArrayList<>();
+            // Prepare statement with parameters to prevent SQL injection
             PreparedStatement ps = connection.prepareStatement(sql);
+            int paramIndex = 1;
+
+            if (name != null && !name.isEmpty()) {
+                ps.setString(paramIndex++, "%" + name + "%");
+            }
+            if (status != null && !status.isEmpty()) {
+                ps.setInt(paramIndex++, Integer.parseInt(status));
+            }
+
+            // Get base resident list
             ResultSet rs = ps.executeQuery();
-            LivingApartmentDAO lad = new LivingApartmentDAO();
             while (rs.next()) {
                 String id = rs.getString("id");
                 String na = rs.getString("name");
@@ -529,18 +785,34 @@ public class ResidentDAO extends DBContext {
                 String st = String.valueOf(rs.getInt("active"));
                 String gender = rs.getString("gender");
                 String image = rs.getString("image");
-                Resident resident = new Resident(id, na, cccd, phone, email, bod, address, username, password, st, name, role, image);
+
+                Resident resident = new Resident(id, na, cccd, phone, email, bod, address,
+                        username, password, st, na, role, image);
                 resident.setGender(gender);
-                boolean isHomeOwner = rs.getString("isHomeOwner") == "1" ? true : false;
-                resident.setIsHomeOwner(isHomeOwner);
-                resident.setApartmentNumber(lad.getApartmentsByResidentId(id));
-                list.add(resident);
+                resultList.add(resident);
             }
-            return list;
+
+            // Apply apartment filter if specified
+            if (aptNumber != null && !aptNumber.isEmpty()) {
+                List<Resident> residentApt = lad.getLivingResidentList(aptNumber);
+                if (!residentApt.isEmpty()) {
+                    // Keep only residents whose IDs match with residentApt list
+                    resultList.retainAll(residentApt.stream()
+                            .filter(aptResident -> resultList.stream()
+                            .anyMatch(r -> r.getpId().equals(aptResident.getpId())))
+                            .collect(Collectors.toList()));
+                } else {
+                    // If no residents found for this apartment, clear the list
+                    resultList.clear();
+                }
+            }
+
+            return resultList;
+
         } catch (SQLException ex) {
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
         }
-        return null;
     }
 
     public boolean editResidentStatus(String id, String status) {
@@ -573,7 +845,6 @@ public class ResidentDAO extends DBContext {
                 + "      ,[password] = ?\n"
                 + "      ,[active] = ?\n"
                 + "      ,[gender] = ?\n"
-                + "      ,[isHomeOwner] = ?\n"
                 + " WHERE id=?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -587,8 +858,7 @@ public class ResidentDAO extends DBContext {
             st.setString(8, r.getPassword());
             st.setString(9, r.getStatus());
             st.setString(10, r.getGender());
-            st.setInt(11, r.isIsHomeOwner() == true ? 1 : 0);
-            st.setString(12, r.getpId());
+            st.setString(11, r.getpId());
             st.executeUpdate();
             return true;
         } catch (SQLException e) {
@@ -678,9 +948,8 @@ public class ResidentDAO extends DBContext {
 
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
-        Resident r=dao.getById("P116");
-        r.setName("thanh");
-        dao.updateRE(r);
+//        System.out.println(dao.editResidentStatus("P100", "2"));
+       dao.deleteResident("P130");
 
     }
 }

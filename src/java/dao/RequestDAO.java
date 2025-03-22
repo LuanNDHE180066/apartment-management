@@ -28,7 +28,7 @@ import util.Util;
 public class RequestDAO extends DBContext {
 
     public List<Request> getAll() {
-        String sql = "select * from Request order by date desc";
+        String sql = "select * from Request order by requestid desc";
         List<Request> list = new ArrayList<>();
         ResidentDAO rd = new ResidentDAO();
         StaffDAO sd = new StaffDAO();
@@ -595,8 +595,12 @@ public class RequestDAO extends DBContext {
 //r.setDetail("hehe");
 //r.setRequestType(rd.getById("R003"));
 //System.out.println(dao.Editrequest(r));
-Util util = new Util();
-Staff list = dao.getTopEmployeeByYear(2025);
-        System.out.println(""+list.getName()+list.getRole().getName()+list.getStatus());
+//Util util = new Util();
+//Staff list = dao.getTopEmployeeByYear(2025);
+//        System.out.println(""+list.getName()+list.getRole().getName()+list.getStatus());
+    List<Request> list = dao.getByResidentID("P101");
+        for (Request request : list) {
+            System.out.println(""+request.getId()+"\n");
+        }
     }
 }

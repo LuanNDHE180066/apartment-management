@@ -90,9 +90,9 @@
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 250px;">
                                     <label for="serviceId">Dịch vụ:</label>
-                                    <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
+                                    <select name="serviceName" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.name}">${item.name}</option>
+                                            <option ${requestScope.serviceName== item.name?'selected':''} value="${item.name}">${item.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>
@@ -115,9 +115,9 @@
                                 </div>
                                 <div style="display: flex; align-items: center; gap: 10px; flex: 1; min-width: 250px;">
                                     <label for="serviceId">Dịch vụ:</label>
-                                    <select name="serviceId" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
+                                    <select name="serviceName" id="serviceId" style="flex: 1; min-width: 150px; padding: 8px; border: 1px solid #ccc; border-radius: 5px; font-size: 16px;">
                                         <c:forEach items="${requestScope.sv}" var="item">
-                                            <option ${requestScope.currentSvId== item.id?'selected':''} value="${item.name}">${item.name}</option>
+                                            <option ${requestScope.serviceName== item.name?'selected':''} value="${item.name}">${item.name}</option>
                                         </c:forEach>
                                     </select>
                                 </div>

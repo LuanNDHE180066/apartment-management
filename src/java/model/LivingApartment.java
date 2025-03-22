@@ -15,22 +15,33 @@ public class LivingApartment {
 //	[Startdate] [date] NOT NULL,
 //	[Enddate] [date] NULL,
 //	[status] [int] NOT NULL,
+
     private String id;
     private Resident rid;
     private Apartment aid;
-    private String startDate,endDate;
+    private String startDate, endDate;
     private int status;
+    private int isRepresent;
+
+    public int getIsRepresent() {
+        return isRepresent;
+    }
+
+    public void setIsRepresent(int isRepresent) {
+        this.isRepresent = isRepresent;
+    }
 
     public LivingApartment() {
     }
 
-    public LivingApartment(String id, Resident rid, Apartment aid, String startDate, String endDate, int status) {
+    public LivingApartment(String id, Resident rid, Apartment aid, String startDate, String endDate, int status, int isRepresent) {
         this.id = id;
         this.rid = rid;
         this.aid = aid;
         this.startDate = startDate;
         this.endDate = endDate;
         this.status = status;
+        this.isRepresent = isRepresent;
     }
 
     public String getId() {
@@ -72,7 +83,7 @@ public class LivingApartment {
     public void setEndDate(String endDate) {
         this.endDate = endDate;
     }
-    
+
     public int getStatus() {
         return status;
     }
@@ -80,5 +91,5 @@ public class LivingApartment {
     public void setStatus(int status) {
         this.status = status;
     }
-    
+
 }

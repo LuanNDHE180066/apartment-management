@@ -17,32 +17,11 @@ public class Feedback {
     private String id;
     private String detail, date;
     private Resident resident;
-    private RequestType requestType;
+    private Service services;
     private int rate;
     private int status;
     private List<String> img;
 
-    public Feedback() {
-    }
-
-    public Feedback(String id, String detail, String date, Resident resident, RequestType requestType, int rate, List<String> img,int status) {
-        this.id = id;
-        this.detail = detail;
-        this.date = date;
-        this.resident = resident;
-        this.requestType = requestType;
-        this.rate = rate;
-        this.img = img;
-        this.status=status;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
     public String getId() {
         return id;
     }
@@ -60,7 +39,7 @@ public class Feedback {
     }
 
     public String getDate() {
-       return this.date;
+        return date;
     }
 
     public void setDate(String date) {
@@ -75,12 +54,12 @@ public class Feedback {
         this.resident = resident;
     }
 
-    public RequestType getRequestType() {
-        return requestType;
+    public Service getServices() {
+        return services;
     }
 
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
+    public void setServices(Service services) {
+        this.services = services;
     }
 
     public int getRate() {
@@ -91,12 +70,34 @@ public class Feedback {
         this.rate = rate;
     }
 
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
     public List<String> getImg() {
         return img;
     }
 
     public void setImg(List<String> img) {
         this.img = img;
+    }
+
+    public Feedback() {
+    }
+
+    public Feedback(String id, String detail, String date, Resident resident, Service services, int rate, List<String> img, int status) {
+        this.id = id;
+        this.detail = detail;
+        this.date = date;
+        this.resident = resident;
+        this.services = services;
+        this.rate = rate;
+        this.img = img;
+        this.status = status;
     }
 
 }

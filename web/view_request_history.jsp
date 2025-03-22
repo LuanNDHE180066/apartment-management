@@ -136,12 +136,10 @@
                                                                 <td>
                                                                     <c:if test="${l.status == 'Waiting'}">
                                                                         <a href="delete-request-resident?id=${l.id}" onclick="return confirm('Are you sure to delete this request?')"><i class="fa-solid fa-trash"></i></a>
-                                                                        </c:if>
-                                                                </td>
-                                                                <td>
+                                                                    </c:if>
                                                                     <c:if test="${l.status == 'Waiting'}">
-                                                                        <a href="update-request?id=${l.id}"><i class="fa-solid fa-pen-to-square"></i></a>
-                                                                        </c:if>
+                                                                        <a style="margin-left: 3px" href="update-request?id=${l.id}"><i class="fa-solid fa-pen-to-square"></i></a>
+                                                                    </c:if>
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
@@ -153,24 +151,17 @@
                                     </div>
                                 </div>
                                 <!-- Pagination Controls -->
-                                <div class="pagination" style="margin: 20px; text-align: center;">
-                                    <c:if test="${currentPage > 1}">
-                                        <a href="?page=${currentPage - 1}" class="btn btn-primary" style="padding: 10px 20px; min-width: 120px;">Previous</a>
-                                    </c:if>
-                                    <c:forEach begin="1" end="${totalPages}" var="i">
-                                        <c:choose>
-                                            <c:when test="${currentPage == i}">
-                                                <span class="btn btn-primary active" style="padding: 10px 20px; min-width: 50px;">${i}</span>
-                                            </c:when>
-                                            <c:otherwise>
-                                                <a href="?page=${i}" class="btn btn-primary" style="padding: 10px 20px; min-width: 50px;">${i}</a>
-                                            </c:otherwise>
-                                        </c:choose>
-                                    </c:forEach>
-                                    <c:if test="${currentPage < totalPages}">
-                                        <a href="?page=${currentPage + 1}" class="btn btn-primary" style="padding: 10px 20px; min-width: 120px;">Next</a>
-                                    </c:if>
-                                </div>
+                                <form method="get" action="viewrequest_history" style="display: flex; align-items: center; gap: 10px;">
+                                    <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
+                                    <select id="page" name="page" onchange="this.form.submit()" 
+                                            style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
+                                        <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
+                                            <option value="${page}" <c:if test="${page == requestScope.currentPage}">selected</c:if>>
+                                                ${page}
+                                            </option>
+                                        </c:forEach>
+                                    </select>
+                                </form> 
 
                             </div>
                         </div>
