@@ -125,34 +125,29 @@ public class AddContract extends HttpServlet {
         for (Part filePart : fileParts) {
             String submittedFileName = filePart.getSubmittedFileName();
 
-            // Kiểm tra nếu filePart không có file nào được chọn
             if (submittedFileName == null || submittedFileName.isEmpty()) {
-                continue; // Bỏ qua file rỗng
+                continue;
             }
 
             hasFile = true;
             String filename = Paths.get(submittedFileName).getFileName().toString();
             String fileExtension = filename.substring(filename.lastIndexOf(".") + 1).toLowerCase();
 
-            // Kiểm tra định dạng file ảnh
             if (!fileExtension.matches("jpg|jpeg")) {
                 request.setAttribute("fileerror", "Only JPG files are allowed.");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);
                 return;
             }
 
-            // Thư mục lưu ảnh
             String uploadPath = getServletContext().getRealPath("/") + "images/contract";
             File uploadDir = new File(uploadPath);
             if (!uploadDir.exists()) {
                 uploadDir.mkdirs();
             }
 
-            // Đổi tên file tránh trùng lặp
             String newFilename = System.currentTimeMillis() + "_" + filename;
             File file = new File(uploadDir, newFilename);
 
-            // Ghi file vào thư mục
             try (InputStream fileContent = filePart.getInputStream(); FileOutputStream outputStream = new FileOutputStream(file)) {
                 byte[] buffer = new byte[1024];
                 int bytesRead;
@@ -160,10 +155,8 @@ public class AddContract extends HttpServlet {
                     outputStream.write(buffer, 0, bytesRead);
                 }
             }
-
-            // Lưu đường dẫn ảnh vào danh sách
             imagePaths.add("images/contract/" + newFilename);
-            System.out.println("Uploaded image: " + newFilename); // Debug log
+            System.out.println("Uploaded image: " + newFilename);
         }
 
         if (company == null) {
@@ -222,7 +215,7 @@ public class AddContract extends HttpServlet {
 //                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
 //                return;
 //            }
-            // Kiểm tra nếu không có ảnh nào được tải lên
+
             if (!hasFile) {
                 request.setAttribute("fileerror", "Please upload at least one image.");
                 request.getRequestDispatcher("addcontract.jsp").forward(request, response);

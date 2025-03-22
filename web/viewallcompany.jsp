@@ -100,7 +100,7 @@
                                                             <th>Website</th>
                                                             <th>Tax code</th>
                                                             <th>Bank</th>
-                                                            <th>Address</th>
+                                                            <th>Status</th>
                                                             <th>Option</th>
                                                         </tr>
                                                     </thead>
@@ -117,7 +117,7 @@
                                                                 <td>${o.website}</td>
                                                                 <td>${o.taxCode}</td>
                                                                 <td>${o.bank}</td>
-                                                                <td>${o.address}</td>
+                                                                <td>${o.status==1?'Active':'Inactive'}</td>
                                                                 <td><a href="update-company?id=${o.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>

@@ -144,8 +144,6 @@
                                             <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
                                             <div id="editor">${param.content != null ? param.content : ""}</div>
                                             <input type="hidden" name="content" id="hiddenContent">
-
-
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
 
