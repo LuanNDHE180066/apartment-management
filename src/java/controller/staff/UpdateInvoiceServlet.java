@@ -56,6 +56,10 @@ public class UpdateInvoiceServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
+        if(request.getParameter("method") !=null){
+            doPost(request, response);
+            return;
+        }
         String id = request.getParameter("invoiceId");
         InvoiceDAO ivd = new InvoiceDAO();
         ivd.switchToPaidStatusById(id);
@@ -72,7 +76,10 @@ public class UpdateInvoiceServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        String id = request.getParameter("invoiceId");
+        InvoiceDAO ivd = new InvoiceDAO();
+        ivd.switchToUnPaidStatusById(id);
+        response.sendRedirect("view-invoice-staff");
     }
 
     /** 

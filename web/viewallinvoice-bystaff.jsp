@@ -133,7 +133,7 @@
                                                                         <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                     </td>
                                                                     <td style="text-align: center   ">
-                                                                        <a href="update-invoice-staff?invoiceId=${item.id}" class="fa-solid fa-check"></a>
+                                                                        <a href="update-invoice-staff?invoiceId=${item.id}" onclick="return confirmRedirectPaid(event)" class="fa-solid fa-check"></a>
                                                                     </td>
 
                                                                 </tr>
@@ -224,7 +224,8 @@
                                                                 <th style="width: 15%;">Due Date</th>
                                                                 <th style="width: 30%;">Description</th>
                                                                 <th style="width: 20%;">Room</th>
-                                                                <th>Action</th>
+                                                                <th>Detail</th>
+                                                                <th>Reversal</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -242,9 +243,12 @@
                                                                         <td style="text-align: center">
                                                                             <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                         </td>
+                                                                        <td style="text-align: center">
+                                                                            <a href="update-invoice-staff?invoiceId=${item.id}&method=post" onclick="return confirmRedirectRevert(event)"><i class="fa-solid fa-exchange-alt"></i></a>
+                                                                        </td>
                                                                     </tr>
                                                                     <tr class="detail-row" style="display: none; background-color: #f9f9f9;">
-                                                                        <td colspan="8" style="padding: 15px; border-top: 2px solid #ddd;">
+                                                                        <td colspan="9" style="padding: 15px; border-top: 2px solid #ddd;">
                                                                             <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Chi tiết hóa đơn #${item.id}</p>
                                                                             <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
                                                                                 <thead>
@@ -262,7 +266,7 @@
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: left">${detail.serviceName}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
-                                                                                                 <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
+                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
                                                                                             </td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
                                                                                                 <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
@@ -323,6 +327,20 @@
                                                                     this.classList.toggle("fa-minus");
                                                                 });
                                                             });
+                                                            function confirmRedirectRevert(event) {
+                                                                event.preventDefault(); // Ngăn chặn điều hướng mặc định
+                                                                let userConfirm = confirm("Bạn có chắc chắn muốn hoàn lại hóa đơn đã thanh toán?");
+                                                                if (userConfirm) {
+                                                                    window.location.href = event.currentTarget.href; // Chuyển hướng nếu OK
+                                                                }
+                                                            }
+                                                            function confirmRedirectPaid(event) {
+                                                                event.preventDefault(); // Ngăn chặn điều hướng mặc định
+                                                                let userConfirm = confirm("Bạn có chắc chắn muốn thanh toán hóa đơn?");
+                                                                if (userConfirm) {
+                                                                    window.location.href = event.currentTarget.href; // Chuyển hướng nếu OK
+                                                                }
+                                                            }
 
     </script>
 </html>
