@@ -143,14 +143,14 @@ public class AddExpenditure extends HttpServlet {
             int categoryId = Integer.parseInt(categoryId_raw);
             String eid = null;
             float totalPrice = Float.parseFloat(totalPrice_raw);
-            FundDAO fd = new FundDAO();
-            Fund f = fd.getById("1");
-            if (totalPrice > f.getValue()) {
-                request.setAttribute("message", "Total fees is higher than Fund of Apartment!");
-                request.setAttribute("status", "false");
-                request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
-                return;
-            }
+//            FundDAO fd = new FundDAO();
+//            Fund f = fd.getById("1");
+//            if (totalPrice > f.getValue()) {
+//                request.setAttribute("message", "Total fees is higher than Fund of Apartment!");
+//                request.setAttribute("status", "false");
+//                request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
+//                return;
+//            }
             Company company = daoCp.getById(companyId);
             Staff chiefAccountant = daoSt.getById(chiefAccountantId);
             Staff currentAdmin = daoSt.getById(AdminId);
