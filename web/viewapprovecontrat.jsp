@@ -14,7 +14,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 
-        <style>
+<!--        <style>
             .table th {
                 text-align: center;
                 background-color: #6B90DA;
@@ -25,6 +25,58 @@
                 margin: 0 5px;
                 color: inherit;
                 text-decoration: none;
+            }
+        </style>-->
+        <style>
+            .table_section {
+                width: 100%;
+                margin: auto;
+                text-align: center;
+            }
+            .table-responsive-sm {
+                display: flex;
+                justify-content: center;
+            }
+            table {
+                width: 90%;
+                border-collapse: collapse;
+                margin: 20px auto;
+                background: #fff;
+                box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+            }
+            th, td {
+                padding: 12px;
+                text-align: center;
+                border: 1px solid #ddd;
+            }
+            th {
+                background: #007bff;
+                color: white;
+            }
+            tr:nth-child(even) {
+                background: #f9f9f9;
+            }
+            h3 {
+                text-align: center;
+                color: #007bff;
+                margin-bottom: 10px;
+            }
+            .approval-link {
+                text-decoration: none;
+                padding: 5px 10px;
+                border-radius: 5px;
+                margin: 5px;
+            }
+            .approval-link i {
+                margin-right: 5px;
+            }
+            .approval-link:first-of-type {
+                background: green;
+                color: white;
+            }
+            .approval-link:last-of-type {
+                background: red;
+                color: white;
             }
         </style>
     </head>
@@ -50,42 +102,39 @@
                                             <h2>Pending Contract Information</h2>
                                         </div>
                                         <div class="table_section padding_infor_info">
+                                            <h3>${requestScope.message}</h3>
                                             <div class="table-responsive-sm">
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>Order creator</th>
+                                                            <th>Order Creator</th>
                                                             <th>Created</th>
                                                             <th>Option</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                    <h3>${requestScope.message}</h3>
-                                                    <c:forEach items="${requestScope.listContract}" var="c">
-                                                        <tr>
-                                                            <td>${c.admin.name}</td>
-                                                            <td>${c.createdAt}</td>
-                                                            <td>
-                                                                <c:if test="${staffId == c.admin.id && (c.adminApproval == null || c.adminApproval == 0)}">
-                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=1">
-                                                                        <i class="fas fa-check"></i> Approve
-                                                                    </a>
-                                                                    <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=2">
-                                                                        <i class="fas fa-times"></i> Reject
-                                                                    </a>
-                                                                </c:if>
-
-                                                                <c:if test="${c.adminApproval == 1}">
-                                                                    <span style="color: green">Approved</span>
-                                                                </c:if>
-
-                                                                <c:if test="${c.adminApproval == 2}">
-                                                                    <span style="color: red">Rejected</span>
-                                                                </c:if>
-                                                            </td>
-                                                        </tr>
-                                                    </c:forEach>
-
+                                                        <c:forEach items="${requestScope.listContract}" var="c">
+                                                            <tr>
+                                                                <td>${c.admin.name}</td>
+                                                                <td>${c.createdAt}</td>
+                                                                <td>
+                                                                    <c:if test="${staffId == c.admin.id && (c.adminApproval == null || c.adminApproval == 0)}">
+                                                                        <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=1">
+                                                                            <i class="fas fa-check"></i> Approve
+                                                                        </a>
+                                                                        <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=2">
+                                                                            <i class="fas fa-times"></i> Reject
+                                                                        </a>
+                                                                    </c:if>
+                                                                    <c:if test="${c.adminApproval == 1}">
+                                                                        <span style="color: green; font-weight: bold;">Approved</span>
+                                                                    </c:if>
+                                                                    <c:if test="${c.adminApproval == 2}">
+                                                                        <span style="color: red; font-weight: bold;">Rejected</span>
+                                                                    </c:if>
+                                                                </td>
+                                                            </tr>
+                                                        </c:forEach>
                                                     </tbody>
                                                 </table>
                                             </div>

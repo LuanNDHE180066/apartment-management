@@ -6,6 +6,7 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
+
 <html lang="en">
     <head>
         <!-- basic -->
@@ -15,7 +16,7 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <!-- site metas -->
-<title>Apartment management</title>        <meta name="keywords" content="">
+        <title>Apartment management</title>        <meta name="keywords" content="">
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- site icon -->
@@ -38,9 +39,12 @@
         <link rel="stylesheet" href="js/semantic.min.css" />
         <!-- fancy box js -->
         <link rel="stylesheet" href="css/jquery.fancybox.css" />
+        <script src="https://cdn.ckeditor.com/ckeditor5/39.0.1/decoupled-document/ckeditor.js"></script>
         <!--[if lt IE 9]>
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+        
+
         <![endif]-->
         <style> body {
                 font-family: Arial, sans-serif;
@@ -111,15 +115,17 @@
 
 
     </head>
+
+
     <body class="dashboard dashboard_1">
         <div class="full_container">
             <div class="inner_container">
-              <%@include file="sidebar.jsp" %>
+                <%@include file="sidebar.jsp" %>
                 <!-- end sidebar -->
                 <!-- right content -->
                 <div id="content">
                     <!-- topbar -->
-                       <%@include file="topbar.jsp" %>
+                    <%@include file="topbar.jsp" %>
                     <!-- end topbar -->
                     <!-- Form to Add New Employee -->
                     <div class="container mt-5">
@@ -135,9 +141,12 @@
                                         </div>
                                         <div class="form-group">
                                             <label for="content">Content</label>
-                                            <textarea value="" style="width: 100%" id="detail" name="content" placeholder="Enter content" rows="5" cols="50" required>${param.content}</textarea>
+                                            <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
+                                            <div id="editor">${param.content != null ? param.content : ""}</div>
+                                            <input type="hidden" name="content" id="hiddenContent">
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
+
                                         <div class="form-group">
                                             <label for="date">Date</label>
                                             <input type="date" id="date" name="date" value="${param.date}" required />
@@ -151,19 +160,24 @@
                                         <div class="form-group">
                                             <label for="category">Category</label>
                                             <select id="category" name="category" required>
-                                                <c:if test="${requestScope.categories == null}">
-                                                    <option value="Apartment News">Apartment News</option>
-                                                </c:if>
-                                                <c:forEach items="${requestScope.categories}" var="category">
-                                                    <option value="${category}">${category}</option>   
-                                                </c:forEach>                                   
+                                                <c:set var="selectedCategory" value="${not empty requestScope.news ? requestScope.news.category : ''}"/>
+
+                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Apartment News</option>
+                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Events</option>
+                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Maintenance Updates</option>
+                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Community Announcements</option>
+                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>General Notices</option>
                                             </select>
                                         </div>
-                                        <div class="form-group">
-                                            <label for="file">Image</label>
-                                            <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
-                                            <span style="color: red">${requestScope.fileerror}</span>
-                                        </div>
+
+
+
+
+                                        <!--                                        <div class="form-group">
+                                                                                    <label for="file">Image</label>
+                                                                                    <input style="margin-bottom: 5px;margin-top: 5px;" type="file" name="file" id="file" accept=".jpg, .jpeg">
+                                                                                    <span style="color: red">${requestScope.fileerror}</span>
+                                                                                </div>-->
                                         <div class="form-group">
                                             <label for="author">Author</label>
                                             <input type="text" id="author" name="author" value="${sessionScope.person.name}"  readonly />
@@ -189,5 +203,72 @@
         <script src="js/bootstrap.min.js"></script>
         <!-- custom js -->
         <script src="js/custom.js"></script>
+        <script>
+            // Hàm upload ?nh
+            class MyUploadAdapter {
+                constructor(loader) {
+                    this.loader = loader;
+                }
+
+                upload() {
+                    return this.loader.file
+                            .then(file => new Promise((resolve, reject) => {
+                                    const formData = new FormData();
+                                    formData.append('upload', file); // Ph?i trùng v?i request.getPart("upload") trong Servlet
+
+                                    fetch('http://localhost:8080/apartment-management/upload-img-news', {// URL servlet upload
+                                        method: 'POST',
+                                        body: formData
+                                    })
+                                            .then(response => {
+                                                if (!response.ok) {
+                                                    throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
+                                                }
+                                                return response.json();
+                                            })
+                                            .then(result => {
+                                                if (!result || !result.url) {
+                                                    return reject('Upload ?nh th?t b?i!');
+                                                }
+                                                resolve({
+                                                    default: result.url  // ???ng d?n ?nh tr? v? t? server
+                                                });
+                                            })
+                                            .catch(error => {
+                                                console.error('L?i upload ?nh:', error);
+                                                reject('Không th? upload ?nh!');
+                                            });
+                                }));
+                }
+            }
+
+// Gán plugin upload ?nh vào CKEditor
+            function MyCustomUploadAdapterPlugin(editor) {
+                editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
+                    return new MyUploadAdapter(loader);
+                };
+            }
+
+// Kh?i t?o CKEditor
+            DecoupledEditor
+                    .create(document.querySelector('#editor'), {
+                        extraPlugins: [MyCustomUploadAdapterPlugin]
+                    })
+                    .then(editor => {
+                        const toolbarContainer = document.querySelector('#toolbar-container');
+                        toolbarContainer.appendChild(editor.ui.view.toolbar.element);
+
+                        // L?u n?i dung vào input ?n khi submit form
+                        document.querySelector("form").addEventListener("submit", function () {
+                            document.querySelector("#hiddenContent").value = editor.getData();
+                        });
+
+                    })
+                    .catch(error => {
+                        console.error('CKEditor l?i:', error);
+                    });
+
+        </script>
+
     </body>
 </html>

@@ -355,6 +355,18 @@ public class InvoiceDAO extends DBContext {
             System.out.println(e);
         }
     }
+    public void switchToUnPaidStatusById(String id) {
+        String sql = "update invoice set status =0 where id =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            st.executeUpdate();
+            FundDAO fd = new FundDAO();
+            fd.revenueFundByInvoice(id);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
 
     public List<Integer> getMonthlyRevenueByYear(int year) {
         String sql = "select MONTH(invoicedate) as month, sum(total) as sum from invoice where year(invoicedate) = ? and status =1 group by month(invoicedate) order by month";
@@ -451,7 +463,6 @@ public class InvoiceDAO extends DBContext {
         }
         return rs;
     }
-
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
 //        System.out.println(id.getByResidentId("P101").size());

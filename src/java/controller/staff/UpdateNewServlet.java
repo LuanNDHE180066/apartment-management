@@ -110,35 +110,35 @@ public class UpdateNewServlet extends HttpServlet {
         String date = request.getParameter("date");
         String category = request.getParameter("category");
         String auther = request.getParameter("auther");
-        Part filePart=request.getPart("file");
+//        Part filePart=request.getPart("file");
         NewDAO ndao = new NewDAO();
         News news = ndao.getNewById(id);
-        String image=news.getImage();
-        if(filePart!=null && filePart.getSize()>0){
-            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-            if(!fileExtention.matches("jpg|jpeg")){
-                request.setAttribute("fileerror", "Only jpg");
-                request.getRequestDispatcher("updatenews.jsp").forward(request, response);
-                return;
-            }
-            String uploadpath=getServletContext().getRealPath("/")+"images/news";
-            File uploadDir=new File(uploadpath);
-            if(!uploadDir.exists()){
-                uploadDir.mkdirs();
-            }
-            File file= new File(uploadDir, filename);
-            try(InputStream fileContent=filePart.getInputStream();
-                    FileOutputStream outputStream=new FileOutputStream(file)) {
-                byte[] buffer=new byte[1024];
-                int byteread;
-                while((byteread=fileContent.read(buffer))!= -1){
-                    outputStream.write(buffer, 0, byteread);
-                }
-                
-            }
-            image = "images/news/" + filename;           
-        }
+//        String image=news.getImage();
+//        if(filePart!=null && filePart.getSize()>0){
+//            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+//            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+//            if(!fileExtention.matches("jpg|jpeg")){
+//                request.setAttribute("fileerror", "Only jpg");
+//                request.getRequestDispatcher("updatenews.jsp").forward(request, response);
+//                return;
+//            }
+//            String uploadpath=getServletContext().getRealPath("/")+"images/news";
+//            File uploadDir=new File(uploadpath);
+//            if(!uploadDir.exists()){
+//                uploadDir.mkdirs();
+//            }
+//            File file= new File(uploadDir, filename);
+//            try(InputStream fileContent=filePart.getInputStream();
+//                    FileOutputStream outputStream=new FileOutputStream(file)) {
+//                byte[] buffer=new byte[1024];
+//                int byteread;
+//                while((byteread=fileContent.read(buffer))!= -1){
+//                    outputStream.write(buffer, 0, byteread);
+//                }
+//                
+//            }
+//            image = "images/news/" + filename;           
+//        }
         try {
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             ZoneId zone = ZoneId.systemDefault();
@@ -156,7 +156,7 @@ public class UpdateNewServlet extends HttpServlet {
             ;
         }
         StaffDAO sdao = new StaffDAO();
-        News anew = new News(id, title, content, source, category, image, sdao.getById(auther), date);
+        News anew = new News(id,title, content,source,date,category,sdao.getById(auther));
         if (title.trim().isEmpty()) {
             request.setAttribute("titleerror", "Title can not be empty.");
             request.setAttribute("news", news);

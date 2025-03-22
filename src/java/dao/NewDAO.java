@@ -143,7 +143,7 @@ public class NewDAO extends DBContext {
         }
     }
     public List<News> filterNews(String title, String startDate, String endDate) {
-        String sql = "select * from News where 1 = 1 and Getdate() > date";
+        String sql = "select * from News where 1 = 1 and date <= GETDATE() ";
         FeedbackDAO dao = new FeedbackDAO();
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         if (title != "") {
@@ -160,7 +160,7 @@ public class NewDAO extends DBContext {
             sql += " and date <= '" + formatDate + "'";
         }
         
-        sql += " order by date desc";
+        sql += " ORDER BY date DESC, id DESC";
         List<News> list = new ArrayList<>();
         StaffDAO daoSt = new StaffDAO();
         try {
@@ -185,16 +185,16 @@ public class NewDAO extends DBContext {
     }
 
     public boolean updateNews(News news) {
-        String sql = "update news set title = ?, date = ?, image = ?, source = ?, content = ?, category = ?  where id = ?";
+        String sql = "update news set title = ?, date = ?, source = ?, content = ?, category = ?  where id = ?";
         try {
             PreparedStatement ps = connection.prepareCall(sql);
             ps.setString(1, news.getTitle());
             ps.setString(2, news.getDate());
-            ps.setString(3, news.getImage());
-            ps.setString(4, news.getSource());
-            ps.setString(5, news.getContent());
-            ps.setString(6, news.getCategory());
-            ps.setString(7, news.getId());
+//            ps.setString(3, news.getImage());
+            ps.setString(3, news.getSource());
+            ps.setString(4, news.getContent());
+            ps.setString(5, news.getCategory());
+            ps.setString(6, news.getId());
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             Logger.getLogger(NewDAO.class.getName()).log(Level.SEVERE, null, ex);
@@ -203,30 +203,24 @@ public class NewDAO extends DBContext {
     }
 
     public int getNewId() {
-        String sql = "select id from news";
-        try {
-            PreparedStatement ps = connection.prepareStatement(sql);
-            ResultSet rs = ps.executeQuery();
-            List<Integer> li = new ArrayList<>();
-            int max = 1;
-            while (rs.next()) {
-                li.add(Integer.parseInt(rs.getString("id")));
-                for (Integer in : li) {
-                    if (in > max) {
-                        max = in;
-                    }
-                }
-            }
-            return max + 1;
-        } catch (SQLException ex) {
-
+    String sql = "SELECT MAX(id) AS max_id FROM news";
+    try {
+        PreparedStatement ps = connection.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+        if (rs.next()) {
+            int maxId = rs.getInt("max_id");
+            return maxId + 1;
         }
-        return 1;
+    } catch (SQLException ex) {
+        ex.printStackTrace(); // In lỗi ra console để dễ debug
     }
+    return 1; // Trả về 1 nếu bảng chưa có dữ liệu hoặc xảy ra lỗi
+}
+
 
     public boolean insertNews(News anew) {
-        String sql = "insert into News(Id,title,Content,[source],category,image,sId,date) "
-                + "values(?,?,?,?,?,?,?,?)";
+        String sql = "insert into News(Id,title,Content,[source],category,sId,date) "
+                + "values(?,?,?,?,?,?,?)";
         int id = this.getNewId();
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
@@ -235,9 +229,9 @@ public class NewDAO extends DBContext {
             ps.setString(3, anew.getContent());
             ps.setString(4, anew.getSource());
             ps.setString(5, anew.getCategory());
-            ps.setString(6, anew.getImage());
-            ps.setString(7, anew.getStaff().getId());
-            ps.setString(8, anew.getDate());
+//            ps.setString(6, anew.getImage());
+            ps.setString(6, anew.getStaff().getId());
+            ps.setString(7, anew.getDate());
             return ps.executeUpdate() > 0;
         } catch (SQLException ex) {
             System.out.println("" + ex.getMessage());
@@ -248,15 +242,15 @@ public class NewDAO extends DBContext {
     public static void main(String[] args) {
         NewDAO daoN = new NewDAO();
         StaffDAO stdao = new StaffDAO();
-        String id = "10";
+        String id = "2";
         String title = "Khởi động chương trình tình nguyện mùa hè 2026";
         String content = "Nội dung cho bản ghi Phung Nhat QUang 171";
-        String source = "Nguồn 5";
-        String category = "Hoat Dong";
-        String image = "cc";
+        String source = "Apartment News";
+        String category = "Apartment News";
+//        String image = "cc";
         Staff s = stdao.getById("S1002");
         String date = "02/12/2025";
-        News news = new News(id, title, content, source, category, image, s, date);
-        System.out.println(daoN.filterNews("a","","").size());
+        News news = new News(id, title, content, source, category, s, date);
+        System.out.println(daoN.insertNews(news));
     }
 }

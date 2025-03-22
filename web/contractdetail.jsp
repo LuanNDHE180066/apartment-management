@@ -89,18 +89,18 @@
                 background-color: #0056b3;
             }
             .modal-body {
-    text-align: center;
-    padding: 0;
-}
+                text-align: center;
+                padding: 0;
+            }
 
-.modal-body img {
-    width: 100%; /* Đảm bảo ảnh chiếm toàn bộ modal */
-    max-width: 900px; /* Giới hạn kích thước tối đa */
-    height: auto;
-    display: block;
-    margin: auto;
-    border-radius: 10px;
-}
+            .modal-body img {
+                width: 100%; /* Đảm bảo ảnh chiếm toàn bộ modal */
+                max-width: 900px; /* Giới hạn kích thước tối đa */
+                height: auto;
+                display: block;
+                margin: auto;
+                border-radius: 10px;
+            }
 
         </style>
     </head>
@@ -131,9 +131,35 @@
 
                             <!-- Contract Image -->
                             <div class="contract-image">
-                                <p><strong>Image:</strong></p>
-                                <img src="${requestScope.contract.image}" alt="Contract Image" data-toggle="modal" data-target="#imageModal" />
+                                <p><strong>Images:</strong></p>
+                                <c:if test="${not empty requestScope.listimg}">
+                                    <!-- Hiển thị ảnh đầu tiên làm ảnh đại diện -->
+                                    <img src="${requestScope.listimg[0]}" alt="Contract Image" id="previewImage" 
+                                         data-toggle="modal" data-target="#imageModal"
+                                         style="width: 250px; height: auto; margin: 5px; cursor: pointer;" />
+                                </c:if>
                             </div>
+
+                            <!-- Modal hiển thị toàn bộ ảnh -->
+                            <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+                                <div class="modal-dialog modal-lg" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title" id="imageModalLabel">Contract Images</h5>
+                                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                                <span aria-hidden="true">&times;</span>
+                                            </button>
+                                        </div>
+                                        <div class="modal-body text-center">
+                                            <c:forEach var="imgPath" items="${requestScope.listimg}">
+                                                <img src="${imgPath}" alt="Contract Image" class="modal-image"
+                                                     style="width: 100%; max-width: 600px; margin-bottom: 10px;" />
+                                            </c:forEach>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                         </div>
 
                         <div class="back-button">
@@ -146,7 +172,7 @@
         </div>
 
         <!-- Modal -->
-        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+<!--        <div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -156,11 +182,14 @@
                         </button>
                     </div>
                     <div class="modal-body">
-                        <img src="${requestScope.contract.image}" alt="Contract Image" />
+                        <c:forEach var="imgPath" items="${requestScope.listimg}">
+                            <img src="${imgPath}" alt="Contract Image" style="width: 100%; height: auto; margin-bottom: 10px;"/>
+                        </c:forEach>
                     </div>
+
                 </div>
             </div>
-        </div>
+        </div>-->
 
         <!-- jQuery -->
         <script src="js/jquery.min.js"></script>
