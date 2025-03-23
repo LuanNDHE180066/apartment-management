@@ -1,42 +1,42 @@
 <!DOCTYPE html>
-<%@taglib
-    prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <html lang="en">
-        <head>
-            <!-- basic -->
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <!-- mobile metas -->
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-            <!-- site metas -->
-            <title>Apartment management</title>
-            <link rel="icon" href="images/fevicon.png" type="image/png" />
-            <!-- bootstrap css -->
-            <link rel="stylesheet" href="css/bootstrap.min.css" />
-            <!-- site css -->
-            <link rel="stylesheet" href="style.css" />
-            <!-- responsive css -->
-            <link rel="stylesheet" href="css/responsive.css" />
-            <!-- color css -->
-            <link rel="stylesheet" href="css/colors.css" />
-            <!-- select bootstrap -->
-            <link rel="stylesheet" href="css/bootstrap-select.css" />
-            <!-- scrollbar css -->
-            <link rel="stylesheet" href="css/perfect-scrollbar.css" />
-            <!-- custom css -->
-            <link rel="stylesheet" href="css/custom.css" />
-            <!-- calendar file css -->
-            <link rel="stylesheet" href="js/semantic.min.css" />
-            <!-- fancy box js -->
-            <link rel="stylesheet" href="css/jquery.fancybox.css" />
-            <!--[if lt IE 9]>
-              <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-              <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-            <![endif]-->
-            <style>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+
+<html lang="en">
+    <head>
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- site metas -->
+        <title>Chỉnh sửa khoản chi</title>        
+        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <!-- bootstrap css -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <!-- site css -->
+        <link rel="stylesheet" href="style.css" />
+        <!-- responsive css -->
+        <link rel="stylesheet" href="css/responsive.css" />
+        <!-- color css -->
+        <link rel="stylesheet" href="css/colors.css" />
+        <!-- select bootstrap -->
+        <link rel="stylesheet" href="css/bootstrap-select.css" />
+        <!-- scrollbar css -->
+        <link rel="stylesheet" href="css/perfect-scrollbar.css" />
+        <!-- custom css -->
+        <link rel="stylesheet" href="css/custom.css" />
+        <!-- calendar file css -->
+        <link rel="stylesheet" href="js/semantic.min.css" />
+        <!-- fancy box js -->
+        <link rel="stylesheet" href="css/jquery.fancybox.css" />
+        <link rel="stylesheet" href="<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
                 body {
-                    font-family: Arial, sans-serif;
+            font-family: 'Roboto', sans-serif !important;
                     background-color: #f4f4f9;
                     margin: 0;
                     padding: 0px;
@@ -134,12 +134,13 @@
                                             <input type="text" id="staffID" name="staffID" value="${expenditure.id}" hidden=""/>
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="title">Title</label>
+                                                    <label for="title">Tiều đề
+                                                    </label>
                                                     <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
                                                     <input type="text" id="title" hidden="" name="id" placeholder="Enter title" value="${expenditure.id}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="totalFees">Total Fees</label>
+                                                    <label for="totalFees">Tổng chi</label>
                                                     <input type="number" id="totalFees" min="0"
                                                            name="totalPrice" step="0.01" placeholder="Enter total fees" value="${expenditure.totalPrice}" required=""/>
                                                 </div>
@@ -148,11 +149,11 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="approveDate">Approval Date</label>
+                                                    <label for="approveDate">Ngày duyệt</label>
                                                     <input type="date" id="approveDate" name="approveDate" value="${expenditure.approveddate}" required=""/>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="paymentDate">Payment Date</label>
+                                                    <label for="paymentDate">Ngày giải ngân</label>
                                                     <input type="date" id="paymentDate" name="paymentDate" value="${expenditure.paymentdate}" required=""/>
                                                 </div>
                                             </div>
@@ -160,7 +161,7 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="category">Category</label>
+                                                    <label for="category">Loại phí</label>
                                                     <select id="category" name="category" required="">
                                                         <c:forEach items="${sessionScope.listExpenseCategory}" var="cat">
                                                             <option value="${cat.id}" ${cat.id == expenditure.category.id ? 'selected' : ''}>${cat.categoryName}</option>
@@ -168,7 +169,7 @@
                                                     </select>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="company">Company</label>
+                                                    <label for="company">Công ty</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
                                                             <option value="${cp.id}" ${expenditure.company.id == cp.id?'selected':''}>${cp.name}</option>
@@ -180,13 +181,13 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="invoiceCreator">Expenditure Creator</label>
+                                                    <label for="invoiceCreator">Người tạo</label>
                                                     <input type="text" id="invoiceCreator" name="invoiceCreator" 
                                                            placeholder="Enter invoice creator" value="${expenditure.createdStaff.name}" readonly="" required=""/>
                                                     <input hidden="" type="text" name="createdStaff"?hidden="" value="${expenditure.createdStaff.id}"><!-- comment -->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="chiefAccountant">Chief Accountant</label>
+                                                    <label for="chiefAccountant">Kế toán</label>
                                                     <select id="chiefAccountant" name="chiefAccountant">
                                                         <c:forEach items="${sessionScope.listAccountant}" var="accountant">
                                                             <option value="${accountant.id}" ${accountant.id == expenditure.chiefAccountantId.id?'selected':''}>${accountant.name}</option>
@@ -198,7 +199,7 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="admin">Admin</label>
+                                                    <label for="admin">Giám đốc</label>
                                                     <select id="admin" name="admin">
                                                         <c:forEach items="${sessionScope.listAdmin}" var="admin">
                                                             <option value="${admin.id}" ${admin.id == expenditure.currentAdmin.id?'selected':''}>${admin.name}</option>
@@ -208,12 +209,13 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label for="note">Note</label>
+                                            <label for="note">Ghi chú</label>
                                             <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Update</button>
+                                            <button type="submit">Lưu</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
+                                            <span><a href="expenditure-report">Quay lại</a></span>
                                         </div>
                                     </form>
                                 </div>

@@ -9,7 +9,7 @@
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- site metas -->
-        <title>Expense Category</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <title>Quản lý loại khoản chi</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <!-- site css -->
@@ -44,7 +44,7 @@
                 margin-bottom: 15px; /* Giảm khoảng cách giữa các phần tử */
             }
              .table td{
-                 text-align: center;
+                 text-align: left;
                  color: black;
                  font-weight: 300;
             }
@@ -71,7 +71,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Expense Category</h2>
+                                                <h2>Các loại phí</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
@@ -82,9 +82,9 @@
                                                         <input type="text" value="${param.search}" class="form-control" name="search" placeholder="Search by Category Name">
                                                     </div>
                                                     <div class="col-md-2 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
                                                         <span  class="btn btn-primary" style="display: inline-block; margin-left:10px ">
-                                                            <a style="color: white" href="add-expense-category" >Add expense category</a></span>
+                                                            <a style="color: white" href="add-expense-category" >Thêm mới</a></span>
                                                     </div>
                                                 </div>
                                             </form>
@@ -95,8 +95,8 @@
                                                     <thead>
                                                         <tr>
                                                             <th style="width: 5%;">ID</th>
-                                                            <th style="width: 15%;">Category Name</th>
-                                                            <th style="width: 45%;">Category Description</th>
+                                                            <th style="width: 15%;">Tên loại phí</th>
+                                                            <th style="width: 45%;">Mô tả</th>
                                                             <th>Option</th>
                                                         </tr>
                                                     </thead>
@@ -115,7 +115,7 @@
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
-                                                    <a href="view-expenditure" class="btn btn-primary">Back</a>
+                                                    <a href="expenditure-report" class="btn btn-primary">Quay lại</a>
                                             </div>
                                         </div>
                                     </div>

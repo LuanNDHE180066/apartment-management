@@ -61,7 +61,9 @@ public class ViewPendingExpenditureDetail extends HttpServlet {
         HistoryExpenditureDAO daoEx = new HistoryExpenditureDAO();
         HistoryExpenditure he = daoEx.getExpenditureById(id);
         
+        String type = request.getParameter("type");
         
+        request.setAttribute("type", type != null ? "1": "0");
         request.setAttribute("expenditure", he);
         request.getRequestDispatcher("viewDetailPendingExpenditure.jsp").forward(request, response);
                 
