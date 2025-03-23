@@ -15,6 +15,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.DecimalFormat;
 import model.Account;
 import model.Expenditure;
 import model.HistoryExpenditure;
@@ -79,96 +80,131 @@ public class UpdatePendingExpenditureStatus extends HttpServlet {
             response.sendRedirect("index.jsp");
             return;
         }
+        DecimalFormat df = new DecimalFormat("#,###"); // Định dạng kiểu số với dấu phân cách là dấu phẩy
+        String formattedTotalPrice = df.format(he.getTotalPrice()).replace(",", ".") + " VNĐ"; // Thay dấu phẩy bằng dấu chấm và thêm VNĐ
 
         String emailContentInsert = "<html>"
+                + "<head>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }"
+                + "h2 { color: #333; }"
+                + "table { border-collapse: collapse; width: 100%; background-color: #ffffff; }"
+                + "th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }"
+                + "th { background-color: #003366; color: white; }"
+                + "tr:nth-child(even) { background-color: #f2f2f2; }"
+                + "tr:hover { background-color: #ddd; }"
+                + "p { color: #555; font-size: 14px; }"
+                + ".footer { margin-top: 20px; text-align: center; }"
+                + ".contact-info { color: #ff9800; }"
+                + "</style>"
+                + "</head>"
                 + "<body>"
                 + "<h2>Thông báo về chi phí</h2>"
-                + "<table style='border-collapse: collapse; width: 100%;'>"
+                + "<table>"
                 + "<tr>"
-                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Thông tin</th>"
-                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Chi tiết</th>"
+                + "<th>Thông tin</th>"
+                + "<th>Chi tiết</th>"
                 + "</tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>ID</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getId() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tiêu đề</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTitle() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Trạng thái phê duyệt Kế toán trưởng</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + (he.getChiefAccountantApproveStatus() == 1 ? "Đã chấp nhận" : "Đã từ chối") + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tổng giá</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTotalPrice() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ghi chú</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getNote() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Danh mục chi phí</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCategory().getCategoryName() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Công ty</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCompany().getName() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày tạo</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedDate() + "</td></tr>"
+                + "<tr><td>Tiêu đề</td>"
+                + "<td>" + he.getTitle() + "</td></tr>"
+                + "<tr><td>Trạng thái phê duyệt</td>"
+                + "<td>" + ((he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1) ? "Đã phê duyệt" : "Đã từ chối") + "</td></tr>"
+                + "<tr><td>Tổng giá</td>"
+                + "<td>" + formattedTotalPrice + "</td></tr>"
+                + "<tr><td>Ghi chú</td>"
+                + "<td>" + he.getNote() + "</td></tr>"
+                + "<tr><td>Danh mục chi phí</td>"
+                + "<td>" + he.getCategory().getCategoryName() + "</td></tr>"
+                + "<tr><td>Công ty</td>"
+                + "<td>" + he.getCompany().getName() + "</td></tr>"
+                + "<tr><td>Ngày tạo</td>"
+                + "<td>" + he.getCreatedDate() + "</td></tr>"
                 + "</table>"
                 + "<p>Vui lòng kiểm tra và xác nhận chi phí này.</p>"
+                + "<div class='footer'>"
+                + "<p>Đây là email gửi từ động từ hệ thống của BaViApartment.</p>"
+                + "<p class='contact-info'>Mọi thông tin cần hỗ trợ từ hệ thống BaViApartment, vui lòng liên hệ:</p>"
+                + "<p class='contact-info'>Hotline: 0877165299 | Email: baviapartment88@gmail.com</p>"
+                + "</div>"
                 + "</body>"
                 + "</html>";
 
         String emailContentUpdate = "<html>"
+                + "<head>"
+                + "<style>"
+                + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }"
+                + "h2 { color: #333; }"
+                + "table { border-collapse: collapse; width: 100%; background-color: #ffffff; }"
+                + "th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }"
+                + "th { background-color: #003366; color: white; }"
+                + "tr:nth-child(even) { background-color: #f2f2f2; }"
+                + "tr:hover { background-color: #ddd; }"
+                + "p { color: #555; font-size: 14px; }"
+                + ".footer { margin-top: 20px; text-align: center; }"
+                + ".contact-info { color: #ff9800; }"
+                + "</style>"
+                + "</head>"
                 + "<body>"
                 + "<h2>Cập nhật thông tin chi phí</h2>"
-                + "<table style='border-collapse: collapse; width: 100%;'>"
+                + "<table>"
                 + "<tr>"
-                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Thông tin</th>"
-                + "<th style='border: 1px solid #dddddd; text-align: left; padding: 8px;'>Chi tiết</th>"
+                + "<th>Thông tin</th>"
+                + "<th>Chi tiết</th>"
                 + "</tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>ID</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getId() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tiêu đề</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTitle() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày cập nhật</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getModifiedDate() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Trạng thái phê duyệt Kế toán trưởng</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + (he.getChiefAccountantApproveStatus() == 1 ? "Đã chấp nhận" : "Đã từ chối") + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Tổng giá</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getTotalPrice() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ghi chú</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getNote() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Danh mục chi phí</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCategory().getCategoryName() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Công ty</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCompany().getName() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Người tạo</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedStaff().getEmail() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Người sửa đổi</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getModifiedBy().getEmail() + "</td></tr>"
-                + "<tr><td style='border: 1px solid #dddddd; padding: 8px;'>Ngày tạo</td>"
-                + "<td style='border: 1px solid #dddddd; padding: 8px;'>" + he.getCreatedDate() + "</td></tr>"
+                + "<tr><td>Tiêu đề</td>"
+                + "<td>" + he.getTitle() + "</td></tr>"
+                + "<tr><td>Ngày cập nhật</td>"
+                + "<td>" + he.getModifiedDate() + "</td></tr>"
+                + "<tr><td>Trạng thái phê duyệt</td>"
+                + "<td>" + ((he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1) ? "Đã chấp nhận" : "Đã từ chối") + "</td></tr>"
+                + "<tr><td>Tổng giá</td>"
+                + "<td>" + formattedTotalPrice + " VNĐ</td></tr>"
+                + "<tr><td>Ghi chú</td>"
+                + "<td>" + he.getNote() + "</td></tr>"
+                + "<tr><td>Danh mục chi phí</td>"
+                + "<td>" + he.getCategory().getCategoryName() + "</td></tr>"
+                + "<tr><td>Công ty</td>"
+                + "<td>" + he.getCompany().getName() + "</td></tr>"
+                + "<tr><td>Người tạo</td>"
+                + "<td>" + he.getCreatedStaff().getEmail() + "</td></tr>"
+                + "<tr><td>Người sửa đổi</td>"
+                + "<td>" + he.getModifiedBy().getEmail() + "</td></tr>"
+                + "<tr><td>Ngày tạo</td>"
+                + "<td>" + he.getCreatedDate() + "</td></tr>"
                 + "</table>"
                 + "<p>Vui lòng kiểm tra và xác nhận thông tin chi phí đã cập nhật.</p>"
+                + "<div class='footer'>"
+                + "<p>Đây là email gửi từ động từ hệ thống của BaViApartment.</p>"
+                + "<p class='contact-info'>Mọi thông tin cần hỗ trợ từ hệ thống BaViApartment, vui lòng liên hệ:</p>"
+                + "<p class='contact-info'>Hotline: 0877165299 | Email: baviapartment88@gmail.com</p>"
+                + "</div>"
                 + "</body>"
                 + "</html>";
-
-        if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("update")) {
-            String newId = daoE.generateExpenditureId();
-            SendEmail send = new SendEmail();
-            send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
-            daoE.updateExpenditure(he);
-        } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
-            SendEmail send = new SendEmail();
-            if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
-                send.sendEmail(he.getModifiedBy().getEmail(), "Your update expenditure request has been deny expenditure: " + he.getTitle(),
-                        "Please check and review the update expenditure request: " + he.getTitle());
+        SendEmail send = new SendEmail();
+        if (he.getAction().equalsIgnoreCase("update")) {
+            if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1) {
+                send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
+                daoE.updateExpenditure(he);
+            } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
+                if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
+                    String denialSubject = "Your update expenditure request has been denied: " + he.getTitle();
+                    String denialMessage = "Please check and review the update expenditure request: " + he.getTitle() + "<br/>" + emailContentInsert;
+                    send.sendEmail(he.getModifiedBy().getEmail(), denialSubject, denialMessage);
+                }
             }
-        }
-
-        if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1 && he.getAction().equalsIgnoreCase("insert")) {
-            String newId = daoE.generateExpenditureId();
-            SendEmail send = new SendEmail();
-            send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentUpdate);
-            he.setId(newId);
-            daoHe.updateEidAfterInsert(he);
-            daoE.addExpenditure(he);
-        } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
-            SendEmail send = new SendEmail();
-            if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
-                send.sendEmail(he.getModifiedBy().getEmail(), "Your expenditure request has been deny expenditure: " + he.getTitle(),
-                        "Please check and review the expenditure" + he.getTitle());
+        } else if (he.getAction().equalsIgnoreCase("insert")) {
+            if (he.getChiefAccountantApproveStatus() == 1 && he.getCurrentAdminApproveStatus() == 1) {
+                String newId = daoE.generateExpenditureId();
+                he.setId(newId);
+                send.sendEmail(he.getModifiedBy().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentUpdate);
+                daoHe.updateEidAfterInsert(he);
+                daoE.addExpenditure(he);
+            } else if (he.getChiefAccountantApproveStatus() == -1 || he.getCurrentAdminApproveStatus() == -1) {
+                if (he.getModifiedBy().getId().equalsIgnoreCase(he.getCreatedStaff().getId())) {
+                    String denialSubject = "Your expenditure request has been denied: " + he.getTitle();
+                    String denialMessage = "Please check and review the expenditure: " + he.getTitle() + "<br/>" + emailContentUpdate;
+                    send.sendEmail(he.getModifiedBy().getEmail(), denialSubject, denialMessage);
+                }
             }
         }
 
