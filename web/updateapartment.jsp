@@ -186,7 +186,7 @@
                                                 </c:forEach>
                                             </div>
                                             <input type="text" id="livingResident" name="livingResident" placeholder="Select Resident..." readonly class="clickable" onclick="openResidentModal()">
-                                            <input type="hidden" id="livingResidentIds" value="" name="livingResidentIds">
+                                            <input type="hidden" id="livingResidentIds" value="${requestScope.livingResidentIds}" name="livingResidentIds">
                                         </div>
                                     </div>
 
@@ -294,6 +294,9 @@
         </div>
 
         <script>
+            
+            
+         
 
             const representativeId = '${requestScope.representPersonId}';
             // Initialize selected residents from server

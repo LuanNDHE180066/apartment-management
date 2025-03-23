@@ -10,7 +10,7 @@
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- site metas -->
-        <title>Apartment management</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <title>Quản lý căn hộ</title>        <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <!-- site css -->
@@ -185,7 +185,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>My apartment</h2>
+                                      
                                     </div>
                                 </div>
                             </div>
@@ -195,7 +195,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Apartment</h2>
+                                                <h2>Căn hộ</h2>
                                             </div>
 
                                         </div>
@@ -204,20 +204,20 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
                                                         <input type="number" min="0" max="16" class="form-control" name="floor" 
-                                                               value="${param.floor}" placeholder="Search by Floor">
+                                                               value="${param.floor}" placeholder="Tìm theo tầng">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterType">
-                                                            <option value="">Filter by Types</option>
+                                                            <option value="">Tìm theo loại</option>
                                                             <c:forEach items="${sessionScope.types}" var="o">
                                                                 <option value="${o.id}" <c:if test="${param.filterType == o.id}">selected</c:if>>${o.name}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="register-new-living-or-owner-resident" class="btn btn-primary">Register living/owner resident</a>
-                                                        <a style="margin-left: 5px" href="change-represent-resident" class="btn btn-primary">Change represented living resident</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Tìm</button>
+                                                        <a href="register-new-living-or-owner-resident" class="btn btn-primary">Đăng ký đổi chú/thêm người ở</a>
+                                                        <a style="margin-left: 5px" href="change-represent-resident" class="btn btn-primary">Đổi người đại diện căn hộ</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -229,12 +229,12 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th style="width: 15%;">Apartment Number </th>
-                                                            <th style="width: 15%;">Number of Person</th>
-                                                            <th style="width: 10%;">Floor</th>
+                                                            <th style="width: 15%;">Số căn hộ </th>
+                                                            <th style="width: 15%;">Số người ở</th>
+                                                            <th style="width: 10%;">Tầng</th>
                                                           
-                                                            <th style="width: 30%;">Information</th>
-                                                            <th style="width: 5%;">Other</th>
+                                                            <th style="width: 30%;">Thông tin</th>
+                                                            <th style="width: 5%;">Khác</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -353,7 +353,7 @@
                         </div>
                     </div>
                     <form method="get" action="view-all-resident-apartment" style="display: flex; align-items: center; gap: 10px;">
-                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
 
                         <input type="text" name="filterType" value="${param.filterType}" hidden=""><!-- comment -->
                         <input type="text" name="floor" value="${param.floor}" hidden=""><!-- comment -->

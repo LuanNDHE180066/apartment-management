@@ -1,12 +1,16 @@
+<%-- 
+    Document   : test
+    Created on : Mar 23, 2025, 8:21:45 AM
+    Author     : quang
+--%>
 
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>Đổi người đại diện</title>
-        <style>
+        <title>JSP Page</title>
+   <style>
             .form-container {
                 max-width: 900px;
                 margin: 50px auto;
@@ -67,9 +71,6 @@
                 align-items: center;
                 gap: 5px;
             }
-            body {
-            font-family: 'Roboto', sans-serif !important;
-        }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -86,14 +87,14 @@
                     <div class="midde_cont">
                         <div class="container-fluid">
                             <div class="form-container">
-                                <h1 style="font-weight: bold">Đổi người đại diện</h1>
+                                <h1 style="font-weight: bold">Thay đổi người</h1>
 
                                 <form action="change-represent-resident" method="get" id="apartmentForm">
                                     <div class="form-group">
                                         <div class="one-col">
-                                            <label for="apartment">Căn hộ</label>
+                                            <label for="apartment">Apartment Number</label>
                                             <select id="apartment" name="apartment" onchange="document.getElementById('apartmentForm').submit()" required>
-                                                <option value="">Chọn căn hộ</option>
+                                                <option value="">Select Apartment</option>
                                                 <c:forEach items="${aptDAO.getApartmentDetailByOwnerid(sessionScope.account.pId)}" var="apt">
                                                     <c:set var="representedResident" value="${livingApartmentDAO.getRepresentedResidentByAid(apt.id)}" />
                                                     <option data-representative-name="${representedResident.rid.name}" data-representative-id="${representedResident.rid.pId}" data-owner="${apt.owner.name}" 
@@ -108,7 +109,7 @@
                                     <input hidden="" name="aid" type="text" value="${requestScope.aid}">
                                     <div class="form-group">
                                         <div class="one-col">
-                                            <label for="representative-resident">Người đại diện</label>
+                                            <label for="representative-resident">Representative Resident</label>
                                             <input type="text" id="representative-resident" value="${requestScope.representResident.name}" name="representativeResident" placeholder="Representative Resident Name" readonly />
                                             <input type="hidden" id="representative-id" value="${requestScope.representResident.pId}" name="oldRepresent" />
                                         </div>
@@ -116,7 +117,7 @@
 
                                     <div class="form-group">
                                         <div class="one-col">
-                                            <label for="owner-resident">Chủ hộ</label>
+                                            <label for="owner-resident">Owner Resident</label>
                                             <input type="text" value="${requestScope.owner.rid}" id="owner-resident" name="ownerResident" placeholder="Owner Resident Name" readonly />
                                             <input hidden="" type="text" value="${requestScope.owner.rid.pId}" id="owner-resident" name="owner-id" placeholder="Owner Resident Name" readonly />
                                         </div>
@@ -124,9 +125,9 @@
 
                                     <div class="form-group">
                                         <div class="one-col">
-                                            <label for="new-represent-resident">Chọn người đại diện mới</label>
+                                            <label for="new-represent-resident">Select New Representative Resident</label>
                                             <select id="new-represent-resident" name="newRepresent" required>
-                                                <option value="">Chọn người đại diện</option>
+                                                <option value="">Select Representative</option>
                                                 <c:forEach var="nonRepresentResident" items="${requestScope.listNonRepresent}">
                                                     <option value="${nonRepresentResident.rid.pId}">${nonRepresentResident.rid.name}</option>
                                                 </c:forEach>
@@ -136,23 +137,23 @@
 
                                     <div class="form-group">
                                         <div class="gender-options">
-                                            <label>Đã có tài khoản ?</label>
+                                            <label>Does the account exist?</label>
                                             <label for="account-exists">
                                                 <input type="checkbox" id="account-exists" name="accountExist" onclick="disableUsername()" />
-                                                Có
+                                                Yes
                                             </label>
                                         </div>
                                     </div>  
 
                                     <div class="form-group">
                                         <div class="one-col">
-                                            <label for="new-username">Tài khoản mới</label>
+                                            <label for="new-username">New username</label>
                                             <input type="text" id="new-username" name="username" />
                                         </div>
                                     </div>
 
                                     <div class="form-button">
-                                        <button type="submit">Gửi</button>
+                                        <button type="submit">Submit</button>
                                         <h5 style="color:${status == "true" ? "green" : "red"}; text-align:center;">${requestScope.message}</h5>
                                     </div>
                                 </form>

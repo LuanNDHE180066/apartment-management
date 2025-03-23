@@ -152,7 +152,7 @@ public class ExpenditureDAO extends DBContext {
             ps.setInt(13, he.getCurrentAdminApproveStatus());
             ps.setString(14, he.getCreatedDate());
             ps.executeUpdate();
-            //fd.expendFundByInvoice(he);
+//            fd.expendFundByInvoice(he);
             return true;
         } catch (SQLException ex) {
             Logger.getLogger(ExpenditureDAO.class.getName()).log(Level.SEVERE, null, ex);
