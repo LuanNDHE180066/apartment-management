@@ -147,9 +147,9 @@
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Chart</span></a>
                     </li>
-                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
+<!--                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="fund"><i class="fa fa-dashboard"></i><span>fund</span></a>
-                    </li>
+                    </li>-->
                     <li>
                         <a href="view-service-change"><i class="fa fa-chart-line"></i><span>Biến động giá dịch vụ</span></a>
                     </li>

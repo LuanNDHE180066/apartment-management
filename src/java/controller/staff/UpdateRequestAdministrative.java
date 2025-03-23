@@ -63,13 +63,13 @@ public class UpdateRequestAdministrative extends HttpServlet {
             throws ServletException, IOException {
         String requestId = request.getParameter("requestId");
         RequestDAO rd = new RequestDAO();
-        if (!rd.getAllRequestByStatus("waiting").contains(requestId.trim())) {
+        if (!rd.getAllRequestByStatus("0").contains(requestId.trim())) {
             response.sendRedirect("view-all-request");
             return;
         }
 
         SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmail(rd.getById(requestId).getResidentId().getEmail(), "Your request has been declined", "We can not solve your problem! Thank you and farewell");
+        sendEmail.sendEmailDeclineRequestToResident(rd.getById(requestId).getResidentId(), "Your request has been declined", "We can not solve your problem! Thank you and farewell");
         rd.declineRequestWithoutMessageById(requestId);
         request.getRequestDispatcher("view-all-request").forward(request, response);
     }

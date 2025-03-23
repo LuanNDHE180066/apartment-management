@@ -91,7 +91,6 @@ public class StaffDAO extends DBContext {
             sql += " and id not in (";
             for (int i = 0; i < working.size(); i++) {
                 sql += "'" + working.get(i).getId() + "',";
-                System.out.println("" + working.get(i).getId());
                 if (i == working.size() - 1) {
                     sql += "'" + working.get(i).getId() + "')";
                 }

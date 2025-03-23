@@ -136,7 +136,7 @@
                                                         <select class="form-control" name="filterRoles">
                                                             <option value="">Filter by Roles</option>
                                                             <c:forEach items="${requestScope.rolelist}" var="o">
-                                                                <c:if test="${o.id >= 4}">
+                                                                <c:if test="${o.id == 4 || o.id == 5}">
                                                                     <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
                                                                 </c:if>
                                                             </c:forEach>

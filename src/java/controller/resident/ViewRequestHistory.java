@@ -30,11 +30,17 @@ public class ViewRequestHistory extends HttpServlet {
         if (null == page) {
             page = "1";
         }
+        String from = request.getParameter("from");
+        if(null == from) from ="";
+        String to = request.getParameter("to");
+        if(null == to) to ="";
+        String typeRequest = request.getParameter("typeRequest");
+        if(null == typeRequest) typeRequest ="";
         int numberPerPage = 8;
         Util u = new Util();
         RequestDAO rd = new RequestDAO();
         RequestTypeDAO rtd = new RequestTypeDAO();
-        List<Request> allRequests = rd.getByResidentID(acc.getpId());
+        List<Request> allRequests = rd.getByResidentIDAndDate(acc.getpId(), from, to, typeRequest);
         if(!allRequests.isEmpty()){
             int totalPage_waiting = u.getTotalPage(allRequests, numberPerPage);
             request.setAttribute("totalPage", totalPage_waiting);
@@ -47,6 +53,9 @@ public class ViewRequestHistory extends HttpServlet {
         List<RequestType> listTypeRequest = rtd.getAll();
         request.setAttribute("listType", listTypeRequest);
         request.setAttribute("rid", acc.getpId());
+        request.setAttribute("from", from);
+        request.setAttribute("to", to);
+        request.setAttribute("selectedType", typeRequest);
         request.setAttribute("listRequest", allRequests);
         request.getRequestDispatcher("view_request_history.jsp").forward(request, response);
     }

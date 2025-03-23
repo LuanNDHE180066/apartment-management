@@ -386,7 +386,7 @@ public class RequestDAO extends DBContext {
         if ((requestType != null && !requestType.isBlank()) || !requestType.isEmpty()) {
             sql += " and tid = '"+requestType+"'";
         }
-        sql += " order by Date desc";
+        sql += " order by status asc,Date desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql.toString());
             ResultSet rs = st.executeQuery();
@@ -478,7 +478,7 @@ public class RequestDAO extends DBContext {
         return null;
     }
     public void declineRequestWithoutMessageById(String id){
-        String sql="update request set Response='Decline', status='Done', responsedate=? where id=?";
+        String sql="update request set Response='Decline', status=2, responsedate=? where id=?";
         LocalDate date = LocalDate.now();
         try {
             PreparedStatement st = connection.prepareStatement(sql);

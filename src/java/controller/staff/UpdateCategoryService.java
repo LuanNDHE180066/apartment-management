@@ -91,6 +91,13 @@ public class UpdateCategoryService extends HttpServlet {
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }
+        if(note.isBlank()){
+            request.setAttribute("categoryservice", csd.getByCategoryId(id));
+            request.setAttribute("status", false);
+            request.setAttribute("error", "Note is not allow blank ");
+            request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
+            return;
+        }
         if(val.isExistedNameExceptSeft(Util.stringNomalize(name),id)){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
             request.setAttribute("status", false);
