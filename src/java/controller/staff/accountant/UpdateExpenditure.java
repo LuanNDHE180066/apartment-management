@@ -212,13 +212,11 @@ public class UpdateExpenditure extends HttpServlet {
                         + "</body>"
                         + "</html>";
 
-// Gửi email cho Kế toán trưởng
+
                 SendEmail send = new SendEmail();
                 send.sendEmail(he.getChiefAccountantId().getEmail(),
                         daoSt.getById("Staff: " +he.getModifiedBy().getId()+" - "+ he.getCreatedStaff().getId()).getName() + " has updated an expenditure: " + he.getTitle(),
                         emailContent);
-
-// Gửi email cho Admin hiện tại
                 send.sendEmail(he.getCurrentAdmin().getEmail(),
                         daoSt.getById(he.getCreatedStaff().getId()) + " has updated an expenditure: " + he.getTitle(),
                         emailContent);
