@@ -189,7 +189,7 @@
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
-                                                    <a class="btn btn-primary" href="view-expenditure">Back</a>
+                                                    <a class="btn btn-primary" href="expenditure-report">Quay lại</a>
                                             </div>
                                         </div>
                                     </div>

@@ -81,7 +81,7 @@
                                     <div class="col-md-4 d-flex align-items-end">
                                         <button style="margin-left: 5px" type="submit" class="btn btn-primary me-2">Tìm</button>
                                         <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}; margin-left: 5px">
-                                            <a style="color: white" href="add-expenditure">Add</a>
+                                            <a style="color: white" href="add-expenditure">Thêm mới</a>
                                         </span>
                                         <span style="margin-left: 5px" class="btn btn-primary ms-2">
                                             <a style="color: white" href="view-pending-expenditure">Khoản chi chờ duyệt</a>
@@ -164,8 +164,8 @@
                                     <c:forEach items="${requestScope.categorylist}" var="summary">
                                         <tr>
                                             <td>${summary.categoryName}</td>
-                                            <td>${exDAO.getNumberOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}</td>
-                                               <td> <fmt:formatNumber value="${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
+                                            <td style="text-align: center">${exDAO.getNumberOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}</td>
+                                               <td style="text-align: center"> <fmt:formatNumber value="${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>
