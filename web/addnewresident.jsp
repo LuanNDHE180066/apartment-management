@@ -266,7 +266,7 @@
                                             <label for="role">Role</label>
                                             <select id="role" name="role" required>
                                                 <option value="1">Resident</option>
-                                                <option value="6">Render</option>
+                                                <option value="6" selected="">Render</option>
                                             </select>
                                         </div>
                                         <div class="form-group one-col">
@@ -274,25 +274,14 @@
                                             <input type="number" id="cccd" name="cccd" placeholder="Enter ID" />
                                             <span id="cccd-error" class="error-message"></span>
                                         </div>
-                                        <div class="form-group one-col">
-                                            <label>Is Representative</label>
-                                            <div class="homeowner-options">
-                                                <label for="homeowner-yes">
-                                                    <input type="radio" id="homeowner-yes" name="isRepresent" value="yes" onclick="toggleFields(true)" required /> Yes
-                                                </label>
-                                                <label for="homeowner-no">
-                                                    <input type="radio" id="homeowner-no" name="isRepresent" value="no" onclick="toggleFields(false)" required /> No
-                                                </label>
-                                            </div>
-                                        </div>
                                         <div class="form-group one-col" id="username-container" style="display: none;">
                                             <label for="username">Username</label>
                                             <input type="text" id="username" name="username" placeholder="Enter username" />
                                             <span id="username-error" class="error-message"></span>
                                         </div>
-                                        <div class="form-group one-col" id="email-container" style="display: none">
+                                        <div class="form-group one-col" id="email-container" style="display: none;">
                                             <label for="email">Email</label>
-                                            <input type="email" id="email" name="email" placeholder="Enter email" required />
+                                            <input type="email" id="email" name="email" placeholder="Enter email" />
                                             <span id="email-error" class="error-message"></span>
                                         </div>
                                     </div>
@@ -321,25 +310,29 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
         <script>
-            function toggleFields(show) {
+            function toggleRoleFields() {
+                const role = $("#role").val();
                 const usernameContainer = document.getElementById("username-container");
                 const emailContainer = document.getElementById("email-container");
                 const usernameInput = document.getElementById("username");
                 const emailInput = document.getElementById("email");
 
-                if (show) {
+                if (role === "1") { // Resident
                     usernameContainer.style.display = "block";
                     emailContainer.style.display = "block";
                     usernameInput.setAttribute("required", "true");
                     emailInput.setAttribute("required", "true");
-                } else {
+                } else { // Render
                     usernameContainer.style.display = "none";
                     emailContainer.style.display = "none";
                     usernameInput.removeAttribute("required");
                     emailInput.removeAttribute("required");
                     usernameInput.value = "";
                     emailInput.value = "";
+                    $("#username-error").text("");
+                    $("#email-error").text("");
                 }
+                updateSubmitButtonState();
             }
 
             function checkDuplicate(type, value, errorField) {
@@ -370,107 +363,87 @@
             function resetForm() {
                 $("#excelFile").val("");
                 $("#residentForm")[0].reset();
-                toggleFields(false);
+                toggleRoleFields();
             }
 
-            async function exportExcelTemplate() {
-                // Define headers matching the import format
-                const headers = [
-                    "name", "dob", "gender", "phone", "address", "apartment", "role", "cccd", "isRepresent", "username", "email"
-                ];
+            function exportExcelTemplate() {
+                try {
+                    // Define headers matching the import format
+                    const headers = [
+                        "name", "dob", "gender", "phone", "address", "apartment", "cccd"
+                    ];
 
-                // Get apartment IDs from the select options
-                const apartments = Array.from(document.querySelectorAll("#apartment option"))
-                    .filter(opt => opt.value !== "")
-                    .map(opt => opt.value);
+                    // Get apartment IDs from the select options
+                    const apartments = Array.from(document.querySelectorAll("#apartment option"))
+                        .filter(opt => opt.value !== "")
+                        .map(opt => opt.value);
 
-                // Define dropdown options
-                const genderOptions = ["M", "F"];
-                const roleOptions = ["Resident", "Render"];
-                const isRepresentOptions = ["yes", "no"];
+                    // Define dropdown options
+                    const genderOptions = ["M", "F"];
 
-                // Create a new workbook and worksheet
-                const wb = XLSX.utils.book_new();
-                const ws = XLSX.utils.json_to_sheet([{}], { header: headers });
+                    // Create a new workbook and worksheet
+                    const wb = XLSX.utils.book_new();
+                    const ws = XLSX.utils.json_to_sheet([{}], { header: headers });
 
-                // Add data validation for dropdowns
-                const range = XLSX.utils.decode_range(ws["!ref"]);
-                for (let R = range.s.r + 1; R <= range.e.r + 10; R++) { // Add validation for 10 rows
-                    ws[XLSX.utils.encode_cell({ r: R, c: 2 })] = { t: "s", v: "" };
-                    ws[XLSX.utils.encode_cell({ r: R, c: 2 })].s = {
-                        dataValidation: {
-                            type: "list",
-                            allowBlank: true,
-                            formula1: `"${genderOptions.join(",")}"`
-                        }
-                    };
+                    // Add data validation for dropdowns
+                    const range = XLSX.utils.decode_range(ws["!ref"]);
+                    for (let R = range.s.r + 1; R <= range.e.r + 10; R++) { // Add validation for 10 rows
+                        // Gender dropdown (column 2)
+                        ws[XLSX.utils.encode_cell({ r: R, c: 2 })] = { t: "s", v: "" };
+                        ws[XLSX.utils.encode_cell({ r: R, c: 2 })].s = {
+                            dataValidation: {
+                                type: "list",
+                                allowBlank: true,
+                                formula1: `"${genderOptions.join(",")}"`
+                            }
+                        };
 
-                    ws[XLSX.utils.encode_cell({ r: R, c: 5 })] = { t: "s", v: "" };
-                    ws[XLSX.utils.encode_cell({ r: R, c: 5 })].s = {
-                        dataValidation: {
-                            type: "list",
-                            allowBlank: true,
-                            formula1: `"${apartments.join(",")}"`
-                        }
-                    };
-
-                    ws[XLSX.utils.encode_cell({ r: R, c: 6 })] = { t: "s", v: "" };
-                    ws[XLSX.utils.encode_cell({ r: R, c: 6 })].s = {
-                        dataValidation: {
-                            type: "list",
-                            allowBlank: true,
-                            formula1: `"${roleOptions.join(",")}"`
-                        }
-                    };
-
-                    ws[XLSX.utils.encode_cell({ r: R, c: 8 })] = { t: "s", v: "" };
-                    ws[XLSX.utils.encode_cell({ r: R, c: 8 })].s = {
-                        dataValidation: {
-                            type: "list",
-                            allowBlank: true,
-                            formula1: `"${isRepresentOptions.join(",")}"`
-                        }
-                    };
-                }
-
-                ws["!cols"] = headers.map(() => ({ wch: 15 }));
-
-                // Check if File System Access API is supported
-                if ("showSaveFilePicker" in window) {
-                    try {
-                        // Prompt user to choose save location
-                        const handle = await window.showSaveFilePicker({
-                            suggestedName: "Resident_Import_Template.xlsx",
-                            types: [{
-                                description: "Excel File",
-                                accept: { "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"] }
-                            }]
-                        });
-
-                        // Generate Excel file as binary data
-                        const fileData = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                        const blob = new Blob([fileData], { type: "application/octet-stream" });
-
-                        // Write the file to the chosen location
-                        const writable = await handle.createWritable();
-                        await writable.write(blob);
-                        await writable.close();
-
-                        console.log("Excel template saved to user-selected location.");
-                    } catch (err) {
-                        console.error("Error using File System Access API:", err);
-                        alert("Failed to save file. Defaulting to download.");
-                        XLSX.writeFile(wb, "Resident_Import_Template.xlsx"); // Fallback
+                        // Apartment dropdown (column 5)
+                        ws[XLSX.utils.encode_cell({ r: R, c: 5 })] = { t: "s", v: "" };
+                        ws[XLSX.utils.encode_cell({ r: R, c: 5 })].s = {
+                            dataValidation: {
+                                type: "list",
+                                allowBlank: true,
+                                formula1: `"${apartments.join(",")}"`
+                            }
+                        };
                     }
-                } else {
-                    // Fallback to default download if API is not supported
-                    console.log("File System Access API not supported. Using default download.");
-                    XLSX.writeFile(wb, "Resident_Import_Template.xlsx");
+
+                    // Set column widths
+                    ws["!cols"] = headers.map(() => ({ wch: 15 }));
+
+                    // Append the worksheet to the workbook
+                    XLSX.utils.book_append_sheet(wb, ws, "Residents");
+
+                    // Generate the Excel file as a binary array
+                    const fileData = XLSX.write(wb, { bookType: "xlsx", type: "array" });
+
+                    // Create a Blob from the binary data
+                    const blob = new Blob([fileData], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+
+                    // Create a download link and trigger the download
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = "Resident_Import_Template.xlsx";
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    window.URL.revokeObjectURL(url);
+
+                    console.log("Excel template generated and downloaded successfully.");
+                } catch (err) {
+                    console.error("Error generating Excel template:", err);
+                    alert("Failed to generate Excel template: " + err.message);
                 }
             }
 
             $(document).ready(function () {
                 console.log("jQuery version:", $.fn.jquery);
+
+                $("#role").on("change", function () {
+                    toggleRoleFields();
+                });
 
                 $("#backToMainMenu").on("click", function () {
                     window.location.href = "${pageContext.request.contextPath}/view-resident";
@@ -479,12 +452,15 @@
                 $("#email").on("input", function () {
                     checkDuplicate("email", $(this).val(), "#email-error");
                 });
+
                 $("#phone").on("input", function () {
                     checkDuplicate("phone", $(this).val(), "#phone-error");
                 });
+
                 $("#cccd").on("input", function () {
                     checkDuplicate("cccd", $(this).val(), "#cccd-error");
                 });
+
                 $("#username").on("input", function () {
                     if ($(this).val().includes(" ")) {
                         $("#username-error").text("Username cannot contain spaces.");
@@ -495,10 +471,13 @@
                 });
 
                 $("#residentForm").on("submit", function (event) {
+                    const role = $("#role").val();
                     const phone = $("#phone").val();
                     const cccd = $("#cccd").val();
                     const username = $("#username").val();
+                    const email = $("#email").val();
                     const usernameContainer = $("#username-container").css("display") !== "none";
+                    const emailContainer = $("#email-container").css("display") !== "none";
 
                     const phonePattern = /^\d{10}$/;
                     const cccdPattern = /^\d{12}$/;
@@ -514,8 +493,12 @@
                         $("#cccd-error").text("ID must be exactly 12 digits.");
                         valid = false;
                     }
-                    if (usernameContainer && !usernamePattern.test(username)) {
+                    if (role === "1" && usernameContainer && !usernamePattern.test(username)) {
                         $("#username-error").text("Username must be at least 4 characters.");
+                        valid = false;
+                    }
+                    if (role === "1" && emailContainer && !email) {
+                        $("#email-error").text("Email is required for Resident role.");
                         valid = false;
                     }
 
@@ -566,6 +549,9 @@
                 $("#exportExcelTemplateBtn").on("click", function () {
                     exportExcelTemplate();
                 });
+
+                // Initial call to set the correct state based on default role
+                toggleRoleFields();
 
                 document.styleSheets[0].insertRule(`
                     select {

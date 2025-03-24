@@ -1,5 +1,6 @@
 package filter;
 
+import dao.LivingApartmentDAO;
 import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintStream;
@@ -14,7 +15,10 @@ import jakarta.servlet.ServletResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.util.List;
 import model.Account;
+import model.Apartment;
+import model.LivingApartment;
 import model.Resident;
 
 public class AuthorizedFilter implements Filter {
@@ -70,10 +74,11 @@ public class AuthorizedFilter implements Filter {
             return;
         }
 
-        // Handle authenticated users with roleId == 1 or roleId == 6 and status == "2"
         if (a != null && (a.getRoleId() == 1 || a.getRoleId() == 6)) {
+            LivingApartmentDAO lad = new LivingApartmentDAO();
             ResidentDAO rd = new ResidentDAO();
             Resident r = rd.getById(a.getpId());
+            List<Apartment> livingApt = lad.getApartmentsByResidentId(r.getpId());
             if (r != null && "2".equals(r.getStatus())) {
                 // Allowed URIs for users with status == "2"
                 if (uri.contains("changepassword.jsp") || uri.contains("update-password-resident")
@@ -84,11 +89,30 @@ public class AuthorizedFilter implements Filter {
                         || uri.contains("404_error.jsp")) {
                     chain.doFilter(request, response);
                 } else {
-                    // Redirect all other requests to changepassword.jsp
                     res.sendRedirect("changepassword.jsp");
                 }
-                return; // Stop further processing
+
+            } else if (r != null && "1".equals(r.getStatus())) {
+                if (uri.contains("WaitingScreenForResident.jsp") || uri.contains("changepassword.jsp") || uri.contains("update-password-resident")
+                        || uri.contains("login.jsp") || uri.contains("requestpassword.jsp")
+                        || uri.contains("reset-password") || uri.contains("request-password")
+                        || uri.contains("login-google") || uri.contains("login")
+                        || uri.contains("logout") || uri.contains("401_error.jsp")
+                        || uri.contains("404_error.jsp")) {
+                    chain.doFilter(request, response);
+                    return;
+                }
+                // If livingApt is null or empty, the resident has no apartment, so redirect to waiting screen
+                if (livingApt == null || livingApt.isEmpty()) {
+                    res.sendRedirect("WaitingScreenForResident.jsp");
+                    return;
+                } else {
+                    // If the resident has an apartment, allow the request to proceed
+                    chain.doFilter(request, response);
+                    return;
+                }
             }
+
         }
 
         // Proceed with the filter chain for all other cases

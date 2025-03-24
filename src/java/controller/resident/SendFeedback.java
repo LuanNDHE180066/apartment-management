@@ -159,7 +159,7 @@ public class SendFeedback extends HttpServlet {
             }
         }
 
-        // Save feedback to database
+        
         FeedbackDAO fd = new FeedbackDAO();
         if (hasUploadedImages) {
             fd.sendFeedback(detail, rID, tID, rate, imagePaths);
@@ -187,7 +187,7 @@ public class SendFeedback extends HttpServlet {
             email.sendFeedbackMail(emails, tID, rate, detail);
         }
 
-        // Redirect after successful feedback submission
+       
         response.sendRedirect("view-feed-back-user");
     }
 
