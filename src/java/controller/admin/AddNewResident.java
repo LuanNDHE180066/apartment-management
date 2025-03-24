@@ -2,6 +2,7 @@ package controller.admin;
 
 import dao.ApartmentDAO;
 import dao.LivingApartmentDAO;
+import dao.OwnerApartmentDAO;
 import dao.ResidentDAO;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
@@ -9,13 +10,14 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.Part;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.sql.Date;
 import java.util.List;
 import model.Apartment;
+import model.LivingApartment;
+import model.OwnerApartment;
 import model.Resident;
 import model.Role;
 import model.SendEmail;
@@ -111,6 +113,7 @@ public class AddNewResident extends HttpServlet {
                 forwardToForm(request, response);
                 return;
             }
+
             // Check for duplicates
             if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
                 request.setAttribute("error", "Email already exists.");
@@ -133,6 +136,7 @@ public class AddNewResident extends HttpServlet {
                 return;
             }
 
+            SendEmail e = new SendEmail();
             // Create Resident object
             Resident resident = new Resident();
             resident.setName(name);
@@ -141,8 +145,8 @@ public class AddNewResident extends HttpServlet {
             resident.setPhone(phone);
             resident.setAddress(address);
             resident.setCccd(cccd);
-            resident.setUsername("yes".equalsIgnoreCase(isRepresent) ? username : null);
-            resident.setEmail("yes".equalsIgnoreCase(isRepresent) ? email : null);
+            resident.setUsername(username);
+            resident.setEmail(email);
 
             Util u = new Util();
             String password = u.generatePassword();
@@ -156,11 +160,29 @@ public class AddNewResident extends HttpServlet {
             String insertedId = residentDAO.insertNewResident(resident);
 
             if (insertedId != null) {
-                lvd.insertLivingApartment(insertedId, apartment, new Date(System.currentTimeMillis()).toString());
+                // new role = 6 then insert directly into the apartment
+                if (role.getId().equals("6")) {
+                    lvd.insertLivingApartment(insertedId, apartment, new Date(System.currentTimeMillis()).toString());
+
+                    LivingApartment la = lvd.getRepresentedResidentByAid(apartment);
+                    if (la != null) {
+                        Resident representative = residentDAO.getById(la.getRid().getpId());
+                        e.sendEmailNewResidentAdded(representative.getEmail(), resident.getName());
+                    }
+                } else if (role.getId().equals("1")) {
+                    OwnerApartmentDAO oad = new OwnerApartmentDAO();
+                    OwnerApartment owner = oad.getOwnerByApartmentID(apartment);
+                    if (owner != null) {
+                        e.sendRequestResidentToTransferApartment(owner.getRid().getEmail(), resident.getName(), apartment);
+                    } else {
+                        lvd.insertLivingApartment(insertedId, apartment, new Date(System.currentTimeMillis()).toString());
+                    }
+                }
+
                 if (email != null && !email.trim().isEmpty()) {
-                    SendEmail e = new SendEmail();
                     e.sendEmailResidentAccount(email, name, username, password);
                 }
+
                 request.setAttribute("successMessage", "Resident added successfully!");
             } else {
                 System.out.println("DEBUG: Failed to insert resident: " + resident.toString());
@@ -197,10 +219,6 @@ public class AddNewResident extends HttpServlet {
 
             List<Resident> residents = new ArrayList<>();
             List<String> apartmentIds = new ArrayList<>();
-            List<String> emails = new ArrayList<>();
-            List<String> usernames = new ArrayList<>();
-            List<String> passwords = new ArrayList<>();
-            List<String> residentNames = new ArrayList<>();
             List<String> errors = new ArrayList<>();
 
             for (int i = 0; i < residentsArray.length(); i++) {
@@ -213,11 +231,7 @@ public class AddNewResident extends HttpServlet {
                 String phone = residentJson.optString("phone", null);
                 String address = residentJson.optString("address", null);
                 String apartment = residentJson.optString("apartment", null);
-                String role = residentJson.optString("role", null);
                 String cccd = residentJson.optString("cccd", null);
-                String username = residentJson.optString("username", null);
-                String email = residentJson.optString("email", null);
-                String isRepresent = residentJson.optString("isRepresent", "no");
 
                 // Validate required fields
                 if (name == null || name.trim().isEmpty()) {
@@ -238,40 +252,21 @@ public class AddNewResident extends HttpServlet {
                 if (apartment == null || apartment.trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Apartment is required.");
                 }
-                if (role == null || role.trim().isEmpty()) {
-                    errors.add("Row " + rowNum + ": Role is required.");
-                }
 
-                // validate if is Representative
-                if ("yes".equalsIgnoreCase(isRepresent)) {
-                    if (username == null || username.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-                        errors.add("Row " + rowNum + ": Username and email are required when the resident is a representative.");
-                    }
-                }
-
-                // Validate phone, CCCD, and username formats
+                // Validate phone and CCCD formats
                 if (phone != null && !phone.trim().isEmpty() && !phone.matches("\\d{10}")) {
                     errors.add("Row " + rowNum + ": Phone number must be exactly 10 digits.");
                 }
                 if (cccd != null && !cccd.trim().isEmpty() && !cccd.matches("\\d{12}")) {
                     errors.add("Row " + rowNum + ": CCCD must be exactly 12 digits.");
                 }
-                if (username != null && !username.trim().isEmpty() && username.contains(" ")) {
-                    errors.add("Row " + rowNum + ": Username cannot contain spaces.");
-                }
 
                 // Check for duplicates
-                if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
-                    errors.add("Row " + rowNum + ": Email '" + email + "' already exists.");
-                }
                 if (phone != null && !phone.trim().isEmpty() && residentDAO.checkDuplicatePhone(phone)) {
                     errors.add("Row " + rowNum + ": Phone number '" + phone + "' already exists.");
                 }
                 if (cccd != null && !cccd.trim().isEmpty() && residentDAO.checkDuplicateID(cccd)) {
                     errors.add("Row " + rowNum + ": CCCD '" + cccd + "' already exists.");
-                }
-                if (username != null && !username.trim().isEmpty() && residentDAO.checkDuplicatateUsername(username)) {
-                    errors.add("Row " + rowNum + ": Username '" + username + "' already exists.");
                 }
 
                 Resident resident = new Resident();
@@ -281,27 +276,13 @@ public class AddNewResident extends HttpServlet {
                 resident.setPhone(phone);
                 resident.setAddress(address);
                 resident.setCccd(cccd);
-                resident.setUsername("yes".equalsIgnoreCase(isRepresent) ? username : null);
-                resident.setEmail("yes".equalsIgnoreCase(isRepresent) ? email : null);
-
-                Util u = new Util();
-                String password = u.generatePassword();
-                if (email != null && !email.trim().isEmpty()) {
-                    resident.setPassword(encryptPassword(password));
-                }
 
                 Role roleObj = new Role();
-                roleObj.setId(role);
+                roleObj.setId("6"); // Hardcode role to "6" for Excel imports
                 resident.setRole(roleObj);
 
                 apartmentIds.add(apartment);
                 residents.add(resident);
-                if (email != null && !email.trim().isEmpty()) {
-                    emails.add(email);
-                    passwords.add(password);
-                    usernames.add(username);
-                    residentNames.add(name);
-                }
             }
 
             if (!errors.isEmpty()) {
@@ -316,12 +297,12 @@ public class AddNewResident extends HttpServlet {
             if (insertedIds != null) {
                 for (int i = 0; i < insertedIds.size(); i++) {
                     lvd.insertLivingApartment(insertedIds.get(i), apartmentIds.get(i), new Date(System.currentTimeMillis()).toString());
-                    if(residentDAO.getById(insertedIds.get(i)).getUsername()!=null){
-                       lvd.changeIsRepresent("1", insertedIds.get(i), apartmentIds.get(i));
+                    LivingApartment la = lvd.getRepresentedResidentByAid(apartmentIds.get(i));
+                    if (la != null) {
+
+                        Resident representative = residentDAO.getById(la.getRid().getpId());
+                        e.sendEmailNewResidentAdded(representative.getEmail(), residents.get(i).getName());
                     }
-                }
-                if (!emails.isEmpty()) {
-                    e.sendMultipleResident(emails, residentNames, usernames, passwords);
                 }
                 jsonResponse.put("success", true);
                 jsonResponse.put("insertedIds", new JSONArray(insertedIds));

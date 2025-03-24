@@ -56,7 +56,7 @@
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
-                                            <form action="filterequest" method="post">
+                                            <form action="viewrequest_history" method="post">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
                                                         <label for="fromDate">From:</label>

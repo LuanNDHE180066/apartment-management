@@ -4,42 +4,42 @@
     Author     : PC
 --%>
 <!DOCTYPE html>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
     <head>
+        <!-- basic -->
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link href="https://fonts.googleapis.com/css2?family=Noto+Sans&display=swap" rel="stylesheet">
-        <title>Expenditure Change History</title>
+        <!-- site metas -->
+        <title>Quản lý khoản chi</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <link rel="stylesheet" href="style.css" />
-        <link rel="stylesheet" href="css/responsive.css" />
-        <link rel="stylesheet" href="css/custom.css" />
-        <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+        <!-- custom css -->
         <style>
             body {
                 /* Style body n?u c?n */
             }
             .contract-list {
-                padding-left: 20px; /* Kho?ng c�ch b�n tr�i */
+                padding-left: 20px; /* Kho?ng cách bên trái */
             }
             .contract-list li {
                 padding: 10px; /* Padding cho t?ng m?c */
-                font-size: 18px; /* K�ch th??c ch? cho t?ng m?c */
+                font-size: 18px; /* Kích th??c ch? cho t?ng m?c */
             }
             .contract-list li a {
-                text-decoration: none; /* B? g?ch ch�n */
-                color: #007bff; /* M�u li�n k?t */
+                text-decoration: none; /* B? g?ch chân */
+                color: #007bff; /* Màu liên k?t */
             }
             .contract-list li a:hover {
-                color: #0056b3; /* M�u khi hover */
+                color: #0056b3; /* Màu khi hover */
             }
             .graph_head {
-                margin-bottom: 20px; /* Gi?m kho?ng c�ch d??i ti�u ?? */
+                margin-bottom: 20px; /* Gi?m kho?ng cách d??i tiêu ?? */
             }
             button {
                 background: none;
@@ -95,16 +95,16 @@
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Expense</th>
-                                                            <th>Total fees</th>
-                                                            <th>Approve Date</th>
+                                                            <th>Loại phí</th>
+                                                            <th>Tổng chi</th>
+                                                            <th>Ngày duyệt</th>
                                                             
-                                                            <th>Category</th>
-                                                            <th>Company</th>
-                                                            <th>Chief Acountant</th>
-                                                            <th>Responsible Person</th>
-                                                            <th>Modiefed Person</th>
-                                                            <th>Modiefed Date</th>
+                                                            <th>Loại phí</th>
+                                                            <th>Công ty</th>
+                                                            <th>Kế toán</th>
+                                                            <th>Giám đốc</th>
+                                                            <th>Người thay đổi</th>
+                                                            <th>Ngày thay đổi</th>
                                                             <th>Option</th>
                                                             <!--       <th>Note</th> -->
                                                         </tr>
@@ -139,7 +139,7 @@
                                                                 <c:if test="${expenditure.chiefAccountantApproveStatus == 0 || expenditure.currentAdminApproveStatus == 0}">
                                                                     <span style="color:#FF9900 ">Pending</span>
                                                                 </c:if>
-                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}">
+                                                                <a style="text-align: center" class="approval-link" href="view-pending-expenditure-detail?id=${expenditure.heid}&type=1">
                                                                     <i class="fa-solid fa-eye"></i> 
                                                                 </a>
                                                             </td>
@@ -148,7 +148,7 @@
                                                     </c:forEach>
                                                     </tbody>
                                                 </table>
-                                                    <a href="view-expenditure" style="color: white" class="btn btn-primary">Back</a>
+                                                    <a href="expenditure-report" style="color: white" class="btn btn-primary">Quay lại</a>
                                             </div>
                                         </div>
                                     </div>
@@ -159,7 +159,7 @@
 
                     <div class="container-fluid">
                         <div class="footer">
-                            <p>Copyright � 2025 Designed by Your Company. All rights reserved.</p>
+                            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                         </div>
                     </div>
                 </div>

@@ -121,16 +121,20 @@ public class Request {
         this.responseDate = responseDate;
     }
 
-    public String getStatu() {
-        return status;
-    }
     public String getStatus() {
-        if(this.getStatu().equals("0")){
+        if(status == null || status.isEmpty()){
+            return "";
+        }
+        else if(status.equals("0")){
             return "Waiting";
-        }else if(this.getStatu().equals("1")){
+        }else if(status.equals("1")){
             return "In process";
-        }else return "Done";        
+        }
+        else{
+            return "Done";
+        } 
     }
+
 
     public void setStatus(String status) {
         this.status = status;
@@ -144,27 +148,27 @@ public class Request {
         this.requestType = requestType;
     }
 
-    public String getShif() {
-        return shift;
-    }
-
-    public void setShift(String shift) {
-        this.shift = shift;
-    }
     public String getShift() {
-        if(this.getShif().equals("1")){
+        if(shift == null || shift.isEmpty()){
+            return "";
+        }
+        else if(shift.equals("1")){
             return "8:00 - 10:00";
         }
-        else if(this.getShif().equals("2")){
+        else if(shift.equals("2")){
             return "13:00 - 15:00";
         }
-        else if(this.getShif().equals("3")){
+        else if(shift.equals("3")){
             return "15:00 - 17:00";
         }else{
             return "18:00-20:00";
         }
     }
 
+    public void setShift(String shift) {
+        this.shift = shift;
+    }
+    
     public Apartment getAid() {
         return aid;
     }

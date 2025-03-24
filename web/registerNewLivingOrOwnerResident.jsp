@@ -1,39 +1,41 @@
 <!DOCTYPE html>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page import="dao.ApartmentDAO" %>
 <html lang="en">
-<head>
-    <!-- basic -->
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <!-- mobile metas -->
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-    <!-- site metas -->
-    <title>Apartment Management</title>
-    <link rel="icon" href="images/fevicon.png" type="image/png" />
-    <!-- bootstrap css -->
-    <link rel="stylesheet" href="css/bootstrap.min.css" />
-    <!-- site css -->
-    <link rel="stylesheet" href="style.css" />
-    <!-- responsive css -->
-    <link rel="stylesheet" href="css/responsive.css" />
-    <!-- color css -->
-    <link rel="stylesheet" href="css/colors.css" />
-    <!-- select bootstrap -->
-    <link rel="stylesheet" href="css/bootstrap-select.css" />
-    <!-- scrollbar css -->
-    <link rel="stylesheet" href="css/perfect-scrollbar.css" />
-    <!-- custom css -->
-    <link rel="stylesheet" href="css/custom.css" />
-    <!-- calendar file css -->
-    <link rel="stylesheet" href="js/semantic.min.css" />
-    <!-- fancy box js -->
-    <link rel="stylesheet" href="css/jquery.fancybox.css" />
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    <style>
+    <head>
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- site metas -->
+        <title>Quản lý căn hộ</title>        
+        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <!-- bootstrap css -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <!-- site css -->
+        <link rel="stylesheet" href="style.css" />
+        <!-- responsive css -->
+        <link rel="stylesheet" href="css/responsive.css" />
+        <!-- color css -->
+        <link rel="stylesheet" href="css/colors.css" />
+        <!-- select bootstrap -->
+        <link rel="stylesheet" href="css/bootstrap-select.css" />
+        <!-- scrollbar css -->
+        <link rel="stylesheet" href="css/perfect-scrollbar.css" />
+        <!-- custom css -->
+        <link rel="stylesheet" href="css/custom.css" />
+        <!-- calendar file css -->
+        <link rel="stylesheet" href="js/semantic.min.css" />
+        <!-- fancy box js -->
+        <link rel="stylesheet" href="css/jquery.fancybox.css" />
+        <link rel="stylesheet" href="<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+        <style>
+                body {
+            font-family: 'Roboto', sans-serif !important;
+        }
         .form-container {
             max-width: 900px;
             margin: 50px auto;
@@ -133,6 +135,9 @@
         .display-none {
             display: none;
         }
+          body {
+            font-family: 'Roboto', sans-serif !important;
+        }
     </style>
 </head>
 <body class="inner_page tables_page">
@@ -149,14 +154,14 @@
                 <div class="midde_cont">
                     <div class="container-fluid">
                         <div class="form-container">
-                            <h1 style="font-weight: bold">Register New Living Resident Or Owner</h1>
+                            <h1 style="font-weight: bold">Đăng ký đổi chủ/ Thêm người ở mới</h1>
                             <form action="register-new-living-or-owner-resident" method="post">
                                 <!-- Apartment Information -->
                                 <div class="form-group">
                                     <div class="one-col">
-                                        <label for="apartment">Apartment Number</label>
+                                        <label for="apartment">Số phòng</label>
                                         <select id="apartment" name="apartment" onchange="updateResidentNames()" required>
-                                            <option value="">Select Apartment</option>
+                                            <option value="">Chọn phòng</option>
                                             <c:forEach items="${aptDAO.getApartmentDetailByOwnerid(sessionScope.account.pId)}" var="apt">
                                                 <option data-living="${apt.livingPerson.name}" data-owner="${apt.owner.name}" 
                                                         value="${apt.id}">${apt.id}</option>
@@ -174,58 +179,58 @@
 
                                 <div class="form-group">
                                     <div class="one-col">
-                                        <label for="owner-resident">Owner Resident</label>
+                                        <label for="owner-resident">Chủ hộ</label>
                                         <input type="text" id="owner-resident" name="ownerResident" placeholder="Owner Resident Name" readonly />
                                     </div>
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label for="resident-type">Select Resident to Change/Add:</label>
+                                    <label for="resident-type">Đổi chủ/Thêm người ở</label>
                                     <select id="resident-type" name="residentType" onchange="toggleUsernameFields()">
-                                        <option value="living">Living Resident</option>
-                                        <option value="owner">Owner Resident</option>
+                                        <option value="living">Thêm người ở</option>
+                                        <option value="owner">Đỏi chủ</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="gender-options">
-                                        <label>Does the new Resident Exist?</label>
+                                        <label>Cư dân mới đã có tài khoản?</label>
                                         <label for="owner-exists">
                                             <input type="checkbox" id="owner-exists" name="residentExists" onclick="toggleOwnerFields()" />
-                                            Yes
+                                            Có
                                         </label>
                                     </div>
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="new-owner-id">New Owner ID</label>
-                                    <input type="text" id="new-owner-id" name="newResidentId" placeholder="Enter New Owner ID" disabled />
+                                    <label for="new-owner-id">Mã số cư dân mới</label>
+                                    <input type="text" id="new-owner-id" name="newResidentId" placeholder="Nhập mã số" disabled />
                                 </div>
 
                                 <hr /> <!-- Horizontal line separating sections -->
 
                                 <!-- Resident Information Fields -->
-                                <h2 style="margin-top: 20px;">New Resident Information</h2>
+                                <h2 style="margin-top: 20px;">Thông tin cư dân mới</h2>
                                 <div class="form-group">
                                     <div class="three-cols">
                                         <div class="col">
-                                            <label for="name">Name</label>
+                                            <label for="name">Tên</label>
                                             <input type="text" id="name" name="name" placeholder="Enter full name" required />
                                         </div>
                                         <div class="col">
-                                            <label for="dob">Date of Birth</label>
+                                            <label for="dob">Ngày sinh</label>
                                             <input type="date" id="dob" name="dob" required />
                                         </div>
                                         <div class="col">
-                                            <label>Gender</label>
+                                            <label>Giới tính</label>
                                             <div class="gender-options">
                                                 <label for="male">
                                                     <input type="radio" id="male" name="gender" value="M" required />
-                                                    Male
+                                                    Nam
                                                 </label>
                                                 <label for="female">
                                                     <input type="radio" id="female" name="gender" value="F" required />
-                                                    Female
+                                                    Nữ
                                                 </label>
                                             </div>
                                         </div>
@@ -234,7 +239,7 @@
 
                                 <div class="form-group">
                                     <div class="one-col">
-                                        <label for="address">Address</label>
+                                        <label for="address">Địa chỉ</label>
                                         <input type="text" id="address" name="address" placeholder="Enter address" required />
                                     </div>
                                 </div>
@@ -242,7 +247,7 @@
                                 <div class="form-group">
                                     <div class="two-cols">
                                         <div class="col">
-                                            <label for="phone">Phone</label>
+                                            <label for="phone">Số điện thoại</label>
                                             <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required />
                                             <span id="phone-error" class="error-message"></span>
                                         </div>
@@ -257,12 +262,12 @@
                                 <div class="form-group">
                                     <div class="three-cols">
                                         <div class="col">
-                                            <label for="id">ID</label>
+                                            <label for="id">Căn cước công dân</label>
                                             <input type="number" id="id" name="id" placeholder="Enter ID" required />
                                             <span id="id-error" class="error-message"></span>
                                         </div>
                                         <div class="col">
-                                            <label for="username">Username</label>
+                                            <label for="username">Tài khoản</label>
                                             <input type="text" id="username" name="username" placeholder="Enter username" required />
                                             <span id="username-error" class="error-message"></span>
                                         </div>
@@ -270,7 +275,7 @@
                                 </div>
 
                                 <div class="form-button">
-                                    <button type="submit">Submit</button>
+                                    <button type="submit">Gửi</button>
                                     <h5 style="color:${status == "true" ? "green" : "red"}; text-align:center;">${requestScope.message}</h5>
                                 </div>
                             </form>

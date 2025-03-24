@@ -7,7 +7,6 @@ package controller.staff.accountant;
 import dao.CompanyDAO;
 import dao.ExpenditureDAO;
 import dao.ExpenseCategoryDAO;
-import dao.FundDAO;
 import dao.HistoryExpenditureDAO;
 import dao.StaffDAO;
 import java.io.IOException;
@@ -17,6 +16,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -24,7 +24,6 @@ import java.time.format.DateTimeFormatter;
 import model.Account;
 import model.Company;
 import model.ExpenseCategory;
-import model.Fund;
 import model.HistoryExpenditure;
 import model.SendEmail;
 import model.Staff;
@@ -143,14 +142,14 @@ public class AddExpenditure extends HttpServlet {
             int categoryId = Integer.parseInt(categoryId_raw);
             String eid = null;
             float totalPrice = Float.parseFloat(totalPrice_raw);
-            FundDAO fd = new FundDAO();
-            Fund f = fd.getById("1");
-            if (totalPrice > f.getValue()) {
-                request.setAttribute("message", "Total fees is higher than Fund of Apartment!");
-                request.setAttribute("status", "false");
-                request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
-                return;
-            }
+//            FundDAO fd = new FundDAO();
+//            Fund f = fd.getById("1");
+//            if (totalPrice > f.getValue()) {
+//                request.setAttribute("message", "Total fees is higher than Fund of Apartment!");
+//                request.setAttribute("status", "false");
+//                request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
+//                return;
+//            }
             Company company = daoCp.getById(companyId);
             Staff chiefAccountant = daoSt.getById(chiefAccountantId);
             Staff currentAdmin = daoSt.getById(AdminId);
@@ -166,6 +165,8 @@ public class AddExpenditure extends HttpServlet {
                     ex, company, createBy, chiefAccountant, currentAdmin, action,
                     modifiedDate, createBy, createdDate);
 
+            DecimalFormat df = new DecimalFormat("#,###"); // Định dạng kiểu số với dấu phân cách là dấu phẩy
+            String formattedTotalPrice = df.format(totalPrice).replace(",", ".") + " VNĐ"; // Thay dấu phẩy bằng dấu chấm và thêm VNĐ
             String emailContentInsert = "<html>"
                     + "<head>"
                     + "<style>"
@@ -173,10 +174,12 @@ public class AddExpenditure extends HttpServlet {
                     + "h2 { color: #333; }"
                     + "table { border-collapse: collapse; width: 100%; background-color: #ffffff; }"
                     + "th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }"
-                    + "th { background-color: #4CAF50; color: white; }"
+                    + "th { background-color: #003366; color: white; }" // Màu tiêu đề bảng
                     + "tr:nth-child(even) { background-color: #f2f2f2; }"
                     + "tr:hover { background-color: #ddd; }"
                     + "p { color: #555; font-size: 14px; }"
+                    + ".footer { margin-top: 20px; text-align: center; }"
+                    + ".contact-info { color: #ff9800; }" // Màu chữ cam cho thông tin liên hệ
                     + "</style>"
                     + "</head>"
                     + "<body>"
@@ -186,14 +189,13 @@ public class AddExpenditure extends HttpServlet {
                     + "<th>Thông tin</th>"
                     + "<th>Chi tiết</th>"
                     + "</tr>"
-                    + "<tr><td>ID</td>"
-                    + "<td>" + he.getId() + "</td></tr>"
+                    // Đã bỏ ID
                     + "<tr><td>Tiêu đề</td>"
                     + "<td>" + he.getTitle() + "</td></tr>"
-                    + "<tr><td>Trạng thái phê duyệt Kế toán trưởng</td>"
+                    + "<tr><td>Trạng thái phê duyệt</td>"
                     + "<td>" + (he.getChiefAccountantApproveStatus() == 0 ? "Đang xử lý" : "Đã từ chối") + "</td></tr>"
                     + "<tr><td>Tổng giá</td>"
-                    + "<td>" + he.getTotalPrice() + "</td></tr>"
+                    + "<td>" + formattedTotalPrice + "</td></tr>"
                     + "<tr><td>Ghi chú</td>"
                     + "<td>" + he.getNote() + "</td></tr>"
                     + "<tr><td>Danh mục chi phí</td>"
@@ -204,6 +206,11 @@ public class AddExpenditure extends HttpServlet {
                     + "<td>" + he.getCreatedDate() + "</td></tr>"
                     + "</table>"
                     + "<p>Vui lòng kiểm tra và xác nhận chi phí này.</p>"
+                    + "<div class='footer'>"
+                    + "<p>Đây là email gửi từ động từ hệ thống của BaViApartment.</p>"
+                    + "<p class='contact-info'>Mọi thông tin cần hỗ trợ từ hệ thống BaViApartment, vui lòng liên hệ:</p>"
+                    + "<p class='contact-info'>Hotline: 0877165299 | Email: baviapartment88@gmail.com</p>"
+                    + "</div>"
                     + "</body>"
                     + "</html>";
 
@@ -219,6 +226,7 @@ public class AddExpenditure extends HttpServlet {
                 send.sendEmail(he.getCurrentAdmin().getEmail(), "Thông báo về chi phí: " + he.getTitle(), emailContentInsert);
 //                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
 //                        "Please check and confirm the expenditure : " + he.getTitle());
+                request.setAttribute("staff", daoSt.getById(he.getCreatedStaff().getId()));
                 request.setAttribute("message", "Your expenditure has been successfully saved to the waiting list.");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);

@@ -57,16 +57,16 @@ public class InvoiceDetalDAO extends DBContext {
     public void addInvoiceDetailByApartmentIdAndInvoiceId(String invoiceId, String aid) {
         MonthlyServiceDAO md = new MonthlyServiceDAO();
         List<MonthlyService> listUsingSerivce = md.getByApartmentId(aid);
-        for (int i = 0; i < listUsingSerivce.size(); i++) {
-            MonthlyService ms = listUsingSerivce.get(i);
-            Service sv = ms.getService();
-            int quantity = ms.getQuantity();
-            float amount = ms.getQuantity() * (float) sv.getUnitPrice();
-            float unitprice = (float)sv.getUnitPrice();
-            LocalDateTime time = LocalDateTime.now();
-            String sql = "insert into invoicedetail values(?,?,?,?,?,?)";
-            try {
-                PreparedStatement st =connection.prepareStatement(sql);
+
+        String sql = "insert into invoicedetail values(?,?,?,?,?,?)";
+        try (PreparedStatement st = connection.prepareStatement(sql)) { // Mở 1 PreparedStatement duy nhất
+            for (MonthlyService ms : listUsingSerivce) {
+                Service sv = ms.getService();
+                int quantity = ms.getQuantity();
+                float amount = quantity * (float) sv.getUnitPrice();
+                float unitprice = (float) sv.getUnitPrice();
+                LocalDateTime time = LocalDateTime.now();
+
                 st.setString(1, invoiceId);
                 st.setString(2, sv.getName());
                 st.setFloat(3, unitprice);
@@ -74,10 +74,9 @@ public class InvoiceDetalDAO extends DBContext {
                 st.setTimestamp(5, Timestamp.valueOf(time));
                 st.setFloat(6, amount);
                 st.executeUpdate();
-                
-            } catch (SQLException e) {
-                System.out.println(e);
             }
+        } catch (SQLException e) {
+            System.out.println(e);
         }
     }
 }
