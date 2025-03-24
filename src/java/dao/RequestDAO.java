@@ -28,7 +28,7 @@ import util.Util;
 public class RequestDAO extends DBContext {
 
     public List<Request> getAll() {
-        String sql = "select * from Request order by requestid desc";
+        String sql = "select * from Request order by date desc";
         List<Request> list = new ArrayList<>();
         ResidentDAO rd = new ResidentDAO();
         StaffDAO sd = new StaffDAO();
@@ -386,7 +386,7 @@ public class RequestDAO extends DBContext {
         if ((requestType != null && !requestType.isBlank()) || !requestType.isEmpty()) {
             sql += " and tid = '"+requestType+"'";
         }
-        sql += " order by Date desc";
+        sql += " order by status asc,Date desc";
         try {
             PreparedStatement st = connection.prepareStatement(sql.toString());
             ResultSet rs = st.executeQuery();
@@ -478,7 +478,7 @@ public class RequestDAO extends DBContext {
         return null;
     }
     public void declineRequestWithoutMessageById(String id){
-        String sql="update request set Response='Decline', status='Done', responsedate=? where id=?";
+        String sql="update request set Response='Decline', status=2, responsedate=? where id=?";
         LocalDate date = LocalDate.now();
         try {
             PreparedStatement st = connection.prepareStatement(sql);
@@ -595,8 +595,12 @@ public class RequestDAO extends DBContext {
 //r.setDetail("hehe");
 //r.setRequestType(rd.getById("R003"));
 //System.out.println(dao.Editrequest(r));
-Util util = new Util();
-Staff list = dao.getTopEmployeeByYear(2025);
-        System.out.println(""+list.getName()+list.getRole().getName()+list.getStatus());
+//Util util = new Util();
+//Staff list = dao.getTopEmployeeByYear(2025);
+//        System.out.println(""+list.getName()+list.getRole().getName()+list.getStatus());
+    List<Request> list = dao.getByResidentID("P101");
+        for (Request request : list) {
+            System.out.println(""+request.getId()+"\n");
+        }
     }
 }

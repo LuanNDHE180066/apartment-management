@@ -123,18 +123,18 @@ public class SendEmail {
             e.printStackTrace();
         }
     }
-
-    public void sendEmailToWorkingStaff(List<Staff> list, String detail, String aid) {
+    
+    public void sendEmailToWorkingStaff(List<Staff> list,String detail,String aid,String rName){
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (Staff ei : list) {
-            executor.execute(() -> sendEmailStaffToOne(ei, detail, aid));
+            executor.execute(() -> sendEmailStaffToOne(ei,detail,aid,rName));
         }
         executor.shutdown();
     }
-
-    public void sendEmailStaffToOne(Staff estaff, String detail, String aid) {
-        try {
+    
+    public void sendEmailStaffToOne(Staff estaff,String detail,String aid,String rName){
+         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -148,16 +148,47 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(estaff.getEmail()));
-            message.setSubject("Công việc yêu cầu từ dân cư", "UTF-8");
-            String dataText = "Bạn có yêu cầu từ " + estaff.getName() + "tại phòng " + aid + " cần giải quyết: " + detail + ", xem chi tiết tại ứng dụng";
-            message.setText(dataText, "UTF-8");
+            message.setSubject("Công việc yêu cầu từ dân cư","UTF-8");
+            String dataText = "Bạn có yêu cầu từ "+rName+"tại "+aid +" cần giải quyết: "+detail+", xem chi tiết tại ứng dụng";
+            message.setText(dataText,"UTF-8");
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + estaff.getEmail());
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
-
+    
+    public void sendEmailDeclineRequestToResident(Resident resident,String subject,String content){
+        ExecutorService executor = Executors.newFixedThreadPool(5);
+        executor.execute(() -> sendEmailDeclineRequestToOne(resident,subject,content));
+        executor.shutdown();
+    }
+    
+    public void sendEmailDeclineRequestToOne(Resident resident,String subject,String content){
+         try {
+            Properties props = new Properties();
+            props.put("mail.smtp.auth", "true");
+            props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.host", "smtp.gmail.com");
+            props.put("mail.smtp.port", "587");
+            Session session = Session.getInstance(props, new Authenticator() {
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(from, password);
+                }
+            });
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(resident.getEmail()));
+            message.setSubject(subject,"UTF-8");
+            String dataText = content;
+            message.setText(dataText,"UTF-8");
+            Transport.send(message);
+            System.out.println("Đã gửi email đến: " + resident.getEmail());
+        } catch (MessagingException e) {
+            e.printStackTrace();
+        }
+    }
+    
     public void sendEmailAdminToOne(Staff estaff) {
         try {
             Properties props = new Properties();

@@ -91,7 +91,6 @@ public class StaffDAO extends DBContext {
             sql += " and id not in (";
             for (int i = 0; i < working.size(); i++) {
                 sql += "'" + working.get(i).getId() + "',";
-                System.out.println("" + working.get(i).getId());
                 if (i == working.size() - 1) {
                     sql += "'" + working.get(i).getId() + "')";
                 }
@@ -382,7 +381,7 @@ public class StaffDAO extends DBContext {
 
     public List<Account> getAllStaffAccount() {
         List<Account> list = new ArrayList<>();
-        String sql = "select username, password, email, id,roleId from Staff";
+        String sql = "select username, password, email, id,roleId from Staff where status = 1";
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
@@ -664,7 +663,17 @@ public class StaffDAO extends DBContext {
         return false;
 
     }
-
+    public boolean updatewhenchangecompanystatus(int status, String cID){
+        String sql="  update Staff set status =?  where cID= ?";
+        try {
+            PreparedStatement ps= connection.prepareStatement(sql);
+            ps.setInt(1, status);
+            ps.setString(2, cID);
+            return ps.executeUpdate() > 0;
+        } catch (Exception e) {
+        }
+        return false;
+    }
     public static void main(String[] args) {
 
         StaffDAO dao = new StaffDAO();

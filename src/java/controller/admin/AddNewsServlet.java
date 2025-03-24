@@ -98,38 +98,40 @@ public class AddNewsServlet extends HttpServlet {
         String title = u.stringNomalize(request.getParameter("title")) ;
         String content = u.stringNomalize(request.getParameter("content")) ;
         String source = u.stringNomalize(request.getParameter("source")) ;    
-        Part filePart=request.getPart("file");
-        String image="";
-        boolean hasError = false;
-        if(filePart!=null && filePart.getSize()>0){
-            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
-            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
-            if(!fileExtention.matches("jpg|jpeg")){
-                request.setAttribute("fileerror", "Only jpg");
-                hasError = true;
-            }
-            String uploadpath=getServletContext().getRealPath("/")+"images/news";
-            File uploadDir=new File(uploadpath);
-            if(!uploadDir.exists()){
-                uploadDir.mkdirs();
-            }
-            File file= new File(uploadDir, filename);
-            try(InputStream fileContent=filePart.getInputStream();
-                    FileOutputStream outputStream=new FileOutputStream(file)) {
-                byte[] buffer=new byte[1024];
-                int byteread;
-                while((byteread=fileContent.read(buffer))!= -1){
-                    outputStream.write(buffer, 0, byteread);
-                }
-            }
-            image = "images/news/" + filename;           
-        }
+//        Part filePart=request.getPart("file");
+//        String image="";
+//        
+//        if(filePart!=null && filePart.getSize()>0){
+//            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+//            String fileExtention=filename.substring(filename.lastIndexOf(".")+1).toLowerCase();
+//            if(!fileExtention.matches("jpg|jpeg")){
+//                request.setAttribute("fileerror", "Only jpg");
+//                hasError = true;
+//            }
+//            String uploadpath=getServletContext().getRealPath("/")+"images/news";
+//            File uploadDir=new File(uploadpath);
+//            if(!uploadDir.exists()){
+//                uploadDir.mkdirs();
+//            }
+//            File file= new File(uploadDir, filename);
+//            try(InputStream fileContent=filePart.getInputStream();
+//                    FileOutputStream outputStream=new FileOutputStream(file)) {
+//                byte[] buffer=new byte[1024];
+//                int byteread;
+//                while((byteread=fileContent.read(buffer))!= -1){
+//                    outputStream.write(buffer, 0, byteread);
+//                }
+//            }
+//            image = "images/news/" + filename;           
+//        }
         String auther = request.getParameter("authorid");
         String date = request.getParameter("date");
         String category = request.getParameter("category");
+        boolean hasError = false;
         NewDAO ndao = new NewDAO();
         StaffDAO sdao = new StaffDAO();
-        News anew = new News(title, content, source, category, image, sdao.getById(auther), date);
+        String newContent = processImages(content, request);
+        News anew = new News(title, newContent, source, category, sdao.getById(auther), date);
         try{
             if(title.trim().isEmpty()){
                 request.setAttribute("titleerror", "Title is not empty");
@@ -162,6 +164,12 @@ public class AddNewsServlet extends HttpServlet {
         doGet(request, response);
         request.removeAttribute("error");
     }
+    private String processImages(String content, HttpServletRequest request) {
+    // Tìm và tải ảnh về thư mục server nếu cần
+    return content;
+}
+    
+
 
     /** 
      * Returns a short description of the servlet.

@@ -95,12 +95,12 @@ public class DashboardPercenService extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int year = Integer.parseInt(request.getParameter("year"));
-        String serviceId = request.getParameter("serviceId");
+        String serviceId = request.getParameter("serviceName");
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
         request.setAttribute("currentYear", year);
-        request.setAttribute("currentSvId", serviceId);
+        request.setAttribute("serviceName", serviceId);
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
         request.setAttribute("screen", 2);

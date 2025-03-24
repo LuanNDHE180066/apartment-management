@@ -92,7 +92,6 @@
                                                         <tr>
                                                             <th>ID</th>
                                                             <th>Name</th>
-                                                            <th>Description</th>
                                                             <th>Phone</th>
                                                             <th>Contact Phone</th>
                                                             <th>Fax</th>
@@ -101,7 +100,7 @@
                                                             <th>Website</th>
                                                             <th>Tax code</th>
                                                             <th>Bank</th>
-                                                            <th>Address</th>
+                                                            <th>Status</th>
                                                             <th>Option</th>
                                                         </tr>
                                                     </thead>
@@ -110,7 +109,6 @@
                                                             <tr>
                                                                 <td>${o.id}</td>
                                                                 <td>${o.name}</td>
-                                                                <td>${o.description}</td>
                                                                 <td>${o.phone}</td>
                                                                 <td>${o.contactPhone}</td>
                                                                 <td>${o.fax}</td>
@@ -119,7 +117,7 @@
                                                                 <td>${o.website}</td>
                                                                 <td>${o.taxCode}</td>
                                                                 <td>${o.bank}</td>
-                                                                <td>${o.address}</td>
+                                                                <td>${o.status==1?'Active':'Inactive'}</td>
                                                                 <td><a href="update-company?id=${o.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>

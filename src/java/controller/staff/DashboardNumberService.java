@@ -72,7 +72,7 @@ public class DashboardNumberService extends HttpServlet {
         if(request.getParameter("year")==null && request.getParameter("serviceId") ==null ){
             year = LocalDate.now().getYear();
             ServiceDAO sd = new ServiceDAO();
-            sid =sd.getAll().get(0).getId();
+            sid =sd.getAll().get(0).getName();
         }
         else{
             doPost(request, response);
@@ -82,7 +82,7 @@ public class DashboardNumberService extends HttpServlet {
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
         request.setAttribute("currentYear", year);
-        request.setAttribute("currentSvId", sid);
+        request.setAttribute("serviceName", sid);
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
         request.setAttribute("data", sd.getNumberUsedAllMonth(year, sid));
@@ -102,12 +102,12 @@ public class DashboardNumberService extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         int year = Integer.parseInt(request.getParameter("year"));
-        String serviceId = request.getParameter("serviceId");
+        String serviceId = request.getParameter("serviceName");
         ResidentDAO rd = new ResidentDAO();
         request.setAttribute("startYear", rd.getStartYear());
         request.setAttribute("endYear", LocalDate.now().getYear());
         request.setAttribute("currentYear", year);
-        request.setAttribute("currentSvId", serviceId);
+        request.setAttribute("serviceName", serviceId);
         ServiceDAO sd = new ServiceDAO();
         request.setAttribute("sv", sd.getAll());
         request.setAttribute("screen", 3);

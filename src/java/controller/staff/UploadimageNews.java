@@ -3,24 +3,34 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
 
-package controller.staff.accountant;
+package controller.staff;
 
-import dao.HistoryExpenditureDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import model.HistoryExpenditure;
+import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.nio.file.Paths;
+import java.util.UUID;
 
 /**
  *
- * @author quang
+ * @author pc
  */
-@WebServlet(name="ViewPendingExpenditureDetail", urlPatterns={"/view-pending-expenditure-detail"})
-public class ViewPendingExpenditureDetail extends HttpServlet {
+@WebServlet(name="UploadimageNews", urlPatterns={"/upload-img-news"})
+@MultipartConfig(
+        fileSizeThreshold = 1024 * 1024 * 2, // 2MB
+        maxFileSize = 1024 * 1024 * 10,      // 10MB
+        maxRequestSize = 1024 * 1024 * 50    // 50MB
+)
+public class UploadimageNews extends HttpServlet {
    
     /** 
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
@@ -37,10 +47,10 @@ public class ViewPendingExpenditureDetail extends HttpServlet {
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet ViewPendingExpenditureDetail</title>");  
+            out.println("<title>Servlet UploadimageNews</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet ViewPendingExpenditureDetail at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet UploadimageNews at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
@@ -57,16 +67,7 @@ public class ViewPendingExpenditureDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String id = request.getParameter("id");
-        HistoryExpenditureDAO daoEx = new HistoryExpenditureDAO();
-        HistoryExpenditure he = daoEx.getExpenditureById(id);
-        
-        String type = request.getParameter("type");
-        
-        request.setAttribute("type", type != null ? "1": "0");
-        request.setAttribute("expenditure", he);
-        request.getRequestDispatcher("viewDetailPendingExpenditure.jsp").forward(request, response);
-                
+        processRequest(request, response);
     } 
 
     /** 
@@ -79,8 +80,41 @@ public class ViewPendingExpenditureDetail extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        processRequest(request, response);
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+
+        try {
+            Part filePart = request.getPart("upload"); // CKEditor gửi file với name="upload"
+            String filename = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            
+            // Định nghĩa thư mục lưu ảnh
+            String uploadPath = getServletContext().getRealPath("/") + "images/news";
+            File uploadDir = new File(uploadPath);
+            if (!uploadDir.exists()) {
+                uploadDir.mkdirs();
+            }
+
+            // Ghi file vào thư mục
+            File file = new File(uploadDir, filename);
+            try (InputStream fileContent = filePart.getInputStream();
+                 FileOutputStream outputStream = new FileOutputStream(file)) {
+                byte[] buffer = new byte[1024];
+                int bytesRead;
+                while ((bytesRead = fileContent.read(buffer)) != -1) {
+                    outputStream.write(buffer, 0, bytesRead);
+                }
+            }
+
+            // Trả về JSON cho CKEditor
+            String fileUrl = request.getContextPath() + "/images/news/" + filename;
+            response.getWriter().write("{\"url\": \"" + fileUrl + "\"}");
+
+        } catch (Exception e) {
+            response.getWriter().write("{\"error\": \"Upload ảnh thất bại!\"}");
+        }
     }
+    
+    
 
     /** 
      * Returns a short description of the servlet.

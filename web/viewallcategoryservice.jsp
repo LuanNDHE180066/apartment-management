@@ -109,7 +109,6 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th style="background-color: #6B90DA;color: black">ID</th>
                                                             <th style="background-color: #6B90DA;color: black">Name</th>                                                       
                                                             <th style="background-color: #6B90DA;color: black">Detail</th>
                                                             <th style="background-color: #6B90DA;color: black">Option</th>
@@ -119,7 +118,6 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listCategoryService}" var="category">
                                                             <tr>
-                                                                <td>${category.id}</td>
                                                                 <td style="text-align: left;">${category.name}</td>
                                                                 <td style="text-align: left;">${category.detail}</td>
                                                                 <td><a href="update-categoryservice-staff?id=${category.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>

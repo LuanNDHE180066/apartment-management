@@ -11,7 +11,7 @@
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <!-- site metas -->
-        <title>Expenditure Report</title>
+        <title>Quản lý khoản chi</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
@@ -39,6 +39,11 @@
             .display-none{
                 display: hidden;
             }
+               .table td{
+                 text-align: left;
+                 color: black;
+                 font-weight: 300;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
@@ -51,38 +56,38 @@
                     <%@include file="topbar.jsp" %>
                     <div class="midde_cont">
                         <div class="container-fluid">
-                            <h2 style="margin-bottom: 20px">Expenditure Report</h2>
+                            <h2 style="margin-bottom: 20px">Khoản Chi</h2>
 
                             <!-- Filter Form -->
                             <form method="get" action="expenditure-report" class="mb-3">
                                 <div class="row">
                                     <div class="col-md-2">
-                                        <label for="startDate">From Date:</label>
+                                        <label for="startDate">Từ ngày:</label>
                                         <input type="date" id="startDate" name="startDate" class="form-control" value="${param.startDate}">
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="endDate">To Date:</label>
+                                        <label for="endDate">Dến ngày:</label>
                                         <input type="date" id="endDate" name="endDate" class="form-control" value="${param.endDate}">
                                     </div>
                                     <div class="col-md-2">
-                                        <label for="category">Category:</label>
+                                        <label for="category">Loại phí:</label>
                                         <select class="form-control" name="category">
-                                            <option value="">Select category</option>
+                                            <option value="">Chọn loại phí:</option>
                                             <c:forEach items="${requestScope.categorylist}" var="ca">
                                                 <option ${param.category == ca.id ? 'selected' : ''} value="${ca.id}">${ca.categoryName}</option>
                                             </c:forEach>
                                         </select>
                                     </div>
                                     <div class="col-md-4 d-flex align-items-end">
-                                        <button style="margin-left: 5px" type="submit" class="btn btn-primary me-2">Filter</button>
-                                         <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}; margin-left: 5px">
-                                             <a style="color: white" href="add-expenditure">Add</a>
-                                         </span>
-                                        <span style="margin-left: 5px" class="btn btn-primary ms-2">
-                                            <a style="color: white" href="view-pending-expenditure">View pending expenditure list</a>
+                                        <button style="margin-left: 5px" type="submit" class="btn btn-primary me-2">Tìm</button>
+                                        <span class="btn btn-primary" style="display: inline-block; ${roleId != 3 ?'display: none':''}; margin-left: 5px">
+                                            <a style="color: white" href="add-expenditure">Thêm mới</a>
                                         </span>
                                         <span style="margin-left: 5px" class="btn btn-primary ms-2">
-                                            <a style="color: white" href="view-expense-category">View expense category</a>
+                                            <a style="color: white" href="view-pending-expenditure">Khoản chi chờ duyệt</a>
+                                        </span>
+                                        <span style="margin-left: 5px" class="btn btn-primary ms-2">
+                                            <a style="color: white" href="view-expense-category">Các loại khoản chi</a>
                                         </span>
                                     </div>
                                 </div>
@@ -92,7 +97,7 @@
                             <div class="row">
                                 <div class="col-md-4">
                                     <div class="card text-white bg-primary mb-3">
-                                        <div class="card-header">Total Expenditure Count</div>
+                                        <div class="card-header">Tổng số khoản chi</div>
                                         <div class="card-body">
                                             <h5 class="card-title">${requestScope.noe}</h5>
                                         </div>
@@ -100,7 +105,7 @@
                                 </div>
                                 <div class="col-md-4">
                                     <div class="card text-white bg-success mb-3">
-                                        <div class="card-header">Total Amount Spent</div>
+                                        <div class="card-header">Tổng số tiền chi</div>
                                         <div class="card-body">
                                             <h5><fmt:formatNumber type="currency" maxFractionDigits="1" value="${requestScope.totalFees}" currencyCode="VND"></fmt:formatNumber></h5> 
 
@@ -109,20 +114,18 @@
                                     </div>
                                 </div>
 
-                                <h3>Expenditure Details</h3>
+                                <h3>Thông tin khoản chi</h3>
                                 <table class="table table-striped">
                                     <thead>
                                         <tr>
-                                            <th>ID</th>
-                                            <th>Expense</th>
-                                            <th>Total Fees</th>
-                                            <th>Approve Date</th>
-                                            <th>Category</th>
-                                            <th>Company</th>
-                                            <th>Staff Create</th>
-                                            <th>Chief Accountant</th>
-                                            <th>Responsible Person</th>
-                                            <th>Option</th>
+                                            <th >ID</th>
+                                            <th >Tiêu đề</th>
+                                            <th style="text-align: center">Tổng phí</th>
+                                            <th >Ngày duyệt</th>
+                                            <th >Loại phí</th>
+                                            <th >Công ty</th>
+                                            <th >Người tạo</th>
+                                            <th >Option</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -130,13 +133,12 @@
                                         <tr>
                                             <td>${expenditure.id}</td>
                                             <td>${expenditure.title}</td>
-                                            <td>${expenditure.totalPrice}</td>
+                                              <td> <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
                                             <td>${expenditure.approveddate}</td>
                                             <td>${expenditure.category.categoryName}</td>
                                             <td>${expenditure.company.name}</td>
                                             <td>${expenditure.createdStaff.name}</td>
-                                            <td>${expenditure.chiefAccountantId.name}</td>
-                                            <td>${expenditure.currentAdmin.name}</td>
+                                        
                                             <td>
                                                 <a class="${sessionScope.account.roleId != 3 ? 'display-none' : ''}" href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
@@ -147,13 +149,13 @@
                             </table>
 
                             <!-- Summary by Category -->
-                            <h3>Summary by Category</h3>
+                            <h3>Chi phí theo từng loại</h3>
                             <table class="table table-striped">
                                 <thead>
                                     <tr>
-                                        <th>Category</th>
-                                        <th>Number of Expenditure</th>
-                                        <th>Total Fees</th>
+                                        <th>Loại phí</th>
+                                        <th style="text-align: center">Số khoản chi</th>
+                                        <th style="text-align: center">Tổng phí</th>
                                     </tr>
                                 </thead> 
                                 <jsp:useBean id="exDAO" class="dao.ExpenditureDAO" scope="page"></jsp:useBean> 
@@ -162,8 +164,8 @@
                                     <c:forEach items="${requestScope.categorylist}" var="summary">
                                         <tr>
                                             <td>${summary.categoryName}</td>
-                                            <td>${exDAO.getNumberOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}</td>
-                                            <td>${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)} VNĐ</td>
+                                            <td style="text-align: center">${exDAO.getNumberOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}</td>
+                                               <td style="text-align: center"> <fmt:formatNumber value="${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

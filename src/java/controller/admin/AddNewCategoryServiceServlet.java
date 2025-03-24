@@ -69,6 +69,11 @@ public class AddNewCategoryServiceServlet extends HttpServlet {
             request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);
             return;
         }
+        if(note.isBlank()){
+            request.setAttribute("error", "Note is not allow blank ");
+            request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);
+            return;
+        }
         if(val.isExistedName(Util.stringNomalize(name))){
             request.setAttribute("error", "Name is existed");
             request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);

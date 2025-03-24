@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import java.text.DecimalFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
@@ -162,11 +163,63 @@ public class UpdateExpenditure extends HttpServlet {
                 request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
                 return;
             } else {
+                // Tạo nội dung email với bảng chi tiết chi phí
+                    DecimalFormat df = new DecimalFormat("#,###"); // Định dạng kiểu số với dấu phân cách là dấu phẩy
+            String formattedTotalPrice = df.format(totalPrice).replace(",", ".") + " VNĐ"; // Thay dấu phẩy bằng dấu chấm và thêm VNĐ
+                String emailContent = "<html>"
+                        + "<head>"
+                        + "<style>"
+                        + "body { font-family: Arial, sans-serif; background-color: #f4f4f4; padding: 20px; }"
+                        + "h2 { color: #333; }"
+                        + "table { border-collapse: collapse; width: 100%; background-color: #ffffff; }"
+                        + "th, td { border: 1px solid #dddddd; text-align: left; padding: 12px; }"
+                        + "th { background-color: #003366; color: white; }" // Màu tiêu đề bảng
+                        + "tr:nth-child(even) { background-color: #f2f2f2; }"
+                        + "tr:hover { background-color: #ddd; }"
+                        + "p { color: #555; font-size: 14px; }"
+                        + ".footer { margin-top: 20px; text-align: center; }"
+                        + ".contact-info { color: #ff9800; }" // Màu chữ cam cho thông tin liên hệ
+                        + "</style>"
+                        + "</head>"
+                        + "<body>"
+                        + "<h2>Thông báo về chi phí đã được cập nhật</h2>"
+                        + "<table>"
+                        + "<tr>"
+                        + "<th>Thông tin</th>"
+                        + "<th>Chi tiết</th>"
+                        + "</tr>"
+                        + "<tr><td>Tiêu đề</td>"
+                        + "<td>" + he.getTitle() + "</td></tr>"
+                        + "<tr><td>Trạng thái phê duyệt</td>"
+                        + "<td>" + (he.getChiefAccountantApproveStatus() == 0 ? "Đang xử lý" : "Đã từ chối") + "</td></tr>"
+                        + "<tr><td>Tổng giá</td>"
+                        + "<td>" + formattedTotalPrice + "</td></tr>"
+                        + "<tr><td>Ghi chú</td>"
+                        + "<td>" + he.getNote() + "</td></tr>"
+                        + "<tr><td>Danh mục chi phí</td>"
+                        + "<td>" + he.getCategory().getCategoryName() + "</td></tr>"
+                        + "<tr><td>Công ty</td>"
+                        + "<td>" + he.getCompany().getName() + "</td></tr>"
+                        + "<tr><td>Ngày tạo</td>"
+                        + "<td>" + he.getCreatedDate() + "</td></tr>"
+                        + "</table>"
+                        + "<p>Vui lòng kiểm tra và xác nhận chi phí này.</p>"
+                        + "<div class='footer'>"
+                        + "<p>Đây là email gửi từ động từ hệ thống của BaViApartment.</p>"
+                        + "<p class='contact-info'>Mọi thông tin cần hỗ trợ từ hệ thống BaViApartment, vui lòng liên hệ:</p>"
+                        + "<p class='contact-info'>Hotline: 0877165299 | Email: baviapartment88@gmail.com</p>"
+                        + "</div>"
+                        + "</body>"
+                        + "</html>";
+
+
                 SendEmail send = new SendEmail();
-                send.sendEmail(he.getChiefAccountantId().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has updated an expenditure " + he.getTitle(),
-                        "Please check and confirm the expenditure" + he.getTitle());
-                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has updated an expenditure " + he.getTitle(),
-                        "Please check and confirm the expenditure : " + he.getTitle());
+                send.sendEmail(he.getChiefAccountantId().getEmail(),
+                        daoSt.getById("Staff: " +he.getModifiedBy().getId()+" - "+ he.getCreatedStaff().getId()).getName() + " has updated an expenditure: " + he.getTitle(),
+                        emailContent);
+                send.sendEmail(he.getCurrentAdmin().getEmail(),
+                        daoSt.getById(he.getCreatedStaff().getId()) + " has updated an expenditure: " + he.getTitle(),
+                        emailContent);
                 request.setAttribute("message", "Your update expenditure request has been successfully saved to the waiting list.");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);

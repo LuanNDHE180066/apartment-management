@@ -271,12 +271,14 @@ public class UpdateApartmentServlet extends HttpServlet {
         String livingResidentIds = daoLA.getLivingResidentId(aid);
         List<Resident> listLivingResident = daoLA.getLivingResidentList(aid);
         
+        
+         OwnerApartment oaNew = daoAO.getOwnerByApartmentID(aid); // chủ cũ
         request.setAttribute("livingResidents", listLivingResident);
         request.setAttribute("apartment", a);
         request.setAttribute("livingResidentNames", livingResidentName);
         request.setAttribute("livingResidentIds", livingResidentIds);
         request.setAttribute("livingResident", la);
-        request.setAttribute("ownerApartment", oa);
+        request.setAttribute("ownerApartment", oaNew);
         request.setAttribute("roomTypes", listRoomType);
         request.setAttribute("status", "true");
         request.setAttribute("message", "Update successfully");

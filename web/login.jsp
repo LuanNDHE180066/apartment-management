@@ -126,7 +126,7 @@
                                             <button class="main_bt" type="submit">Sign In</button>
                                             <div>
                                                 <i class="fa fa-google" aria-hidden="true"></i>
-                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=email&redirect_uri=http://localhost:8080/apartment-management/login-google&response_type=code&client_id=879385543144-fh57neia4tt4ogqqjfk4hnb5182npalt.apps.googleusercontent.com&prompt=force">Sign In With Google</a>                                            </div>
+                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=openid%20email%20profile&redirect_uri=http://localhost:8080/apartment-management/login-google&response_type=code&client_id=879385543144-fh57neia4tt4ogqqjfk4hnb5182npalt.apps.googleusercontent.com&access_type=offline&prompt=consent">Sign In With Google</a>                                            </div>
                                         </div>
                                     </fieldset>
                                 </form>

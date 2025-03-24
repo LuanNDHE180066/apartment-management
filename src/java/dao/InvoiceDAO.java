@@ -203,7 +203,7 @@ public class InvoiceDAO extends DBContext {
     public Invoice getByApartmentIdNow(String aid) {
         ResidentDAO rd = new ResidentDAO();
         ApartmentDAO ad = new ApartmentDAO();
-        String sql = "select * from invoice where status=1 and aid=? and MONTH(invoicedate) =? and year(invoicedate) = ?";
+        String sql = "select * from invoice where status=0 and aid=? and MONTH(invoicedate) =? and year(invoicedate) = ?";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, aid);
@@ -282,7 +282,7 @@ public class InvoiceDAO extends DBContext {
         System.out.println(sql);
         return list;
     }
-
+    
     public void generateInvoice() {
         InvoiceDetalDAO idd = new InvoiceDetalDAO();
         LivingApartmentDAO ld = new LivingApartmentDAO();
@@ -349,8 +349,20 @@ public class InvoiceDAO extends DBContext {
             PreparedStatement st = connection.prepareStatement(sql);
             st.setString(1, id);
             st.executeUpdate();
-            FundDAO fd = new FundDAO();
-            fd.revenueFundByInvoice(id);
+//            FundDAO fd = new FundDAO();
+//            fd.revenueFundByInvoice(id);
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public void switchToUnPaidStatusById(String id) {
+        String sql = "update invoice set status =0 where id =?";
+        try {
+            PreparedStatement st = connection.prepareStatement(sql);
+            st.setString(1, id);
+            st.executeUpdate();
+//            FundDAO fd = new FundDAO();
+//            fd.revenueFundByInvoice(id);
         } catch (SQLException e) {
             System.out.println(e);
         }
@@ -451,7 +463,6 @@ public class InvoiceDAO extends DBContext {
         }
         return rs;
     }
-
     public static void main(String[] args) {
         InvoiceDAO id = new InvoiceDAO();
 //        System.out.println(id.getByResidentId("P101").size());
