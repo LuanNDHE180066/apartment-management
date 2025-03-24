@@ -175,11 +175,7 @@
                                             <th>Phone</th>
                                             <th>Address</th>
                                             <th>Apt</th>
-                                            <th>Role</th>
                                             <th>CCCD</th>
-                                            <th>Rep</th>
-                                            <th>Username</th>
-                                            <th>Email</th>
                                         </tr>
                                     </thead>
                                     <tbody id="preview-table-body"></tbody>
@@ -248,11 +244,7 @@
                     console.log("Phone:", resident.phone);
                     console.log("Address:", resident.address);
                     console.log("Apartment:", resident.apartment);
-                    console.log("Role:", resident.role);
                     console.log("CCCD:", resident.cccd);
-                    console.log("IsRepresent:", resident.isRepresent);
-                    console.log("Username:", resident.username);
-                    console.log("Email:", resident.email);
 
                     const $row = $("<tr></tr>");
                     $row.append($("<td></td>").text(resident.name || 'N/A'));
@@ -261,11 +253,7 @@
                     $row.append($("<td></td>").text(resident.phone || 'N/A'));
                     $row.append($("<td></td>").text(resident.address || 'N/A'));
                     $row.append($("<td></td>").text(resident.apartment || 'N/A'));
-                    $row.append($("<td></td>").text(resident.role || 'N/A'));
                     $row.append($("<td></td>").text(resident.cccd || 'N/A'));
-                    $row.append($("<td></td>").text(resident.isRepresent || 'N/A'));
-                    $row.append($("<td></td>").text(resident.username || 'N/A'));
-                    $row.append($("<td></td>").text(resident.email || 'N/A'));
 
                     console.log(`Appending row ${index}:`, $row[0].outerHTML);
                     previewTableBody.append($row);

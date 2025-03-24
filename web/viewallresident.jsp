@@ -411,7 +411,7 @@
 
                                             const blob = await response.blob();
 
-                                            // Use File System Access API to let user pick a location
+                                         
                                             if ('showSaveFilePicker' in window) {
                                                 const handle = await window.showSaveFilePicker({
                                                     suggestedName: 'residents_export.xlsx',
@@ -425,7 +425,7 @@
                                                 await writable.close();
                                                 alert('File saved successfully!');
                                             } else {
-                                                // Fallback to standard download if API isn?t supported
+                                             
                                                 const url = window.URL.createObjectURL(blob);
                                                 const a = document.createElement('a');
                                                 a.href = url;
