@@ -445,6 +445,55 @@ public class ResidentDAO extends DBContext {
         }
     }
 
+    public boolean getByCCCD(String cccd) {
+        String sql = "select * from Resident where cccd = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, cccd);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                return true;
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        return false;
+    }
+
+//     newResident.setName(r.getNewPerson().getName());
+//                newResident.setBod(r.getNewPerson().getBod());
+//                newResident.setAddress(r.getNewPerson().getAddress());
+//                newResident.setPhone(r.getNewPerson().getPhone());
+//                newResident.setEmail(r.getNewPerson().getEmail());
+//                newResident.setCccd(r.getNewPerson().getCccd());
+//                newResident.setRole(roleDAO.getById("6"));
+////                newResident.setUsername(r.getNewPerson().getUsername());
+////                newResident.setPassword(password);
+//                newResident.setGender(r.getNewPerson().getGender());
+    public void updateResident(Resident r) {
+        String sql = "update Resident\n"
+                + "set Name = ? , Bod = ?, Address = ?,\n"
+                + "Phone = ? , Email = ? , roleId = 1 , CCCD =? , gender = ?, username = ? , password = ?\n"
+                + "where Id = ?";
+        try {
+            PreparedStatement ps = connection.prepareStatement(sql);
+            ps.setString(1, r.getName());
+            ps.setString(2, r.getBod());
+            ps.setString(3, r.getAddress());
+            ps.setString(4, r.getPhone());
+            ps.setString(5, r.getEmail());
+            ps.setString(6, r.getCccd());
+            ps.setString(7, r.getGender());
+            ps.setString(8, r.getUsername());
+            ps.setString(9, r.getPassword());
+            ps.setString(10, r.getpId());
+
+            ps.executeUpdate();
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
+
     public String insertNewResident(Resident r) {
         String sql = "INSERT INTO [dbo].[Resident] (\n"
                 + "    [Id],\n"
@@ -949,7 +998,7 @@ public class ResidentDAO extends DBContext {
     public static void main(String[] args) {
         ResidentDAO dao = new ResidentDAO();
 //        System.out.println(dao.editResidentStatus("P100", "2"));
-       dao.deleteResident("P130");
+        dao.deleteResident("P130");
 
     }
 }
