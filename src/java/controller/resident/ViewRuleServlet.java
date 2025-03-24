@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.resident;
 
 import dao.RuleDAO;
@@ -18,10 +14,6 @@ import model.Rule;
 import util.Util;
 import static util.Util.stringNomalize;
 
-/**
- *
- * @author thanh
- */
 @WebServlet(name = "ViewRuleServlet", urlPatterns = {"/view-rule-resident"})
 public class ViewRuleServlet extends HttpServlet {
 
@@ -35,6 +27,16 @@ public class ViewRuleServlet extends HttpServlet {
 
         // Get all rules
         List<Rule> list = rd.getAllRule();
+
+        // Check if list is null or empty
+        if (list == null || list.isEmpty()) {
+            request.setAttribute("rules", null);
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("totalPages", 0);
+            request.setAttribute("message", "No rules found in the system.");
+            request.getRequestDispatcher("viewrule-resident.jsp").forward(request, response);
+            return;
+        }
 
         // Get current page
         int page = 1;
@@ -83,6 +85,16 @@ public class ViewRuleServlet extends HttpServlet {
         // Filter rules
         List<Rule> list = rd.filterRule(stringNomalize(title), date);
 
+        // Check if list is null or empty
+        if (list == null || list.isEmpty()) {
+            request.setAttribute("rules", null);
+            request.setAttribute("currentPage", 1);
+            request.setAttribute("totalPages", 0);
+            request.setAttribute("message", "No rules found matching the search criteria.");
+            request.getRequestDispatcher("viewrule-resident.jsp").forward(request, response);
+            return;
+        }
+
         // Get current page
         int page = 1;
         if (request.getParameter("page") != null) {
@@ -104,14 +116,8 @@ public class ViewRuleServlet extends HttpServlet {
         request.getRequestDispatcher("viewrule-resident.jsp").forward(request, response);
     }
 
-    /**
-     * Returns a short description of the servlet.
-     *
-     * @return a String containing servlet description
-     */
     @Override
     public String getServletInfo() {
         return "Short description";
-    }// </editor-fold>
-
+    }
 }
