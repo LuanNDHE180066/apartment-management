@@ -584,6 +584,81 @@ public class SendEmail {
         }
 
     }
+    public void sendEmailNewResidentAdded(String to, String newResidentName) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587"); // Use 587 for TLS
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true"); // Enable TLS
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            message.setSubject("Your new Apartment member" +"UTF-8");
+
+           
+
+            String emailContent = "<p>A Resident with name " + newResidentName + " has been added to your aparment" +"</p>";
+                  
+
+            message.setContent(emailContent, "text/html; charset=UTF-8");
+
+            Transport.send(message);
+            System.out.println("Email sent successfully to " + to);
+        } catch (MessagingException e) {
+            System.out.println("Failed to send email to: " + to);
+            e.printStackTrace();
+        }
+    }
+
+      public void sendRequestResidentToTransferApartment(String to, String newResidentName,String aptNumber) {
+        Properties props = new Properties();
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", "587"); // Use 587 for TLS
+        props.put("mail.smtp.auth", "true");
+        props.put("mail.smtp.starttls.enable", "true"); // Enable TLS
+
+        Authenticator auth = new Authenticator() {
+            @Override
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(from, password);
+            }
+        };
+
+        Session session = Session.getInstance(props, auth);
+
+        try {
+            MimeMessage message = new MimeMessage(session);
+            message.setFrom(new InternetAddress(from));
+            message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
+            message.setSubject("About change your Apartment Owners" +"UTF-8");
+
+           
+
+            String emailContent = "<p>A resident named " + newResidentName + " has been added to your system and has become the new owner of apartment " + aptNumber + ".</p>" +
+                     "<p>Please create a request to complete the process of transferring the apartment owner authority.</p>";
+                  
+
+            message.setContent(emailContent, "text/html; charset=UTF-8");
+
+            Transport.send(message);
+            System.out.println("Email sent successfully to " + to);
+        } catch (MessagingException e) {
+            System.out.println("Failed to send email to: " + to);
+            e.printStackTrace();
+        }
+
+    }
 
     /**
      * Kiểm tra xem địa chỉ email có tồn tại hay không.

@@ -308,7 +308,7 @@ public class ServiceDAO extends DBContext {
     }
 
     public String getServiceEVNId() {
-        String sql = "select * from service where Name =N'Tiền điện' and status =1";
+        String sql = "select * from service where Name =N'Cung cấp điện' and status =1";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();
@@ -321,7 +321,7 @@ public class ServiceDAO extends DBContext {
     }
 
     public String getServiceWVNId() {
-        String sql = "select * from service where Name =N'Tiền nước' and status =1";
+        String sql = "select * from service where Name =N'nước' and status =1";
         try {
             PreparedStatement st = connection.prepareStatement(sql);
             ResultSet rs = st.executeQuery();

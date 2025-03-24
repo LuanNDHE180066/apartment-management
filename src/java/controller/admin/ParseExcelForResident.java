@@ -1,6 +1,5 @@
 package controller.admin;
 
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -43,7 +42,7 @@ public class ParseExcelForResident extends HttpServlet {
 
             for (int i = 1; i <= sheet.getLastRowNum(); i++) {
                 Row row = sheet.getRow(i);
-                if (row == null) {
+                if (row == null || isRowEffectivelyEmpty(row)) {
                     continue;
                 }
 
@@ -53,49 +52,44 @@ public class ParseExcelForResident extends HttpServlet {
                 resident.setGender(getCellValue(row.getCell(2)));
                 resident.setPhone(getCellValue(row.getCell(3)));
                 resident.setAddress(getCellValue(row.getCell(4)));
-                apartmentIds.add(getCellValue(row.getCell(5))); // Apartment ID
+                apartmentIds.add(getCellValue(row.getCell(5)));
+                resident.setCccd(getCellValue(row.getCell(6)));
+
                 Role role = new Role();
-                role.setId(getCellValue(row.getCell(6))=="Resident"?"1":"6");
+                role.setId("6"); // Hardcode role to "6" (Render)
                 resident.setRole(role);
-                resident.setCccd(getCellValue(row.getCell(7)));
-                String isRepresent = getCellValue(row.getCell(8));
-                if ("yes".equalsIgnoreCase(isRepresent)) {
-                    resident.setUsername(getCellValue(row.getCell(9)));
-                    resident.setEmail(getCellValue(row.getCell(10)));
-                }
                 residents.add(resident);
             }
 
             workbook.close();
 
-            // Validate data and collect errors
             for (Resident r : residents) {
-                if (r.getName() == null || r.getName().isEmpty()) {
-                    errors.add("Row " + (residents.indexOf(r) + 1) + ": Name is required.");
+                int rowNum = residents.indexOf(r) + 2;
+                if (r.getName() == null || r.getName().trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Name is required.");
                 }
-                // Add more validation as needed
+                if (r.getBod() == null || r.getBod().trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Date of birth is required.");
+                }
+                if (r.getPhone() == null || r.getPhone().trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Phone number is required.");
+                }
             }
 
-            // Convert residents to JSON
             JSONArray residentsArray = new JSONArray();
             for (int i = 0; i < residents.size(); i++) {
                 Resident r = residents.get(i);
                 JSONObject residentJson = new JSONObject();
                 residentJson.put("name", r.getName());
-                residentJson.put("dob", r.getBod()); // Changed from "bod" to "dob"
+                residentJson.put("dob", r.getBod());
                 residentJson.put("gender", r.getGender());
                 residentJson.put("phone", r.getPhone());
                 residentJson.put("address", r.getAddress());
                 residentJson.put("apartment", apartmentIds.get(i));
-                residentJson.put("role", r.getRole() != null ? r.getRole().getId() : "");
                 residentJson.put("cccd", r.getCccd());
-                residentJson.put("isRepresent", r.getUsername() != null && r.getEmail() != null ? "yes" : "no");
-                residentJson.put("username", r.getUsername() != null ? r.getUsername() : "");
-                residentJson.put("email", r.getEmail() != null ? r.getEmail() : "");
                 residentsArray.put(residentJson);
             }
 
-            // Store data and errors in session
             HttpSession session = request.getSession();
             session.setAttribute("excelData", residentsArray.toString());
             session.setAttribute("excelErrors", new JSONArray(errors).toString());
@@ -119,10 +113,9 @@ public class ParseExcelForResident extends HttpServlet {
         }
         switch (cell.getCellType()) {
             case STRING:
-                return cell.getStringCellValue();
+                return cell.getStringCellValue().trim();
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
-                    // Format the date to "yyyy-MM-dd"
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     return dateFormat.format(cell.getDateCellValue());
                 } else {
@@ -133,5 +126,15 @@ public class ParseExcelForResident extends HttpServlet {
             default:
                 return "";
         }
+    }
+
+    private boolean isRowEffectivelyEmpty(Row row) {
+        for (int j = 0; j <= 6; j++) { // Adjusted to 6 since "isRepresent", "username", and "email" are removed
+            String value = getCellValue(row.getCell(j));
+            if (value != null && !value.trim().isEmpty()) {
+                return false;
+            }
+        }
+        return true;
     }
 }

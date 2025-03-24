@@ -56,7 +56,7 @@ public class UpdateResident extends HttpServlet {
             throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
-
+       
         // Retrieve form parameters from JSP
         String id = request.getParameter("rid");
         String name = request.getParameter("name");
@@ -108,9 +108,7 @@ public class UpdateResident extends HttpServlet {
             }
 
             ResidentDAO rd = new ResidentDAO();
-            SendEmail se = new SendEmail();
             Util u = new Util();
-            String password = u.generatePassword();
 
             Resident resident = rd.getById(id);
             resident.setName(name);
@@ -119,21 +117,11 @@ public class UpdateResident extends HttpServlet {
             resident.setAddress(address);
             resident.setCccd(cccd != null ? cccd.trim() : null);
             resident.setPhone(phone);
-            if (resident.getUsername() == null) {
-                resident.setStatus("2");
-                resident.setUsername(username != null ? username.trim() : null);
-                resident.setEmail(email != null ? email.trim() : null);
-                String password_encript = encryptPassword(password);
-                resident.setPassword(password_encript);
-            }
             boolean success = rd.updateRE(resident);
-            if (success) {
-                se.sendEmailResidentAccount(email, name, username, password);
-            } // Simulate saving to database
-            // residentDao.save(resident);
-            // Set success message and forward to a success page or back to form
-            {
-                response.sendRedirect("view-resident");
+            if(success){
+                request.setAttribute("success", "Update Successfull");
+                request.setAttribute("resident", rd.getById(id));
+                request.getRequestDispatcher("updateRE.jsp").forward(request, response);
             }
 
         } catch (IOException e) {
