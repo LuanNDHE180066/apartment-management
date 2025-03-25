@@ -70,6 +70,7 @@ public class GenerateInvoice extends HttpServlet {
             this.doPost(request, response);
             return;
         }
+        HttpSession session = request.getSession();
         InvoiceDAO ivd = new InvoiceDAO();
 //          YearMonth yearMonth = YearMonth.now();
 //        LocalDate date = yearMonth.atEndOfMonth();
@@ -80,8 +81,9 @@ public class GenerateInvoice extends HttpServlet {
         LivingApartmentDAO ld = new LivingApartmentDAO();
         MonthlyServiceDAO md = new MonthlyServiceDAO();
         ivd.generateInvoice();
-        SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmailInvoiceToAll(ld.getEmailInvoicesActiveResident());
+        ivd.createNewsNotifyInvoice(((Account)session.getAttribute("account")).getpId());
+//        SendEmail sendEmail = new SendEmail();
+//        sendEmail.sendEmailInvoiceToAll(ld.getEmailInvoicesActiveResident());
         md.resetUsage();
         response.sendRedirect("view-invoice-staff");
     }

@@ -5,6 +5,7 @@
 
 package controller.staff;
 
+import com.google.gson.Gson;
 import dao.InvoiceDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -16,6 +17,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.util.List;
 import model.Invoice;
 import model.InvoiceDetail;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  *
@@ -59,15 +62,26 @@ public class InvovoiceDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-        String invoiceId = request.getParameter("invoiceId");
-        InvoiceDAO ivd = new InvoiceDAO();
-        // Truy vấn chi tiết hóa đơn từ database
-        Invoice invoice = ivd.getById(invoiceId);
-        List<InvoiceDetail> details = invoice.getInvoiceDetail();
+         String invoiceId = request.getParameter("invoiceId");
+         InvoiceDAO ivd = new InvoiceDAO();
+         Invoice iv = ivd.getById(invoiceId);
+        List<InvoiceDetail> details = iv.getInvoiceDetail();
+        JSONArray jsonArray = new JSONArray();
+        for (InvoiceDetail detail : details) {
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("serviceName", detail.getServiceName());
+            jsonObject.put("quantity", detail.getQuantity());
+            jsonObject.put("unitPrice", detail.getUnitPrice());
+            jsonObject.put("amount", detail.getAmount());
+            jsonObject.put("dateFormat", detail.getDateFormat());
 
-        // Render JSP chứa dữ liệu chi tiết hóa đơn
-        request.setAttribute("details", details);
-        request.getRequestDispatcher("viewallinvoice-bystaff.jsp").forward(request, response);
+            jsonArray.put(jsonObject);
+        }
+
+        try (PrintWriter out = response.getWriter()) {
+            out.print(jsonArray.toString());
+            out.flush();
+        }
     } 
 
     /** 

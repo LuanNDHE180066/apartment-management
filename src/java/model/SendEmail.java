@@ -123,18 +123,18 @@ public class SendEmail {
             e.printStackTrace();
         }
     }
-    
-    public void sendEmailToWorkingStaff(List<Staff> list,String detail,String aid,String rName){
+
+    public void sendEmailToWorkingStaff(List<Staff> list, String detail, String aid, String rName) {
         ExecutorService executor = Executors.newFixedThreadPool(5);
 
         for (Staff ei : list) {
-            executor.execute(() -> sendEmailStaffToOne(ei,detail,aid,rName));
+            executor.execute(() -> sendEmailStaffToOne(ei, detail, aid, rName));
         }
         executor.shutdown();
     }
-    
-    public void sendEmailStaffToOne(Staff estaff,String detail,String aid,String rName){
-         try {
+
+    public void sendEmailStaffToOne(Staff estaff, String detail, String aid, String rName) {
+        try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -148,24 +148,24 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(estaff.getEmail()));
-            message.setSubject("Công việc yêu cầu từ dân cư","UTF-8");
-            String dataText = "Bạn có yêu cầu từ "+rName+"tại "+aid +" cần giải quyết: "+detail+", xem chi tiết tại ứng dụng";
-            message.setText(dataText,"UTF-8");
+            message.setSubject("Công việc yêu cầu từ dân cư", "UTF-8");
+            String dataText = "Bạn có yêu cầu từ " + rName + "tại " + aid + " cần giải quyết: " + detail + ", xem chi tiết tại ứng dụng";
+            message.setText(dataText, "UTF-8");
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + estaff.getEmail());
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
-    
-    public void sendEmailDeclineRequestToResident(Resident resident,String subject,String content){
+
+    public void sendEmailDeclineRequestToResident(Resident resident, String subject, String content) {
         ExecutorService executor = Executors.newFixedThreadPool(5);
-        executor.execute(() -> sendEmailDeclineRequestToOne(resident,subject,content));
+        executor.execute(() -> sendEmailDeclineRequestToOne(resident, subject, content));
         executor.shutdown();
     }
-    
-    public void sendEmailDeclineRequestToOne(Resident resident,String subject,String content){
-         try {
+
+    public void sendEmailDeclineRequestToOne(Resident resident, String subject, String content) {
+        try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -179,16 +179,16 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(resident.getEmail()));
-            message.setSubject(subject,"UTF-8");
+            message.setSubject(subject, "UTF-8");
             String dataText = content;
-            message.setText(dataText,"UTF-8");
+            message.setText(dataText, "UTF-8");
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + resident.getEmail());
         } catch (MessagingException e) {
             e.printStackTrace();
         }
     }
-    
+
     public void sendEmailAdminToOne(Staff estaff) {
         try {
             Properties props = new Properties();
@@ -284,6 +284,8 @@ public class SendEmail {
     }
 
     public void sendEmailInvoiceDebtToOne(EmailInvoice emailInvoice) {
+        InvoiceDAO ivd = new InvoiceDAO();
+        Invoice invoice = ivd.getByApartmentIdNow(emailInvoice.getAid());
         try {
             Properties props = new Properties();
             props.put("mail.smtp.auth", "true");
@@ -301,8 +303,43 @@ public class SendEmail {
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(emailInvoice.getEmail()));
             message.setSubject("Hóa đơn dịch vụ chung cư", "UTF-8");
-            String dataText = "Bạn có hóa đơn phòng " + emailInvoice.getAid() + " chưa thanh toán, xem chi tiết tại ứng dụng";
-            message.setText(dataText, "UTF-8");
+            String dataText = "<html><body>"
+                    + "<p>Bạn có hóa đơn chưa thanh toán cho phòng " + emailInvoice.getAid() + " ,xem chi tiết bên dưới:</p>"
+                    + "<table border='1' style='border-collapse: collapse; width: 100%;'>"
+                    + "<thead>"
+                    + "    <tr>"
+                    + "        <th style='width: 5%;'>Name</th>"
+                    + "        <th style='width: 15%;'>UnitPrice</th>"
+                    + "        <th style='width: 15%;'>Quantity</th>"
+                    + "        <th style='width: 15%;'>Date</th>"
+                    + "        <th style='width: 30%;'>Amount</th>"
+                    + "    </tr>"
+                    + "</thead>"
+                    + "<tbody>";
+
+// Nếu có danh sách hóa đơn, lặp qua danh sách và thêm vào bảng
+            for (int i = 0; i < invoice.getInvoiceDetail().size(); i++) {
+                InvoiceDetail idt = invoice.getInvoiceDetail().get(i);
+                dataText += "<tr>"
+                        + "<td>" + idt.getServiceName() + "</td>"
+                        + "<td>" + idt.getUnitPrice() + "</td>"
+                        + "<td>" + idt.getQuantity() + "</td>"
+                        + "<td>" + idt.getDate().toString() + "</td>"
+                        + "<td>" + idt.getAmount() + "</td>"
+                        + "</tr>";
+            }
+
+            dataText += "</tbody></table>";
+            dataText += "<h3>Total: " + invoice.getTotal() + "</h3>";
+            dataText += "</body></html>";
+
+            MimeBodyPart messageBodyPart = new MimeBodyPart();
+            messageBodyPart.setContent(dataText, "text/html; charset=UTF-8");
+
+            Multipart multipart = new MimeMultipart();
+            multipart.addBodyPart(messageBodyPart);
+
+            message.setContent(multipart);
 
             Transport.send(message);
             System.out.println("Đã gửi email đến: " + emailInvoice.getEmail());
@@ -351,6 +388,7 @@ public class SendEmail {
             e.printStackTrace();
         }
     }
+
     public void sendMultipleResident(List<String> emailList, List<String> name, List<String> account, List<String> residentPassword) {
         if (emailList.size() != name.size() || emailList.size() != account.size() || emailList.size() != residentPassword.size()) {
             throw new IllegalArgumentException("All lists must have the same size");
@@ -584,6 +622,7 @@ public class SendEmail {
         }
 
     }
+
     public void sendEmailNewResidentAdded(String to, String newResidentName) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
@@ -604,12 +643,9 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
-            message.setSubject("Your new Apartment member" +"UTF-8");
+            message.setSubject("Your new Apartment member" + "UTF-8");
 
-           
-
-            String emailContent = "<p>A Resident with name " + newResidentName + " has been added to your aparment" +"</p>";
-                  
+            String emailContent = "<p>A Resident with name " + newResidentName + " has been added to your aparment" + "</p>";
 
             message.setContent(emailContent, "text/html; charset=UTF-8");
 
@@ -621,7 +657,7 @@ public class SendEmail {
         }
     }
 
-      public void sendRequestResidentToTransferApartment(String to, String newResidentName,String aptNumber) {
+    public void sendRequestResidentToTransferApartment(String to, String newResidentName, String aptNumber) {
         Properties props = new Properties();
         props.put("mail.smtp.host", "smtp.gmail.com");
         props.put("mail.smtp.port", "587"); // Use 587 for TLS
@@ -641,13 +677,10 @@ public class SendEmail {
             MimeMessage message = new MimeMessage(session);
             message.setFrom(new InternetAddress(from));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to, false));
-            message.setSubject("About change your Apartment Owners" +"UTF-8");
+            message.setSubject("About change your Apartment Owners" + "UTF-8");
 
-           
-
-            String emailContent = "<p>A resident named " + newResidentName + " has been added to your system and has become the new owner of apartment " + aptNumber + ".</p>" +
-                     "<p>Please create a request to complete the process of transferring the apartment owner authority.</p>";
-                  
+            String emailContent = "<p>A resident named " + newResidentName + " has been added to your system and has become the new owner of apartment " + aptNumber + ".</p>"
+                    + "<p>Please create a request to complete the process of transferring the apartment owner authority.</p>";
 
             message.setContent(emailContent, "text/html; charset=UTF-8");
 
