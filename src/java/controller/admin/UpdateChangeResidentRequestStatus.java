@@ -139,6 +139,8 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                     if (existResident != null) {
                         existResident.setUsername(r.getNewPerson().getUsername());
                         existResident.setPassword(encrytPass);
+                        existResident.setEmail(newResident.getEmail());
+                        
                         emailContent = "<!DOCTYPE html>\n"
                                 + "<html lang=\"vi\">\n"
                                 + "<head>\n"
