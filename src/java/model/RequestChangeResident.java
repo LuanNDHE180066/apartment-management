@@ -26,6 +26,11 @@ public class RequestChangeResident {
     private int newPersonExists;
     private int adminStatus;
     private String createdAt;
+ 
+    @Override
+    public String toString() {
+        return "RequestChangeResident{" + "requestId=" + requestId + ", owner=" + owner + ", newPerson=" + newPerson + ", roomNumber=" + roomNumber + ", changeType=" + changeType + ", newPersonExists=" + newPersonExists + ", adminStatus=" + adminStatus + ", createdAt=" + createdAt + '}';
+    }
 
     public RequestChangeResident(int requestId, Resident owner, Resident newPerson, String roomNumber, int changeType, int newPersonExists, int adminStatus, String createdAt) {
         this.requestId = requestId;

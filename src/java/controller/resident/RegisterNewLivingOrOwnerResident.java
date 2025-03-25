@@ -97,17 +97,17 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         RoleDAO rDAO = new RoleDAO();
         HttpSession session = request.getSession();
         Account a = (Account) session.getAttribute("account");
-        
+
         String aid = request.getParameter("apartment");
         String changeResident = request.getParameter("residentType");
         String residentExists = request.getParameter("residentExists");
-        
+
         LocalDateTime lc = LocalDateTime.now();
         DateTimeFormatter format = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         String formattedDate = lc.format(format);
-        
+
         String emailContent = "";
-        
+
         Resident owner = oDAO.getOwnerByApartmentID(aid).getRid();
         if (residentExists != null) {
             String newResidentId = request.getParameter("newResidentId");
@@ -118,7 +118,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
-            
+
             RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formattedDate);
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
@@ -170,51 +170,63 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             String email = request.getParameter("email").trim();
             String id = request.getParameter("id").trim();
             String username = request.getParameter("username");
-            
-            if (!phone.matches("\\d{10}")) {
-                request.setAttribute("message", "Phone number must be exactly 10 digits.");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
+
+            if (changeResident.equals("living")) {
+                if (!phone.matches("\\d{10}")) {
+                    request.setAttribute("message", "Phone number must be exactly 10 digits.");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
+                if (!id.matches("\\d{12}")) {
+                    request.setAttribute("message", "ID must be exactly 12 digits.");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
+
+                if (reDAO.checkDuplicatePhone(phone, a.getpId())) {
+                    request.setAttribute("message", "Phone is existed.");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
+                if (reDAO.checkDuplicateEmail(email, a.getpId())) {
+                    request.setAttribute("message", "Email is existed..");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
+                if (reDAO.checkDuplicateID(id, a.getpId())) {
+                    request.setAttribute("message", "ID is existed..");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
             }
-            if (!id.matches("\\d{12}")) {
-                request.setAttribute("message", "ID must be exactly 12 digits.");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
+
+            if (!changeResident.equals("living")) {
+                if (reDAO.checkDuplicateUser(username, a.getpId())) {
+                    request.setAttribute("message", "Username is existed.");
+                    request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                    return;
+                }
             }
-            
-            if (reDAO.checkDuplicatePhone(phone, a.getpId())) {
-                request.setAttribute("message", "Phone is existed.");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
-            }
-            if (reDAO.checkDuplicateEmail(email, a.getpId())) {
-                request.setAttribute("message", "Email is existed..");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
-            }
-            if (reDAO.checkDuplicateID(id, a.getpId())) {
-                request.setAttribute("message", "ID is existed..");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
-            }
-            
-            if (reDAO.checkDuplicateUser(username, a.getpId())) {
-                request.setAttribute("message", "Username is existed.");
-                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-                return;
-            }
-            
-            Resident newRe = new Resident(name, id, phone, email, dob, address, username, null, rDAO.getById("1"), gender.equals("M")?"Nam":"Nữ");
-            RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 1, 0, formattedDate);
+
+            Resident newRe = new Resident(name, id, phone, email, dob, address, null, null, rDAO.getById("1"), gender.equals("M") ? "Nam" : "Nữ");
+            RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 0, 0, formattedDate);
             if (changeResident.equals("living")) {
                 re.setChangeType(1);
+//                newRe.setRole(rDAO.getById("6"));
+//                re.setNewPerson(newRe);
             } else {
                 newRe.setUsername(username.trim());
             }
-            PrintWriter out = response.getWriter();
+//            PrintWriter out = response.getWriter();
 //            out.print(re.getOwner() + " new: " + re.getNewPerson() + " " +re.getRoomNumber() +" " + re.getCreatedAt());
             re.setNewPersonExists(0);
-            requestChangeDAO.addNewRequestChange(re);
+            try {
+                requestChangeDAO.addNewRequestChange(re);
+                System.out.println("Insert successful!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
 //            String message = "Request change " + (re.getChangeType() == 1 ? "Living person" : "Owner") + " from apartment " + re.getRoomNumber() + ". "
 //                    + "Change person " + re.getNewPerson().getName() +;
             emailContent = "<html><head><style>"

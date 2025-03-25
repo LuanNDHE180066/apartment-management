@@ -61,7 +61,7 @@ public class RequestChangeResidentDAO extends DBContext {
             ps.setInt(12, re.getChangeType());
             ps.setInt(13, re.getNewPersonExists());
             ps.setInt(14, re.getAdminStatus());
-            ps.setString(15, "2025-03-18");
+            ps.setString(15, formattedDate);
             ps.executeUpdate();
         } catch (SQLException ex) {
             java.util.logging.Logger.getLogger(RequestChangeResidentDAO.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
