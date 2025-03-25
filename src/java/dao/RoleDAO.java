@@ -57,7 +57,7 @@ public class RoleDAO extends DBContext {
 
 
     public List<Role> getAllExcludeResident() {
-        String sql = "select * from role where not id='1'";
+        String sql = "SELECT * FROM role WHERE id NOT IN ('1', '6')";
         List<Role> list = new ArrayList<>();
         try {
             PreparedStatement st = connection.prepareStatement(sql);

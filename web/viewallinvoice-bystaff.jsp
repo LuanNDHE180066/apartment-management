@@ -151,7 +151,7 @@
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
-                                                                                <c:forEach items="${item.invoiceDetail}" var="detail">
+                                                                                   <c:forEach items="${item.invoiceDetail}" var="detail">
                                                                                     <tr style="border-bottom: 1px solid #ddd;">
                                                                                         <td style="padding: 8px; border: 1px solid #ddd;text-align: left">${detail.serviceName}</td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
@@ -163,7 +163,7 @@
                                                                                         </td>
                                                                                         <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                     </tr>
-                                                                                </c:forEach>
+                                                                                </c:forEach>    
                                                                             </tbody>
                                                                         </table>
                                                                     </td>
@@ -273,7 +273,7 @@
                                                                                             </td>
                                                                                             <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
                                                                                         </tr>
-                                                                                    </c:forEach>
+                                                                                    </c:forEach>    
                                                                                 </tbody>
                                                                             </table>
                                                                         </td>
@@ -312,8 +312,9 @@
             <script src="js/jquery.min.js"></script>
             <script src="js/popper.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
-            <script src="js/custom.js"></script>
-    </body>
+                <script src="js/custom.js"></script>
+        </body>
+    
     <script>
                                                             document.querySelectorAll(".fa-plus").forEach(button => {
                                                                 button.addEventListener("click", function () {
@@ -325,6 +326,7 @@
                                                                     // Đổi icon giữa dấu "+" và "-"
                                                                     this.classList.toggle("fa-plus");
                                                                     this.classList.toggle("fa-minus");
+                                                                    
                                                                 });
                                                             });
                                                             function confirmRedirectRevert(event) {
