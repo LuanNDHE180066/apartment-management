@@ -92,7 +92,7 @@ public class AuthorizedFilter implements Filter {
                     res.sendRedirect("changepassword.jsp");
                 }
 
-            } else if (r != null && "1".equals(r.getStatus())) {
+            } else if (r != null && "6".equals(r.getStatus())) {
                 if (uri.contains("WaitingScreenForResident.jsp") || uri.contains("changepassword.jsp") || uri.contains("update-password-resident")
                         || uri.contains("login.jsp") || uri.contains("requestpassword.jsp")
                         || uri.contains("reset-password") || uri.contains("request-password")
