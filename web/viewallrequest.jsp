@@ -498,7 +498,7 @@
         </div>
 
         <!-- jQuery -->
-        <script>
+<!--        <script>
             function updateOptionsByTime() {
                 const currentHour = new Date().getHours(); // Lấy giờ hiện tại
                 const options = document.querySelectorAll("#shift option");
@@ -516,7 +516,7 @@
             updateOptionsByTime();
             // Cập nhật mỗi phút để kiểm tra lại điều kiện
             setInterval(updateOptionsByTime, 60000);
-        </script>
+        </script>-->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>
