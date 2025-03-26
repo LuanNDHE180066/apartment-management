@@ -68,8 +68,8 @@ public class ViewChangeResidentRequest extends HttpServlet {
         Util u = new Util();
 
         if (listChangeRequest.size() != 0) {
-            int totalPage = u.getTotalPage(listChangeRequest, 1);
-            listChangeRequest = u.getListPerPage(listChangeRequest, 1, page);
+            int totalPage = u.getTotalPage(listChangeRequest, 10);
+            listChangeRequest = u.getListPerPage(listChangeRequest, 10, page);
             request.setAttribute("listChangeRequest", listChangeRequest);
             request.setAttribute("currentPage", page == null ? "1" : page);
             request.setAttribute("totalPage", totalPage);

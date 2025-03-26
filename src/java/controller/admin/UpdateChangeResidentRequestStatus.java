@@ -96,7 +96,7 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
                 + "        <p><strong>Giới tính:</strong> " + r.getNewPerson().getGender() + "</p>\n"
                 + "        <p><strong>Số phòng:</strong> " + r.getRoomNumber() + "</p>\n"
                 + "        <p><strong>Ngày yêu cầu:</strong> " + r.getCreatedAt() + "</p>\n"
-                + "        <p><strong>Trạng thái:</strong> " + (r.getAdminStatus() == 1 ? "Đồng ý" : "Từ chối") + "</p>\n"
+                + "        <p><strong>Trạng thái:</strong> " + (approve.equals("1") ? "Đồng ý" : "Từ chối") + "</p>\n"
                 + "        <hr>\n"
                 + "        <p>Nếu bạn có bất kỳ câu hỏi nào, xin vui lòng liên hệ với chúng tôi.</p>\n"
                 + "        <p>Cảm ơn bạn đã hợp tác!</p>\n"
@@ -126,22 +126,99 @@ public class UpdateChangeResidentRequestStatus extends HttpServlet {
 //                newResident.setUsername(r.getNewPerson().getUsername());
 //                newResident.setPassword(password);
                 newResident.setGender(r.getNewPerson().getGender());
-
-                reDAO.insertNewResident(newResident);
-                Resident rNew = reDAO.getResidentById(newResident.getCccd());
+                String password = u.generatePassword();
+                String encrytPass = u.encryptPassword(password);
+                Resident re = null;
                 if (r.getChangeType() == 1) {
+                    reDAO.insertNewResident(newResident);
+                    Resident rNew = reDAO.getResidentById(newResident.getCccd());
                     // liDAO.updateEndLivingApartment(date, r.getRoomNumber());
                     liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
                 } else {
+                    Resident existResident = reDAO.getResidentById(r.getNewPerson().getCccd());
+                    if (existResident != null) {
+                        existResident.setUsername(r.getNewPerson().getUsername());
+                        existResident.setPassword(encrytPass);
+                        existResident.setEmail(newResident.getEmail());
+                                                
+                        emailContent = "<!DOCTYPE html>\n"
+                                + "<html lang=\"vi\">\n"
+                                + "<head>\n"
+                                + "    <meta charset=\"UTF-8\">\n"
+                                + "    <meta name=\"viewport\" content=\"width=device-width, initial-scale=1.0\">\n"
+                                + "    <title>Cập nhật tài khoản và mật khẩu</title>\n"
+                                + "    <style>\n"
+                                + "        body {\n"
+                                + "            font-family: Arial, sans-serif;\n"
+                                + "            margin: 0;\n"
+                                + "            padding: 20px;\n"
+                                + "            background-color: #f9f9f9;\n"
+                                + "        }\n"
+                                + "        .container {\n"
+                                + "            max-width: 600px;\n"
+                                + "            margin: auto;\n"
+                                + "            background: white;\n"
+                                + "            padding: 20px;\n"
+                                + "            border-radius: 5px;\n"
+                                + "            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);\n"
+                                + "        }\n"
+                                + "        h2 {\n"
+                                + "            color: #2C3E50;\n"
+                                + "        }\n"
+                                + "        p {\n"
+                                + "            color: #34495E;\n"
+                                + "            line-height: 1.6;\n"
+                                + "        }\n"
+                                + "        .footer {\n"
+                                + "            margin-top: 20px;\n"
+                                + "            padding: 20px;\n"
+                                + "            border-top: 1px solid #ddd;\n"
+                                + "            text-align: left;\n"
+                                + "            font-size: 12px;\n"
+                                + "            color: #777;\n"
+                                + "        }\n"
+                                + "        .footer a {\n"
+                                + "            color: #007BFF;\n"
+                                + "            text-decoration: none;\n"
+                                + "        }\n"
+                                + "    </style>\n"
+                                + "</head>\n"
+                                + "<body>\n"
+                                + "    <div class=\"container\">\n"
+                                + "        <h2>Cập nhật tài khoản và mật khẩu</h2>\n"
+                                + "        <p>Thân gửi sinh viên Phùng Nhật Quang,</p>\n"
+                                + "        <p>Chúng tôi xin thông báo rằng tài khoản và mật khẩu của bạn đã được cập nhật thành công.</p>\n"
+                                + "        <p><strong>Thông tin đăng nhập của bạn:</strong></p>\n"
+                                + "        <p><strong>Username:</strong>" + existResident.getUsername() + "</p>\n"
+                                + "        <p><strong>Password:</strong> " + password + "</p>\n"
+                                + "        <p>Trân trọng./.</p>\n"
+                                + "        <div class=\"footer\">\n"
+                                + "            <p>Ba Vi Apartment</p>\n"
+                                + "            <p>Ban Quản Trị Chung Cư</p>\n"
+                                + "            <p>E: <a href=\"mailto:baviapartment88@gmail.com\">baviapartment88@gmail.com</a></p>\n"
+                                + "        </div>\n"
+                                + "    </div>\n"
+                                + "</body>\n"
+                                + "</html>";
+
+                        reDAO.updateResident(existResident);
+                        send.sendEmail(existResident.getEmail(), "Cập nhật tài khoản và mật khẩu", emailContent);
+                        re = existResident;
+                    } else {
+                        reDAO.insertNewResident(newResident);
+                        Resident residentNew = reDAO.getResidentById(newResident.getCccd());
+                        send.sendEmailResidentAccount(residentNew.getEmail(), residentNew.getName(), residentNew.getUsername(), password);
+                        re = residentNew;
+                    }
                     oaDAO.updateEndOwnerApartment(r.getRoomNumber(), date);
-                    oaDAO.insertOwnerApartment(rNew.getpId(), r.getRoomNumber(), date);
+                    oaDAO.insertOwnerApartment(re.getpId(), r.getRoomNumber(), date);
                     if (liDAO.checkIsRepresentOfThisApartment(r.getOwner().getpId(), r.getRoomNumber())) {
                         liDAO.changeIsRepresent("0", r.getOwner().getpId(), r.getRoomNumber());
                     }
                     if (!oaDAO.isHomeOwner(r.getOwner().getpId()) && !liDAO.checkIsRepresent(r.getOwner().getpId())) {
                         reDAO.setNullUsernameAndPassword(r.getOwner().getpId());
-                        liDAO.insertLivingApartment(rNew.getpId(), r.getRoomNumber(), date);
-                        liDAO.changeIsRepresent("1", rNew.getpId(), r.getRoomNumber());
+//                        liDAO.insertLivingApartment(re.getpId(), r.getRoomNumber(), date);
+//                        liDAO.changeIsRepresent("1", rNew.getpId(), r.getRoomNumber());
                     }
 
                 }

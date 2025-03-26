@@ -93,7 +93,7 @@
                                     <div>
                                         <a class="dropdown-toggle" href="#" data-toggle="dropdown" style="background-color: #214162;display: flex">
                                             <i class="fa fa-bell-o" style="color:#fff;margin-left: 5px" ></i>
-                                            <span class="notification-count" style="color:red;background-color: #214162">!</span>
+                                            <span id="count" class="notification-count" style="color:red;background-color: #214162">!</span>
                                         </a>
                                         <div class="dropdown-menu notification" id="notification" style="width: 400%;">
                                         </div>
@@ -131,6 +131,12 @@
                         dataType: 'json', // Kiểu dữ liệu trả về là JSON
                         success: function (response) {
                             $('#notification').empty();
+                            if (response.length > 0) {
+                                $('#count').text(response.length); // Cập nhật số lượng thông báo
+                                $('#count').show(); // Hiển thị biểu tượng thông báo
+                            } else {
+                                $('#count').hide(); // Ẩn biểu tượng thông báo nếu không có thông báo nào
+                            }
                             $.each(response, function (index, notificationData) {
                                 $('#notification').append('<a style="margin-left: 0px;width: 100%;" class="dropdown-item" href="' + notificationData.url + '"> <h8 style="font-size: 14px; display: block;padding: 8px;white-space: normal;word-break: break-word;">' + notificationData.notification + '</h8></a>');
                             });
