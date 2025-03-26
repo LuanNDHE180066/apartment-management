@@ -14,6 +14,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.List;
 import model.Apartment;
 import model.LivingApartment;
@@ -78,23 +79,31 @@ public class AddNewResident extends HttpServlet {
             String username = request.getParameter("username");
             String email = request.getParameter("email");
 
-            // Validate required fields
+            // Validate required fields (including cccd and email)
             if (name == null || name.trim().isEmpty() || dob == null || dob.trim().isEmpty()
                     || gender == null || gender.trim().isEmpty() || phone == null || phone.trim().isEmpty()
                     || address == null || address.trim().isEmpty() || apartment == null || apartment.trim().isEmpty()
-                    || roleId == null || roleId.trim().isEmpty()) {
-                request.setAttribute("error", "All required fields must be filled.");
+                    || roleId == null || roleId.trim().isEmpty() || cccd == null || cccd.trim().isEmpty()
+                    || email == null || email.trim().isEmpty()) {
+                request.setAttribute("error", "All required fields (including ID and email) must be filled.");
                 forwardToForm(request, response);
                 return;
             }
 
-            // New constraint: If isRepresent is "yes", username and email must be provided
-            if ("yes".equalsIgnoreCase(isRepresent)) {
-                if (username == null || username.trim().isEmpty() || email == null || email.trim().isEmpty()) {
-                    request.setAttribute("error", "Username and email are required when the resident is a representative.");
-                    forwardToForm(request, response);
-                    return;
-                }
+            // Validate name (only letters and spaces allowed)
+            if (!name.matches("^[a-zA-Z\\s]+$")) {
+                request.setAttribute("error", "Name must contain only letters and spaces.");
+                forwardToForm(request, response);
+                return;
+            }
+
+            // Validate date of birth (must be before today)
+            LocalDate dobDate = LocalDate.parse(dob);
+            LocalDate today = LocalDate.now(); // Current date: March 26, 2025
+            if (!dobDate.isBefore(today)) {
+                request.setAttribute("error", "Date of Birth must be before today.");
+                forwardToForm(request, response);
+                return;
             }
 
             // Validate phone, CCCD, and username (if provided)
@@ -103,7 +112,7 @@ public class AddNewResident extends HttpServlet {
                 forwardToForm(request, response);
                 return;
             }
-            if (cccd != null && !cccd.trim().isEmpty() && !cccd.matches("\\d{12}")) {
+            if (!cccd.matches("\\d{12}")) {
                 request.setAttribute("error", "CCCD must be exactly 12 digits.");
                 forwardToForm(request, response);
                 return;
@@ -115,7 +124,7 @@ public class AddNewResident extends HttpServlet {
             }
 
             // Check for duplicates
-            if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
+            if (residentDAO.checkDuplicateEmail(email)) {
                 request.setAttribute("error", "Email already exists.");
                 forwardToForm(request, response);
                 return;
@@ -125,7 +134,7 @@ public class AddNewResident extends HttpServlet {
                 forwardToForm(request, response);
                 return;
             }
-            if (cccd != null && !cccd.trim().isEmpty() && residentDAO.checkDuplicateID(cccd)) {
+            if (residentDAO.checkDuplicateID(cccd)) {
                 request.setAttribute("error", "CCCD already exists.");
                 forwardToForm(request, response);
                 return;
@@ -150,9 +159,7 @@ public class AddNewResident extends HttpServlet {
 
             Util u = new Util();
             String password = u.generatePassword();
-            if (email != null && !email.trim().isEmpty()) {
-                resident.setPassword(encryptPassword(password));
-            }
+            resident.setPassword(encryptPassword(password));
 
             Role role = new Role();
             role.setId(roleId);
@@ -160,7 +167,6 @@ public class AddNewResident extends HttpServlet {
             String insertedId = residentDAO.insertNewResident(resident);
 
             if (insertedId != null) {
-                // new role = 6 then insert directly into the apartment
                 if (role.getId().equals("6")) {
                     lvd.insertLivingApartment(insertedId, apartment, new Date(System.currentTimeMillis()).toString());
 
@@ -179,9 +185,7 @@ public class AddNewResident extends HttpServlet {
                     }
                 }
 
-                if (email != null && !email.trim().isEmpty()) {
-                    e.sendEmailResidentAccount(email, name, username, password);
-                }
+                e.sendEmailResidentAccount(email, name, username, password);
 
                 request.setAttribute("successMessage", "Resident added successfully!");
             } else {
@@ -232,8 +236,9 @@ public class AddNewResident extends HttpServlet {
                 String address = residentJson.optString("address", null);
                 String apartment = residentJson.optString("apartment", null);
                 String cccd = residentJson.optString("cccd", null);
+                String email = residentJson.optString("email", null);
 
-                // Validate required fields
+                // Validate required fields (added cccd and email)
                 if (name == null || name.trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Name is required.");
                 }
@@ -252,8 +257,32 @@ public class AddNewResident extends HttpServlet {
                 if (apartment == null || apartment.trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Apartment is required.");
                 }
+                if (cccd == null || cccd.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": CCCD is required.");
+                }
+                if (email == null || email.trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Email is required.");
+                }
 
-                // Validate phone and CCCD formats
+                // Validate name (only letters and spaces allowed)
+                if (name != null && !name.matches("^[a-zA-Z\\s]+$")) {
+                    errors.add("Row " + rowNum + ": Name must contain only letters and spaces.");
+                }
+
+                // Validate date of birth (must be before today)
+                if (dob != null && !dob.trim().isEmpty()) {
+                    try {
+                        LocalDate dobDate = LocalDate.parse(dob);
+                        LocalDate today = LocalDate.now();
+                        if (!dobDate.isBefore(today)) {
+                            errors.add("Row " + rowNum + ": Date of Birth must be before today.");
+                        }
+                    } catch (Exception e) {
+                        errors.add("Row " + rowNum + ": Invalid Date of Birth format.");
+                    }
+                }
+
+                // Validate phone, CCCD formats
                 if (phone != null && !phone.trim().isEmpty() && !phone.matches("\\d{10}")) {
                     errors.add("Row " + rowNum + ": Phone number must be exactly 10 digits.");
                 }
@@ -268,6 +297,9 @@ public class AddNewResident extends HttpServlet {
                 if (cccd != null && !cccd.trim().isEmpty() && residentDAO.checkDuplicateID(cccd)) {
                     errors.add("Row " + rowNum + ": CCCD '" + cccd + "' already exists.");
                 }
+                if (email != null && !email.trim().isEmpty() && residentDAO.checkDuplicateEmail(email)) {
+                    errors.add("Row " + rowNum + ": Email '" + email + "' already exists.");
+                }
 
                 Resident resident = new Resident();
                 resident.setName(name);
@@ -276,6 +308,11 @@ public class AddNewResident extends HttpServlet {
                 resident.setPhone(phone);
                 resident.setAddress(address);
                 resident.setCccd(cccd);
+                resident.setEmail(email);
+
+                Util u = new Util();
+                String password = u.generatePassword();
+                resident.setPassword(encryptPassword(password));
 
                 Role roleObj = new Role();
                 roleObj.setId("6"); // Hardcode role to "6" for Excel imports
@@ -299,10 +336,10 @@ public class AddNewResident extends HttpServlet {
                     lvd.insertLivingApartment(insertedIds.get(i), apartmentIds.get(i), new Date(System.currentTimeMillis()).toString());
                     LivingApartment la = lvd.getRepresentedResidentByAid(apartmentIds.get(i));
                     if (la != null) {
-
                         Resident representative = residentDAO.getById(la.getRid().getpId());
                         e.sendEmailNewResidentAdded(representative.getEmail(), residents.get(i).getName());
                     }
+                    e.sendEmailResidentAccount(residents.get(i).getEmail(), residents.get(i).getName(), null, residents.get(i).getPassword());
                 }
                 jsonResponse.put("success", true);
                 jsonResponse.put("insertedIds", new JSONArray(insertedIds));

@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import model.Resident;
@@ -54,6 +55,7 @@ public class ParseExcelForResident extends HttpServlet {
                 resident.setAddress(getCellValue(row.getCell(4)));
                 apartmentIds.add(getCellValue(row.getCell(5)));
                 resident.setCccd(getCellValue(row.getCell(6)));
+                resident.setEmail(getCellValue(row.getCell(7)));
 
                 Role role = new Role();
                 role.setId("6"); // Hardcode role to "6" (Render)
@@ -67,12 +69,30 @@ public class ParseExcelForResident extends HttpServlet {
                 int rowNum = residents.indexOf(r) + 2;
                 if (r.getName() == null || r.getName().trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Name is required.");
+                } else if (!r.getName().matches("^[a-zA-Z\\s]+$")) {
+                    errors.add("Row " + rowNum + ": Name must contain only letters and spaces.");
                 }
                 if (r.getBod() == null || r.getBod().trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Date of birth is required.");
+                } else {
+                    try {
+                        LocalDate dobDate = LocalDate.parse(r.getBod());
+                        LocalDate today = LocalDate.now();
+                        if (!dobDate.isBefore(today)) {
+                            errors.add("Row " + rowNum + ": Date of Birth must be before today.");
+                        }
+                    } catch (Exception e) {
+                        errors.add("Row " + rowNum + ": Invalid Date of Birth format.");
+                    }
                 }
                 if (r.getPhone() == null || r.getPhone().trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Phone number is required.");
+                }
+                if (r.getCccd() == null || r.getCccd().trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": CCCD is required.");
+                }
+                if (r.getEmail() == null || r.getEmail().trim().isEmpty()) {
+                    errors.add("Row " + rowNum + ": Email is required.");
                 }
             }
 
@@ -87,6 +107,7 @@ public class ParseExcelForResident extends HttpServlet {
                 residentJson.put("address", r.getAddress());
                 residentJson.put("apartment", apartmentIds.get(i));
                 residentJson.put("cccd", r.getCccd());
+                residentJson.put("email", r.getEmail());
                 residentsArray.put(residentJson);
             }
 
@@ -112,7 +133,7 @@ public class ParseExcelForResident extends HttpServlet {
             return "";
         }
         switch (cell.getCellType()) {
-            case STRING:
+           case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
@@ -129,7 +150,7 @@ public class ParseExcelForResident extends HttpServlet {
     }
 
     private boolean isRowEffectivelyEmpty(Row row) {
-        for (int j = 0; j <= 6; j++) { // Adjusted to 6 since "isRepresent", "username", and "email" are removed
+        for (int j = 0; j <= 7; j++) {
             String value = getCellValue(row.getCell(j));
             if (value != null && !value.trim().isEmpty()) {
                 return false;
