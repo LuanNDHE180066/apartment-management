@@ -77,7 +77,7 @@
                                 Căn hộ: ${requestScope.invoice.apartment.id}
                             </p>
                             <p style="margin: 0; padding: 12px 16px; background: #ffc107; border-radius: 8px; font-size: 18px; font-weight: bold; color: #333; text-align: center; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);">
-                                Tổng: ${requestScope.invoice.total} VND
+                                 Total: <fmt:formatNumber type="currency" currencyCode="VND" value="${requestScope.invoice.total}" />
                             </p>
 
                         </div>
