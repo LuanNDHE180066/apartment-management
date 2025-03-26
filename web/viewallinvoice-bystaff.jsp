@@ -130,7 +130,8 @@
                                                                     <td style="text-align: left">${item.description}</td>
                                                                     <td style="text-align: center">${item.apartment.id}</td>
                                                                     <td style="text-align: center">
-                                                                        <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
+                                                                        <a href="get-invoice-details?id=${item.id}" class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;">
+                                                                        </a>
                                                                     </td>
                                                                     <td style="text-align: center   ">
                                                                         <a href="update-invoice-staff?invoiceId=${item.id}" onclick="return confirmRedirectPaid(event)" class="fa-solid fa-check"></a>
@@ -209,7 +210,8 @@
                                                                         <td style="text-align: left">${item.description}</td>
                                                                         <td style="text-align: center">${item.apartment.id}</td>
                                                                         <td style="text-align: center">
-                                                                            <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
+                                                                            <a href="get-invoice-details?id=${item.id}" class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;">
+                                                                            </a>
                                                                         </td>
                                                                         <td style="text-align: center">
                                                                             <a href="update-invoice-staff?invoiceId=${item.id}&method=post" onclick="return confirmRedirectRevert(event)"><i class="fa-solid fa-exchange-alt"></i></a>
@@ -248,23 +250,10 @@
             <script src="js/jquery.min.js"></script>
             <script src="js/popper.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
-                <script src="js/custom.js"></script>
-        </body>
-    
+            <script src="js/custom.js"></script>
+    </body>
+
     <script>
-                                                            document.querySelectorAll(".fa-plus").forEach(button => {
-                                                                button.addEventListener("click", function () {
-                                                                    let detailRow = this.closest("tr").nextElementSibling;
-
-                                                                    // Toggle hiển thị
-                                                                    detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
-
-                                                                    // Đổi icon giữa dấu "+" và "-"
-                                                                    this.classList.toggle("fa-plus");
-                                                                    this.classList.toggle("fa-minus");
-                                                                    
-                                                                });
-                                                            });
                                                             function confirmRedirectRevert(event) {
                                                                 event.preventDefault(); // Ngăn chặn điều hướng mặc định
                                                                 let userConfirm = confirm("Bạn có chắc chắn muốn hoàn lại hóa đơn đã thanh toán?");

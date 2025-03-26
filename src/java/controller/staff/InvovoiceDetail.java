@@ -62,26 +62,11 @@ public class InvovoiceDetail extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
     throws ServletException, IOException {
-         String invoiceId = request.getParameter("invoiceId");
-         InvoiceDAO ivd = new InvoiceDAO();
-         Invoice iv = ivd.getById(invoiceId);
-        List<InvoiceDetail> details = iv.getInvoiceDetail();
-        JSONArray jsonArray = new JSONArray();
-        for (InvoiceDetail detail : details) {
-            JSONObject jsonObject = new JSONObject();
-            jsonObject.put("serviceName", detail.getServiceName());
-            jsonObject.put("quantity", detail.getQuantity());
-            jsonObject.put("unitPrice", detail.getUnitPrice());
-            jsonObject.put("amount", detail.getAmount());
-            jsonObject.put("dateFormat", detail.getDateFormat());
-
-            jsonArray.put(jsonObject);
-        }
-
-        try (PrintWriter out = response.getWriter()) {
-            out.print(jsonArray.toString());
-            out.flush();
-        }
+       InvoiceDAO ivd = new InvoiceDAO();
+       String id = request.getParameter("id");
+       Invoice invoice = ivd.getById(id);
+       request.setAttribute("invoice", invoice);
+       request.getRequestDispatcher("detailinvoice.jsp").forward(request, response);
     } 
 
     /** 
