@@ -56,15 +56,16 @@ public class InvoiceDetalDAO extends DBContext {
 
     public void addInvoiceDetailByApartmentIdAndInvoiceId(String invoiceId, String aid) {
         MonthlyServiceDAO md = new MonthlyServiceDAO();
-        List<MonthlyService> listUsingSerivce = md.getByApartmentId(aid);
+        List<MonthlyService> listUsingService = md.getByApartmentId(aid);
 
-        String sql = "insert into invoicedetail values(?,?,?,?,?,?)";
+        String sql = "INSERT INTO invoicedetail (invoiceId, serviceName, PriceUnit, quantity, date, amount) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (PreparedStatement st = connection.prepareStatement(sql)) { // Mở 1 PreparedStatement duy nhất
-            for (MonthlyService ms : listUsingSerivce) {
+            for (MonthlyService ms : listUsingService) {
                 Service sv = ms.getService();
                 int quantity = ms.getQuantity();
-                float amount = quantity * (float) sv.getUnitPrice();
                 float unitprice = (float) sv.getUnitPrice();
+                float amount = quantity * unitprice;
                 LocalDateTime time = LocalDateTime.now();
 
                 st.setString(1, invoiceId);
@@ -73,10 +74,13 @@ public class InvoiceDetalDAO extends DBContext {
                 st.setInt(4, quantity);
                 st.setTimestamp(5, Timestamp.valueOf(time));
                 st.setFloat(6, amount);
-                st.executeUpdate();
+                st.addBatch(); // Thêm vào batch
             }
+
+            st.executeBatch(); // Chạy batch một lần duy nhất
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
+
 }

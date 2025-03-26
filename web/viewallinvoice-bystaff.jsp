@@ -130,42 +130,11 @@
                                                                     <td style="text-align: left">${item.description}</td>
                                                                     <td style="text-align: center">${item.apartment.id}</td>
                                                                     <td style="text-align: center">
-                                                                        <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
+                                                                        <a href="get-invoice-details?id=${item.id}" class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;">
+                                                                        </a>
                                                                     </td>
                                                                     <td style="text-align: center   ">
                                                                         <a href="update-invoice-staff?invoiceId=${item.id}" onclick="return confirmRedirectPaid(event)" class="fa-solid fa-check"></a>
-                                                                    </td>
-
-                                                                </tr>
-                                                                <tr class="detail-row" style="display: none; background-color: #f9f9f9;">
-                                                                    <td colspan="8" style="padding: 15px; border-top: 2px solid #ddd;">
-                                                                        <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Chi tiết hóa đơn #${item.id}</p>
-                                                                        <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
-                                                                            <thead>
-                                                                                <tr style="background: #ddd; color: white; text-align: left;">
-                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Dịch vụ</th>
-                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
-                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
-                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
-                                                                                    <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <c:forEach items="${item.invoiceDetail}" var="detail">
-                                                                                    <tr style="border-bottom: 1px solid #ddd;">
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;text-align: left">${detail.serviceName}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
-                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
-                                                                                        </td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
-                                                                                            <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
-                                                                                        </td>
-                                                                                        <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
-                                                                                    </tr>
-                                                                                </c:forEach>
-                                                                            </tbody>
-                                                                        </table>
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>
@@ -241,44 +210,13 @@
                                                                         <td style="text-align: left">${item.description}</td>
                                                                         <td style="text-align: center">${item.apartment.id}</td>
                                                                         <td style="text-align: center">
-                                                                            <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
+                                                                            <a href="get-invoice-details?id=${item.id}" class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;">
+                                                                            </a>
                                                                         </td>
                                                                         <td style="text-align: center">
                                                                             <a href="update-invoice-staff?invoiceId=${item.id}&method=post" onclick="return confirmRedirectRevert(event)"><i class="fa-solid fa-exchange-alt"></i></a>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr class="detail-row" style="display: none; background-color: #f9f9f9;">
-                                                                        <td colspan="9" style="padding: 15px; border-top: 2px solid #ddd;">
-                                                                            <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Chi tiết hóa đơn #${item.id}</p>
-                                                                            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
-                                                                                <thead>
-                                                                                    <tr style="background: #ddd; color: white; text-align: left;">
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Dịch vụ</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    <c:forEach items="${item.invoiceDetail}" var="detail">
-                                                                                        <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left">${detail.serviceName}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
-                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
-                                                                                            </td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
-                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
-                                                                                            </td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
-                                                                                        </tr>
-                                                                                    </c:forEach>
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </td>
-                                                                    </tr>
-
                                                                 </c:if>
                                                             </c:forEach>
                                                         </tbody>
@@ -314,19 +252,8 @@
             <script src="js/bootstrap.min.js"></script>
             <script src="js/custom.js"></script>
     </body>
+
     <script>
-                                                            document.querySelectorAll(".fa-plus").forEach(button => {
-                                                                button.addEventListener("click", function () {
-                                                                    let detailRow = this.closest("tr").nextElementSibling;
-
-                                                                    // Toggle hiển thị
-                                                                    detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
-
-                                                                    // Đổi icon giữa dấu "+" và "-"
-                                                                    this.classList.toggle("fa-plus");
-                                                                    this.classList.toggle("fa-minus");
-                                                                });
-                                                            });
                                                             function confirmRedirectRevert(event) {
                                                                 event.preventDefault(); // Ngăn chặn điều hướng mặc định
                                                                 let userConfirm = confirm("Bạn có chắc chắn muốn hoàn lại hóa đơn đã thanh toán?");

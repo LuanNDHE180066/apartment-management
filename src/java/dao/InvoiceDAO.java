@@ -7,7 +7,6 @@ package dao;
 import dto.response.EmailInvoice;
 import jdbc.DBContext;
 import java.util.List;
-import jdbc.DBContext;
 import model.InvoiceDetail;
 import dto.response.FloorResponseDTO;
 import java.sql.Date;
@@ -19,10 +18,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import model.Apartment;
-import model.Floor;
 import model.Invoice;
 import model.LivingApartment;
 import model.MonthlyService;
@@ -30,7 +26,6 @@ import model.News;
 import model.Resident;
 import model.Service;
 import model.Staff;
-import util.Util;
 
 /**
  *
