@@ -33,6 +33,7 @@ public class Invoice {
     private Resident resident;
     private Apartment apartment;
 
+    private List<InvoiceDetail> invoiceDetail;
     public Invoice() {
     }
 
@@ -45,10 +46,11 @@ public class Invoice {
         this.description = description;
         this.resident = resident;
         this.apartment = apartment;
+        InvoiceDetalDAO idd = new InvoiceDetalDAO();
+        invoiceDetail = idd.getByInvoiceId(this.id);
     }
     public List<InvoiceDetail> getInvoiceDetail(){
-        InvoiceDetalDAO idd = new InvoiceDetalDAO();
-        return idd.getByInvoiceId(this.id);
+        return invoiceDetail;
     }
     public String getId() {
         return id;

@@ -124,43 +124,20 @@
                                                                     <td>${item.id}</td>
                                                                     <td style="text-align: right">
                                                                         <fmt:formatNumber type="currency" currencyCode="VND" value="${item.total}" maxFractionDigits="0"/>
-                                                                    </td>
+                                                                    </td> 
                                                                     <td style="text-align: center">${item.invoiceDateFormat}</td>
                                                                     <td style="text-align: center">${item.dueDateFormat}</td>
                                                                     <td style="text-align: left">${item.description}</td>
                                                                     <td style="text-align: center">${item.apartment.id}</td>
                                                                     <td style="text-align: center">
-                                                                        <button class="fa fa-plus toggle-detail" data-id="${item.id}" 
-                                                                                style="background: none; border: none; cursor: pointer; font-size: 16px;">
-                                                                        </button>
+                                                                        <button class="fa fa-plus" style="background: none; border: none; cursor: pointer; font-size: 16px;"></button>
                                                                     </td>
-                                                                    <td style="text-align: center">
-                                                                        <a href="update-invoice-staff?invoiceId=${item.id}" 
-                                                                           onclick="return confirmRedirectPaid(event)" class="fa-solid fa-check"></a>
-                                                                    </td>
-                                                                </tr>
-                                                                <tr class="detail-row" id="detail-${item.id}" style="display: none;">
-                                                                    <td colspan="8" style="padding: 15px; border-top: 2px solid #ddd;">
-                                                                        <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Chi tiết hóa đơn #${item.id}</p>
-                                                                        <table class="invoice-detail-table" style="width: 100%; border-collapse: collapse;">
-                                                                            <thead>
-                                                                                <tr style="background: #ddd; color: white; text-align: left;">
-                                                                                    <th style="padding: 8px;">Dịch vụ</th>
-                                                                                    <th style="padding: 8px;">Số lượng</th>
-                                                                                    <th style="padding: 8px;">Đơn vị</th>
-                                                                                    <th style="padding: 8px;">Chi phí</th>
-                                                                                    <th style="padding: 8px;">Date</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody class="invoice-detail-body">
-                                                                                <!-- Dữ liệu sẽ được load bằng AJAX -->
-                                                                            </tbody>
-                                                                        </table>
+                                                                    <td style="text-align: center   ">
+                                                                        <a href="update-invoice-staff?invoiceId=${item.id}" onclick="return confirmRedirectPaid(event)" class="fa-solid fa-check"></a>
                                                                     </td>
                                                                 </tr>
                                                             </c:forEach>
                                                         </tbody>
-
                                                     </table>
                                                 </div>
                                                 <div style="width: 100%">
@@ -238,38 +215,6 @@
                                                                             <a href="update-invoice-staff?invoiceId=${item.id}&method=post" onclick="return confirmRedirectRevert(event)"><i class="fa-solid fa-exchange-alt"></i></a>
                                                                         </td>
                                                                     </tr>
-                                                                    <tr class="detail-row" style="display: none; background-color: #f9f9f9;">
-                                                                        <td colspan="9" style="padding: 15px; border-top: 2px solid #ddd;">
-                                                                            <p style="font-size: 16px; font-weight: bold; margin-bottom: 10px;">Chi tiết hóa đơn #${item.id}</p>
-                                                                            <table style="width: 100%; border-collapse: collapse; background: white; border-radius: 5px; box-shadow: 0px 2px 5px rgba(0,0,0,0.1);">
-                                                                                <thead>
-                                                                                    <tr style="background: #ddd; color: white; text-align: left;">
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Dịch vụ</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Số lượng</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Đơn vị</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Chi phí</th>
-                                                                                        <th style="padding: 8px; border: 1px solid #ddd;background: #ddd">Date</th>
-                                                                                    </tr>
-                                                                                </thead>
-                                                                                <tbody>
-                                                                                    <c:forEach items="${item.invoiceDetail}" var="detail">
-                                                                                        <tr style="border-bottom: 1px solid #ddd;">
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: left">${detail.serviceName}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.quantity}</td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd;text-align: right">
-                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.unitPrice}" />
-                                                                                            </td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: right;">
-                                                                                                <fmt:formatNumber type="currency" currencyCode="VND" value="${detail.amount}" maxFractionDigits="0"/>
-                                                                                            </td>
-                                                                                            <td style="padding: 8px; border: 1px solid #ddd; text-align: center;">${detail.dateFormat}</td>
-                                                                                        </tr>
-                                                                                    </c:forEach>    
-                                                                                </tbody>
-                                                                            </table>
-                                                                        </td>
-                                                                    </tr>
-
                                                                 </c:if>
                                                             </c:forEach>
                                                         </tbody>
@@ -303,69 +248,21 @@
             <script src="js/jquery.min.js"></script>
             <script src="js/popper.min.js"></script>
             <script src="js/bootstrap.min.js"></script>
-            <script src="js/custom.js"></script>
-    </body>
-
+                <script src="js/custom.js"></script>
+        </body>
+    
     <script>
-//                                                            document.querySelectorAll(".fa-plus").forEach(button => {
-//                                                                button.addEventListener("click", function () {
-//                                                                    let detailRow = this.closest("tr").nextElementSibling;
-//
-//                                                                    // Toggle hiển thị
-//                                                                    detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
-//
-//                                                                    // Đổi icon giữa dấu "+" và "-"
-//                                                                    this.classList.toggle("fa-plus");
-//                                                                    this.classList.toggle("fa-minus");
-//                                                                    
-//                                                                });
-//                                                            });
-                                                            document.addEventListener("DOMContentLoaded", function () {
-                                                                document.querySelectorAll(".toggle-detail").forEach(button => {
-                                                                    button.addEventListener("click", function () {
-                                                                        let invoiceId = this.getAttribute("data-id");
-                                                                        let detailRow = document.getElementById("detail-" + invoiceId);
-                                                                        let detailBody = detailRow.querySelector(".invoice-detail-body");
+                                                            document.querySelectorAll(".fa-plus").forEach(button => {
+                                                                button.addEventListener("click", function () {
+                                                                    let detailRow = this.closest("tr").nextElementSibling;
 
-                                                                        console.log("invoiceId:", invoiceId); // Debug
-                                                                        console.log("detailRow:", detailRow); // Debug
+                                                                    // Toggle hiển thị
+                                                                    detailRow.style.display = (detailRow.style.display === "none" || detailRow.style.display === "") ? "table-row" : "none";
 
-                                                                        if (detailRow.style.display === "none" || detailRow.style.display === "") {
-                                                                            console.log(detailBody);
-                                                                            if (detailBody.children.length === 0) {
-                                                                                console.log("A");
-                                                                                fetch("get-invoice-details?invoiceId=" + invoiceId)
-                                                                                        .then(response => {
-                                                                                            console.log("Status:", response.status); // Debug status
-                                                                                            if (!response.ok) {
-                                                                                                return response.text().then(text => {
-                                                                                                    console.log("Response text:", text); // Debug nội dung
-                                                                                                    throw new Error(`HTTP error! Status: ${response.status}`);
-                                                                                                });
-                                                                                            }
-                                                                                            return response.json();
-                                                                                        })
-                                                                                        .then(data => {
-                                                                                            console.log("Dữ liệu JSON:", data);
-                                                                                            detailBody.innerHTML = data.map(detail => `
-                                                                                                        <tr>
-                                                                                                            <td>${detail.serviceName}</td>
-                                                                                                            <td style="text-align: center;">${detail.quantity}</td>
-                                                                                                            <td style="text-align: right;">${detail.unitPrice} VND</td>
-                                                                                                            <td style="text-align: right;">${detail.amount} VND</td>
-                                                                                                            <td style="text-align: center;">${detail.dateFormat}</td>
-                                                                                                        </tr>
-                                                                                                    `).join('');
-                                                                                            });
-                                                                                        .catch(error => console.error("Lỗi tải chi tiết hóa đơn:", error));
-                                                                            }
-                                                                            console.log("XXXX");
-                                                                            detailRow.style.display = "table-row";
-                                                                        } else {
-                                                                            detailRow.style.display = "none";
-                                                                            console.log("XXXX");
-                                                                        }
-                                                                    });
+                                                                    // Đổi icon giữa dấu "+" và "-"
+                                                                    this.classList.toggle("fa-plus");
+                                                                    this.classList.toggle("fa-minus");
+                                                                    
                                                                 });
                                                             });
                                                             function confirmRedirectRevert(event) {
