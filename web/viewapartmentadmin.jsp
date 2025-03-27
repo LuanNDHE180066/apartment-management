@@ -166,7 +166,6 @@
                                                                 <td>
                                                                     <a class="option" href="viewdetailapartment-admin?apartmentId=${o.id}"><i class="fa-solid fa-eye"></i></a>
                                                                     <a class="option" href="update-apartment?id=${o.id}"><i class="fa-solid fa-pen-to-square"></i></a>
-
                                                                 </td>
                                                             </tr>
                                                         </c:forEach>
