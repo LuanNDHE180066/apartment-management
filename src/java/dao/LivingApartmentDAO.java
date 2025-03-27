@@ -554,6 +554,7 @@ public class LivingApartmentDAO extends DBContext {
     public static void main(String[] args) {
         LivingApartmentDAO dao = new LivingApartmentDAO();
         ResidentDAO daoR = new ResidentDAO();
-        System.out.println(dao.getApartmentsByResidentId("P134"));
+//        System.out.println(dao.getApartmentsByResidentId("P134"));
+        System.out.println(dao.getNumberLivingByTime(2, 2025));
     }
 }

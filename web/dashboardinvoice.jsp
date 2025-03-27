@@ -62,7 +62,7 @@
                 <c:choose>
                     <c:when test="${requestScope.screen == 1}">
                         <div style="margin-top: 30px; display: flex; justify-content: space-between; align-items: center; padding: 15px; background-color: #e1f5fe; border: 2px solid #ddd; border-radius: 8px; font-family: 'Roboto', sans-serif;">
-                            <div style="font-size: 24px; font-weight: bold; color: black;">Tổng doanh số trong tháng: ${requestScope.total} VNĐ</div>
+                            <div style="font-size: 24px; font-weight: bold; color: black;">Tổng doanh số trong năm: ${requestScope.total} VNĐ</div>
                             <form onchange="this.submit()" action="dashboard-invoice-staff" method="post">
                                 <div class="row align-items-center">
                                     <div class="col-md-4">
