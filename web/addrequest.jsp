@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -122,32 +123,32 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Create A Request</h1>
+                                    <h1>Tạo yêu cầu</h1>
                                     <form action="resident-add-request" method="post">
                                         <div class="form-group">
-                                            <label for="aparment">Apartment Number</label>
+                                            <label for="aparment">Căn hộ</label>
                                             <select id="aparment" name="aparment" required>
-                                                <option value="">Select apartment</option>
+                                                <option value="">Chọn căn hộ</option>
                                                 <c:forEach items="${requestScope.listApartment}" var="tr">
                                                     <option value="${tr.id}">${tr.id}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="typeRequest">Type Request</label>
+                                            <label for="typeRequest">Yêu cầu</label>
                                             <select id="typeRequest" name="typeRequest" required>
-                                                <option value="">Select type request</option>
+                                                <option value="">Chọn loại yêu cầu</option>
                                                 <c:forEach items="${requestScope.listTypeRquest}" var="tr">
                                                     <option value="${tr.id}">${tr.name}</option>
                                                 </c:forEach>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label for="detail">Content</label>
+                                            <label for="detail">Thông tin</label>
                                             <textarea style="width: 100%" id="detail" name="detail" placeholder="Enter details" rows="5" cols="50" required></textarea>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Send Request</button>
+                                            <button type="submit">Gửi</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
                                         </div>
@@ -160,8 +161,8 @@
                         <h3 style="text-align: center; color: #333;">Guideline</h3>
                         <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                             <tr style="background-color: #898989; color: white;">
-                                <th style="padding: 10px; border: 1px solid #ddd;text-align: center;">Type Request</th>
-                                <th style="padding: 10px; border: 1px solid #ddd;text-align: center;">Department Receive</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;text-align: center;">Tên yêu cầu</th>
+                                <th style="padding: 10px; border: 1px solid #ddd;text-align: center;">Ban phụ trách</th>
                             </tr>
                             <c:forEach items="${requestScope.listTypeRquest}" var="tr">
                                 <tr style="background-color: #fff; text-align: center;">
