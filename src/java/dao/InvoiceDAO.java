@@ -319,9 +319,37 @@ public class InvoiceDAO extends DBContext {
         for (int i = 0; i < listService.size(); i++) {
             MonthlyService t = listService.get(i);
             Service s = t.getService();
+            if(s.getName().equals("Cung cấp điện")){
+                int num=t.getQuantity();
+                total = calculateElectricityBill(num);
+                continue;
+            }
             total += s.getUnitPrice() * t.getQuantity();
         }
         return total;
+    }
+    public  int calculateElectricityBill(int consumption) {
+        int totalCost = 0;
+        int remainingConsumption = consumption;
+
+        // Giá điện theo bậc (VNĐ/kWh) và giới hạn mỗi bậc
+        int[] thresholds = {50, 50, 100, 100, 100}; // Giới hạn từng bậc
+        double[] rates = {1806,  1866, 2167, 2729 , 3050, 3151}; // Giá từng bậc
+
+        for (int i = 0; i < thresholds.length; i++) {
+            if (remainingConsumption <= 0) break;
+
+            int used = Math.min(remainingConsumption, thresholds[i]);
+            totalCost += used * rates[i];
+            remainingConsumption -= used;
+        }
+
+        // Nếu vượt quá bậc 5 thì tính theo bậc 6
+        if (remainingConsumption > 0) {
+            totalCost += remainingConsumption * rates[5];
+        }
+
+        return totalCost;
     }
 
     public int getNumberInvoice() {
