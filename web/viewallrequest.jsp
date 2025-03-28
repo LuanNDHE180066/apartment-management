@@ -153,12 +153,12 @@
                                         <div class="white_shd full margin_bottom_30">
                                             <div class="full graph_head">
                                                 <div class="heading1 margin_0">
-                                                    <h2>Resident Request Information</h2>
+                                                    <h2>Thông tin yêu cầu từ dân cư</h2>
                                                 </div>
                                             </div>
                                             <div class="full graph_head">
                                                 <div class="heading1 margin_0">
-                                                    <h3>Waiting Table</h3> 
+                                                    <h3>Yêu cầu chờ</h3> 
                                                 </div>
                                             </div>                  
                                             <div class="table_section padding_infor_info">
@@ -167,14 +167,13 @@
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
-                                                                <th>Resident Name</th> 
-                                                                <th>Apartment</th>
-                                                                <th>Detail</th>
-                                                                <th>Date</th>                                               
-                                                                <th>Type</th>
-                                                                <th>Status</th>
-                                                                <th>Option</th>
-                                                                <th>Decline</th>
+                                                                <th>Tên dân cư</th> 
+                                                                <th>Căn hộ</th>
+                                                                <th>Thông tin</th>
+                                                                <th>Ngày gửi</th>                                               
+                                                                <th>Loại</th>
+                                                                <th>Trạng thái</th>
+                                                                <th>Lựa chọn</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -190,7 +189,6 @@
                                                                         <a href="#assignRequestWaiting${status.index}" class="edit" data-toggle="modal">
                                                                             <i class="material-icons" data-toggle="tooltip" title="Assign">&#xE254;</i>
                                                                         </a>
-
                                                                         <div id="assignRequestWaiting${status.index}" class="modal fade">
                                                                             <div class="modal-dialog">
                                                                                 <div class="modal-content">
@@ -200,12 +198,12 @@
                                                                                             <table class="table w-100">
                                                                                                 <thead>
                                                                                                     <tr>
-                                                                                                        <th>ID</th>
-                                                                                                        <th>Name</th>                                                            
+                                                                                                        <th>Tên</th>                                                            
                                                                                                         <th>Email</th>
-                                                                                                        <th>Phone</th>                                               
-                                                                                                        <th>Address</th>
-                                                                                                        <th>Option</th>
+                                                                                                        <th>Số điện thoại</th>                                               
+                                                                                                        <th>Địa chỉ</th>
+                                                                                                        <th>Ca làm</th>
+                                                                                                        <th>Lựa chọn</th>
                                                                                                     </tr>
                                                                                                 </thead>
                                                                                                 <tbody>
@@ -220,7 +218,6 @@
 
                                                                                                     <c:forEach items="${targetList}" var="staff">
                                                                                                         <tr>
-                                                                                                            <td>${staff.id}</td>
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
@@ -249,10 +246,11 @@
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>                                                           
+                                                                        </div>
+                                                                        <a style="margin-left: 5px" href="update-request-administrative?requestId=${o.id}" class="fa fa-ban"></a>
                                                                     </td> 
                                                                     <td>
-                                                                        <a href="update-request-administrative?requestId=${o.id}" class="fa fa-ban"></a>
+                                                                        
                                                                     </td>
                                                                 </tr>                                                            
                                                             </c:forEach>
@@ -281,7 +279,7 @@
                                     <div class="white_shd full margin_bottom_30">  
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h3>In-Process Table</h3> 
+                                                <h3>Yêu cầu đang làm</h3> 
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
@@ -289,7 +287,7 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterRoles">
-                                                            <option value="">Filter by Roles</option>
+                                                            <option value="">Tìm dựa trên vai trò</option>
                                                             <c:forEach items="${requestScope.rolelist}" var="o">
                                                                 <c:if test="${o.id == 4 ||  o.id == 5}">
                                                                     <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
@@ -309,15 +307,15 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>Resident Name</th> 
-                                                            <th>Apartment</th>
-                                                            <th>Detail</th>
-                                                            <th>Date</th>                                               
-                                                            <th>Type</th>
-                                                            <th>Status</th>
-                                                            <th>Shift</th>
-                                                            <th>Reception Staff</th>
-                                                            <th>Option</th>
+                                                            <th>Tên dân cư</th> 
+                                                            <th>Căn hộ</th>
+                                                            <th>Thông tin</th>
+                                                            <th>Ngày gửi</th>                                               
+                                                            <th>Loại</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Ca làm</th>
+                                                            <th>Nhân viên phụ trách</th>
+                                                            <th>Lựa chon</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -351,13 +349,12 @@
                                                                                             <table class="table w-100">
                                                                                                 <thead>
                                                                                                     <tr>
-                                                                                                        <th>ID</th>
-                                                                                                        <th>Name</th>                                                            
+                                                                                                        <th>Tên</th>                                                            
                                                                                                         <th>Email</th>
-                                                                                                        <th>Phone</th>                                               
-                                                                                                        <th>Address</th>
-                                                                                                        <th>Shift</th>
-                                                                                                        <th>Option</th>
+                                                                                                        <th>Số điện thoại</th>                                               
+                                                                                                        <th>Địa chỉ</th>
+                                                                                                        <th>Ca làm</th>
+                                                                                                        <th>Lựa chọn</th>
                                                                                                     </tr>
                                                                                                 </thead>
                                                                                                 <tbody>
@@ -372,7 +369,6 @@
 
                                                                                                     <c:forEach items="${targetList}" var="staff">
                                                                                                         <tr>
-                                                                                                            <td>${staff.id}</td>
                                                                                                             <td>${staff.name}</td>
                                                                                                             <td>${staff.email}</td>
                                                                                                             <td>${staff.phone}</td> 
@@ -427,7 +423,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h3>Done Table</h3> 
+                                                <h3>Yêu cầu đã hoàn thành</h3> 
                                             </div>
                                         </div>                
 
@@ -437,14 +433,14 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>Resident Name</th> 
-                                                            <th>Apartment</th>
-                                                            <th>Detail</th>
-                                                            <th>Date</th>                                               
-                                                            <th>Type</th>
-                                                            <th>Status</th>
-                                                            <th>Shift</th>
-                                                            <th>Reception Staff</th>
+                                                            <th>Tên dân cư</th> 
+                                                            <th>Căn hộ</th>
+                                                            <th>Thông tin</th>
+                                                            <th>Ngày gửi</th>                                               
+                                                            <th>Loại</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Ca làm</th>
+                                                            <th>Nhân viên phụ trách</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

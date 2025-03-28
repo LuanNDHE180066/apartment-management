@@ -82,6 +82,9 @@ public class Util {
         if(id.equalsIgnoreCase("R")){
             return "view-all-request";
         }
+        if(id.equalsIgnoreCase("IV")){
+            return "view-invoice-resident";
+        }
         return "index.jsp";
     }
     
