@@ -147,6 +147,9 @@
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Chart</span></a>
                     </li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
+                        <a href="view-role"><i class="fa fa-shield-alt"></i><span>Chức vụ</span></a>
+                    </li>
 <!--                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="fund"><i class="fa fa-dashboard"></i><span>fund</span></a>
                     </li>-->
