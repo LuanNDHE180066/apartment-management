@@ -26,7 +26,7 @@ public class AccountDAO extends DBContext {
 
     public String getcheckTable(int roleId) {
         String table = "Empty";
-        if (roleId == 1 || roleId == 6) {
+        if (roleId == 1) {
             table = "Resident";
         } else {
             table = "Staff";
@@ -42,23 +42,17 @@ public class AccountDAO extends DBContext {
         table = dao.getcheckTable(roleId);
         if (table.equals("Empty")) {
             return s;
-//        } else if (table.equals("Resident")) {
-//            sql = "SELECT * FROM Resident WHERE [username]=?";
-//        } else if (table.equals("Staff")) {
-//            sql = "SELECT * FROM Staff WHERE [username]=?";
-//        }
         } else {
-            sql = "SELECT * FROM " + table + " WHERE [username]=? and roleid = ? ";
+            sql = "SELECT * FROM " + table + " WHERE [username]=?";
         }
         if (table.equalsIgnoreCase("Resident")) {
             sql += " and active != " + 0;
         } else {
-            sql += " and status = " + 1;
+            sql += " and status != " + 0;
         }
         try {
             PreparedStatement pre = connection.prepareStatement(sql);
             pre.setString(1, user);
-            pre.setInt(2, roleId);
             ResultSet rs = pre.executeQuery();
             if (rs.next()) {
                 s = new Account(rs.getString("username"), rs.getString("password"), rs.getString("Email"), rs.getString("Id"), rs.getInt("roleId"));
