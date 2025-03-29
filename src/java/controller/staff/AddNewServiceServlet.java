@@ -89,7 +89,7 @@ public class AddNewServiceServlet extends HttpServlet {
         int price = Integer.parseInt(price_raw);
         String des = Util.stringNomalize(request.getParameter("des"));
         if (name.trim().isBlank() || des.trim().isBlank()) {
-            request.setAttribute("error", "Name or description is not a blank");
+            request.setAttribute("error", "Tên dịch vụ không được để trống");
             request.setAttribute("companies", cd.getAll());
             request.setAttribute("types", csd.getAll());
             request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
@@ -97,7 +97,7 @@ public class AddNewServiceServlet extends HttpServlet {
         }
         ServiceDAO sd = new ServiceDAO();
         if (sd.isExistName(name)) {
-            request.setAttribute("error", "Name is existed");
+            request.setAttribute("error", "Tên dịch vụ đã tồn tại");
             request.setAttribute("companies", cd.getAll());
             request.setAttribute("types", csd.getAll());
             request.getRequestDispatcher("addnewservice.jsp").forward(request, response);
