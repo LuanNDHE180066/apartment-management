@@ -19,7 +19,7 @@ public class PasswordUpdateServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        // Clear any existing error message on initial load (GET request)
+        // Xóa thông báo lỗi nếu có khi tải trang lần đầu (GET request)
         HttpSession session = request.getSession();
         session.removeAttribute("errorMessage");
         request.getRequestDispatcher(JSP_PAGE).forward(request, response);
@@ -31,9 +31,9 @@ public class PasswordUpdateServlet extends HttpServlet {
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
 
-        // Ensure account exists in session
+        // Kiểm tra xem tài khoản có tồn tại trong phiên không
         if (account == null) {
-            session.setAttribute("errorMessage", "Session expired. Please log in again.");
+            session.setAttribute("errorMessage", "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.");
             request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
             return;
         }
@@ -42,55 +42,54 @@ public class PasswordUpdateServlet extends HttpServlet {
         String cfnewpw = request.getParameter("cfnewPassword").trim();
         ResidentDAO rd = new ResidentDAO();
 
-        // Validate old password if account is not in initial state (active != 2)
+        // Xác thực mật khẩu cũ nếu tài khoản không ở trạng thái ban đầu (active != 2)
         if (account.getActive() != 2) {
             String oldpw = request.getParameter("oldPassword").trim();
             if (!Util.isCorrectPassword(oldpw, account.getPassword())) {
-                session.setAttribute("errorMessage", "Old password is not correct");
+                session.setAttribute("errorMessage", "Mật khẩu cũ không chính xác.");
                 request.getRequestDispatcher(JSP_PAGE).forward(request, response);
                 return;
             }
         }
 
-        // Check for blank/empty password
+        // Kiểm tra mật khẩu không được để trống
         if (newpw.isBlank() || newpw.isEmpty()) {
-            session.setAttribute("errorMessage", "Password must not be blank");
+            session.setAttribute("errorMessage", "Mật khẩu không được để trống.");
             request.getRequestDispatcher(JSP_PAGE).forward(request, response);
             return;
         }
 
-        // Check if new password matches confirm password
+        // Kiểm tra mật khẩu mới và xác nhận mật khẩu có trùng khớp không
         if (!newpw.equals(cfnewpw)) {
-            session.setAttribute("errorMessage", "New password does not match confirm password");
+            session.setAttribute("errorMessage", "Mật khẩu mới và mật khẩu xác nhận không khớp.");
             request.getRequestDispatcher(JSP_PAGE).forward(request, response);
             return;
         }
 
-        // Validate password format
+        // Kiểm tra định dạng mật khẩu
         if (!Util.isCorrectFormatPassword(newpw)) {
-            session.setAttribute("errorMessage", "The password must have at least 6 characters, including at least 1 lowercase letter, 1 uppercase letter, 1 number, and 1 special character.");
+            session.setAttribute("errorMessage", "Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất 1 chữ thường, 1 chữ hoa, 1 số và 1 ký tự đặc biệt.");
             request.getRequestDispatcher(JSP_PAGE).forward(request, response);
             return;
         }
 
-        // Update password in the database
+        // Cập nhật mật khẩu trong cơ sở dữ liệu
         AccountDAO ad = new AccountDAO();
         ad.changePassword(account.getUsername(), newpw, account.getRoleId());
 
-        // Update resident status if account is in initial state
+        // Cập nhật trạng thái cư dân nếu tài khoản đang ở trạng thái ban đầu
         if (account.getActive() == 2 && (account.getRoleId() == 1 || account.getRoleId() == 6)) {
             rd.editResidentStatus(account.getpId(), "1");
         }
 
         session.removeAttribute("errorMessage");
-        request.setAttribute("message", "Password has changed");
+        request.setAttribute("message", "Mật khẩu đã được thay đổi thành công.");
         session.removeAttribute("account");
         request.getRequestDispatcher(LOGIN_PAGE).forward(request, response);
-
     }
 
     @Override
     public String getServletInfo() {
-        return "Handles password updates for residents";
+        return "Xử lý cập nhật mật khẩu cho cư dân";
     }
 }

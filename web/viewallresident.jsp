@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html lang="en">
     <head>
-        <!-- [Previous head content remains unchanged] -->
+      
+
         <style>
             .pagination {
                 margin-top: 20px;
@@ -178,10 +180,10 @@
                                             <!-- Export Buttons -->
                                             <!-- Export Buttons -->
                                             <div class="d-flex gap-2" style="margin-right: 30px; align-items: center;">
-                                                <button id="exportAllClient" class="btn btn-info">Export All </button>
+                                                <button id="exportAllClient" class="btn btn-info">Xuất Tất Cả Thông Tin </button>
                                                 <form action="${pageContext.request.contextPath}/export-residents" method="POST" id="exportSelectedForm">
                                                     <input type="hidden" name="exportType" value="selected">
-                                                    <button type="submit" class="btn btn-info" onclick="return validateSelection()">Export Selected</button>
+                                                    <button type="submit" class="btn btn-info" onclick="return validateSelection()">Xuất Người Dân Được Chọn</button>
                                                 </form>
                                             </div>
                                         </div>
@@ -198,16 +200,16 @@
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
                                                             <option value="">Filter by Status</option>
-                                                            <option value="1" ${sessionScope.filterStatus == '1' ? 'selected' : ''}>Active</option>
-                                                            <option value="0" ${sessionScope.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
-                                                            <option value="2" ${sessionScope.filterStatus == '2' ? 'selected' : ''}>Pending</option>
+                                                            <option value="1" ${sessionScope.filterStatus == '1' ? 'selected' : ''}>Đang Sinh Sống</option>
+                                                            <option value="0" ${sessionScope.filterStatus == '0' ? 'selected' : ''}>Đã Rời Đi</option>
+                                                            <option value="2" ${sessionScope.filterStatus == '2' ? 'selected' : ''}>Đang Xác Thực</option>
                                                         </select>
                                                     </div>
                                                     <!-- Filter by Home Owner -->
                                                     <!-- Filter by Home Owner -->
                                                     <div class="col-md-3">
                                                         <select class="form-control" name="aptNumber">
-                                                            <option value="" ${empty sessionScope.aptNumber ? 'selected' : ''}>Select Apartment Number</option>
+                                                            <option value="" ${empty sessionScope.aptNumber ? 'selected' : ''}>Chọn Số Phòng</option>
                                                             <c:forEach items="${requestScope.listApt}" var="apt">
                                                                 <option value="${apt.id}" ${sessionScope.aptNumber == apt.id ? 'selected' : ''}>${apt.id}</option>
                                                             </c:forEach>
@@ -217,8 +219,8 @@
 
                                                     <!-- Submit & Reset -->
                                                     <div class="col-md-3 d-flex align-items-center">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="addNewResident" class="btn btn-primary" style="margin-right: 5px;">Add new</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
+                                                        <a href="addNewResident" class="btn btn-primary" style="margin-right: 5px;">Thêm Mới</a>
                                                         <a href="view-resident" class="btn btn-secondary">Reset</a>
                                                     </div>
                                                 </div>
@@ -234,13 +236,13 @@
                                                     <thead>
                                                         <tr>
                                                             <th class="checkbox-column"><input type="checkbox" id="selectAll"></th>
-                                                            <th>Name</th>
-                                                            <th>Phone</th>
+                                                            <th>Tên</th>
+                                                            <th>Số Điện Thoại</th>
                                                             <th>Email</th>
-                                                            <th>Apartment Number</th>
-                                                            <th>Status</th>
-                                                            <th>View Detail</th>
-                                                            <th>Update</th>
+                                                            <th>Số Phòng </th>
+                                                            <th>Tình Trạng</th>
+                                                            <th>Thông Tin Chi tiết</th>
+                                                            <th>Chỉnh Sửa</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -260,9 +262,9 @@
                                                                 <form action="updateResidentStatus" method="POST" class="status-form">
                                                                     <input type="hidden" name="id" value="${resident.pId}">
                                                                     <select class="status-select ${resident.status == '1' ? 'status-active' : 'status-inactive'}" name="status" onchange="confirmStatusChange(this)">
-                                                                        <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Active</option>
-                                                                        <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Inactive</option>
-                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''} disabled>Pending</option>
+                                                                        <option value="1" class="status-active" ${resident.status == '1' ? 'selected' : ''}>Đang Ở</option>
+                                                                        <option value="0" class="status-inactive" ${resident.status == '0' ? 'selected' : ''}>Đã Rời Đi</option>
+                                                                        <option value="2" class="status-inactive" ${resident.status == '2' ? 'selected' : ''} disabled>Đang Xác Thực</option>
                                                                     </select>
                                                                 </form>
                                                             </td>
@@ -288,8 +290,8 @@
                                                             <div class="modal-dialog" style="max-width: 60%">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h3>Resident Information</h3>
-                                                                        <button type="button" class="close" data-dismiss="modal">�</button>
+                                                                        <h3>Chi Tiết</h3>
+                                                                        <button type="button" class="close" data-dismiss="modal">×</button>
                                                                     </div>
                                                                     <div class="modal-body" style="display: flex;">
                                                                         <div style="width: 50%; text-align: center;">

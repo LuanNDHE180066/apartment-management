@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
     <head>
         <meta charset="utf-8">
@@ -121,13 +121,13 @@
                     <%@include file="topbar.jsp" %>
                     <div class="container mt-5">
                         <div class="card shadow-sm p-4">
-                            <h4 class="mb-4 text-center">Submit Your Feedback</h4>
+                            <h4 class="mb-4 text-center">Sửa Đánh Giá</h4>
                             <form action="update-feed-back" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="fID" value="${feedback.id}">
                                 <div class="form-group">
-                                    <label for="typeOfRequest" class="font-weight-bold">Type of Request</label>
+                                    <label for="typeOfRequest" class="font-weight-bold">Loại Dịch Vụ</label>
                                     <select id="typeOfRequest" name="typeOfRequest" class="form-control" required>
-                                        <option value="" disabled selected>-- Select type --</option>
+                                        <option value="" disabled selected>-- Chọn Loại Dịch Vụ --</option>
                                         <c:forEach items="${requestScope.listOfTypeRequest}" var="tr">
                                             <option value="${tr.id}" <c:if test="${feedback.services.id != null && feedback.services.id == tr.id}">selected</c:if>>${tr.name}</option>
                                         </c:forEach>
@@ -135,40 +135,40 @@
                                 </div>
 
                                 <div class="form-group">
-                                    <label for="content" class="font-weight-bold">Feedback Details</label>
+                                    <label for="content" class="font-weight-bold">Đánh Giá Chi Tiết</label>
                                     <textarea name="content" maxlength="200" class="form-control" 
                                               placeholder="Write your feedback here... (Max 200 characters)" 
                                               style="resize: none; height: 150px;" required>${feedback.detail}</textarea>
-                                    <small class="form-text text-muted">Maximum 200 characters.</small>
+                                    <small class="form-text text-muted">Tối Đa 200 kí tự.</small>
                                 </div>
 
                                 <div class="form-group">
                                     <label class="font-weight-bold">Rate Your Experience</label>
                                     <div class="d-flex justify-content-between">
-                                        <label><input type="radio" name="rate" value="1" <c:if test="${feedback.rate==1}">checked="" </c:if> required> Very Bad</label>
-                                        <label><input type="radio" name="rate" value="2" <c:if test="${feedback.rate==2}">checked="" </c:if>> Bad</label>
-                                        <label><input type="radio" name="rate" value="3" <c:if test="${feedback.rate==3}">checked="" </c:if>> Neutral</label>
-                                        <label><input type="radio" name="rate" value="4" <c:if test="${feedback.rate==4}">checked="" </c:if>> Good</label>
-                                        <label><input type="radio" name="rate" value="5" <c:if test="${feedback.rate==5}">checked="" </c:if>> Excellent</label>
+                                        <label><input type="radio" name="rate" value="1" <c:if test="${feedback.rate==1}">checked="" </c:if> required>Rất Tệ</label>
+                                        <label><input type="radio" name="rate" value="2" <c:if test="${feedback.rate==2}">checked="" </c:if>> Tệ</label>
+                                        <label><input type="radio" name="rate" value="3" <c:if test="${feedback.rate==3}">checked="" </c:if>> Ổn</label>
+                                        <label><input type="radio" name="rate" value="4" <c:if test="${feedback.rate==4}">checked="" </c:if>> Tốt</label>
+                                        <label><input type="radio" name="rate" value="5" <c:if test="${feedback.rate==5}">checked="" </c:if>> Rất Tốt</label>
                                         </div>
                                     </div>
 
                                     <div class="form-group">
-                                        <label class="font-weight-bold">Upload Images (Optional)</label>
+                                        <label class="font-weight-bold">Đăng Ảnh(tùy chọn)</label>
                                         <div id="uploadContainer" class="upload-container">
                                             <!-- Pre-existing images -->
                                         <c:forEach items="${feedback.img}" var="image">
                                             <div class="upload-area existing-image" data-image-url="${image}">
                                                 <div class="upload-preview" style="display: block;">
                                                     <img src="${image}" class="preview-img" alt="Uploaded Image">
-                                                    <button type="button" class="delete-btn">�</button>
+                                                    <button type="button" class="delete-btn">×</button>
                                                 </div>
                                                 <input type="hidden" name="existingImages[]" value="${image}">
                                             </div>
                                         </c:forEach>
                                     </div>
                                     <button type="button" class="add-upload-btn" id="addUpload">+</button>
-                                    <small class="form-text text-muted">You can add multiple upload areas and select multiple images.</small>
+                                    <small class="form-text text-muted">Có thể thêm nhiều ảnh</small>
                                 </div>
 
                                 <!-- Hidden input to store deleted images -->
@@ -177,7 +177,7 @@
 
                                 <div class="text-center">
                                     <h5 class="error-msg">${errorMessage}</h5>
-                                    <button type="submit" class="btn btn-primary btn-lg">Submit Feedback</button>
+                                    <button type="submit" class="btn btn-primary btn-lg">Gửi</button>
                                 </div>
                             </form>
                         </div>
@@ -202,7 +202,7 @@
 
                     if (imageUrl) {
                         let img = $('<img>', {src: imageUrl, class: "preview-img", alt: "Uploaded Image"});
-                        let deleteBtn = $('<button type="button" class="delete-btn">�</button>');
+                        let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
                         previewContainer.append(img).append(deleteBtn);
                         previewContainer.show();
                     }
@@ -223,7 +223,7 @@
                         return;
                     }
 
-                    let deleteBtn = $('<button type="button" class="delete-btn">�</button>');
+                    let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
                     previewContainer.append(deleteBtn);
 
                     Array.from(files).forEach((file, index) => {

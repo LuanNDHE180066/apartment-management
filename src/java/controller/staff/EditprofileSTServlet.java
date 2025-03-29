@@ -134,9 +134,17 @@ public class EditprofileSTServlet extends HttpServlet {
             request.getRequestDispatcher("editprofileST.jsp").forward(request, response);
             return;
         }
-        Staff staff= st.getById(account.getpId());
+        if (st.checkDuplicateBank(ebank) && !ebank.equals(st.getById(account.getpId()).getBank())) {
+            request.setAttribute("status", "false");
+            request.setAttribute("msg", "Bank information already exists. Please use a different one.");
+            request.getRequestDispatcher("editprofileST.jsp").forward(request, response);
+            return;
+
+        }
+        Staff staff = st.getById(account.getpId());
         staff.setEmail(eemail);
         staff.setPhone(ephone);
+        staff.setBank(ebank);
         staff.setAddress(eaddress);
         if (filePart != null && filePart.getSize() > 0) {
             String uploadPath = getServletContext().getRealPath("/avartars");

@@ -217,50 +217,50 @@
                     <div class="midde_cont">
                         <div class="container-fluid">
                             <div class="form-container">
-                                <h1 style="font-weight: bold">Add New Resident</h1>
+                                <h1 style="font-weight: bold">Thêm Người Dân</h1>
                                 <form id="residentForm" action="addNewResident" method="post" enctype="multipart/form-data">
                                     <!-- Excel Import/Export Section -->
                                     <div class="form-group one-col">
-                                        <button type="button" class="import-excel-btn" id="importExcelBtn">Import Excel</button>
-                                        <button type="button" class="export-excel-btn" id="exportExcelTemplateBtn">Export Excel Template</button>
+                                        <button type="button" class="import-excel-btn" id="importExcelBtn">Nhập Bằng Excel</button>
+                                        <button type="button" class="export-excel-btn" id="exportExcelTemplateBtn">Xuất Temple</button>
                                         <input type="file" id="excelFile" name="excelFile" accept=".xls,.xlsx" />
-                                        <span style="font-size: 12px; color: #666;">Or enter details manually below</span>
+                                        <span style="font-size: 12px; color: #666;">Hoặc Thêm Thủ Công</span>
                                     </div>
 
                                     <!-- Single Resident Form -->
                                     <div id="singleResidentForm">
                                         <div class="form-group one-col">
-                                            <label for="name">Name</label>
+                                            <label for="name">Tên</label>
                                             <input type="text" id="name" name="name" placeholder="Enter full name" required />
                                             <span id="name-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="bod">Date of Birth</label>
+                                            <label for="bod">Ngày Sinh</label>
                                             <input type="date" id="bod" name="bod" required />
                                             <span id="bod-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label>Gender</label>
+                                            <label>Giới Tính</label>
                                             <div class="gender-options">
                                                 <label for="male">
-                                                    <input type="radio" id="male" name="gender" value="M" required /> Male
+                                                    <input type="radio" id="male" name="gender" value="M" required /> Nam
                                                 </label>
                                                 <label for="female">
-                                                    <input type="radio" id="female" name="gender" value="F" required /> Female
+                                                    <input type="radio" id="female" name="gender" value="F" required /> Nữ
                                                 </label>
                                             </div>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="phone">Phone</label>
+                                            <label for="phone">Số Điện Thoại</label>
                                             <input type="tel" id="phone" name="phone" placeholder="Enter phone number" required />
                                             <span id="phone-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="address">Address</label>
+                                            <label for="address">Địa Chỉ</label>
                                             <input type="text" id="address" name="address" placeholder="Enter address" required />
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="apartment">Apartment Number</label>
+                                            <label for="apartment">Chọn Số Phòng</label>
                                             <select id="apartment" name="apartment" required>
                                                 <option value="">Select Apartment</option>
                                                 <c:forEach items="${requestScope.apts}" var="apt">
@@ -269,14 +269,14 @@
                                             </select>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="role">Role</label>
+                                            <label for="role">Vai Trò</label>
                                             <select id="role" name="role" required>
-                                                <option value="1">Resident</option>
-                                                <option value="6" selected="">Render</option>
+                                                <option value="1">Cư Dân</option>
+                                                <option value="6" selected="">Người Thuê</option>
                                             </select>
                                         </div>
                                         <div class="form-group one-col">
-                                            <label for="cccd">ID</label>
+                                            <label for="cccd">Căn Cước Công Dân</label>
                                             <input type="number" id="cccd" name="cccd" placeholder="Enter ID" required />
                                             <span id="cccd-error" class="error-message"></span>
                                         </div>
@@ -355,7 +355,7 @@
                 const name = $("#name").val();
                 const namePattern = /^[a-zA-Z\s]+$/;
                 if (!namePattern.test(name)) {
-                    $("#name-error").text("Name must contain only letters and spaces.");
+                    $("#name-error").text("Tên Chỉ Bao Gồm Kí Tự Và Khoảng Trắng");
                     return false;
                 } else {
                     $("#name-error").text("");
@@ -368,7 +368,7 @@
                 const today = new Date("2025-03-26"); // Current date as per system
                 const dobDate = new Date(dob);
                 if (dobDate >= today) {
-                    $("#bod-error").text("Date of Birth must be before today.");
+                    $("#bod-error").text("Ngày Sinh Không Hợp Lệ");
                     return false;
                 } else {
                     $("#bod-error").text("");
@@ -485,7 +485,7 @@
 
                 $("#username").on("input", function () {
                     if ($(this).val().includes(" ")) {
-                        $("#username-error").text("Username cannot contain spaces.");
+                        $("#username-error").text("User name không được để trống.");
                     } else {
                         checkDuplicate("username", $(this).val(), "#username-error");
                     }
@@ -513,15 +513,15 @@
                         valid = false;
                     }
                     if (!phonePattern.test(phone)) {
-                        $("#phone-error").text("Phone number must be exactly 10 digits.");
+                        $("#phone-error").text("số Điện Thoại Phải Chứa 10 kí Tự.");
                         valid = false;
                     }
                     if (!cccdPattern.test(cccd)) {
-                        $("#cccd-error").text("ID must be exactly 12 digits.");
+                        $("#cccd-error").text("Căn Cước Công Dân Phải chứa 12 kí tự");
                         valid = false;
                     }
                     if (role === "1" && usernameContainer && !usernamePattern.test(username)) {
-                        $("#username-error").text("Username must be at least 4 characters.");
+                        $("#username-error").text("Username phải trên 4 kí tự.");
                         valid = false;
                     }
 

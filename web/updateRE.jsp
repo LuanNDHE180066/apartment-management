@@ -131,29 +131,29 @@
                     <div class="midde_cont">
                         <div class="container-fluid">
                             <div class="form-container">
-                                <h1 style="font-weight: bold">Update Resident Information</h1>
+                                <h1 style="font-weight: bold">Thay ??i Thông Tin Ng??i Dân</h1>
                                 <form action="updateRE" method="post">
                                     <div class="form-group">
                                         <input type="hidden" name="rid" value="${resident.pId}">
                                         <div class="three-cols">
                                             <div class="col">
-                                                <label for="name">Name</label>
+                                                <label for="name">Tên</label>
                                                 <input type="text" id="name" name="name" placeholder="Enter full name" required value="${resident.name}"/>
                                                 <span id="name-error" class="error-message"></span>
                                             </div>
                                             <div class="col">
-                                                <label for="bod">Date of Birth</label>
+                                                <label for="bod">Ngày Sinh</label>
                                                 <input type="date" id="bod" name="bod" required value="${resident.bod}" />
                                                 <span id="dob-error" class="error-message"></span>
                                             </div>
                                             <div class="col">
-                                                <label>Gender</label>
+                                                <label>Gi?i Tính</label>
                                                 <div class="gender-options">
                                                     <label for="male">
-                                                        <input type="radio" id="male" name="gender" value="M" required ${resident.gender == 'M' ? 'checked' : ''} /> Male
+                                                        <input type="radio" id="male" name="gender" value="M" required ${resident.gender == 'M' ? 'checked' : ''} /> Nam
                                                     </label>
                                                     <label for="female">
-                                                        <input type="radio" id="female" name="gender" value="F" required ${resident.gender == 'F' ? 'checked' : ''} /> Female
+                                                        <input type="radio" id="female" name="gender" value="F" required ${resident.gender == 'F' ? 'checked' : ''} /> N?
                                                     </label>
                                                 </div>
                                             </div>
@@ -161,14 +161,14 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="address">Address</label>
+                                        <label for="address">??a Ch?</label>
                                         <input type="text" id="address" name="address" placeholder="Enter address" required value="${resident.address}" />
                                     </div>
 
                                     <div class="form-group">
                                         <div class="two-cols">
                                             <div class="col">
-                                                <label for="id">ID</label>
+                                                <label for="id">C?n C??c Công Dân</label>
                                                 <input type="number" id="id" name="id" placeholder="Enter ID" value="${resident.cccd}" />
                                                 <span id="id-error" class="error-message"></span>
                                             </div>
@@ -178,7 +178,7 @@
                                     <div class="form-group">
                                         <div class="two-cols">
                                             <div class="col">
-                                                <label for="phone">Phone</label>
+                                                <label for="phone">S? ?i?n Tho?i</label>
                                                 <input type="tel" id="phone" name="phone" placeholder="Enter phone number" value="${resident.phone}" required />
                                                 <span id="phone-error" class="error-message"></span>
                                             </div>
@@ -187,7 +187,7 @@
                                     <div class="form-button">
                                         <span class="error-message">${error}</span>
                                         <span class="success-message">${success}</span>
-                                        <button type="submit">Update Resident</button>
+                                        <button type="submit">L?u Thay ??i</button>
                                     </div>
                                 </form>
                             </div>

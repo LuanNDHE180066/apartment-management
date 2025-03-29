@@ -191,12 +191,12 @@
                                         <div class="full graph_head d-flex justify-content-between align-items-center">
 
                                             <div class="heading1 ">
-                                                <h2>Feedback Table</h2>
+                                                <h2>Feedback </h2>
                                             </div>
 
 
                                             <div>
-                                                <button class="btn btn-primary" onclick="location.href = 'sendfeedback'" style="margin-right: 20px">Send New Feedback</button>
+                                                <button class="btn btn-primary" onclick="location.href = 'sendfeedback'" style="margin-right: 20px">Gửi Đánh Giá</button>
                                                 <button class="btn btn-primary" onclick="location.href = 'view-all-feedback'">View All</button>
                                             </div>
                                         </div>
@@ -205,17 +205,17 @@
                                                 <form action="filterfeedback" method="get">
                                                     <div class="row align-items-center">
                                                         <div class="col-md-2">
-                                                            <label for="startDate" class="fw-bold">Start Date</label>
+                                                            <label for="startDate" class="fw-bold">Từ</label>
                                                             <input type="date" class="form-control" name="from" value="${sessionScope.from}">
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <label for="endDate" class="fw-bold">End Date</label>
+                                                            <label for="endDate" class="fw-bold">Đến</label>
                                                             <input type="date" class="form-control" name="to" value="${sessionScope.to}">
                                                         </div>
                                                         <div class="col-md-2">
-                                                            <label class="fw-bold">Service Type</label>
+                                                            <label class="fw-bold">Loại Dịch Vụ</label>
                                                             <select class="form-control" name="typeRequest">
-                                                                <option value="" ${empty sessionScope.selectedType ? 'selected' : ''}>--Select Type--</option>
+                                                                <option value="" ${empty sessionScope.selectedType ? 'selected' : ''}>--Chọn Loại Dịch Vụ--</option>
                                                                 <c:forEach items="${requestScope.listTypeRequest}" var="t">
                                                                     <option value="${t.id}" ${sessionScope.selectedType == t.id ? 'selected' : ''}>${t.name}</option>
                                                                 </c:forEach>
@@ -286,11 +286,11 @@
                                             </div>
                                             <div class="pagination">
                                                 <c:if test="${currentPage > 1}">
-                                                    <a href="?page=${currentPage - 1}" class="btn btn-primary">Previous</a>
+                                                    <a href="?page=${currentPage - 1}" class="btn btn-primary">Trước</a>
                                                 </c:if>
                                                 <span>Page ${currentPage} of ${totalPages}</span>
                                                 <c:if test="${currentPage < totalPages}">
-                                                    <a href="?page=${currentPage + 1}" class="btn btn-primary">Next</a>
+                                                    <a href="?page=${currentPage + 1}" class="btn btn-primary">Sau</a>
                                                 </c:if>
                                             </div>
 
@@ -299,7 +299,7 @@
                                                 <div class="modal-dialog modal-lg" role="document">
                                                     <div class="modal-content">
                                                         <div class="modal-header">
-                                                            <h5 class="modal-title" id="imageModalLabel">Feedback Image</h5>
+                                                            <h5 class="modal-title" id="imageModalLabel">Ảnh Minh Họa</h5>
                                                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                                                 <span aria-hidden="true">&times;</span>
                                                             </button>

@@ -142,7 +142,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Feedback Information</h2>
+                                        <h2>Đánh Giá Công Khai</h2>
                                     </div>
                                 </div>
                             </div>
@@ -152,7 +152,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head d-flex justify-content-between align-items-center">
                                             <div class="heading1 margin_0">
-                                                <h2>Feedback Table</h2>
+                                                <h2></h2>
                                             </div>
 
                                         </div>
@@ -164,28 +164,28 @@
                                                     <c:if test="${sessionScope.account.getRoleId()==2}">
                                                         <div class="col-md-2">
                                                             <div class="form-group text-center">
-                                                                <label for="searchName" class="fw-bold">Resident Name</label>
+                                                                <label for="searchName" class="fw-bold">Tên Người Dân</label>
                                                                 <input type="text" value="${param.searchName}" class="form-control" name="searchName" placeholder="Search by Name">
                                                             </div>
                                                         </div>
                                                     </c:if>
                                                     <div class="col-md-2">
                                                         <div class="form-group text-center">
-                                                            <label for="startDate" class="fw-bold">Start Date</label>
+                                                            <label for="startDate" class="fw-bold">Từ</label>
                                                             <input type="date" class="form-control" name="startDate" value="${param.startDate}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <div class="form-group text-center">
-                                                            <label for="endDate" class="fw-bold">End Date</label>
+                                                            <label for="endDate" class="fw-bold">Đến</label>
                                                             <input type="date" class="form-control" name="endDate" value="${param.endDate}">
                                                         </div>
                                                     </div>
                                                     <div class="col-md-2">
                                                         <div class="form-group text-center">
-                                                            <label class="fw-bold">Service Type</label>
+                                                            <label class="fw-bold">Loại Dịch Vụ</label>
                                                             <select class="form-control" name="serviceType">
-                                                                <option value="">Select Type</option>
+                                                                <option value="">Chọn Dịch Vụ</option>
                                                                 <c:forEach items="${sessionScope.listRequestType}" var="service">
                                                                     <option value="${service.id}" ${service.id == param.serviceType ? 'selected' : ''}>
                                                                         ${service.name}

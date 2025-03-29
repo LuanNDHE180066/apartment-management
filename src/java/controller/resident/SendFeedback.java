@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
 package controller.resident;
 
 import dao.FeedbackDAO;
@@ -22,19 +18,13 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import model.Account;
-import model.RequestType;
 import model.SendEmail;
 import model.Service;
 import model.Staff;
 import validation.BadWordFilter;
 
-/**
- *
- * @author NCPC
- */
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB per file
@@ -43,41 +33,22 @@ import validation.BadWordFilter;
 @WebServlet(name = "SendFeedback", urlPatterns = {"/sendfeedback"})
 public class SendFeedback extends HttpServlet {
 
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
-            /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet SendFeedback</title>");
+            out.println("<title>Servlet Gửi Phản Hồi</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet SendFeedback at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet Gửi Phản Hồi tại " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
     }
 
-    // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
-     * Handles the HTTP <code>GET</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -89,22 +60,11 @@ public class SendFeedback extends HttpServlet {
         request.setAttribute("listOfTypeRequest", listTypeOfRequest);
         request.setAttribute("rID", rID);
         request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
-
     }
 
-    /**
-     * Handles the HTTP <code>POST</code> method.
-     *
-     * @param request servlet request
-     * @param response servlet response
-     * @throws ServletException if a servlet-specific error occurs
-     * @throws IOException if an I/O error occurs
-     */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        // Fetch form fields
         HttpSession session = request.getSession();
         Account account = (Account) session.getAttribute("account");
         ServiceDAO rt = new ServiceDAO();
@@ -117,11 +77,9 @@ public class SendFeedback extends HttpServlet {
         try {
             rate = Integer.parseInt(rate_raw);
         } catch (NumberFormatException e) {
-            System.out.println("Error parsing rate: " + e);
+            System.out.println("Lỗi phân tích đánh giá: " + e);
         }
 
-        // Check for bad words before proceeding
-        // Use ServletContext to get the absolute path
         String realPath = getServletContext().getRealPath("/asset/badwords.txt");
         BadWordFilter bwf = new BadWordFilter(realPath);
 
@@ -129,12 +87,11 @@ public class SendFeedback extends HttpServlet {
             List<Service> listTypeOfRequest = rt.getAll();
             request.setAttribute("rID", rID);
             request.setAttribute("listOfTypeRequest", listTypeOfRequest);
-            request.setAttribute("errorMessage", "Your feedback content must not contain offensive words!");
+            request.setAttribute("errorMessage", "Nội dung phản hồi của bạn không được chứa từ ngữ xúc phạm!");
             request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
             return;
         }
 
-        // ----------- File upload handling ----------------
         String uploadPath = request.getServletContext().getRealPath("/") + "uploads";
         File uploadDir = new File(uploadPath);
         if (!uploadDir.exists()) {
@@ -154,31 +111,28 @@ public class SendFeedback extends HttpServlet {
                     imagePaths.add("uploads/" + fileName);
                     hasUploadedImages = true;
                 } catch (IOException e) {
-                    System.out.println("Error saving file: " + e.getMessage());
+                    System.out.println("Lỗi khi lưu tệp: " + e.getMessage());
                 }
             }
         }
 
-        
         FeedbackDAO fd = new FeedbackDAO();
         if (hasUploadedImages) {
             fd.sendFeedback(detail, rID, tID, rate, imagePaths);
         } else {
-            int succes = fd.sendFeedback(detail, rID, tID, rate, null);
-            if (succes != 0) {
+            int success = fd.sendFeedback(detail, rID, tID, rate, null);
+            if (success != 0) {
                 List<Service> listTypeOfRequest = rt.getAll();
                 request.setAttribute("rID", rID);
                 request.setAttribute("listOfTypeRequest", listTypeOfRequest);
-                request.setAttribute("errorMessage", "error");
+                request.setAttribute("errorMessage", "Lỗi xảy ra khi gửi phản hồi!");
                 request.getRequestDispatcher("sendfeedback.jsp").forward(request, response);
             }
         }
 
-        // Send email alert if rate < 3
         if (rate < 3) {
             SendEmail email = new SendEmail();
             StaffDAO s = new StaffDAO();
-
             List<Staff> staffs = s.getActiveStaffbyRole("2");
             List<String> emails = new ArrayList<>();
             for (Staff staff : staffs) {
@@ -187,14 +141,6 @@ public class SendFeedback extends HttpServlet {
             email.sendFeedbackMail(emails, tID, rate, detail);
         }
 
-       
         response.sendRedirect("view-feed-back-user");
     }
-
 }
-
-/**
- * Returns a short description of the servlet.
- *
- * @return a String containing servlet description
- */

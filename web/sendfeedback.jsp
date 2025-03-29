@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <html>
     <head>
         <meta charset="utf-8">
@@ -125,27 +126,20 @@
     <body>
         <div class="full_container">
             <div class="inner_container">
-                <!-- Sidebar  -->
                 <%@include file="sidebar.jsp" %>
-                <!-- end sidebar -->
-
-                <!-- right content -->
                 <div id="content">
-                    <!-- topbar -->
                     <%@include file="topbar.jsp" %>
-                    <!-- end topbar -->
-
                     <div class="container mt-5">
                         <div class="card shadow-sm p-4">
-                            <h4 class="mb-4 text-center">Submit Your Feedback</h4>
+                            <h4 class="mb-4 text-center">Gửi Phản Hồi Của Bạn</h4>
                             <form action="sendfeedback" method="post" enctype="multipart/form-data">
                                 <input type="hidden" name="rID" value="${rID}">
 
                                 <!-- Request Type Dropdown -->
                                 <div class="form-group">
-                                    <label for="typeOfRequest" class="font-weight-bold">Type of Request</label>
+                                    <label for="typeOfRequest" class="font-weight-bold">Loại Yêu Cầu</label>
                                     <select id="typeOfRequest" name="typeOfRequest" class="form-control" required>
-                                        <option value="" disabled selected>-- Select type --</option>
+                                        <option value="" disabled selected>-- Chọn loại --</option>
                                         <c:forEach items="${requestScope.listOfTypeRequest}" var="tr">
                                             <option value="${tr.id}">${tr.name}</option>
                                         </c:forEach>
@@ -154,50 +148,46 @@
 
                                 <!-- Feedback Details -->
                                 <div class="form-group">
-                                    <label for="content" class="font-weight-bold">Feedback Details</label>
+                                    <label for="content" class="font-weight-bold">Chi Tiết Phản Hồi</label>
                                     <textarea name="content" maxlength="200" class="form-control" 
-                                              placeholder="Write your feedback here... (Max 200 characters)" 
+                                              placeholder="Viết phản hồi của bạn tại đây... (Tối đa 200 ký tự)" 
                                               style="resize: none; height: 150px;" required></textarea>
-                                    <small class="form-text text-muted">Maximum 200 characters.</small>
+                                    <small class="form-text text-muted">Tối đa 200 ký tự.</small>
                                 </div>
 
                                 <!-- Rating Selection -->
                                 <div class="form-group">
-                                    <label class="font-weight-bold">Rate Your Experience</label>
+                                    <label class="font-weight-bold">Đánh Giá Trải Nghiệm Của Bạn</label>
                                     <div class="d-flex justify-content-between">
-                                        <label><input type="radio" name="rate" value="1" required> Very Bad</label>
-                                        <label><input type="radio" name="rate" value="2"> Bad</label>
-                                        <label><input type="radio" name="rate" value="3"> Neutral</label>
-                                        <label><input type="radio" name="rate" value="4"> Good</label>
-                                        <label><input type="radio" name="rate" value="5"> Excellent</label>
+                                        <label><input type="radio" name="rate" value="1" required> Rất Tệ</label>
+                                        <label><input type="radio" name="rate" value="2"> Tệ</label>
+                                        <label><input type="radio" name="rate" value="3"> Trung Bình</label>
+                                        <label><input type="radio" name="rate" value="4"> Tốt</label>
+                                        <label><input type="radio" name="rate" value="5"> Xuất Sắc</label>
                                     </div>
                                 </div>
 
                                 <!-- Image Upload Fields -->
                                 <div class="form-group">
-                                    <label class="font-weight-bold">Upload Images (Optional)</label>
+                                    <label class="font-weight-bold">Tải Lên Hình Ảnh (Tùy Chọn)</label>
                                     <div id="uploadContainer" class="upload-container">
                                         <div class="upload-area" data-index="0">
                                             <div class="upload-content">
                                                 <div class="upload-icon">+</div>
-                                                <p>Click or Drag an Image</p>
+                                                <p>Nhấn hoặc Kéo Hình Ảnh</p>
                                             </div>
                                             <input type="file" class="file-input" name="images[]" accept="image/*" multiple>
-
                                             <div class="upload-preview"></div>
                                         </div>
                                     </div>
                                     <button type="button" class="add-upload-btn" id="addUpload">+</button>
-                                    <small class="form-text text-muted">You can add multiple upload areas and select multiple images.</small>
+                                    <small class="form-text text-muted">Bạn có thể thêm nhiều khu vực tải lên và chọn nhiều hình ảnh.</small>
                                 </div>
-
-
-
 
                                 <!-- Submit Button -->
                                 <div class="text-center">
                                     <h5 class="error-msg">${errorMessage}</h5>
-                                    <button type="submit" class="btn btn-primary btn-lg">Submit Feedback</button>
+                                    <button type="submit" class="btn btn-primary btn-lg">Gửi Phản Hồi</button>
                                 </div>
                             </form>
                         </div>
@@ -210,13 +200,11 @@
             $(document).ready(function () {
                 let uploadIndex = 1;
 
-                // Handle file input change: show preview and disable pointer events on the file input.
                 $(document).on("change", ".file-input", function () {
                     let uploadArea = $(this).closest(".upload-area");
                     let previewContainer = uploadArea.find(".upload-preview");
                     let contentEl = uploadArea.find(".upload-content");
 
-                    // Clear any previous preview content
                     previewContainer.empty();
 
                     let files = this.files;
@@ -227,13 +215,12 @@
                         return;
                     }
 
-                    // Prepend delete button to the preview container.
-                    let deleteBtn = $('<button type="button" class="delete-btn">&times;</button>');
+                    let deleteBtn = $('<button type="button" class="delete-btn">×</button>');
                     previewContainer.append(deleteBtn);
 
                     Array.from(files).forEach((file, index) => {
                         if (!file.type.startsWith("image/")) {
-                            alert(`"${file.name}" is not an image.`);
+                            alert(`"${file.name}" không phải là hình ảnh.`);
                             return;
                         }
                         let reader = new FileReader();
@@ -241,7 +228,7 @@
                             let img = $('<img>', {
                                 src: e.target.result,
                                 class: "preview-img",
-                                alt: `Preview ${index + 1}`
+                                alt: `Xem trước ${index + 1}`
                             });
                             previewContainer.append(img);
                         };
@@ -250,11 +237,9 @@
 
                     contentEl.hide();
                     previewContainer.show();
-                    // Disable pointer events on the file input so clicks don't trigger it again.
                     $(this).css("pointer-events", "none");
                 });
 
-                // Delete button click: clear preview and re-enable the file input.
                 $(document).on("click", ".delete-btn", function (e) {
                     e.stopPropagation();
                     let uploadArea = $(this).closest(".upload-area");
@@ -266,13 +251,12 @@
                     fileInput.css("pointer-events", "auto");
                 });
 
-                // Append new upload area to the flex container on clicking the "add" button.
                 $("#addUpload").on("click", function () {
                     const newUpload = `
       <div class="upload-area" data-index="${uploadIndex}">
         <div class="upload-content">
           <div class="upload-icon">+</div>
-          <p>Click or Drag an Image</p>
+          <p>Nhấn hoặc Kéo Hình Ảnh</p>
         </div>
         <input type="file" class="file-input" name="images[]" accept="image/*" multiple>
         <div class="upload-preview"></div>
@@ -282,10 +266,6 @@
                     uploadIndex++;
                 });
             });
-
-
-
-
         </script>
     </body>
 </html>
