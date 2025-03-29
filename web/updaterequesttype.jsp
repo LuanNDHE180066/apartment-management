@@ -157,7 +157,7 @@
                                                 <label for="role">Ban phụ trách</label>
                                                 <select name="role" required="">
                                                     <c:forEach items="${requestScope.rolelist}" var="o">
-                                                        <c:if test="${o.id == 4 ||  o.id == 5}">
+                                                        <c:if test="${o.id == 4 ||  o.id == 5 || o.id == 7}">
                                                             <option value="${o.id}" <c:if test="${requestScope.requestType.destination.id == o.id}">selected</c:if>>${o.name}</option>
                                                         </c:if>
                                                     </c:forEach>

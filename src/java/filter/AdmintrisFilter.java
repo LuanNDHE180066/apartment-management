@@ -130,6 +130,9 @@ public class AdmintrisFilter implements Filter {
             } else if (a.getRoleId() == 5 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp") || uri.contains("update-request-staff"))) {
                 chain.doFilter(request, response);
                 return;
+            } else if (a.getRoleId() == 7 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp") || uri.contains("update-request-staff"))) {
+                chain.doFilter(request, response);
+                return;
             }
             else if (a.getRoleId() == 0 && (uri.contains("view-request-type") || uri.contains("viewrequesttype.jsp") || uri.contains("addrequesttype.jsp") || uri.contains("updaterequesttype.jsp") || uri.contains("add-request-type") || uri.contains("update-request-type"))) {
                 chain.doFilter(request, response);

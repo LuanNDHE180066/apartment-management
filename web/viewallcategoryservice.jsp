@@ -36,6 +36,10 @@
         <![endif]-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <style>
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
             .pagination {
                 margin-top: 20px;
                 margin-left: 1250px;

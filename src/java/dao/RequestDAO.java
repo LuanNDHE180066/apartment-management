@@ -292,7 +292,7 @@ public class RequestDAO extends DBContext {
     public List<Request> getWaitingTable(List<Request> list) {
         List<Request> sl = new ArrayList<>();
         for (Request request : list) {
-            if(request.getStatus().equalsIgnoreCase("No response") || request.getStatus().equalsIgnoreCase("Waiting")){
+            if(request.getStatus().equalsIgnoreCase("Đợi")){
                 sl.add(request);
             }
         }
@@ -302,7 +302,7 @@ public class RequestDAO extends DBContext {
     public List<Request> getInProcessgTable(List<Request> list) {
         List<Request> sl = new ArrayList<>();
         for (Request request : list) {
-            if(request.getStatus().equalsIgnoreCase("In process")){
+            if(request.getStatus().equalsIgnoreCase("Đang làm")){
                 sl.add(request);
 
             }
@@ -313,7 +313,7 @@ public class RequestDAO extends DBContext {
     public List<Request> getDoneTable(List<Request> list) {
         List<Request> sl = new ArrayList<>();
         for (Request request : list) {
-            if(request.getStatus().equalsIgnoreCase("Done")){
+            if(request.getStatus().equalsIgnoreCase("Xong")){
                 sl.add(request);
             }
         }
@@ -598,8 +598,13 @@ public class RequestDAO extends DBContext {
 //Util util = new Util();
 //Staff list = dao.getTopEmployeeByYear(2025);
 //        System.out.println(""+list.getName()+list.getRole().getName()+list.getStatus());
-    List<Request> list = dao.getByResidentID("P101");
+    List<Request> list = dao.getAll();
+    List<Request> list1 = dao.getRequestByRolesAndPid(4,"S1008");
         for (Request request : list) {
+            System.out.println(""+request.getId()+"\n");
+        }
+        System.out.println("End");
+        for (Request request : list1) {
             System.out.println(""+request.getId()+"\n");
         }
     }

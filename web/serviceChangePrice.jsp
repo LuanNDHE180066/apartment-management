@@ -155,10 +155,8 @@
                         });
                     </script>
                 </div>
-                <div class="container-fluid">
-                    <div class="footer">
-                        <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
-                    </div>
+                <div class="footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; color: white; text-align: center; padding: 10px;">
+                    <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                 </div>
                 <script src="js/jquery.min.js"></script>
                 <script src="js/popper.min.js"></script>

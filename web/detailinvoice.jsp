@@ -113,7 +113,9 @@
                         </tbody>
                     </table>
 
-
+                    <div class="footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; color: white; text-align: center; padding: 10px;">
+                        <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
+                    </div>
                     <!-- Script vẽ biểu đồ -->
 
                 </div>

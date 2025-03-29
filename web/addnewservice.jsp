@@ -126,6 +126,9 @@
                             </div>
                         </div>
                     </div>
+                    <div class="footer" style="background: white; color: white; text-align: center; padding: 10px;">
+                        <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
+                    </div>
                     <script>
                         function format(input) {
                             let value = input.value.replace(/\./g, '');
