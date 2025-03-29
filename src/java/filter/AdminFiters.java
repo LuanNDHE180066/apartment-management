@@ -42,7 +42,10 @@ import org.apache.http.HttpRequest;
             "/apartment-living-history",
             "/apartmentdetail.jsp",
             "/historyownerapartment.jsp",
-            "/historylivingapartment.jsp"})
+            "/historylivingapartment.jsp",
+            "/viewrole.jsp",
+            "/add-role",
+            "/view-role"})
 public class AdminFiters implements Filter {
 
     private static final boolean debug = true;
