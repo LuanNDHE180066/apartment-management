@@ -131,6 +131,10 @@
                 display: block;
             }
 
+            .error-message:empty {
+                display: none;
+            }
+
             input[type="radio"]:focus {
                 outline: none;
                 box-shadow: none;
@@ -228,10 +232,12 @@
                                         <div class="form-group one-col">
                                             <label for="name">Name</label>
                                             <input type="text" id="name" name="name" placeholder="Enter full name" required />
+                                            <span id="name-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col">
                                             <label for="bod">Date of Birth</label>
                                             <input type="date" id="bod" name="bod" required />
+                                            <span id="bod-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col">
                                             <label>Gender</label>
@@ -271,7 +277,7 @@
                                         </div>
                                         <div class="form-group one-col">
                                             <label for="cccd">ID</label>
-                                            <input type="number" id="cccd" name="cccd" placeholder="Enter ID" />
+                                            <input type="number" id="cccd" name="cccd" placeholder="Enter ID" required />
                                             <span id="cccd-error" class="error-message"></span>
                                         </div>
                                         <div class="form-group one-col" id="username-container" style="display: none;">
@@ -279,9 +285,9 @@
                                             <input type="text" id="username" name="username" placeholder="Enter username" />
                                             <span id="username-error" class="error-message"></span>
                                         </div>
-                                        <div class="form-group one-col" id="email-container" style="display: none;">
+                                        <div class="form-group one-col" id="email-container">
                                             <label for="email">Email</label>
-                                            <input type="email" id="email" name="email" placeholder="Enter email" />
+                                            <input type="email" id="email" name="email" placeholder="Enter email" required />
                                             <span id="email-error" class="error-message"></span>
                                         </div>
                                     </div>
@@ -313,24 +319,16 @@
             function toggleRoleFields() {
                 const role = $("#role").val();
                 const usernameContainer = document.getElementById("username-container");
-                const emailContainer = document.getElementById("email-container");
                 const usernameInput = document.getElementById("username");
-                const emailInput = document.getElementById("email");
 
                 if (role === "1") { // Resident
                     usernameContainer.style.display = "block";
-                    emailContainer.style.display = "block";
                     usernameInput.setAttribute("required", "true");
-                    emailInput.setAttribute("required", "true");
                 } else { // Render
                     usernameContainer.style.display = "none";
-                    emailContainer.style.display = "none";
                     usernameInput.removeAttribute("required");
-                    emailInput.removeAttribute("required");
                     usernameInput.value = "";
-                    emailInput.value = "";
                     $("#username-error").text("");
-                    $("#email-error").text("");
                 }
                 updateSubmitButtonState();
             }
@@ -353,10 +351,36 @@
                 }
             }
 
+            function validateName() {
+                const name = $("#name").val();
+                const namePattern = /^[a-zA-Z\s]+$/;
+                if (!namePattern.test(name)) {
+                    $("#name-error").text("Name must contain only letters and spaces.");
+                    return false;
+                } else {
+                    $("#name-error").text("");
+                    return true;
+                }
+            }
+
+            function validateDOB() {
+                const dob = $("#bod").val();
+                const today = new Date("2025-03-26"); // Current date as per system
+                const dobDate = new Date(dob);
+                if (dobDate >= today) {
+                    $("#bod-error").text("Date of Birth must be before today.");
+                    return false;
+                } else {
+                    $("#bod-error").text("");
+                    return true;
+                }
+            }
+
             function updateSubmitButtonState() {
                 const submitButton = $("#submitSingleBtn");
                 const hasErrors = $("#email-error").text() || $("#phone-error").text() ||
-                        $("#cccd-error").text() || $("#username-error").text();
+                        $("#cccd-error").text() || $("#username-error").text() ||
+                        $("#name-error").text() || $("#bod-error").text();
                 submitButton.prop("disabled", !!hasErrors);
             }
 
@@ -364,31 +388,27 @@
                 $("#excelFile").val("");
                 $("#residentForm")[0].reset();
                 toggleRoleFields();
+                $("#name-error").text("");
+                $("#bod-error").text("");
             }
 
             function exportExcelTemplate() {
                 try {
-                    // Define headers matching the import format
                     const headers = [
-                        "name", "dob", "gender", "phone", "address", "apartment", "cccd"
+                        "name", "dob", "gender", "phone", "address", "apartment", "cccd", "email"
                     ];
 
-                    // Get apartment IDs from the select options
                     const apartments = Array.from(document.querySelectorAll("#apartment option"))
                         .filter(opt => opt.value !== "")
                         .map(opt => opt.value);
 
-                    // Define dropdown options
                     const genderOptions = ["M", "F"];
 
-                    // Create a new workbook and worksheet
                     const wb = XLSX.utils.book_new();
                     const ws = XLSX.utils.json_to_sheet([{}], { header: headers });
 
-                    // Add data validation for dropdowns
                     const range = XLSX.utils.decode_range(ws["!ref"]);
-                    for (let R = range.s.r + 1; R <= range.e.r + 10; R++) { // Add validation for 10 rows
-                        // Gender dropdown (column 2)
+                    for (let R = range.s.r + 1; R <= range.e.r + 10; R++) {
                         ws[XLSX.utils.encode_cell({ r: R, c: 2 })] = { t: "s", v: "" };
                         ws[XLSX.utils.encode_cell({ r: R, c: 2 })].s = {
                             dataValidation: {
@@ -398,7 +418,6 @@
                             }
                         };
 
-                        // Apartment dropdown (column 5)
                         ws[XLSX.utils.encode_cell({ r: R, c: 5 })] = { t: "s", v: "" };
                         ws[XLSX.utils.encode_cell({ r: R, c: 5 })].s = {
                             dataValidation: {
@@ -409,19 +428,12 @@
                         };
                     }
 
-                    // Set column widths
                     ws["!cols"] = headers.map(() => ({ wch: 15 }));
 
-                    // Append the worksheet to the workbook
                     XLSX.utils.book_append_sheet(wb, ws, "Residents");
 
-                    // Generate the Excel file as a binary array
                     const fileData = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-
-                    // Create a Blob from the binary data
                     const blob = new Blob([fileData], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
-
-                    // Create a download link and trigger the download
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;
@@ -447,6 +459,16 @@
 
                 $("#backToMainMenu").on("click", function () {
                     window.location.href = "${pageContext.request.contextPath}/view-resident";
+                });
+
+                $("#name").on("input", function () {
+                    validateName();
+                    updateSubmitButtonState();
+                });
+
+                $("#bod").on("input", function () {
+                    validateDOB();
+                    updateSubmitButtonState();
                 });
 
                 $("#email").on("input", function () {
@@ -477,7 +499,6 @@
                     const username = $("#username").val();
                     const email = $("#email").val();
                     const usernameContainer = $("#username-container").css("display") !== "none";
-                    const emailContainer = $("#email-container").css("display") !== "none";
 
                     const phonePattern = /^\d{10}$/;
                     const cccdPattern = /^\d{12}$/;
@@ -485,6 +506,12 @@
 
                     let valid = true;
 
+                    if (!validateName()) {
+                        valid = false;
+                    }
+                    if (!validateDOB()) {
+                        valid = false;
+                    }
                     if (!phonePattern.test(phone)) {
                         $("#phone-error").text("Phone number must be exactly 10 digits.");
                         valid = false;
@@ -495,10 +522,6 @@
                     }
                     if (role === "1" && usernameContainer && !usernamePattern.test(username)) {
                         $("#username-error").text("Username must be at least 4 characters.");
-                        valid = false;
-                    }
-                    if (role === "1" && emailContainer && !email) {
-                        $("#email-error").text("Email is required for Resident role.");
                         valid = false;
                     }
 
@@ -550,7 +573,6 @@
                     exportExcelTemplate();
                 });
 
-                // Initial call to set the correct state based on default role
                 toggleRoleFields();
 
                 document.styleSheets[0].insertRule(`

@@ -38,7 +38,7 @@
                 background: #ffffff;
                 border-radius: 8px;
                 box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-                border: 2px solid blue; /* Debug: Make the container visible */
+                border: 2px solid blue;
             }
 
             .table-bordered {
@@ -56,7 +56,7 @@
                 text-align: left;
                 display: table-cell !important;
                 visibility: visible !important;
-                color: #000 !important; /* Ensure text is visible */
+                color: #000 !important;
             }
 
             .table-bordered thead {
@@ -76,7 +76,7 @@
             }
 
             #preview-table-body {
-                border: 2px solid red; /* Debug: Make the table body visible */
+                border: 2px solid red;
                 display: table-row-group !important;
                 visibility: visible !important;
             }
@@ -146,12 +146,8 @@
             }
 
             @keyframes spin {
-                0% {
-                    transform: rotate(0deg);
-                }
-                100% {
-                    transform: rotate(360deg);
-                }
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
             }
         </style>
     </head>
@@ -176,6 +172,7 @@
                                             <th>Address</th>
                                             <th>Apt</th>
                                             <th>CCCD</th>
+                                            <th>Email</th> <!-- Added Email column -->
                                         </tr>
                                     </thead>
                                     <tbody id="preview-table-body"></tbody>
@@ -238,14 +235,6 @@
 
                 data.forEach((resident, index) => {
                     console.log(`Rendering resident ${index}:`, resident);
-                    console.log("Name:", resident.name);
-                    console.log("DOB:", resident.dob);
-                    console.log("Gender:", resident.gender);
-                    console.log("Phone:", resident.phone);
-                    console.log("Address:", resident.address);
-                    console.log("Apartment:", resident.apartment);
-                    console.log("CCCD:", resident.cccd);
-
                     const $row = $("<tr></tr>");
                     $row.append($("<td></td>").text(resident.name || 'N/A'));
                     $row.append($("<td></td>").text(resident.dob || 'N/A'));
@@ -254,6 +243,7 @@
                     $row.append($("<td></td>").text(resident.address || 'N/A'));
                     $row.append($("<td></td>").text(resident.apartment || 'N/A'));
                     $row.append($("<td></td>").text(resident.cccd || 'N/A'));
+                    $row.append($("<td></td>").text(resident.email || 'N/A')); // Added email column
 
                     console.log(`Appending row ${index}:`, $row[0].outerHTML);
                     previewTableBody.append($row);
@@ -268,10 +258,9 @@
                 $("#submitMultipleBtn").on("click", function () {
                     console.log("Submitting multiple residents:", multipleResidentsData);
 
-                    // Show loading indicator and disable button
                     $("#loadingIndicator").show();
                     $("#submitMultipleBtn").prop("disabled", true);
-                    $("#backBtn").prop("disabled", true); // Optionally disable back button too
+                    $("#backBtn").prop("disabled", true);
 
                     $.ajax({
                         url: "addNewResident",
@@ -279,7 +268,6 @@
                         contentType: "application/json",
                         data: JSON.stringify({residents: multipleResidentsData}),
                         success: function (response) {
-                            // Hide loading indicator and re-enable buttons
                             $("#loadingIndicator").hide();
                             $("#submitMultipleBtn").prop("disabled", false);
                             $("#backBtn").prop("disabled", false);
@@ -292,7 +280,6 @@
                             }
                         },
                         error: function () {
-                            // Hide loading indicator and re-enable buttons on error
                             $("#loadingIndicator").hide();
                             $("#submitMultipleBtn").prop("disabled", false);
                             $("#backBtn").prop("disabled", false);
