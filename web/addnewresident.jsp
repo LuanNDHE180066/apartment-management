@@ -341,7 +341,7 @@
                         data: {type: type, value: value},
                         success: function (response) {
                             $(errorField).text(response.exists ?
-                                type.charAt(0).toUpperCase() + type.slice(1) + " already exists." : "");
+                                    type.charAt(0).toUpperCase() + type.slice(1) + " already exists." : "");
                             updateSubmitButtonState();
                         }
                     });
@@ -353,7 +353,8 @@
 
             function validateName() {
                 const name = $("#name").val();
-                const namePattern = /^[a-zA-Z\s]+$/;
+                const namePattern = /^[\p{L}\s]+$/u;
+
                 if (!namePattern.test(name)) {
                     $("#name-error").text("Tên Chỉ Bao Gồm Kí Tự Và Khoảng Trắng");
                     return false;
@@ -399,18 +400,18 @@
                     ];
 
                     const apartments = Array.from(document.querySelectorAll("#apartment option"))
-                        .filter(opt => opt.value !== "")
-                        .map(opt => opt.value);
+                            .filter(opt => opt.value !== "")
+                            .map(opt => opt.value);
 
                     const genderOptions = ["M", "F"];
 
                     const wb = XLSX.utils.book_new();
-                    const ws = XLSX.utils.json_to_sheet([{}], { header: headers });
+                    const ws = XLSX.utils.json_to_sheet([{}], {header: headers});
 
                     const range = XLSX.utils.decode_range(ws["!ref"]);
                     for (let R = range.s.r + 1; R <= range.e.r + 10; R++) {
-                        ws[XLSX.utils.encode_cell({ r: R, c: 2 })] = { t: "s", v: "" };
-                        ws[XLSX.utils.encode_cell({ r: R, c: 2 })].s = {
+                        ws[XLSX.utils.encode_cell({r: R, c: 2})] = {t: "s", v: ""};
+                        ws[XLSX.utils.encode_cell({r: R, c: 2})].s = {
                             dataValidation: {
                                 type: "list",
                                 allowBlank: true,
@@ -418,8 +419,8 @@
                             }
                         };
 
-                        ws[XLSX.utils.encode_cell({ r: R, c: 5 })] = { t: "s", v: "" };
-                        ws[XLSX.utils.encode_cell({ r: R, c: 5 })].s = {
+                        ws[XLSX.utils.encode_cell({r: R, c: 5})] = {t: "s", v: ""};
+                        ws[XLSX.utils.encode_cell({r: R, c: 5})].s = {
                             dataValidation: {
                                 type: "list",
                                 allowBlank: true,
@@ -428,12 +429,12 @@
                         };
                     }
 
-                    ws["!cols"] = headers.map(() => ({ wch: 15 }));
+                    ws["!cols"] = headers.map(() => ({wch: 15}));
 
                     XLSX.utils.book_append_sheet(wb, ws, "Residents");
 
-                    const fileData = XLSX.write(wb, { bookType: "xlsx", type: "array" });
-                    const blob = new Blob([fileData], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+                    const fileData = XLSX.write(wb, {bookType: "xlsx", type: "array"});
+                    const blob = new Blob([fileData], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"});
                     const url = window.URL.createObjectURL(blob);
                     const a = document.createElement("a");
                     a.href = url;

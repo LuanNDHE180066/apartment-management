@@ -44,6 +44,7 @@ public class UpdateResident extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        response.setContentType("text/html;charset=UTF-8");
         String id = request.getParameter("rid");
         ResidentDAO rd = new ResidentDAO();
         Resident r = rd.getById(id);
@@ -56,7 +57,7 @@ public class UpdateResident extends HttpServlet {
             throws ServletException, IOException {
 
         response.setContentType("text/html;charset=UTF-8");
-       
+
         // Retrieve form parameters from JSP
         String id = request.getParameter("rid");
         String name = request.getParameter("name");
@@ -118,7 +119,7 @@ public class UpdateResident extends HttpServlet {
             resident.setCccd(cccd != null ? cccd.trim() : null);
             resident.setPhone(phone);
             boolean success = rd.updateRE(resident);
-            if(success){
+            if (success) {
                 request.setAttribute("success", "Update Successfull");
                 request.setAttribute("resident", rd.getById(id));
                 request.getRequestDispatcher("updateRE.jsp").forward(request, response);

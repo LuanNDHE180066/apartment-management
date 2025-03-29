@@ -1,9 +1,21 @@
-<!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
 <html lang="en">
     <head>
-        <!-- [Previous head content unchanged] -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- site metas -->
+        <title>sửa</title>
+        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <!-- bootstrap css -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <!-- custom css -->
         <style>
             .form-container {
                 max-width: 900px;
@@ -131,29 +143,29 @@
                     <div class="midde_cont">
                         <div class="container-fluid">
                             <div class="form-container">
-                                <h1 style="font-weight: bold">Thay ??i Th�ng Tin Ng??i D�n</h1>
+                                <h1 style="font-weight: bold">Thay Đổi Thông Tin Người Dân</h1>
                                 <form action="updateRE" method="post">
                                     <div class="form-group">
                                         <input type="hidden" name="rid" value="${resident.pId}">
                                         <div class="three-cols">
                                             <div class="col">
-                                                <label for="name">T�n</label>
+                                                <label for="name">Tên</label>
                                                 <input type="text" id="name" name="name" placeholder="Enter full name" required value="${resident.name}"/>
                                                 <span id="name-error" class="error-message"></span>
                                             </div>
                                             <div class="col">
-                                                <label for="bod">Ng�y Sinh</label>
+                                                <label for="bod">Ngày Sinh</label>
                                                 <input type="date" id="bod" name="bod" required value="${resident.bod}" />
                                                 <span id="dob-error" class="error-message"></span>
                                             </div>
                                             <div class="col">
-                                                <label>Gi?i T�nh</label>
+                                                <label>GiỚi Tính</label>
                                                 <div class="gender-options">
                                                     <label for="male">
                                                         <input type="radio" id="male" name="gender" value="M" required ${resident.gender == 'M' ? 'checked' : ''} /> Nam
                                                     </label>
                                                     <label for="female">
-                                                        <input type="radio" id="female" name="gender" value="F" required ${resident.gender == 'F' ? 'checked' : ''} /> N?
+                                                        <input type="radio" id="female" name="gender" value="F" required ${resident.gender == 'F' ? 'checked' : ''} /> Nữ
                                                     </label>
                                                 </div>
                                             </div>
@@ -161,14 +173,14 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="address">??a Ch?</label>
+                                        <label for="address">Địa Chỉ</label>
                                         <input type="text" id="address" name="address" placeholder="Enter address" required value="${resident.address}" />
                                     </div>
 
                                     <div class="form-group">
                                         <div class="two-cols">
                                             <div class="col">
-                                                <label for="id">C?n C??c C�ng D�n</label>
+                                                <label for="id">Căn Cước Công Dân</label>
                                                 <input type="number" id="id" name="id" placeholder="Enter ID" value="${resident.cccd}" />
                                                 <span id="id-error" class="error-message"></span>
                                             </div>
@@ -178,7 +190,7 @@
                                     <div class="form-group">
                                         <div class="two-cols">
                                             <div class="col">
-                                                <label for="phone">S? ?i?n Tho?i</label>
+                                                <label for="phone">Số Điện Thoại</label>
                                                 <input type="tel" id="phone" name="phone" placeholder="Enter phone number" value="${resident.phone}" required />
                                                 <span id="phone-error" class="error-message"></span>
                                             </div>
@@ -187,7 +199,7 @@
                                     <div class="form-button">
                                         <span class="error-message">${error}</span>
                                         <span class="success-message">${success}</span>
-                                        <button type="submit">L?u Thay ??i</button>
+                                        <button type="submit">Lưu Thay Đổi</button>
                                     </div>
                                 </form>
                             </div>
@@ -205,7 +217,8 @@
         <script>
             function validateName() {
                 const name = $("#name").val();
-                const namePattern = /^[a-zA-Z\s]+$/;
+                const namePattern = /^[\p{L}\s]+$/u;
+
                 if (!namePattern.test(name)) {
                     $("#name-error").text("Name must contain only letters and spaces.");
                     return false;
