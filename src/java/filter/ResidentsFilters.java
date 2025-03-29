@@ -25,11 +25,11 @@ import model.Account;
  *
  * @author quang
  */
-@WebFilter(filterName = "ResidentsFilters", urlPatterns = {"/registerNewLivingOrOwnerResident.jsp, "
-    + "/register-new-living-or-owner-resident",
+@WebFilter(filterName = "ResidentsFilters", urlPatterns = {
+    "/registerNewLivingOrOwnerResident.jsp",
+    "/register-new-living-or-owner-resident",
     "/changeRepresentResident.jsp",
     "/change-represent-resident"
-
 })
 public class ResidentsFilters implements Filter {
 
@@ -126,7 +126,7 @@ public class ResidentsFilters implements Filter {
             return;
         }
 
-        if (a.getRoleId() != 1 || a.getRoleId() != 6) {
+        if (a.getRoleId() != 1) {
             res.sendRedirect("404_error.jsp");
         }
 
