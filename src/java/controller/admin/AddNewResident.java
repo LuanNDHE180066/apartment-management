@@ -91,7 +91,7 @@ public class AddNewResident extends HttpServlet {
             }
 
             // Validate name (only letters and spaces allowed)
-            if (!name.matches("^[a-zA-Z\\s]+$")) {
+            if (!name.matches("^[\\p{L}\\s]+$")) {
                 request.setAttribute("error", "Name must contain only letters and spaces.");
                 forwardToForm(request, response);
                 return;
@@ -265,7 +265,7 @@ public class AddNewResident extends HttpServlet {
                 }
 
                 // Validate name (only letters and spaces allowed)
-                if (name != null && !name.matches("^[a-zA-Z\\s]+$")) {
+                if (name != null && !name.matches("^[\\p{L}\\s]+$")) {
                     errors.add("Row " + rowNum + ": Name must contain only letters and spaces.");
                 }
 
