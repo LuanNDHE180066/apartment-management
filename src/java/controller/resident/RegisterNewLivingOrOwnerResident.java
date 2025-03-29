@@ -206,7 +206,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
 
             Resident reGetByCCCD = reDAO.getResidentById(id);
             if (reGetByCCCD != null && reDAO.checkDuplicateEmail(email, reGetByCCCD.getpId())) {
-                request.setAttribute("message", "Email is existed..");
+                request.setAttribute("message", "Email đã tồn tại.");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
