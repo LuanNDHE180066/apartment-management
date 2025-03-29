@@ -100,11 +100,9 @@ public class AccountDAO extends DBContext {
     public List<Account> getAllAccount() {
         ResidentDAO daoR = new ResidentDAO();
         StaffDAO daoS = new StaffDAO();
-
         List<Account> list = new ArrayList<>();
         list.addAll(daoR.getAllResidentAccount());
         list.addAll(daoS.getAllStaffAccount());
-
         return list;
     }
 
@@ -124,6 +122,25 @@ public class AccountDAO extends DBContext {
             if (a.getUsername().equals(username)) {
                 return a;
             }
+        }
+        String sql_resident = "select username, password, email, id, roleId from Resident where active = 1 and [username]='"+username+"'";
+        String sql_staff = "select username, password, email, id,roleId from Staff where status = 1 and [username]='"+username+"'";
+        try {
+            PreparedStatement ps_resident = connection.prepareStatement(sql_resident);
+            ResultSet rs_resident = ps_resident.executeQuery();
+            while(rs_resident.next()){
+                return new Account(rs_resident.getString(1), rs_resident.getString(2), rs_resident.getString(3), rs_resident.getString(4), rs_resident.getInt(5));
+            }
+            ps_resident.close();
+            PreparedStatement ps_staff = connection.prepareStatement(sql_staff);
+            ResultSet rs_staff = ps_staff.executeQuery();
+            while(rs_staff.next()){
+                return new Account(rs_staff.getString(1), rs_staff.getString(2), rs_staff.getString(3), rs_staff.getString(4), rs_staff.getInt(5));
+            }
+            ps_staff.close();
+        } catch (SQLException ex) {
+            Logger.getLogger(ResidentDAO.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
         return null;
     }
@@ -214,11 +231,15 @@ public class AccountDAO extends DBContext {
 //            System.out.println(""+string);
 //        }
         //System.out.println(dao.getAccountByUsernameandRole("alice", 1).getRoleId());
-        List<String> sts = dao.getNotificationsByRoleAndPid(4, "S1006");
-        for (String st : sts) {
-            System.out.println(""+st);
-            Util util = new Util();
-            System.out.println(""+util.getSiteViewByNofication(st));
+//        List<String> sts = dao.getNotificationsByRoleAndPid(4, "S1006");
+//        for (String st : sts) {
+//            System.out.println(""+st);
+//            Util util = new Util();
+//            System.out.println(""+util.getSiteViewByNofication(st));
+//        }
+        List<Account> list = dao.getAllAccount();
+        for (Account account : list) {
+            System.out.println(""+account.getUsername());
         }
     }
 

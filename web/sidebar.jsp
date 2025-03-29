@@ -106,7 +106,7 @@
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}"><a href="view-request-type"><i class="fa-solid fa-repeat"></i> <span>Loại yêu cầu</span></a></li>
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 3) ? 'display-none':''}"><a href="${ut.getSiteToViewRequest(sessionScope.account.roleId)}"><i class="fa-solid fa-repeat"></i> <span>Yêu cầu từ dân cư</span></a></li>
                     <li class=""><a href="view-all-feedback"><i class="fa-solid fa-comment"></i><span>Đánh giá chung</span></a></li>
-                    <li><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Quy tắc trung cư</span></a></li>
+                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2|| sessionScope.account.roleId == 1|| sessionScope.account.roleId == 6) ? 'display-none':''}"><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Quy tắc trung cư</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-categoryservice-staff"><i class="fas fa-cube"></i><span>Loại dịch vụ</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-roomtype"><i class="fa-solid fa-house-flag"></i><span>Loại phòng</span></a></li>
                     <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6 ? 'display-none':''}"><a href="view-all-resident-apartment"><i class="fa-solid fa-house-flag"></i><span>Căn hộ của tôi</span></a></li>
