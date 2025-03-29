@@ -43,6 +43,8 @@
                 text-align: center;
                 vertical-align: middle;
                 padding: 12px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
             }
 
             .table thead {
@@ -93,7 +95,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Tables</h2>
+                                        <h2>Dịch vụ</h2>
                                     </div>
                                 </div>
                             </div>
@@ -101,7 +103,7 @@
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
-                                            <h2>Services Information</h2>
+                                            <h2>Thông tin dịch vụ</h2>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="all-services" method="post">
@@ -187,6 +189,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="footer" style="background: white; color: white; text-align: center; padding: 10px;">
+            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
         </div>
         <!-- jQuery & Bootstrap -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

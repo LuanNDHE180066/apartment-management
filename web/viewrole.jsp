@@ -42,6 +42,10 @@
             #table-infor th, #table-infor td {
                 text-align: center;
             }
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
         </style>
     </head>
     <body class="inner_page tables_page">
