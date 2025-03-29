@@ -1,4 +1,5 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -101,28 +102,24 @@
                                     <form action="update-password-resident" method="post">
                                         <c:if test="${sessionScope.account.getActive() != 2}">
                                             <div class="form-group">
-                                                <label for="oldPassword">Old Password:</label>
+                                                <label for="oldPassword">Mật khẩu cũ:</label>
                                                 <input type="password" id="oldPassword" name="oldPassword" required />
                                             </div>
                                         </c:if>
                                         <div class="form-group">
-                                            <label for="newPassword">New Password:</label>
+                                            <label for="newPassword">Mật khẩu mới:</label>
                                             <input type="password" id="newPassword" name="newPassword" required oninput="checkPasswordStrength()" />
-                                            <p id="passwordError" class="password-error" style="display:none; color: red;">
-                                                Password must be at least 6 characters, contain at least 1 uppercase letter, 1 letter, 1 number, and 1 special character.
+                                            <p id="passwordError" class="password-error">
+                                                Mật khẩu phải có ít nhất 6 ký tự, bao gồm ít nhất 1 chữ hoa, 1 chữ thường, 1 số và 1 ký tự đặc biệt.
                                             </p>
                                         </div>
-
                                         <div class="form-group">
-                                            <label for="cfnewPassword">Confirm Password:</label>
+                                            <label for="cfnewPassword">Xác nhận mật khẩu:</label>
                                             <input type="password" id="cfnewPassword" name="cfnewPassword" required oninput="checkPasswordMatch()" />
-                                            <p id="confirmError" class="password-error" style="display:none; color: red;">
-                                                Passwords do not match.
-                                            </p>
+                                            <p id="confirmError" class="password-error">Mật khẩu không khớp.</p>
                                         </div>
-
                                         <div class="form-button">
-                                            <button type="submit" id="saveButton" disabled>Save</button>
+                                            <button type="submit" id="saveButton" disabled>Lưu</button>
                                             <c:if test="${not empty sessionScope.errorMessage}">
                                                 <h5 class="error-msg">${sessionScope.errorMessage}</h5>
                                                 <% session.removeAttribute("errorMessage"); %>
@@ -146,22 +143,8 @@
             function checkPasswordStrength() {
                 let password = document.getElementById("newPassword").value;
                 let passwordError = document.getElementById("passwordError");
-                let saveButton = document.getElementById("saveButton");
-
-                // Updated regex based on Java method
-                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>?/\\|`~]{6,}$/;
-
-                // Check if password meets the format requirements
-                let isPasswordValid = passwordRegex.test(password);
-
-                // Show or hide the error message based on validity
-                if (password && !isPasswordValid) {
-                    passwordError.style.display = "block";
-                } else {
-                    passwordError.style.display = "none";
-                }
-
-                // Update Save button state
+                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
+                passwordError.style.display = password && !passwordRegex.test(password) ? "block" : "none";
                 updateSaveButtonState();
             }
 
@@ -169,19 +152,7 @@
                 let password = document.getElementById("newPassword").value;
                 let confirmPassword = document.getElementById("cfnewPassword").value;
                 let confirmError = document.getElementById("confirmError");
-                let saveButton = document.getElementById("saveButton");
-
-                // Check if confirm password matches new password
-                let isMatch = password === confirmPassword && confirmPassword !== "";
-
-                // Show or hide the error message based on match
-                if (confirmPassword && !isMatch) {
-                    confirmError.style.display = "block";
-                } else {
-                    confirmError.style.display = "none";
-                }
-
-                // Update Save button state
+                confirmError.style.display = confirmPassword && password !== confirmPassword ? "block" : "none";
                 updateSaveButtonState();
             }
 
@@ -189,20 +160,9 @@
                 let password = document.getElementById("newPassword").value;
                 let confirmPassword = document.getElementById("cfnewPassword").value;
                 let saveButton = document.getElementById("saveButton");
-
-                // Regex for password validation
-                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9])[A-Za-z\d!@#$%^&*()_+\-=\[\]{};:'",.<>?/\\|`~]{6,}$/;
-                let isPasswordValid = passwordRegex.test(password);
-                let isMatch = password === confirmPassword && confirmPassword !== "";
-
-                // Enable Save button only if both conditions are met
-                saveButton.disabled = !(isPasswordValid && isMatch);
+                let passwordRegex = /^(?=.*\d)(?=.*[A-Z])(?=.*[a-zA-Z])(?=.*[^a-zA-Z0-9]).{6,}$/;
+                saveButton.disabled = !(passwordRegex.test(password) && password === confirmPassword);
             }
-
-            // Ensure initial state on page load
-            window.onload = function () {
-                updateSaveButtonState();
-            };
         </script>
     </body>
 </html>

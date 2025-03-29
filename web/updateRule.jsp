@@ -3,7 +3,7 @@
     Created on : Jan 23, 2025, 2:23:52 PM
     Author     : PC
 --%>
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <jsp:useBean id="today" class="java.util.Date" />
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
@@ -128,23 +128,23 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Update Rule</h1>
+                                    <h1>Sửa Luật Chung Cư</h1>
                                     <form action="update-rule" method="post">
                                         <input type="hidden" id="id" name="id" value="${rule.id}" />
 
                                         <div class="form-group">
-                                            <label for="title">Title</label>
+                                            <label for="title">Tiêu Đề</label>
                                             <input type="text" id="title" name="title" value="${rule.title}" required />
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="description">Description</label>
+                                            <label for="description">Chi Tiết</label>
                                             <input type="text" id="description" name="description" value="${rule.description}" required />
                                         </div>
 
                                         <c:if test="${rule.status == 'Inactive'}">
                                             <div class="form-group">
-                                                <label for="effectiveDate">Effective Date</label>
+                                                <label for="effectiveDate">Ngày Hiệu Lưc</label>
                                                 <input type="date" id="effectiveDate" name="effectiveDate" value="${rule.effectiveDate}" required />
                                             </div>
                                         </c:if>
@@ -158,16 +158,16 @@
                                         <%-- Show status field only if rule is Active AND effectiveDate is null/empty or >= today --%>
                                         <c:if test="${ rule.effectiveDate le todayStr}">
                                             <div class="form-group">
-                                                <label for="status">Status</label>
+                                                <label for="status">Tình Trạng</label>
                                                 <select id="status" name="status">
-                                                    <option value="Active" ${rule.status == 'Active' ? 'selected' : ''}>Active</option>
-                                                    <option value="Inactive" ${rule.status == 'Inactive' ? 'selected' : ''}>Inactive</option>
+                                                    <option value="Active" ${rule.status == 'Active' ? 'selected' : ''}>Đang Áp Dụng</option>
+                                                    <option value="Inactive" ${rule.status == 'Inactive' ? 'selected' : ''}>Đã Ngừng</option>
                                                 </select>
                                             </div>
                                         </c:if>
 
                                         <div class="form-button">
-                                            <button type="submit">Update Rule</button>
+                                            <button type="submit">Sửa</button>
                                             <h5 style="color:${requestScope.status == 'true' ? 'green' : 'red'}; text-align:center">
                                                 ${requestScope.message}
                                             </h5>

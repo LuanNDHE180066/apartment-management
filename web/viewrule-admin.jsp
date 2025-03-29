@@ -94,7 +94,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Rule Information</h2>
+                                                <h2>N?i Quy Chung C?</h2>
                                             </div>
                                         </div>
 
@@ -103,27 +103,27 @@
                                             <form action="view-rule-admin" method="post" class="row align-items-center">
                                                 <!-- Search by Description -->
                                                 <div class="col-md-3">
-                                                    <label for="searchDescription" style="font-weight: bold">Search Title</label>
+                                                    <label for="searchDescription" style="font-weight: bold">Tìm Ki?m B?ng Tên</label>
                                                     <input type="text" id="searchDescription" name="title" class="form-control" placeholder="Enter description" value="${sessionScope.title}">
                                                 </div>
 
                                                 <!-- Filter by Effective Date -->
                                                 <div class="col-md-3">
-                                                    <label for="dateFilter" style="font-weight: bold">Filter by Effective Date</label>
+                                                    <label for="dateFilter" style="font-weight: bold">Tìm Ki?m B?ng Ngày Hi?u L?c</label>
                                                     <select id="dateFilter" class="form-control" name="date">
-                                                        <option value="">Select</option>
-                                                        <option value="1" <c:if test="${sessionScope.date ==1}">selected="" </c:if>>1 Day Ago</option>
-                                                        <option value="7" <c:if test="${sessionScope.date ==7}">selected="" </c:if>>7 Days Ago</option>
-                                                        <option value="15" <c:if test="${sessionScope.date ==15}">selected="" </c:if>>15 Days Ago</option>
-                                                        <option value="30" <c:if test="${sessionScope.date ==30}">selected="" </c:if>>1 Month Ago</option>
-                                                        <option value="180" <c:if test="${sessionScope.date ==180}">selected="" </c:if>>6 Months Ago</option>
-                                                        <option value="365" <c:if test="${sessionScope.date ==365}">selected="" </c:if>>1 Year Ago</option>
+                                                        <option value="">Ch?n</option>
+                                                        <option value="1" <c:if test="${sessionScope.date ==1}">selected="" </c:if>>1 Ngày Tr??c</option>
+                                                        <option value="7" <c:if test="${sessionScope.date ==7}">selected="" </c:if>>7 Ngày Tr??c</option>
+                                                        <option value="15" <c:if test="${sessionScope.date ==15}">selected="" </c:if>>15 Ngày Tr??c</option>
+                                                        <option value="30" <c:if test="${sessionScope.date ==30}">selected="" </c:if>>1 Tháng Tr??c</option>
+                                                        <option value="180" <c:if test="${sessionScope.date ==180}">selected="" </c:if>>6 Tháng Tr??c</option>
+                                                        <option value="365" <c:if test="${sessionScope.date ==365}">selected="" </c:if>>1 N?m Tr??c</option>
                                                         </select>
                                                     </div>
                                                     <!-- Search Button -->
                                                     <div class="col-md-3 mt-4">
-                                                        <button type="submit" class="btn btn-primary">Search</button>
-                                                        <a href="add-new-rule" class="btn btn-primary">Add New Rule</a>
+                                                        <button type="submit" class="btn btn-primary">Tìm Ki?m</button>
+                                                        <a href="add-new-rule" class="btn btn-primary">Thêm M?i</a>
                                                     </div>
                                                 </form>
                                             </div>
@@ -135,14 +135,13 @@
                                                         <thead>
                                                             <tr>
                                                                 <th>ID</th>
-                                                                <th>Title</th>
-                                                                <th>Description</th>
-                                                                <th>Created Date</th>
-                                                                <th>Effective Date</th>
-                                                                <th>Status</th>
-                                                                <th>Created By</th>
-                                                                <th>Edit</th>
-                                                                <th>Delete</th>
+                                                                <th>Tiêu ??</th>
+                                                                <th>N?i D?ng</th>
+                                                                <th>Ngày T?o</th>
+                                                                <th>Ngày Hi?u L?c</th>
+                                                                <th>Tình Tr?ng</th>
+                                                                <th>Ng??i T?o</th>
+                                                                <th>Xóa</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -165,7 +164,7 @@
                                                 </table>
                                                 <div class="pagination">
                                                     <c:if test="${currentPage > 1}">
-                                                        <a href="view-rule-admin?page=${currentPage - 1}" class="btn btn-sm btn-primary text-white">Previous</a>
+                                                        <a href="view-rule-admin?page=${currentPage - 1}" class="btn btn-sm btn-primary text-white">Tr??c</a>
                                                     </c:if>
 
                                                     <c:forEach begin="1" end="${totalPages}" var="i">
@@ -173,7 +172,7 @@
                                                     </c:forEach>
 
                                                     <c:if test="${currentPage < totalPages}">
-                                                        <a href="view-rule-admin?page=${currentPage + 1}" class="btn btn-sm btn-primary text-white">Next</a>
+                                                        <a href="view-rule-admin?page=${currentPage + 1}" class="btn btn-sm btn-primary text-white">Sau</a>
                                                     </c:if>
                                                 </div>
 
