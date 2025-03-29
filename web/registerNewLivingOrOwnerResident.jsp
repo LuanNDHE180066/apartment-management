@@ -188,17 +188,19 @@
                                     <label for="resident-type">Đổi chủ/Thêm người ở</label>
                                     <select id="resident-type" name="residentType" onchange="toggleUsernameFields()">
                                         <option value="living">Thêm người ở</option>
-                                        <option value="owner">Đỏi chủ</option>
+                                        <option value="owner">Đổi chủ</option>
                                     </select>
                                 </div>
 
                                 <div class="form-group">
                                     <div class="gender-options">
-                                        <label>Cư dân mới đã có tài khoản?</label>
+                                        <label>Cư dân mới đã có tài khoản/ID?</label>
+                                        
                                         <label for="owner-exists">
                                             <input type="checkbox" id="owner-exists" name="residentExists" onclick="toggleOwnerFields()" />
                                             Có
                                         </label>
+                                        <div style="font-style: italic"> (Đổi chủ yêu cầu có tài khoản/ Thêm mới người ở cần có ID)</div>
                                     </div>
                                 </div>
 
