@@ -5,6 +5,10 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -132,83 +136,83 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Update Company</h1>
+                                    <h1>Cập nhật công ty</h1>
                                     <form action="update-company" method="post">
                                         <input type="text" id="id" name="id" value="${requestScope.company.id}" hidden=""/>
                                         <div class="form-group">
-                                            <label for="name">Name</label>
-                                            <input type="text" id="name" name="name" value="${requestScope.company.name}" placeholder="Enter full name" required />
+                                            <label for="name">Tên</label>
+                                            <input type="text" id="name" name="name" value="${requestScope.company.name}" placeholder="Nhập tên" required />
                                             <p class="error-message">${requestScope.nameError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="phone">Phone</label>
-                                            <input type="tel" id="phone" name="phone" value="${requestScope.company.phone}" placeholder="Enter phone number" required />
+                                            <label for="phone">Số tư vấn khách hàng</label>
+                                            <input type="tel" id="phone" name="phone" value="${requestScope.company.phone}" placeholder="Nhập số tư vấn" required />
                                             <p class="error-message">${requestScope.phoneError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="contactPhone">Contact Phone</label>
-                                            <input type="tel" id="contactPhone" name="contactPhone" value="${requestScope.company.contactPhone}" placeholder="Enter contact phone number" required />
+                                            <label for="contactPhone">Số liên lạc</label>
+                                            <input type="tel" id="contactPhone" name="contactPhone" value="${requestScope.company.contactPhone}" placeholder="Nhập số liên lạc" required />
                                             <p class="error-message">${requestScope.contactPhoneError}</p>
                                         </div>
                                         <div class="form-group">
-                                            <label for="website">Web site</label>
-                                            <input type="text" id="website" name="website" value="${requestScope.company.website}" placeholder="Enter website" required />
+                                            <label for="website">Website</label>
+                                            <input type="text" id="website" name="website" value="${requestScope.company.website}" placeholder="Nhập website" required />
                                             <p class="error-message">${requestScope.websiteError}</p>
                                         </div>
                                         <div class="form-group">
-                                            <label for="fax">Fax</label>
-                                            <input type="text" id="fax" name="fax" value="${requestScope.company.fax}" placeholder="Enter fax number" required />
+                                            <label for="fax">Số fax</label>
+                                            <input type="text" id="fax" name="fax" value="${requestScope.company.fax}" placeholder="Nhập số fax" required />
                                             <p class="error-message">${requestScope.faxError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="email">Email</label>
-                                            <input type="email" id="email" name="email" value="${requestScope.company.email}" placeholder="Enter email" required />
+                                            <label for="email">Email tư vấn</label>
+                                            <input type="email" id="email" name="email" value="${requestScope.company.email}" placeholder="Nhập email" required />
                                             <p class="error-message">${requestScope.emailError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="contactemail">Contact Email</label>
-                                            <input type="email" id="contactemail" name="contactemail" value="${requestScope.company.contactemail}" placeholder="Enter contact email" required />
+                                            <label for="contactemail">Email liên hệ</label>
+                                            <input type="email" id="contactemail" name="contactemail" value="${requestScope.company.contactemail}" placeholder="Nhập email" required />
                                             <p class="error-message">${requestScope.contactEmailError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="taxCode">Tax Code</label>
-                                            <input type="text" id="taxCode" name="taxCode" value="${requestScope.company.taxCode}" placeholder="Enter tax code" required />
+                                            <label for="taxCode">MÃ số thuế</label>
+                                            <input type="text" id="taxCode" name="taxCode" value="${requestScope.company.taxCode}" placeholder="Nhập mã số thuế" required />
                                             <p class="error-message">${requestScope.taxCodeError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="bank">Bank</label>
-                                            <input type="text" id="bank" name="bank" value="${requestScope.company.bank}" placeholder="Enter bank name" required />
+                                            <label for="bank">Ngân hàng</label>
+                                            <input type="text" id="bank" name="bank" value="${requestScope.company.bank}" placeholder="Nhập ngân hàng" required />
                                             <p class="error-message">${requestScope.bankError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="address">Address</label>
-                                            <input type="text" id="address" name="address" value="${requestScope.company.address}" placeholder="Enter address" required />
+                                            <label for="address">Địa chỉ</label>
+                                            <input type="text" id="address" name="address" value="${requestScope.company.address}" placeholder="Nhập địa chỉ" required />
                                             <p class="error-message">${requestScope.addressError}</p>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="description">Description</label>
-                                            <input type="text" id="description" name="description" value="${requestScope.company.description}"  placeholder="Enter description" required="" />
+                                            <label for="description">Mô tả</label>
+                                            <input type="text" id="description" name="description" value="${requestScope.company.description}"  placeholder="Nhập mô tả" required="" />
                                         </div>
                                         <div class="form-group" >
-                                                    <label for="status">Status</label>
+                                                    <label for="status">Trạng thái</label>
                                                     <select id="status" name="status">
-                                                        <option value="1" ${requestScope.company.status == '1' ? 'selected' : ''}>Active</option>
-                                                        <option value="0" ${requestScope.company.status == '0' ? 'selected' : ''}>Inactive</option>
+                                                        <option value="1" ${requestScope.company.status == '1' ? 'selected' : ''}>Hoạt động</option>
+                                                        <option value="0" ${requestScope.company.status == '0' ? 'selected' : ''}>Không hoạt động</option>
                                                     </select>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Save Company</button>
+                                            <button type="submit">Lưu</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
-                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-company">Back</a></span>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-company">Trở lại</a></span>
                                         </div>
                                     </form>
 

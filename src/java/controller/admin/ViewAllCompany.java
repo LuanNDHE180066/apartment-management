@@ -76,7 +76,7 @@ public class ViewAllCompany extends HttpServlet {
         }
 
         if (list.isEmpty()) {
-            request.setAttribute("message", "No results found.");
+            request.setAttribute("message", "Không tìm thấy");
             request.setAttribute("totalPage", 1);
             request.setAttribute("currentPage", 1);
             request.setAttribute("companies", list);

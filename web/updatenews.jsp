@@ -5,6 +5,10 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -128,12 +132,12 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Update News</h1>
+                                    <h1>Cập nhật tin tức</h1>
                                     <form action="update-news" method="post" enctype="multipart/form-data">
                                         <input type="text" name="id" value="${param.id != null?param.id:requestScope.id}" hidden="" ><!-- comment -->
                                         <div class="form-group">
-                                            <label for="title">Title</label>
-                                            <input value="${requestScope.news.title}" type="text" id="title" name="title" placeholder="Enter new title" required />
+                                            <label for="title">Tiêu đề</label>
+                                            <input value="${requestScope.news.title}" type="text" id="title" name="title" placeholder="Nhập tiêu đề" required />
                                             <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
                                         <!--                                        <div class="form-group">
@@ -142,8 +146,8 @@
                                                                                     <span style="color: red">${requestScope.contenterror}</span>
                                                                                 </div>-->
                                         <div class="form-group">
-                                            <label for="content">Content</label>
-                                            <div id="toolbar-container"></div> <!-- Thanh c�ng c? CKEditor -->
+                                            <label for="content">Nội dung</label>
+                                            <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
                                             <div id="editor">${requestScope.news != null ? requestScope.news.content : ""}</div> 
 
                                             <!-- Input ?n ?? l?u n?i dung khi submit -->
@@ -152,25 +156,25 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="date">Date</label>
+                                            <label for="date">Ngày đăng</label>
                                             <input value="${requestScope.news.date}" type="date" id="date" name="date" required />
                                             <span  style="color: red">${requestScope.dateError}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="source">Source</label>
-                                            <input value="${requestScope.news.source}" type="text" id="source" name="source" placeholder="Enter source" required />
+                                            <label for="source">Nguồn</label>
+                                            <input value="${requestScope.news.source}" type="text" id="source" name="source" placeholder="Nhập nguồn" required />
                                             <span style="color: red">${requestScope.sourceerror}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="category">Category</label>
+                                            <label for="category">Loại tin</label>
                                             <select id="category" name="category" required>
                                                 <c:set var="selectedCategory" value="${not empty requestScope.news ? requestScope.news.category : ''}"/>
 
-                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Apartment News</option>
-                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Events</option>
-                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Maintenance Updates</option>
-                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Community Announcements</option>
-                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>General Notices</option>
+                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Tin tức tòa nhà</option>
+                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Sự kiện</option>
+                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Bảo trì</option>
+                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Thông báo cộng đồng</option>
+                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>Thông báo chung</option>
                                             </select>
                                         </div>
 
@@ -182,7 +186,7 @@
                                                                                     <span style="color: red">${requestScope.fileerror}</span>
                                                                                 </div>-->
                                         <div class="form-group">
-                                            <label for="auther">Author</label>
+                                            <label for="auther">Người viết</label>
                                             <select id="auther" name="auther" required>
                                                 <c:forEach items="${sessionScope.staffs}" var="staff">
                                                     <option disabled="" ${requestScope.news.staff.id == staff.id?'selected':''} value="${staff.id}">${staff.name}</option>    
@@ -190,9 +194,9 @@
                                             </select>   
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Update News</button>
+                                            <button type="submit">Cập nhật</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
-                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-news">Back</a></span>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-news">Trở lại</a></span>
                                         </div>
                                     </form>
                                 </div>
@@ -219,7 +223,7 @@
                     return this.loader.file
                             .then(file => new Promise((resolve, reject) => {
                                     const formData = new FormData();
-                                    formData.append('upload', file); // Tr�ng v?i request.getPart("upload") trong Servlet
+                                    formData.append('upload', file); // Trùng v?i request.getPart("upload") trong Servlet
 
                                     fetch('http://localhost:8080/apartment-management/upload-img-news', {// URL servlet upload
                                         method: 'POST',
@@ -227,7 +231,7 @@
                                     })
                                             .then(response => {
                                                 if (!response.ok) {
-                                                    throw new Error(`L?i HTTP! M� tr?ng th�i: ${response.status}`);
+                                                    throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
                                                 }
                                                 return response.json();
                                             })
@@ -241,13 +245,13 @@
                                             })
                                             .catch(error => {
                                                 console.error('L?i upload ?nh:', error);
-                                                reject('Kh�ng th? upload ?nh!');
+                                                reject('Không th? upload ?nh!');
                                             });
                                 }));
                 }
             }
 
-// G�n plugin upload ?nh v�o CKEditor
+// Gán plugin upload ?nh vào CKEditor
             function MyCustomUploadAdapterPlugin(editor) {
                 editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
                     return new MyUploadAdapter(loader);
@@ -263,10 +267,10 @@
                         const toolbarContainer = document.querySelector("#toolbar-container");
                         toolbarContainer.appendChild(editor.ui.view.toolbar.element);
 
-                        // Load n?i dung t? requestScope v�o CKEditor
+                        // Load n?i dung t? requestScope vào CKEditor
                         editor.setData(document.querySelector("#editor").innerHTML);
 
-                        // Khi submit form, l?y n?i dung t? CKEditor v� g�n v�o input ?n
+                        // Khi submit form, l?y n?i dung t? CKEditor và gán vào input ?n
                         document.querySelector("form").addEventListener("submit", function () {
                             document.querySelector("#hiddenContent").value = editor.getData();
                         });

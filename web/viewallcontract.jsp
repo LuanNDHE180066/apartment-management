@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -67,7 +71,7 @@
                 margin-right: 8px;
             }
             h4 {
-                margin-bottom: 20px; /* T?ng kho?ng c�ch */
+                margin-bottom: 20px; /* T?ng kho?ng cách */
             }
 
         </style>
@@ -83,7 +87,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Contract List</h2>
+                                        <h2>Hợp đồng</h2>
                                     </div>
                                 </div>
                             </div>
@@ -92,7 +96,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Recently Contracts</h2>
+                                                <h2>Hợp đồng mới</h2>
                                             </div>
                                             <br> <hr>
                                             <div>
@@ -101,7 +105,7 @@
                                                         <div class="col-md-8">
                                                             <div class="row align-items-center">
                                                                 <div class="col-md-3">
-                                                                    <input type="text" class="form-control" name="title" placeholder="Enter title"
+                                                                    <input type="text" class="form-control" name="title" placeholder="Nhập tiêu đề"
                                                                            value="${requestScope.title}">
                                                                 </div>
                                                                 <div class="col-md-3">
@@ -115,13 +119,13 @@
                                                                 <div class="col-md-3 d-flex">
                                                                     
 
-                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
+                                                                    <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
                                                                     <c:if test="${sessionScope.account.roleId == 3}">
-                                                                        <a href="add-new-contract" class="btn btn-primary">Add Contract</a>
+                                                                        <a href="add-new-contract" class="btn btn-primary">Thêm</a>
                                                                     </c:if>
                                                                         <c:if test="${sessionScope.account.roleId == 0}">
                                                                         <span class="btn btn-primary" style="display: inline-block; margin-left:10px">
-                                                                            <a style="color: white; text-decoration: none;" href="pending-contract">View pending contract list</a>
+                                                                            <a style="color: white; text-decoration: none;" href="pending-contract">Hợp đồng chờ duyệt</a>
                                                                         </span>
                                                                     </c:if>
                                                                 </div>
@@ -158,7 +162,7 @@
                         <input type="hidden" name="startDate" value="${requestScope.startDate}">
                         <input type="hidden" name="endDate" value="${requestScope.endDate}">
 
-                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
                         <select id="page" name="page" onchange="this.form.submit()"
                                 style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="page">
@@ -172,7 +176,7 @@
 
                     <div class="container-fluid">
                         <div class="footer">
-                            <p>Copyright � 2025 Designed by Your Company. All rights reserved.</p>
+                            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                         </div>
                     </div>
                 </div>

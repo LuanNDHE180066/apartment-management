@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -42,7 +45,8 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
-        <style> body {
+        <style>
+            body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f9;
                 margin: 0;
@@ -126,28 +130,28 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add New Contract</h1>
+                                    <h1>Thêm hợp đồng</h1>
                                     <form action="add-new-contract" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="title">Title</label>
-                                            <input type="text" id="title" name="title" value="${param.title}" placeholder="Enter contract title" required />
+                                            <label for="title">Tiêu đề</label>
+                                            <input type="text" id="title" name="title" value="${param.title}" placeholder="Nhập tiêu đề" required />
                                             <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="description">Description</label>
-                                            <input type="text" id="description" name="description" value="${param.description}" placeholder="Enter description" required />
+                                            <label for="description">Mô tả</label>
+                                            <input type="text" id="description" name="description" value="${param.description}" placeholder="Nhập mô tả" required />
                                             <span style="color: red">${requestScope.deserror}</span>
                                         </div>
 
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col">
-                                                    <label for="date">Sign Date</label>
+                                                    <label for="date">Ngày ký</label>
                                                     <input type="date" id="signdate" value="${param.signDate}" name="signdate" required />
                                                     <span style="color: red">${requestScope.signdateerror}</span>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="paydate">Payment Date</label>
+                                                    <label for="paydate">Ngày trả tiền</label>
                                                     <input type="date" id="paydate" value="${param.paymentTems}" name="paydate" required />
                                                     <span style="color: red">${requestScope.paydateerror}</span>
                                                 </div>
@@ -157,12 +161,12 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col">
-                                                    <label for="startDate">Start Date</label>
+                                                    <label for="startDate">Ngày bắt đầu</label>
                                                     <input type="date" id="startDate" value="${param.startDate}" name="startDate" required />
                                                     <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col">
-                                                    <label for="endDate">End Date</label>
+                                                    <label for="endDate">Ngày kết thúc</label>
                                                     <input type="date" id="endDate" value="${param.endDate}" name="endDate" required />
                                                     <span style="color: red">${requestScope.enddateerror}</span>
                                                 </div>
@@ -171,7 +175,7 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="company">Company</label>
+                                                    <label for="company">Công ty</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listcompany}" var="cp">
                                                             <option value="${cp.id}">${cp.name}</option>
@@ -180,7 +184,7 @@
                                                     <span style="color: red">${requestScope.companyerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="admin">Admin</label>
+                                                    <label for="admin">Quản lý</label>
                                                     <select id="admin" name="admin">
                                                         <c:forEach items="${sessionScope.listadmin}" var="cp">
                                                             <option value="${cp.id}">${cp.name}</option>
@@ -189,7 +193,7 @@
                                                     <span style="color: red">${requestScope.adminerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="accountant">Accountant</label>
+                                                    <label for="accountant">Kế toán</label>
                                                     <select id="accountant" name="accountant">
                                                         <c:forEach items="${sessionScope.listaccountant}" var="cp">
                                                             <option value="${cp.id}">${cp.name}</option>
@@ -201,16 +205,16 @@
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="sid">SID</label>
+                                            <label for="sid">Người tạo đơn</label>
                                             <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" />
                                         </div>
                                         <div class="form-group">
-                                            <label class="font-weight-bold">Upload Images (Optional)</label>
+                                            <label class="font-weight-bold">Thêm ảnh</label>
                                             <div id="uploadContainer" class="upload-container">
                                                 <div class="upload-area" data-index="0">
                                                     <div class="upload-content">
                                                         <div class="upload-icon">+</div>
-                                                        <p>Click or Drag an Image</p>
+                                                        <p>Chọn ảnh</p>
                                                     </div>
                                                     <input type="file" name="images[]" accept="image/jpeg" multiple>
 
@@ -219,17 +223,17 @@
                                                 </div>
                                             </div>
                                             <button type="button" class="add-upload-btn" id="addUpload">+</button>
-                                            <small class="form-text text-muted">You can add multiple upload areas and select multiple images.</small>
+                                            <small class="form-text text-muted">Bạn có thể thêm được nhiều ảnh</small>
                                             <span style="color: red">${requestScope.fileerror}</span>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Add Contract</button>
+                                            <button type="submit">Thêm</button>
                                             <h5 style="color:${requestScope.status == 'true' ? 'green' : 'red'}; text-align:center">
                                                 ${requestScope.message}
                                             </h5>
                                             <h5 style="color:red; text-align:center">${requestScope.error}</h5>
 
-                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-contract">Back</a></span>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-contract">Trở lại</a></span>
                                         </div>
                                     </form>
                                 </div>
@@ -250,7 +254,7 @@
             document.addEventListener("DOMContentLoaded", function () {
                 let uploadContainer = document.getElementById("uploadContainer");
                 let addUploadBtn = document.getElementById("addUpload");
-                let index = 1; // B?t ??u t? 1 v� index=0 ?� c� s?n
+                let index = 1; // B?t ??u t? 1 vì index=0 ?ã có s?n
 
                 addUploadBtn.addEventListener("click", function () {
                     let uploadArea = document.createElement("div");

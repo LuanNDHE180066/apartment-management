@@ -134,17 +134,17 @@ public class AddNewsServlet extends HttpServlet {
         News anew = new News(title, newContent, source, category, sdao.getById(auther), date);
         try{
             if(title.trim().isEmpty()){
-                request.setAttribute("titleerror", "Title is not empty");
+                request.setAttribute("titleerror", "Tiêu đề không trống");
                 hasError = true;
             }if(content.trim().isEmpty()){
-                request.setAttribute("contenterror", "Content is not empty");
+                request.setAttribute("contenterror", "Nội dung không trống");
                 hasError = true;
             }if(source.trim().isEmpty()){
-                request.setAttribute("sourceerror", "Source is not empty");
+                request.setAttribute("sourceerror", "Nguồn không trống");
                 hasError = true;
             }
             if(!CommonValidation.isValidNewsDate(date)){
-                request.setAttribute("dateError", "Date need to later current date");
+                request.setAttribute("dateError", "Ngày đăng phải từ hôm nay trở đi");
                 hasError = true;
             }
         }catch(ParseException e){
@@ -156,10 +156,10 @@ public class AddNewsServlet extends HttpServlet {
         }
         if (ndao.insertNews(anew)) {
             request.setAttribute("status", "true");
-            request.setAttribute("message", "News added successfully!");
+            request.setAttribute("message", "Thêm thành công");
         } else {
             request.setAttribute("status", "false");
-            request.setAttribute("message", "Failed to add news.");
+            request.setAttribute("message", "Thêm thất bại");
         }
         doGet(request, response);
         request.removeAttribute("error");

@@ -98,7 +98,7 @@ public class ViewNewServlet extends HttpServlet {
         request.setAttribute("startDate", startDate);
         request.setAttribute("endDate", endDate);
         if (listNews.isEmpty()) {
-            request.setAttribute("message", "No result found.");
+            request.setAttribute("message", "Không tìm thấy");
         }
         request.getRequestDispatcher("viewallnews.jsp").forward(request, response);
     }

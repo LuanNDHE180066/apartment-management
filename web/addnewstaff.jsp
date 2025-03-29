@@ -1,4 +1,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -120,17 +123,17 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add Staff Information</h1>
+                                    <h1>Thêm nhân viên</h1>
                                     <form action="add-new-staff" method="post">
                                         <div class="form-group">
                                             <input type="text" id="staffID" name="staffID" value="" hidden=""/>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="name">Name</label>
+                                                    <label for="name">Họ và tên</label>
                                                     <input
                                                         type="text"
                                                         id="name"
                                                         name="name"
-                                                        placeholder="Enter full name"
+                                                        placeholder="Nhập họ và tên"
                                                         value="${param.name}" required=""
                                                         />
                                                     <span style="color: red">${requestScope.nameerror}</span>
@@ -139,14 +142,14 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="gender">Gender</label>
+                                                    <label for="gender">Giới tính</label>
                                                     <select id="gender" name="gender">
-                                                       <option value="M">Male</option>
-                                                       <option value="F">Female</option>
+                                                       <option value="M">Nam</option>
+                                                       <option value="F">Nữ</option>
                                                     </select>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="dob">Date of Birth</label>
+                                                    <label for="dob">Ngày sinh</label>
                                                     <input type="date" id="dob" name="dob" value="${param.dob}"/>
                                                     <span style="color: red">${requestScope.ageerror}</span>
                                                 </div>
@@ -154,12 +157,12 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="address">Address</label>
+                                                <label for="address">Địa chỉ</label>
                                                 <input
                                                     type="text"
                                                     id="address"
                                                     name="address"
-                                                    placeholder="Enter address"
+                                                    placeholder="Nhập địa chỉ"
                                                     value="${param.address}"
                                                     required=""
                                                     />
@@ -169,12 +172,12 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="phone">Phone</label>
+                                                    <label for="phone">Số điện thoại</label>
                                                     <input
                                                         type="tel"
                                                         id="phone"
                                                         name="phone"
-                                                        placeholder="Enter phone number"
+                                                        placeholder="Nhập số điện thoại"
                                                         value="${param.phone}"
                                                         required=""
                                                         />
@@ -186,7 +189,7 @@
                                                         type="email"
                                                         id="email"
                                                         name="email"
-                                                        placeholder="Enter email"
+                                                        placeholder="Nhập email"
                                                         value="${param.email}" required=""
                                                         />
                                                     <span style="color: red">${requestScope.emailerror}</span>
@@ -196,46 +199,46 @@
                                         <div class="form-group">
                                             <div class="three-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px ">
-                                                    <label for="cccd">CCCD</label>
+                                                    <label for="cccd">Căn cước công dân</label>
                                                     <input
                                                         type="text"
                                                         id="cccd"
                                                         name="cccd"
-                                                        placeholder="Enter CCCD"
+                                                        placeholder="Nhập căn cước công dân"
                                                         value="${param.cccd}" required=""
                                                         />
                                                     <span style="color: red">${requestScope.cccderror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="education">Education</label>
+                                                    <label for="education">Học vấn</label>
                                                     <input
                                                         type="text"
                                                         id="education"
                                                         name="education"
-                                                        placeholder="Enter education"
+                                                        placeholder="Nhập học vấn"
                                                         value="${param.education}" required=""
                                                         />
 <!--                                                    <span style="color: red">${requestScope.nameerror}</span>-->
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="salary">Salary</label>
+                                                    <label for="salary">Lương</label>
                                                     <input class="format-number"
                                                         type="text"
                                                         id="salary"
                                                         name="salary"
-                                                        placeholder="Enter salary"
+                                                        placeholder="Nhập lương"
                                                         value="${param.salary}" required=""
                                                         oninput="formatSalary(this)"
                                                         />
                                                     <span style="color: red">${requestScope.salaryerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="bank">Bank Account</label>
+                                                    <label for="bank">Ngân hàng</label>
                                                     <input
                                                         type="text"
                                                         id="bank"
                                                         name="bank"
-                                                        placeholder="Enter bank account"
+                                                        placeholder="Nhập ngân hàng"
                                                         value="${param.bank}" required=""
                                                         />
                                                     <span style="color: red">${requestScope.bankerror}</span>
@@ -245,12 +248,12 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="username">Username</label>
+                                                    <label for="username">Tên đăng nhập</label>
                                                     <input
                                                         type="text"
                                                         id="username"
                                                         name="username"
-                                                        placeholder="Enter username"
+                                                        placeholder="Nhập tên đăng nhập"
                                                         value="${param.username}" required=""
                                                         />
                                                     <span style="color: red">${requestScope.usernameerror}</span>
@@ -260,7 +263,7 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="company">Company</label>
+                                                    <label for="company">Công ty</label>
                                                     <select id="company" name="company">
                                                         <c:forEach items="${sessionScope.listCompany}" var="cp">
                                                             <option value="${cp.id}">${cp.name}</option>
@@ -268,12 +271,12 @@
                                                     </select>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="startDate">Start Date</label>
+                                                    <label for="startDate">Ngày làm việc</label>
                                                     <input type="date" id="startDate" name="startDate" value="${param.startDate}"/>
                                                     <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="role">Role</label>
+                                                    <label for="role">Vai trò</label>
                                                     <select id="role" name="role">
                                                         <c:forEach items="${sessionScope.listRole}" var="role">
                                                             <option value="${role.id}">${role.name}</option>
@@ -283,10 +286,10 @@
                                             </div>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Add Staff</button>
+                                            <button type="submit">Thêm</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
-                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-staff">Back</a></span>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-all-staff">Trở lại</a></span>
                                         </div>
                                     </form>
                                 </div>

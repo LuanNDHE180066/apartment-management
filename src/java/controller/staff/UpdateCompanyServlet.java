@@ -102,106 +102,106 @@ public class UpdateCompanyServlet extends HttpServlet {
         Company company = daoCompany.getById(id);
         CompanyValidation companyValidation = new CompanyValidation(company);
         if (name.trim().isEmpty()) {
-            request.setAttribute("nameError", "Name cannot be blank.");
+            request.setAttribute("nameError", "Tên khôgn thể trống");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!phone.matches("0[0-9]{9}")) {
-            request.setAttribute("phoneError", "Phone number must be exactly 10 digits.");
+            request.setAttribute("phoneError", "Số điện thoại phải đủ 10 số và bắt đầu bằng 0");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getPhone().equals(phone) && companyValidation.isExistPhone(phone)) {
-            request.setAttribute("phoneError", "Phone number exists.");
+            request.setAttribute("phoneError", "Số điện thoại đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!contactPhone.matches("0[0-9]{9}")) {
-            request.setAttribute("contactPhoneError", "Contact phone number must be exactly 10 digits.");
+            request.setAttribute("contactPhoneError", "Số điện thoại phải đủ 10 số và bắt đầu bằng 0");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getContactPhone().equals(contactPhone) && companyValidation.isExistContactPhone(contactPhone)) {
-            request.setAttribute("contactPhoneError", "Phone number exists.");
+            request.setAttribute("contactPhoneError", "Số điện thoại đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!fax.matches("[0-9]{10}")) {
-            request.setAttribute("faxError", "Contact phone number must be exactly 10 digits.");
+            request.setAttribute("faxError", "Số fax phải đủ 10 số");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getFax().equals(fax) && companyValidation.isExistFax(fax)) {
-            request.setAttribute("faxError", "Fax is existed");
+            request.setAttribute("faxError", "Số fax đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (email.trim().isEmpty()) {
-            request.setAttribute("emailError", "Email cannot be empty.");
+            request.setAttribute("emailError", "Email không thể trống");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getEmail().equals(email) && companyValidation.isExistEmail(email)) {
-            request.setAttribute("emailError", "Email exists.");
+            request.setAttribute("emailError", "Đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if(contactEmail.trim().isEmpty()) {
-            request.setAttribute("contactEmailError", "Contact Email must not be empty.");
+            request.setAttribute("contactEmailError", "Email không thể trống");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getContactemail().equals(contactEmail) && companyValidation.isExistContactEmail(contactEmail)) {
-            request.setAttribute("contactEmailError", "Contact Email already exists.");
+            request.setAttribute("contactEmailError", "Email đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
 
         if (website.trim().isEmpty()) {
-            request.setAttribute("webError", "Website must not be empty.");
+            request.setAttribute("webError", "Website Không thể trống");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getWebsite().equals(website) && companyValidation.isExistWebsite(website)) {
-            request.setAttribute("webError", "Website already exists.");
+            request.setAttribute("webError", "Website đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
 
         if (!taxCode.matches("[0-9]{10}")) {
-            request.setAttribute("taxCodeError", "Tax Code must be exactly 10 digits.");
+            request.setAttribute("taxCodeError", "Mã số thuế phải đu 10 số");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getTaxCode().equals(taxCode) && companyValidation.isExistTaxCode(taxCode)) {
-            request.setAttribute("taxCodeError", "Tax Code already exists.");
+            request.setAttribute("taxCodeError", "Mã số thuế đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
 
         if (bank.trim().isEmpty()) {
-            request.setAttribute("bankError", "Bank must not be empty.");
+            request.setAttribute("bankError", "Ngân hàng không thể trống");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
         if (!company.getBank().equals(bank) && companyValidation.isExistBank(bank)) {
-            request.setAttribute("bankError", "Bank already exists.");
+            request.setAttribute("bankError", "Ngân hàng đã tồn tại");
             request.setAttribute("company", company);
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
@@ -224,13 +224,13 @@ public class UpdateCompanyServlet extends HttpServlet {
 
         if (daoCompany.updateCompany(updatedCompany)) {
             request.setAttribute("status", "true");
-            request.setAttribute("message", "Company updated successfully!");
+            request.setAttribute("message", "Cập nhật thành công");
             StaffDAO std= new StaffDAO();
             Company c= daoCompany.getById(id);
             std.updatewhenchangecompanystatus(c.getStatus(), c.getId());
         } else {
             request.setAttribute("status", "false");
-            request.setAttribute("message", "Failed to update company.");
+            request.setAttribute("message", "Cập nhật thất bại");
         }
         company = daoCompany.getById(id);
         request.setAttribute("company", company);

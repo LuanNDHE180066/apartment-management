@@ -147,7 +147,7 @@ public class UpdateNewServlet extends HttpServlet {
             LocalDate currentDate = format.parse(news.getDate()).toInstant().atZone(zone).toLocalDate();
 
             if (inputDate.isBefore(currentDate)) {
-                request.setAttribute("dateError", "The time must be after the date of the update check.");
+                request.setAttribute("dateError", "Thời gian phải sau ngày kiểm tra cập nhật");
                 request.setAttribute("news", news);
                 request.getRequestDispatcher("updatenews.jsp").forward(request, response);
                 return;
@@ -158,19 +158,19 @@ public class UpdateNewServlet extends HttpServlet {
         StaffDAO sdao = new StaffDAO();
         News anew = new News(id,title, content,source,date,category,sdao.getById(auther));
         if (title.trim().isEmpty()) {
-            request.setAttribute("titleerror", "Title can not be empty.");
+            request.setAttribute("titleerror", "Tiêu đề không thể trống");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
         }
         if (content.trim().isEmpty()) {
-            request.setAttribute("contenterror", "Content can not be empty.");
+            request.setAttribute("contenterror", "Nội dung không thể trống");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
         }
         if(source.trim().isEmpty()){
-            request.setAttribute("sourceerror", "Source can not be empty.");
+            request.setAttribute("sourceerror", "Nguồn không thể trống");
             request.setAttribute("news", news);
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
@@ -178,10 +178,10 @@ public class UpdateNewServlet extends HttpServlet {
         else {
             if (ndao.updateNews(anew)) {
                 request.setAttribute("status", "true");
-                request.setAttribute("message", "News updated successfully!");
+                request.setAttribute("message", "Cập thật thành công");
             } else {
                 request.setAttribute("status", "false");
-                request.setAttribute("message", "Failed to update news.");
+                request.setAttribute("message", "Cập nhật thất bại");
             }
         }
         news = ndao.getNewById(request.getParameter("id"));

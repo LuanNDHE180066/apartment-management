@@ -2,6 +2,10 @@
 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <html lang="en">
     <head>
         <!-- basic -->
@@ -65,25 +69,25 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Staff Information</h2>
+                                                <h2>Thông tin nhân viên</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="view-all-staff" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input value="${param.searchName}" type="text" class="form-control" name="searchName" placeholder="Search by Name">
+                                                        <input value="${param.searchName}" type="text" class="form-control" name="searchName" placeholder="Tìm kiếm">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="filterStatus">
-                                                            <option value="-1">Filter by Status</option>
-                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Active</option>
-                                                            <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Inactive</option>
+                                                            <option value="-1">Lọc theo trạng thái</option>
+                                                            <option value="1" ${param.filterStatus == '1' ? 'selected' : ''}>Hoạt động</option>
+                                                            <option value="0" ${param.filterStatus == '0' ? 'selected' : ''}>Không hoạt động</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="add-new-staff" class="btn btn-primary">Add new Staff</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
+                                                        <a href="add-new-staff" class="btn btn-primary">Thêm</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -94,14 +98,14 @@
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Name</th>
+                                                            <th>Họ và tên</th>
                                                             <th>Email</th>                                               
-                                                            <th>Address</th>
-                                                            <th>Role</th>
-                                                            <th>Status</th>
-                                                            <th>Is Chief</th>
-                                                            <th>Detail</th>
-                                                            <th>Option</th>
+                                                            <th>Địa chỉ</th>
+                                                            <th>Vai trò</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Trưởng</th>
+                                                            <th>Chi tiết</th>
+                                                            <th>Lựa chọn</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -112,7 +116,7 @@
                                                                 <td>${staff.email}</td>                                               
                                                                 <td>${staff.address}</td>
                                                                 <td>${staff.role.name}</td>
-                                                                <td>${staff.status==1?'Working':'Retired'}</td>
+                                                                <td>${staff.status==1?'Hoạt Động':'Nghỉ'}</td>
                                                                 <td>${staff.ischief==1?'Yes':'No'}</td>
                                                                 <td style="text-align: center">
                                                                     <a href="#" data-toggle="modal" data-target="#staffDetail${staff.id}">
@@ -126,7 +130,7 @@
                                                             <div class="modal-dialog" style="max-width: 60%">
                                                                 <div class="modal-content">
                                                                     <div class="modal-header">
-                                                                        <h3>Staff Information</h3>
+                                                                        <h3>Thông tin</h3>
                                                                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                                                                     </div>
                                                                     <div class="modal-body" style="display: flex ">
@@ -140,24 +144,24 @@
                                                                             <div class="row">
                                                                                 <div class="col-md-6">
                                                                                     <p><strong>ID:</strong> ${staff.id}</p>
-                                                                                    <p><strong>Name:</strong> ${staff.name}</p>
-                                                                                    <p><strong>DOB:</strong>${staff.formatBod()}</p>
+                                                                                    <p><strong>Họ và tên:</strong> ${staff.name}</p>
+                                                                                    <p><strong>Ngày sinh:</strong>${staff.formatBod()}</p>
                                                                                     <p><strong>Email:</strong> ${staff.email}</p>
-                                                                                    <p><strong>Phone:</strong> ${staff.phone}</p>
-                                                                                    <p><strong>Address:</strong> ${staff.address}</p>
-                                                                                    <p><strong>CCCD:</strong> ${staff.cccd}</p>
+                                                                                    <p><strong>Số điện thoại:</strong> ${staff.phone}</p>
+                                                                                    <p><strong>Địa chỉ:</strong> ${staff.address}</p>
+                                                                                    <p><strong>Căn cước:</strong> ${staff.cccd}</p>
                                                                                 </div>
                                                                                 <div class="col-md-6">
                                                                                     
-                                                                                    <p><strong>Salary:</strong> <fmt:formatNumber value="${staff.salary}" type="number" groupingUsed="true"/> VND</p> 
-                                                                                    <p><strong>Education:</strong> ${staff.education}</p>
-                                                                                    <p><strong>Bank:</strong> ${staff.bank}</p>
-                                                                                    <p><strong>Start Date:</strong> ${staff.formatStartdate()}</p>
-                                                                                    <p><strong>End Date:</strong> ${staff.formatEndate()}</p>
-                                                                                    <p><strong>Role:</strong> ${staff.role.name}</p>
-                                                                                    <p><strong>Status:</strong> 
+                                                                                    <p><strong>Lương:</strong> <fmt:formatNumber value="${staff.salary}" type="number" groupingUsed="true"/> VND</p> 
+                                                                                    <p><strong>Học vấn:</strong> ${staff.education}</p>
+                                                                                    <p><strong>Ngân hàng:</strong> ${staff.bank}</p>
+                                                                                    <p><strong>Ngày bắt đầu:</strong> ${staff.formatStartdate()}</p>
+                                                                                    <p><strong>Ngày kết thúc:</strong> ${staff.formatEndate()}</p>
+                                                                                    <p><strong>Vai trò:</strong> ${staff.role.name}</p>
+                                                                                    <p><strong>Trạng thái:</strong> 
                                                                                         <span class="badge ${staff.status == 1 ? 'badge-success' : 'badge-secondary'}">
-                                                                                            ${staff.status == 1 ? 'Working' : 'Retired'}
+                                                                                            ${staff.status == 1 ? 'Hoạt động' : 'Nghỉ'}
                                                                                         </span>
                                                                                     </p>
                                                                                 </div>
@@ -194,7 +198,7 @@
                     <!-- footer -->
                     <div class="container-fluid">
                         <div class="footer">
-                            <p>Copyright � 2018 Designed by html.design. All rights reserved.</p>
+                            <p>Copyright ï¿½ 2018 Designed by html.design. All rights reserved.</p>
                         </div>
                     </div>
                 </div>

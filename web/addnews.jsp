@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <!DOCTYPE html>
 
 <html lang="en">
@@ -132,41 +135,41 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add News</h1>
+                                    <h1>Thêm tin tức</h1>
                                     <form action="add-news" method="post" enctype="multipart/form-data">
                                         <div class="form-group">
-                                            <label for="title">Title</label>
-                                            <input type="text" id="title" name="title" value="${param.title}" placeholder="Enter new title" required />
+                                            <label for="title">Tiêu đề</label>
+                                            <input type="text" id="title" name="title" value="${param.title}" placeholder="Nhập tiêu đề" required />
                                             <span style="color: red">${requestScope.titleerror}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="content">Content</label>
-                                            <div id="toolbar-container"></div> <!-- Thanh c�ng c? CKEditor -->
+                                            <label for="content">Nội dung</label>
+                                            <div id="toolbar-container"></div> <!-- Thanh công c? CKEditor -->
                                             <div id="editor">${param.content != null ? param.content : ""}</div>
                                             <input type="hidden" name="content" id="hiddenContent">
                                             <span style="color: red">${requestScope.contenterror}</span>
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="date">Date</label>
+                                            <label for="date">Ngày</label>
                                             <input type="date" id="date" name="date" value="${param.date}" required />
                                             <span  style="color: red">${requestScope.dateError}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="source">Source</label>
-                                            <input type="text" id="source" name="source" placeholder="Enter content" value="${param.source}" required />
+                                            <label for="source">Nguồn</label>
+                                            <input type="text" id="source" name="source" placeholder="Nhập nguồn" value="${param.source}" required />
                                             <span style="color: red">${requestScope.sourceerror}</span>
                                         </div>
                                         <div class="form-group">
-                                            <label for="category">Category</label>
+                                            <label for="category">Loại tin</label>
                                             <select id="category" name="category" required>
                                                 <c:set var="selectedCategory" value="${not empty requestScope.news ? requestScope.news.category : ''}"/>
 
-                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Apartment News</option>
-                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Events</option>
-                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Maintenance Updates</option>
-                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Community Announcements</option>
-                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>General Notices</option>
+                                                <option value="Apartment News" ${selectedCategory == 'Apartment News' ? 'selected' : ''}>Tin tức tòa nhà</option>
+                                                <option value="Events" ${selectedCategory == 'Events' ? 'selected' : ''}>Sự kiện</option>
+                                                <option value="Maintenance Updates" ${selectedCategory == 'Maintenance Updates' ? 'selected' : ''}>Bảo trì</option>
+                                                <option value="Community Announcements" ${selectedCategory == 'Community Announcements' ? 'selected' : ''}>Thông báo cộng đồng</option>
+                                                <option value="General Notices" ${selectedCategory == 'General Notices' ? 'selected' : ''}>Thông báo chung</option>
                                             </select>
                                         </div>
 
@@ -179,14 +182,14 @@
                                                                                     <span style="color: red">${requestScope.fileerror}</span>
                                                                                 </div>-->
                                         <div class="form-group">
-                                            <label for="author">Author</label>
+                                            <label for="author">Người viết</label>
                                             <input type="text" id="author" name="author" value="${sessionScope.person.name}"  readonly />
                                             <input type="text" id="authorid" name="authorid" value="${sessionScope.person.id}"  hidden />
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Add News</button>
+                                            <button type="submit">Thêm</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
-                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-news">Back</a></span>
+                                            <span  style="text-decoration: underline; display: inline-block"><a><a href="view-news">Trở lại</a></span>
                                         </div>
                                     </form>
                                 </div>
@@ -204,7 +207,7 @@
         <!-- custom js -->
         <script src="js/custom.js"></script>
         <script>
-            // H�m upload ?nh
+            // Hàm upload ?nh
             class MyUploadAdapter {
                 constructor(loader) {
                     this.loader = loader;
@@ -214,7 +217,7 @@
                     return this.loader.file
                             .then(file => new Promise((resolve, reject) => {
                                     const formData = new FormData();
-                                    formData.append('upload', file); // Ph?i tr�ng v?i request.getPart("upload") trong Servlet
+                                    formData.append('upload', file); // Ph?i trùng v?i request.getPart("upload") trong Servlet
 
                                     fetch('http://localhost:8080/apartment-management/upload-img-news', {// URL servlet upload
                                         method: 'POST',
@@ -222,7 +225,7 @@
                                     })
                                             .then(response => {
                                                 if (!response.ok) {
-                                                    throw new Error(`L?i HTTP! M� tr?ng th�i: ${response.status}`);
+                                                    throw new Error(`L?i HTTP! Mã tr?ng thái: ${response.status}`);
                                                 }
                                                 return response.json();
                                             })
@@ -236,13 +239,13 @@
                                             })
                                             .catch(error => {
                                                 console.error('L?i upload ?nh:', error);
-                                                reject('Kh�ng th? upload ?nh!');
+                                                reject('Không th? upload ?nh!');
                                             });
                                 }));
                 }
             }
 
-// G�n plugin upload ?nh v�o CKEditor
+// Gán plugin upload ?nh vào CKEditor
             function MyCustomUploadAdapterPlugin(editor) {
                 editor.plugins.get('FileRepository').createUploadAdapter = (loader) => {
                     return new MyUploadAdapter(loader);
@@ -258,7 +261,7 @@
                         const toolbarContainer = document.querySelector('#toolbar-container');
                         toolbarContainer.appendChild(editor.ui.view.toolbar.element);
 
-                        // L?u n?i dung v�o input ?n khi submit form
+                        // L?u n?i dung vào input ?n khi submit form
                         document.querySelector("form").addEventListener("submit", function () {
                             document.querySelector("#hiddenContent").value = editor.getData();
                         });

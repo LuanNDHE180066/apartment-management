@@ -1,4 +1,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <html lang="en">
     <head>
         <meta charset="utf-8">
@@ -91,7 +95,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Contract List</h2>
+                                        <h2>Hợp đồng chờ duyệt</h2>
                                     </div>
                                 </div>
                             </div>
@@ -99,7 +103,7 @@
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="heading1 margin_0">
-                                            <h2>Pending Contract Information</h2>
+                                            <h2>Thông tin</h2>
                                         </div>
                                         <div class="table_section padding_infor_info">
                                             <h3>${requestScope.message}</h3>
@@ -107,9 +111,9 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>Order Creator</th>
-                                                            <th>Created</th>
-                                                            <th>Option</th>
+                                                            <th>Người phụ trách</th>
+                                                            <th>Ngày tạo</th>
+                                                            <th>Lựa chọn</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -120,17 +124,17 @@
                                                                 <td>
                                                                     <c:if test="${staffId == c.admin.id && (c.adminApproval == null || c.adminApproval == 0)}">
                                                                         <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=1">
-                                                                            <i class="fas fa-check"></i> Approve
+                                                                            <i class="fas fa-check"></i> Duyệt
                                                                         </a>
                                                                         <a class="approval-link" href="update-pending-contract?id=${c.id}&approve=2">
-                                                                            <i class="fas fa-times"></i> Reject
+                                                                            <i class="fas fa-times"></i> Từ chối
                                                                         </a>
                                                                     </c:if>
                                                                     <c:if test="${c.adminApproval == 1}">
-                                                                        <span style="color: green; font-weight: bold;">Approved</span>
+                                                                        <span style="color: green; font-weight: bold;">Duyệt</span>
                                                                     </c:if>
                                                                     <c:if test="${c.adminApproval == 2}">
-                                                                        <span style="color: red; font-weight: bold;">Rejected</span>
+                                                                        <span style="color: red; font-weight: bold;">Từ chối</span>
                                                                     </c:if>
                                                                 </td>
                                                             </tr>
@@ -147,7 +151,7 @@
 
                     <div class="container-fluid">
                         <div class="footer">
-                            <p>Copyright � 2025 Designed by Your Company. All rights reserved.</p>
+                            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                         </div>
                     </div>
                 </div>

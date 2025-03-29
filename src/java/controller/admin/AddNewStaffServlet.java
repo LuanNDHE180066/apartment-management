@@ -137,13 +137,13 @@ public class AddNewStaffServlet extends HttpServlet {
             salary_raw = salary_raw.replaceAll("\\.", "");
             int salary = Integer.parseInt(salary_raw);
             if (salary <= 0) {
-                request.setAttribute("salaryerror", "Salary must be greater than 0.");
+                request.setAttribute("salaryerror", "Lương không thể âm");
                 hasError = true;
             }
             Role role = daoR.getById(roleId);
 
             if (role == null) {
-                request.setAttribute("roleerror", "Invalid role selected.");
+                request.setAttribute("roleerror", "Không có vai trò nào được chọn");
                 hasError = true;
             }
             s = new Staff(name, dob, email, phone, address, cccd, salary, education, bank, username, password, role,
@@ -154,7 +154,7 @@ public class AddNewStaffServlet extends HttpServlet {
             for (Staff st : listStaff) {
                 try {
                     if (st.getCccd().equals(s.getCccd())) {
-                        request.setAttribute("cccderror", "CCCD already exists.");
+                        request.setAttribute("cccderror", "Căn cước đã tồn tại");
                         hasError = true;
                     }
                     Date start=format.parse(startDate);
@@ -169,75 +169,74 @@ public class AddNewStaffServlet extends HttpServlet {
                         age--;
                     }
                     if (name.trim().isEmpty()) {
-                        request.setAttribute("nameerror", "Name is not empty");
+                        request.setAttribute("nameerror", "Tên không được trống");
                         hasError = true;
                     }
                     if (age <= 18) {
-                        request.setAttribute("ageerror", "Staff must be older than 18.");
+                        request.setAttribute("ageerror", "Tuổi phải lớn hơn 18");
                         hasError = true;
                     }
                     if(dob.trim().isEmpty()){
-                        request.setAttribute("ageerror", "Date of birth not empty");
+                        request.setAttribute("ageerror", "Phải chọn ngày tháng năm sinh");
                         hasError = true;
                     }
                     if(address.trim().isEmpty()){
-                        request.setAttribute("addresserror", "Address not empty");
+                        request.setAttribute("addresserror", "Địa chỉ không trống");
                         hasError = true;
                     }
                     if (st.getPhone().equals(s.getPhone())) {
-                        request.setAttribute("phoneerror", "Phone number already exists.");
+                        request.setAttribute("phoneerror", "Số điện thoại đã tồn tại");
                         hasError = true;
                     }
                     if(email.trim().isEmpty()){
-                        request.setAttribute("emailerror", "Email not empty.");
+                        request.setAttribute("emailerror", "Email không trống");
                         hasError = true;
                     }
                     if (st.getEmail().equals(s.getEmail())) {
-                        request.setAttribute("emailerror", "Email already exists.");
+                        request.setAttribute("emailerror", "Email đã tồnt tại");
                         hasError = true;
                     }
                     if(username.trim().isEmpty()){
-                        request.setAttribute("usernameerror", "Username not empty");
+                        request.setAttribute("usernameerror", "Tên đăng nhập không trống");
                         hasError = true;
                     }
                     if(!valid.isValidUsername(username)){
-                        request.setAttribute("usernameerror", "Username too short");
+                        request.setAttribute("usernameerror", "Tên đăng nhập tối thiểu 6 kí tự");
                         hasError = true;
                     }
                     if (st.getUsername().equals(s.getUsername())) {
-                        request.setAttribute("usernameerror", "Username already exists.");
+                        request.setAttribute("usernameerror", "Tên đăng nhập đã tồn tại");
                         hasError = true;
                     }
                     if(bank.trim().isEmpty()){
-                        request.setAttribute("bankerror", "Bank not empty");
+                        request.setAttribute("bankerror", "Ngân hàng không trống");
                         hasError = true;
                     }
                     if (st.getBank().equals(s.getBank())) {
-                        request.setAttribute("bankerror", "Bank already exists.");
+                        request.setAttribute("bankerror", "Ngân hàng đã tồn tại");
                         hasError = true;
                     }if(start.before(today)){
-                        request.setAttribute("startdateerror", "Start date from today onwards!");
+                        request.setAttribute("startdateerror", "Ngày bắt đầu từ hôm nay trở đi");
                         hasError = true;
                     }if(company==null){
-                        request.setAttribute("companyrror", "Company not empty");
+                        request.setAttribute("companyrror", "Công ty không thể trống");
                         hasError = true;
                     }
                 } catch (ParseException ex) {
-                    request.setAttribute("ageerror", "Invalid date format.");
-                    hasError = true;
+                    
                 }
             }
             if (!s.getPhone().matches("0[0-9]{9}")) {
-                request.setAttribute("phoneerror", "Please enter a valid phone number: 10 digits starting with 0!");
+                request.setAttribute("phoneerror", "Số điện thoại phải bắt đầu bằng 0 và đủ 10 số");
                 hasError = true;
             }
             if (!s.getCccd().matches("[0-9]{12}")) {
-                request.setAttribute("cccderror", "Please enter a valid CCCD number: 12 digits!");
+                request.setAttribute("cccderror", "Căn cước phải đủ 12 số");
                 hasError = true;
             }
             
         } catch (NumberFormatException st) {
-            request.setAttribute("salaryerror", "Invalid salary format.");
+            request.setAttribute("salaryerror", "Lỗi lương");
             hasError = true;
         }
 
@@ -252,10 +251,10 @@ public class AddNewStaffServlet extends HttpServlet {
             e.sendEmailStaff(email, name, username, password2);
             session.setAttribute("staffs", stDao.getAll());
             request.setAttribute("status", "true");
-            request.setAttribute("message", "Staff added successfully!");
+            request.setAttribute("message", "Thêm thành công");
         } else {
             request.setAttribute("status", "false");
-            request.setAttribute("message", "Failed to add staff.");
+            request.setAttribute("message", "Thêm thất bại");
         }
         response.sendRedirect("view-all-staff");
 //        request.getRequestDispatcher("view-all-staff").forward(request, response);

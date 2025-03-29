@@ -102,83 +102,79 @@ public class AddNewCompany extends HttpServlet {
         Company newC = new Company(name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address);
         CompanyValidation companyValidation = new CompanyValidation(newC);
         if (name.trim().isEmpty()) {
-            request.setAttribute("nameError", "Name cannot be blank.");
+            request.setAttribute("nameError", "Tên không được trống");
             hasError = true;
         }
         if (!phone.matches("0[0-9]{9}")) {
-            request.setAttribute("phoneError", "Phone number must be exactly 10 digits.");
+            request.setAttribute("phoneError", "Số điện thoại phải đủ 10 số");
             hasError = true;
         }
         if (!contactPhone.matches("0[0-9]{9}")) {
-            request.setAttribute("contactPhoneError", "Contact phone must be exactly 10 digits.");
+            request.setAttribute("contactPhoneError", "Số điện thoại phải đủ 10 số");
             hasError = true;
         }
         if (!fax.matches("[0-9]{10}")) {
-            request.setAttribute("faxError", "Fax must be exactly 10 digits.");
+            request.setAttribute("faxError", "Số fax phải đủ 10 số");
             hasError = true;
         }
         if (!taxCode.matches("[0-9]{10}")) { 
-            request.setAttribute("taxCodeError", "Tax code must be exactly 10 digits.");
+            request.setAttribute("taxCodeError", "Mã số thuế phải đủ 10 số");
             hasError = true;
         }
         if(email.trim().isEmpty()){
-            request.setAttribute("emailError", "Email must not empty");
+            request.setAttribute("emailError", "Email không được trống");
             hasError = true;
         }
         if (companyValidation.isExistEmail(email)) {
-            request.setAttribute("emailError", "Email is existed");
+            request.setAttribute("emailError", "Email đã tồn tại");
             hasError = true;
         }
         if(address.trim().isEmpty()){
-            request.setAttribute("addressError", "address must not empty");
-            hasError = true;
-        }
-        if (companyValidation.isExistAddress(address)) {
-            request.setAttribute("addressError", "address is existed");
+            request.setAttribute("addressError", "Địa chỉ không được trống");
             hasError = true;
         }
         if(bank.trim().isEmpty()){
-            request.setAttribute("bankError", "Bank must not empty");
+            request.setAttribute("bankError", "Ngân hàng không được trống");
             hasError = true;
         }
         if (companyValidation.isExistBank(bank)) {
-            request.setAttribute("bankError", "Bank is existed");
+            request.setAttribute("bankError", "Ngân hàng đã tồn tại");
             hasError = true;
         }
         if(contactEmail.trim().isEmpty()){
-            request.setAttribute("contactEmailError", "ContactEmail must not empty");
+            request.setAttribute("contactEmailError", "Email không được trống");
             hasError = true;
         }
         if (companyValidation.isExistContactEmail(contactEmail)) {
-            request.setAttribute("contactEmailError", "ContactEmail is existed");
+            request.setAttribute("contactEmailError", "Email đã tồn tại");
             hasError = true;
         }
         if (companyValidation.isExistContactPhone(contactPhone)) {
-            request.setAttribute("contactPhoneError", "ContactPhone is existed");
+            request.setAttribute("contactPhoneError", "Số điện thoại đã tồn tại");
             hasError = true;
         }
         if (companyValidation.isExistFax(fax)) {
-            request.setAttribute("faxError", "Fax is existed");
+            request.setAttribute("faxError", "Số fax đã tồn tại");
             hasError = true;
         }
         if (companyValidation.isExistName(name)) {
-            request.setAttribute("nameError", "Name is existed");
+            request.setAttribute("nameError", "Tên đã tồn tại");
             hasError = true;
         }
         if (companyValidation.isExistPhone(phone)) {
-            request.setAttribute("phoneError", "Phone is existed");
+            request.setAttribute("phoneError", "Số điện thoại đã tồn tại");
             hasError = true;
         }
         if (companyValidation.isExistTaxCode(taxCode)) {
-            request.setAttribute("taxCodeError", "TaxCode is existed");
+            request.setAttribute("taxCodeError", "Mã số thuế đã tồn tại");
             hasError = true;
         }
         if(website.trim().isEmpty()){
-            request.setAttribute("webError", "Web Site must not empty");
+            request.setAttribute("webError", "WebSite Không được trống");
             hasError = true;
         }
         if (companyValidation.isExistWebsite(website)) {
-            request.setAttribute("webError", "Web Site is existed");
+            request.setAttribute("webError", "Website đã tồn tại");
             hasError = true;
         }
         if (hasError) {
@@ -187,11 +183,11 @@ public class AddNewCompany extends HttpServlet {
         }
         if (cd.insertNewCompany(newC)) {
             request.setAttribute("status", "true");
-            request.setAttribute("message", "New company added successfully!");
+            request.setAttribute("message", "Thêm thành công");
 
         } else {
             request.setAttribute("status", "false");
-            request.setAttribute("message", "Failed to add new company!");
+            request.setAttribute("message", "Thêm thất bại");
         }
         request.getRequestDispatcher("addnewcompany.jsp").forward(request, response);
     }

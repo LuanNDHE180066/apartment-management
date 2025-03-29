@@ -5,6 +5,9 @@
 --%>
 
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -142,7 +145,7 @@
             <!-- Chỉ admin mới có nút Update -->
             <c:if test="${sessionScope.account.roleId == 2}">
                 <button class="btn btn-warning mb-3 float-end" onclick="window.location = 'update-news?id=${param.id}';">
-                    ✏️ Update News
+                    ✏️ Cập nhật
                 </button>
             </c:if>
 
@@ -167,14 +170,14 @@
             <c:if test="${requestScope.news.source.matches('^(https?|ftp)://.*$')}">
                 <p class="news-source">
                     📌 <a href="${requestScope.news.source}" target="_blank">
-                        Read more <i class="fas fa-external-link-alt"></i>
+                        Đọc thêm <i class="fas fa-external-link-alt"></i>
                     </a>
                 </p>
             </c:if>
 
             <!-- Bài viết liên quan -->
             <div class="related-links">
-                <h4>📖 Related Articles</h4>
+                <h4>📖 Tin gần đây</h4>
                 <ul class="list-group">
                     <c:forEach items="${requestScope.listOtherNews}" var="n">
                         <li class="list-group-item">
@@ -189,7 +192,7 @@
             <!-- Nút quay lại danh sách -->
             <div class="mt-4 text-center">
                 <button class="btn btn-primary" onclick="window.location = 'view-news';">
-                    ⬅️ Back to News List
+                    ⬅️ Trở lại
                 </button>
             </div>
 

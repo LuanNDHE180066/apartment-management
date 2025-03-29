@@ -116,6 +116,7 @@ public class UpdateStaffInfor extends HttpServlet {
         CompanyDAO daoCp = new CompanyDAO();
         RoleDAO daoR = new RoleDAO();
         Staff staff = daoSt.getById(id);
+        boolean hasError = false;
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
             Date today = new Date();
@@ -123,10 +124,9 @@ public class UpdateStaffInfor extends HttpServlet {
             Date startD = sdf.parse(startDate);
             if (!startDate.equals(staff.getStartDate())) {
                 if (startD.before(today)) {
-                    request.setAttribute("startdatemessage", "Start date must be today or later");
+                    request.setAttribute("startdatemessage", "Ngày bắt đầu phải từ hôm nay trở đi");
                     request.setAttribute("staff", staff);
-                    request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                    return;
+                    hasError = true;
                 }
             }
 
@@ -135,95 +135,81 @@ public class UpdateStaffInfor extends HttpServlet {
             if (endDate != null && !endDate.trim().isEmpty() && !endDate.equals(oldEndDate)) {
                 Date endD = sdf.parse(endDate);
                 if (endD.before(today)) {
-                    request.setAttribute("enddatemessage", "End date must be today or later");
+                    request.setAttribute("enddatemessage", "Ngày kết thúc phải từ hôm nay trở đi");
                     request.setAttribute("staff", staff);
-                    request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                    return;
+                    hasError = true;
                 }
                 if (endD.before(startD)) {
-                    request.setAttribute("enddatemessage", "End date must be after start date");
+                    request.setAttribute("enddatemessage", "Ngày kết thúc phải sau ngày bắt đầu");
                     request.setAttribute("staff", staff);
-                    request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                    return;
+                    hasError = true;
                 }
             }
 
             LocalDate birthDate = LocalDate.parse(dob);
             LocalDate todayage = LocalDate.now();
             if (Period.between(birthDate, todayage).getYears() < 18) {
-                request.setAttribute("dobmessage", "Staff must be at least 18 years old.");
+                request.setAttribute("dobmessage", "Nhân viên phải đủ 18 tuổi");
                 request.setAttribute("staff", staff);
-                request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
         if (name.trim().isEmpty()) {
-            request.setAttribute("namemessage", "Name not empty");
+            request.setAttribute("namemessage", "Tên không thể trống");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (address.trim().isEmpty()) {
-            request.setAttribute("addressmessage", "Address not empty");
+            request.setAttribute("addressmessage", "Địa chỉ không thể trống");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!phone.matches("0[0-9]{9}")) {
-            request.setAttribute("phonemessage", "Phone number must be exactly 10 digits.");
+            request.setAttribute("phonemessage", "số điện thoại phải đủ 10 số bắt đầu bằng 0");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!staff.getPhone().equals(phone) && daoSt.checkDuplicatePhone(phone)) {
-            request.setAttribute("phonemessage", "Phone number exist");
+            request.setAttribute("phonemessage", "Số điện thoại đã tồn tại");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (email.trim().isEmpty()) {
-            request.setAttribute("emailmessage", "Email is not empty");
+            request.setAttribute("emailmessage", "Email không thể trống");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!staff.getEmail().equals(email) && daoSt.checkDupEmail(email)) {
-            request.setAttribute("emailmessage", "Email number exist");
+            request.setAttribute("emailmessage", "Email đã tồn tại");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!cccd.matches("[0-9]{12}")) {
-            request.setAttribute("cccdmessage", "CCCD must be exactly 12 digits.");
+            request.setAttribute("cccdmessage", "Căn cước phải đủ 12 số");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!staff.getCccd().equals(cccd) && daoSt.checkDuplicateID(cccd)) {
-            request.setAttribute("cccdmessage", "CCCD exist");
+            request.setAttribute("cccdmessage", "Căn cước đã tồn tại");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (education.trim().isEmpty()) {
-            request.setAttribute("edumessage", "Education is not empty");
+            request.setAttribute("edumessage", "Học vấn không thể trống");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (bank.trim().isEmpty()) {
-            request.setAttribute("bankmessage", "Bank is not empty");
+            request.setAttribute("bankmessage", "Ngân hàng không thể trống");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+           hasError = true;
         }
         if (!staff.getBank().equals(bank) && daoSt.checkDuplicateBank(bank)) {
-            request.setAttribute("bankmessage", "Bank exist");
+            request.setAttribute("bankmessage", "Ngân hàng đã tồn tại");
             request.setAttribute("staff", staff);
-            request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         salary_raw = salary_raw.replaceAll("\\.", "");
         int salary = Integer.parseInt(salary_raw);
@@ -242,8 +228,11 @@ public class UpdateStaffInfor extends HttpServlet {
 
         int status = Integer.parseInt(status_raw);
         if (salary <= 0) {
-            request.setAttribute("salaryerror", "Salary must be greater than 0.");
+            request.setAttribute("salaryerror", "Lương phải lón hơn 0");
             request.setAttribute("staff", staff);
+            hasError = true;
+        }
+        if (hasError) {
             request.getRequestDispatcher("updateStaffInfor.jsp").forward(request, response);
             return;
         }
@@ -270,10 +259,10 @@ public class UpdateStaffInfor extends HttpServlet {
         st.setIschief(ischief);
         if (daoSt.updateStaffInfor(st)) {
             request.setAttribute("status", "true");
-            request.setAttribute("message", "Staff updated successfully!");
+            request.setAttribute("message", "Cập nhật thành công");
         } else {
             request.setAttribute("status", "false");
-            request.setAttribute("message", "Failed to update staff.");
+            request.setAttribute("message", "Cập nhật thất bại");
         }
         staff = daoSt.getById(id);
         request.setAttribute("staff", staff);

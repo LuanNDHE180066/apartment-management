@@ -6,6 +6,10 @@
 
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+
 <html lang="en">
     <head>
         <!-- basic -->
@@ -66,19 +70,19 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Company Information</h2>
+                                                <h2>Thông tin công ty</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="view-all-company" method="GET">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-4">
-                                                        <input type="text" class="form-control" name="searchName" placeholder="Search by Name"
+                                                        <input type="text" class="form-control" name="searchName" placeholder="Tìm"
                                                                value="${requestScope.searchName}">
                                                     </div>
                                                     <div class="col-md-4 d-flex">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="addnewcompany.jsp" class="btn btn-primary">Add new Company</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
+                                                        <a href="addnewcompany.jsp" class="btn btn-primary">Thêm</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -91,17 +95,17 @@
                                                     <thead>
                                                         <tr>
                                                             <th>ID</th>
-                                                            <th>Name</th>
-                                                            <th>Phone</th>
-                                                            <th>Contact Phone</th>
-                                                            <th>Fax</th>
-                                                            <th>Email</th>
-                                                            <th>Contact Email</th>
+                                                            <th>Tên</th>
+                                                            <th>Số tư vấn</th>
+                                                            <th>Số liên hệ</th>
+                                                            <th>Số Fax</th>
+                                                            <th>Email tư vấn</th>
+                                                            <th>Email liên hệ</th>
                                                             <th>Website</th>
-                                                            <th>Tax code</th>
-                                                            <th>Bank</th>
-                                                            <th>Status</th>
-                                                            <th>Option</th>
+                                                            <th>Mã thuế</th>
+                                                            <th>Ngân hàng</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Lựa chọn</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -117,7 +121,7 @@
                                                                 <td>${o.website}</td>
                                                                 <td>${o.taxCode}</td>
                                                                 <td>${o.bank}</td>
-                                                                <td>${o.status==1?'Active':'Inactive'}</td>
+                                                                <td>${o.status==1?'Hoạt động':'Không hoạt động'}</td>
                                                                 <td><a href="update-company?id=${o.id}"><i class="fa-solid fa-pen-to-square"></i></a></td>
                                                             </tr>
                                                         </c:forEach>
@@ -132,10 +136,10 @@
                         </div>
                     </div>
                     <form method="get" action="view-all-company">
-                        <!-- Gi? l?i d? li?u t�m ki?m -->
+                        <!-- Gi? l?i d? li?u tìm ki?m -->
                         <input type="hidden" name="searchName" value="${requestScope.searchName}">
 
-                        <label for="page" style="font-size: 14px; font-weight: bold;">Page:</label>
+                        <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
                         <select id="page" name="page" onchange="this.form.submit()"
                                 style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="page">

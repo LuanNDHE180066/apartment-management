@@ -7,6 +7,9 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ page import="util.Util"%> 
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html>
     <head>
@@ -101,7 +104,7 @@
                                         </li>-->
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-resident"><i class="fa-solid fa-person"></i> <span>Thông tin dân cư</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-staff"><i class="fa-solid fa-users-line"></i> <span>Thông tin nhân viên</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-company"><i class="fa-solid fa-building"></i> <span>Thông tin công ti</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-company"><i class="fa-solid fa-building"></i> <span>Thông tin công ty</span></a></li>
                     <li ><a href="view-news"><i class="fa-regular fa-newspaper"></i> <span>Tin tức</span></a></li>
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}"><a href="view-request-type"><i class="fa-solid fa-repeat"></i> <span>Loại yêu cầu</span></a></li>
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 3) ? 'display-none':''}"><a href="${ut.getSiteToViewRequest(sessionScope.account.roleId)}"><i class="fa-solid fa-repeat"></i> <span>Yêu cầu từ dân cư</span></a></li>
@@ -115,7 +118,7 @@
                         <a  href="${ut.getSiteToViewApartment(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Thông tin căn hộ</span></a>
                     </li>
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
-                        <a  href="view-all-contract"><i class="fa-solid fa-book"></i><span>View contract</span></a>
+                        <a  href="view-all-contract"><i class="fa-solid fa-book"></i><span>Hợp đồng</span></a>
                     </li>
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-expenditure"><i class="fa fa-money-bill"></i><span>Khoản chi</span></a>

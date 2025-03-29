@@ -1,4 +1,7 @@
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -118,20 +121,20 @@
                         <div class="contract-content">
                             <!-- Contract Details -->
                             <div class="contract-details">
-                                <h3>Contract Details</h3>
-                                <p><strong>Staff:</strong> ${requestScope.contract.staff.name}</p>
-                                <p><strong>Admin:</strong> ${requestScope.contract.admin.name}</p>
-                                <p><strong>Accountant:</strong> ${requestScope.contract.accountant.name}</p>
-                                <p><strong>Company:</strong> ${requestScope.contract.company.name}</p>
-                                <p><strong>Sign Date:</strong> ${requestScope.contract.formatSigndate()}</p>
-                                <p><strong>Start Date:</strong> ${requestScope.contract.formatStartdate()}</p>
-                                <p><strong>End Date:</strong> ${requestScope.contract.formatEnddate()}</p>
-                                <p><strong>Description:</strong> ${requestScope.contract.description}</p>
+                                <h3>Thông tin hợp đồng</h3>
+                                <p><strong>Người làm:</strong> ${requestScope.contract.staff.name}</p>
+                                <p><strong>Quản lý:</strong> ${requestScope.contract.admin.name}</p>
+                                <p><strong>Kế toán:</strong> ${requestScope.contract.accountant.name}</p>
+                                <p><strong>Công ty:</strong> ${requestScope.contract.company.name}</p>
+                                <p><strong>Ngày ký:</strong> ${requestScope.contract.formatSigndate()}</p>
+                                <p><strong>Ngày bắt đầu:</strong> ${requestScope.contract.formatStartdate()}</p>
+                                <p><strong>Ngày kết thúc:</strong> ${requestScope.contract.formatEnddate()}</p>
+                                <p><strong>Mô tả:</strong> ${requestScope.contract.description}</p>
                             </div>
 
                             <!-- Contract Image -->
                             <div class="contract-image">
-                                <p><strong>Images:</strong></p>
+                                <p><strong>Ảnh:</strong></p>
                                 <c:if test="${not empty requestScope.listimg}">
                                     <!-- Hiển thị ảnh đầu tiên làm ảnh đại diện -->
                                     <img src="${requestScope.listimg[0]}" alt="Contract Image" id="previewImage" 
@@ -163,7 +166,7 @@
                         </div>
 
                         <div class="back-button">
-                            <button id="btn" onclick="window.location = 'view-all-contract';">Back to Contract List</button>
+                            <button id="btn" onclick="window.location = 'view-all-contract';">Trở lại</button>
                         </div>
                     </div>
 
