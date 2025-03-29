@@ -5,8 +5,8 @@
 --%>
 
 <!DOCTYPE html>
-<%@taglib
-    prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
     <html lang="en">
         <head>
             <!-- basic -->
@@ -137,12 +137,12 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Add Request Type Information</h1>
+                                    <h1>Chỉnh sửa loại yêu cầu</h1>
                                     <form action="update-request-type" method="post">
                                         <input type="text" id="id" name="id" value="${requestScope.requestType.id}" hidden=""/>
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="name"> Name</label>
+                                                <label for="name"> Tên</label>
                                                 <input
                                                     type="text"
                                                     id="name"
@@ -154,7 +154,7 @@
                                         </div> 
                                         <div class="form-group">
                                             <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="role">Destination</label>
+                                                <label for="role">Ban phụ trách</label>
                                                 <select name="role" required="">
                                                     <c:forEach items="${requestScope.rolelist}" var="o">
                                                         <c:if test="${o.id == 4 ||  o.id == 5}">
@@ -166,7 +166,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="detail">Detail</label>
+                                                <label for="detail">Thông tin</label>
                                                 <input
                                                     type="text"
                                                     id="detail"
@@ -176,7 +176,7 @@
                                                     />
                                             </div>                                                                             
                                             <div class="form-button">
-                                                <button type="submit">Update</button>
+                                                <button type="submit">Cập nhập</button>
                                                 <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                             </div>
                                     </form>

@@ -1,4 +1,5 @@
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -52,32 +53,32 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Request history</h2>
+                                                <h2>Thông tin lịch sử yêu cầu</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="viewrequest_history" method="post">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <label for="fromDate">From:</label>
+                                                        <label for="fromDate">Từ:</label>
                                                         <input type="date" class="form-control" id="fromDate" name="from" placeholder="From" value="${requestScope.from}">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <label for="toDate">To:</label>
+                                                        <label for="toDate">Đến:</label>
                                                         <input type="date" class="form-control" id="toDate" name="to" placeholder="To" value="${requestScope.to}">
                                                     </div>
                                                     <div class="col-md-2">
-                                                        <label for="typeRequest">Type:</label>
+                                                        <label for="typeRequest">Loại:</label>
                                                         <select class="form-control" id="typeRequest" name="typeRequest">
-                                                            <option value="">Selected Type Request</option>
+                                                            <option value="">Chọn loại yêu cầu</option>
                                                             <c:forEach items="${requestScope.listType}" var="t">
                                                                 <option value="${t.id}" <c:if test="${requestScope.selectedType == t.id}">selected</c:if>>${t.name}</option>
                                                             </c:forEach>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex align-items-end">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="resident-add-request"  class="btn btn-primary">Create new Request</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
+                                                        <a href="resident-add-request"  class="btn btn-primary">Tạo yêu cầu</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -87,14 +88,14 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>Apartment</th>
-                                                            <th>Creation Date</th>
-                                                            <th>Response Date</th>
-                                                            <th>Type</th>
-                                                            <th>Executor</th>
-                                                            <th>Description</th>
-                                                            <th>Status</th>
-                                                            <th>Option</th>
+                                                            <th>Căn hộ</th>
+                                                            <th>Ngày tạo</th>
+                                                            <th>Ngày trả lời</th>
+                                                            <th>Loại</th>
+                                                            <th>Người thực hiện</th>
+                                                            <th>Thông tin</th>
+                                                            <th>Trạng thái</th>
+                                                            <th>Lựa chọn</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -104,7 +105,7 @@
                                                                 <td>${l.date}</td>
                                                                 <td>
                                                                     <c:choose>
-                                                                        <c:when test="${l.responseDate == null}">Not responded</c:when>
+                                                                        <c:when test="${l.responseDate == null}">Chưa phản hồi</c:when>
                                                                         <c:otherwise>${l.responseDate}</c:otherwise>
                                                                     </c:choose>
                                                                 </td>

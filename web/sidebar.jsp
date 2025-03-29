@@ -99,20 +99,20 @@
                                                 <li><a href="invoice.html"> <span>Invoice</span></a></li>
                                             </ul>
                                         </li>-->
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-resident"><i class="fa-solid fa-person"></i> <span>Resident Information</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-staff"><i class="fa-solid fa-users-line"></i> <span>Staff Information</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-company"><i class="fa-solid fa-building"></i> <span>Company Information</span></a></li>
-                    <li ><a href="view-news"><i class="fa-regular fa-newspaper"></i> <span>News</span></a></li>
-                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}"><a href="view-request-type"><i class="fa-solid fa-repeat"></i> <span>Request Type Information</span></a></li>
-                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 3) ? 'display-none':''}"><a href="${ut.getSiteToViewRequest(sessionScope.account.roleId)}"><i class="fa-solid fa-repeat"></i> <span>Request Information</span></a></li>
-                    <li class=""><a href="view-all-feedback"><i class="fa-solid fa-comment"></i><span>Feedback Information</span></a></li>
-                    <li><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Rule of apartment</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-categoryservice-staff"><i class="fas fa-cube"></i><span>Types of service</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-roomtype"><i class="fa-solid fa-house-flag"></i><span>Room Types</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-resident"><i class="fa-solid fa-person"></i> <span>Thông tin dân cư</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-staff"><i class="fa-solid fa-users-line"></i> <span>Thông tin nhân viên</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-all-company"><i class="fa-solid fa-building"></i> <span>Thông tin công ti</span></a></li>
+                    <li ><a href="view-news"><i class="fa-regular fa-newspaper"></i> <span>Tin tức</span></a></li>
+                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}"><a href="view-request-type"><i class="fa-solid fa-repeat"></i> <span>Loại yêu cầu</span></a></li>
+                    <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 3) ? 'display-none':''}"><a href="${ut.getSiteToViewRequest(sessionScope.account.roleId)}"><i class="fa-solid fa-repeat"></i> <span>Yêu cầu từ dân cư</span></a></li>
+                    <li class=""><a href="view-all-feedback"><i class="fa-solid fa-comment"></i><span>Đánh giá chung</span></a></li>
+                    <li><a href="${ut.getSiteToViewRule(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Quy tắc trung cư</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-categoryservice-staff"><i class="fas fa-cube"></i><span>Loại dịch vụ</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a href="view-roomtype"><i class="fa-solid fa-house-flag"></i><span>Loại phòng</span></a></li>
                     <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6 ? 'display-none':''}"><a href="view-all-resident-apartment"><i class="fa-solid fa-house-flag"></i><span>Căn hộ của tôi</span></a></li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-floor-staff"><i class="fa-solid fa-building"></i><span>Floor Information</span></a></li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}"><a  href="view-floor-staff"><i class="fa-solid fa-building"></i><span>Thông tin tầng</span></a></li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
-                        <a  href="${ut.getSiteToViewApartment(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Apartment Information</span></a>
+                        <a  href="${ut.getSiteToViewApartment(sessionScope.account.roleId)}"><i class="fa-solid fa-scale-balanced"></i><span>Thông tin căn hộ</span></a>
                     </li>
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-all-contract"><i class="fa-solid fa-book"></i><span>View contract</span></a>
@@ -139,13 +139,16 @@
                         <a href="view-apartmentservice-staff"><i class="fa fa-headset"></i><span>Theo dõi sử dụng dịch vụ</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 1 && sessionScope.account.roleId != 6? 'display-none':''}">
-                        <a href="view-invoice-resident"><i class="fa fa-money-bill-wave"></i><span>Invoice</span></a>
+                        <a href="view-invoice-resident"><i class="fa fa-money-bill-wave"></i><span>Hóa đơn</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
-                        <a href="view-invoice-staff"><i class="fa fa-money-bill-wave"></i><span>Invoice</span></a>
+                        <a href="view-invoice-staff"><i class="fa fa-money-bill-wave"></i><span>Hóa đơn</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="dashboard-invoice-staff"><i class="fa fa-dashboard"></i><span>Chart</span></a>
+                    </li>
+                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
+                        <a href="view-role"><i class="fa fa-shield-alt"></i><span>Chức vụ</span></a>
                     </li>
 <!--                    <li class="${sessionScope.account.roleId != 3? 'display-none':''}">
                         <a href="fund"><i class="fa fa-dashboard"></i><span>fund</span></a>

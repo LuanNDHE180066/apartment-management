@@ -177,6 +177,14 @@ public class AccountDAO extends DBContext {
         List<String> list = new ArrayList<>();
         String nofi = "Yêu cầu ";
         switch (role) {
+            case 1:
+                sql +="from Invoice where rid ='"+pid+"' and status = 0";
+                nofi +="thanh toán hóa đơn ";
+                break;
+            case 6:
+                sql +="from Invoice where rid ='"+pid+"' and status = 0";
+                nofi +="thanh toán hóa đơn ";
+                break;
             case 2:
                 sql += "from request where Status = 0";
                 nofi +="từ dân cư "; 

@@ -73,6 +73,48 @@ public class RoleDAO extends DBContext {
         }
         return list;
     }
+    public boolean isExistRoleName(String name){
+        String sql ="select * from role where name=?";
+        try {
+            PreparedStatement st= connection.prepareStatement(sql);
+            st.setString(1, name);
+            ResultSet rs= st.executeQuery();
+            if(rs.next()){
+                return true;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+        return false;
+    }
+    public int nextRoleId(){
+        String sql ="select count(*) as no from role";
+        try {
+            PreparedStatement st= connection.prepareStatement(sql);
+            ResultSet rs=st.executeQuery();
+            if(rs.next()){
+                return rs.getInt("no");
+            }
+        } catch (SQLException e) {
+        }
+        return 0;
+    }
+    public void addRole(String name,String des){
+        String sql ="insert into Role values(?,?,?)";
+        try {
+            PreparedStatement st= connection.prepareStatement(sql);
+            st.setString(1, Integer.toString(nextRoleId()));
+            st.setString(2, name);
+            st.setString(3, des);
+            st.executeUpdate();
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+    }
+    public static void main(String[] args) {
+        RoleDAO dao = new RoleDAO();
+        System.out.println(dao.nextRoleId());
+    }
   
 
 }

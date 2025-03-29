@@ -5,7 +5,7 @@
 --%>
 
 <!DOCTYPE html>
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <html lang="en">
     <head>
@@ -126,7 +126,7 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2>Request Type Information</h2>
+                                                <h2>Thông tin loại yêu cầu</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px;">
@@ -134,7 +134,7 @@
                                                 <div class="row align-items-center">
                                                     <div class="col-md-3">
                                                         <select class="form-control" name="filterRoles">
-                                                            <option value="">Filter by Roles</option>
+                                                            <option value="">Tìm dựa trên vai trò</option>
                                                             <c:forEach items="${requestScope.rolelist}" var="o">
                                                                 <c:if test="${o.id == 4 || o.id == 5}">
                                                                     <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
@@ -143,8 +143,8 @@
                                                         </select>
                                                     </div>
                                                     <div class="col-md-4 d-flex align-items-end">
-                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Filter</button>
-                                                        <a href="add-request-type" class="btn btn-primary">Add Request Type</a>
+                                                        <button type="submit" class="btn btn-primary" style="margin-right: 5px;">Lọc</button>
+                                                        <a href="add-request-type" class="btn btn-primary">Thêm loại yêu cầu</a>
                                                     </div>
                                                 </div>
                                             </form>
@@ -154,10 +154,10 @@
                                                 <table class="table w-100" id="table-infor">
                                                     <thead>
                                                         <tr>
-                                                            <th>Name</th>
-                                                            <th>Detail</th>
-                                                            <th>Destination</th>
-                                                            <th>Option</th>
+                                                            <th>Tên</th>
+                                                            <th>Chi tiết</th>
+                                                            <th>Ban phụ trách</th>
+                                                            <th>Lựa chon</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -183,7 +183,7 @@
                         <!-- footer -->
                         <div class="container-fluid">
                             <div class="footer">
-                                <p>Copyright � 2018 Designed by html.design. All rights reserved.</p>
+                                <p>Copyright ï¿½ 2018 Designed by html.design. All rights reserved.</p>
                             </div>
                         </div>
                     </div>
