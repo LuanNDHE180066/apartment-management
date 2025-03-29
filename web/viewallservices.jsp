@@ -107,18 +107,18 @@
                                             <form action="all-services" method="post">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input id="searchInput" name="name" type="text" class="form-control" placeholder="Search by Name">
+                                                        <input id="searchInput" name="name" type="text" class="form-control" placeholder="Tìm kiếm theo tên ">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="status">
-                                                            <option value="">Filter by Status</option>
-                                                            <option value="1" <c:if test="${sessionScope.status == 1}">selected</c:if>>Active</option>
-                                                            <option value="0" <c:if test="${sessionScope.status == 0}">selected</c:if>>Inactive</option>
+                                                            <option value="">Lọc theo trạng thái</option>
+                                                            <option value="1" <c:if test="${sessionScope.status == 1}">selected</c:if>>Đang hoạt động</option>
+                                                            <option value="0" <c:if test="${sessionScope.status == 0}">selected</c:if>>Đã đóng</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">
                                                             <select class="form-control" name="category">
-                                                                <option value="" >Select category</option>
+                                                                <option value="" >Thể loại</option>
                                                             <c:forEach items="${requestScope.listCategories}" var="cs">
                                                                 <option value="${cs.id}" <c:if test="${sessionScope.category == cs.id}">selected</c:if>>${cs.name}</option>
                                                             </c:forEach>
@@ -126,7 +126,7 @@
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="company">
-                                                            <option value="" >Select Company</option>
+                                                            <option value="" >Công ti cung cấp </option>
                                                             <c:forEach items="${requestScope.listCompanies}" var="c">
                                                                 <option value="${c.id}" <c:if test="${sessionScope.company == c.id}">selected</c:if>>${c.name}</option>
                                                             </c:forEach>
@@ -145,15 +145,15 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>Services Name</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Unit</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Supplier</th>
-                                                            <th>Status</th>
-                                                            <th style="width: 10%">Start</th>
-                                                            <th>End</th>
+                                                            <th>Tên dịch vụ</th>
+                                                            <th>Phí</th>
+                                                            <th>Đơn vị</th>
+                                                            <th>Mô tả</th>
+                                                            <th>Loại dịch vụ</th>
+                                                            <th>Cung cấp</th>
+                                                            <th>Trạng thái</th>
+                                                            <th style="width: 10%">Ngày tạo</th>
+                                                            <th>Ngày đóng</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>

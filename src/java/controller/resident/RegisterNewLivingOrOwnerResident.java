@@ -204,12 +204,12 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
                 }
             }
 
-//            Resident reGetByCCCD = reDAO.getResidentById(id);
-//            if (reGetByCCCD != null && reDAO.checkDuplicateEmail(email, reGetByCCCD.getpId())) {
-//                request.setAttribute("message", "Email is existed..");
-//                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
-//                return;
-//            }
+            Resident reGetByCCCD = reDAO.getResidentById(id);
+            if (reGetByCCCD != null && reDAO.checkDuplicateEmail(email, reGetByCCCD.getpId())) {
+                request.setAttribute("message", "Email is existed..");
+                request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
+                return;
+            }
 
             Resident newRe = new Resident(name, id, phone, email, dob, address, null, null, rDAO.getById("1"), gender.equals("M") ? "Nam" : "Nữ");
             RequestChangeResident re = new RequestChangeResident(owner, newRe, aid, 0, 0, 0, formattedDate);

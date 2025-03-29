@@ -5,8 +5,8 @@
 --%>
 
 <!DOCTYPE html>
-<%@taglib
-    prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
     <html lang="en">
         <head>
             <!-- basic -->
@@ -137,12 +137,12 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Update Request Information</h1>
+                                    <h1>Cập nhập yêu cầu</h1>
                                     <form action="update-request-staff" method="post">
                                         <input type="text" id="id" name="id" value="${requestScope.rq.id}" hidden=""/>
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="name">Resident Name</label>
+                                                <label for="name">Tên dân cư</label>
                                                 <input
                                                     type="text"
                                                     id="name"
@@ -154,7 +154,7 @@
                                             </div>
                                         </div>  
                                         <div class="form-group">
-                                            <label for="aparment">Apartment Number</label>
+                                            <label for="aparment">Căn hộ</label>
                                             <input
                                                     type="text"
                                                     id="aparment"
@@ -166,7 +166,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="detail">Detail requirement</label>
+                                                <label for="detail">Chi tiết yêu cầu</label>
                                                 <input
                                                     type="text"
                                                     id="detail"
@@ -179,7 +179,7 @@
                                         </div>
                                         <div class="form-group">
                                             <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="response">Response</label>
+                                                <label for="response">Trả lời</label>
                                                 <input
                                                     type="text"
                                                     id="response"
@@ -193,7 +193,7 @@
                                         <div class="form-group">
                                             <div class="two-cols">
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="date">Date</label>
+                                                    <label for="date">Ngày gửi</label>
                                                     <input
                                                         type="text"
                                                         readonly=""
@@ -204,7 +204,7 @@
                                                         />
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
-                                                    <label for="typerequest">Type request</label>
+                                                    <label for="typerequest">Loại</label>
                                                     <input
                                                         type="text"
                                                         id="typerequest"
@@ -218,7 +218,7 @@
                                         </div>
                                         <div class="form-group" >
                                             <div class="col" style="padding: 0; margin-right: 5px">
-                                                <label for="balcony">Status of request</label>
+                                                <label for="balcony">Trạng thái</label>
                                                 <select name="status">
                                                     <!--<option value="Wating">Waiting</option>-->
                                                     <option value="1">In process</option>
@@ -227,7 +227,7 @@
                                             </div>
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Update</button>
+                                            <button type="submit">Cập nhập</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>

@@ -493,6 +493,8 @@ public class ResidentDAO extends DBContext {
             Logger.getLogger(ResidentDAO.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
+    
+   
 
     public String insertNewResident(Resident r) {
         String sql = "INSERT INTO [dbo].[Resident] (\n"

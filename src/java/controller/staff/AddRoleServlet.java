@@ -2,11 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
+
 package controller.staff;
 
-import dao.InvoiceDAO;
-import dao.LivingApartmentDAO;
-import dao.MonthlyServiceDAO;
+import dao.RoleDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -14,50 +13,42 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.servlet.http.HttpSession;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.YearMonth;
-import model.Account;
-import model.SendEmail;
+import util.Util;
 
 /**
  *
  * @author thanh
  */
-@WebServlet(name = "GenerateInvoice", urlPatterns = {"/generate-invoice-staff"})
-public class GenerateInvoice extends HttpServlet {
-
-    /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
-     * methods.
-     *
+@WebServlet(name="AddRoleServlet", urlPatterns={"/add-role"})
+public class AddRoleServlet extends HttpServlet {
+   
+    /** 
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet GenerateInvoice</title>");
+            out.println("<title>Servlet AddRoleServlet</title>");  
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet GenerateInvoice at " + request.getContextPath() + "</h1>");
+            out.println("<h1>Servlet AddRoleServlet at " + request.getContextPath () + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    }
+    } 
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /**
+    /** 
      * Handles the HTTP <code>GET</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -65,32 +56,30 @@ public class GenerateInvoice extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        if (request.getParameter("method") != null) {
-            this.doPost(request, response);
-            return;
+    throws ServletException, IOException {
+        String name= Util.stringNomalize(request.getParameter("name"));
+        String des= Util.stringNomalize(request.getParameter("des"));
+        RoleDAO rd= new RoleDAO();
+        if(rd.isExistRoleName(name)){
+            request.setAttribute("error", "Chức vụ đã  tồn tại");
+            request.setAttribute("roles", rd.getAll());
+            request.getRequestDispatcher("viewrole.jsp").forward(request, response);
         }
-        HttpSession session = request.getSession();
-        InvoiceDAO ivd = new InvoiceDAO();
-//          YearMonth yearMonth = YearMonth.now();
-//        LocalDate date = yearMonth.atEndOfMonth();
-//        if(!LocalDate.now().equals(date) || ivd.isCreatedInvoice(Date.valueOf(LocalDate.now()))){
-//            response.sendRedirect("view-apartmentservice-staff");
-//            return;
-//        }
-        LivingApartmentDAO ld = new LivingApartmentDAO();
-        MonthlyServiceDAO md = new MonthlyServiceDAO();
-        ivd.generateInvoice();
-        ivd.createNewsNotifyInvoice(((Account)session.getAttribute("account")).getpId());
-//        SendEmail sendEmail = new SendEmail();
-//        sendEmail.sendEmailInvoiceToAll(ld.getEmailInvoicesActiveResident());
-        md.resetUsage();
-        response.sendRedirect("view-invoice-staff");
-    }
+        else if(name.isBlank()|| des.isBlank()){
+            request.setAttribute("error", "Tên chức vụ và mô tả không được để trống");
+            request.setAttribute("roles", rd.getAll());
+            request.getRequestDispatcher("viewrole.jsp").forward(request, response);
+        }
+        else{
+            rd.addRole(name, des);
+            request.setAttribute("msg", "Thành công thêm chức vụ");
+            request.setAttribute("roles", rd.getAll());
+            request.getRequestDispatcher("viewrole.jsp").forward(request, response);
+        }
+    } 
 
-    /**
+    /** 
      * Handles the HTTP <code>POST</code> method.
-     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -98,16 +87,12 @@ public class GenerateInvoice extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        InvoiceDAO ivd = new InvoiceDAO();
-        SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmailInvoiceDebtToAll(ivd.getEmailInvoiceDebt());
-        response.sendRedirect("view-invoice-staff");
+    throws ServletException, IOException {
+        processRequest(request, response);
     }
 
-    /**
+    /** 
      * Returns a short description of the servlet.
-     *
      * @return a String containing servlet description
      */
     @Override

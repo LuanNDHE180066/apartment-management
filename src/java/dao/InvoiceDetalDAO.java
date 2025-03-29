@@ -56,15 +56,22 @@ public class InvoiceDetalDAO extends DBContext {
 
     public void addInvoiceDetailByApartmentIdAndInvoiceId(String invoiceId, String aid) {
         MonthlyServiceDAO md = new MonthlyServiceDAO();
-        List<MonthlyService> listUsingSerivce = md.getByApartmentId(aid);
+        List<MonthlyService> listUsingService = md.getByApartmentId(aid);
 
-        String sql = "insert into invoicedetail values(?,?,?,?,?,?)";
+        String sql = "INSERT INTO invoicedetail (invoiceId, serviceName, PriceUnit, quantity, date, amount) VALUES (?, ?, ?, ?, ?, ?)";
+
         try (PreparedStatement st = connection.prepareStatement(sql)) { // Mở 1 PreparedStatement duy nhất
-            for (MonthlyService ms : listUsingSerivce) {
+            for (MonthlyService ms : listUsingService) {
                 Service sv = ms.getService();
                 int quantity = ms.getQuantity();
-                float amount = quantity * (float) sv.getUnitPrice();
                 float unitprice = (float) sv.getUnitPrice();
+                float amount;
+                if(sv.getName().equals("Cung cấp điện")){
+                    amount = calculateElectricityBill(quantity);
+                }
+                else{
+                    amount = quantity * unitprice;
+                }
                 LocalDateTime time = LocalDateTime.now();
 
                 st.setString(1, invoiceId);
@@ -73,10 +80,36 @@ public class InvoiceDetalDAO extends DBContext {
                 st.setInt(4, quantity);
                 st.setTimestamp(5, Timestamp.valueOf(time));
                 st.setFloat(6, amount);
-                st.executeUpdate();
+                st.addBatch(); // Thêm vào batch
             }
+
+            st.executeBatch(); // Chạy batch một lần duy nhất
         } catch (SQLException e) {
             System.out.println(e);
         }
     }
+    public  int calculateElectricityBill(int consumption) {
+        int totalCost = 0;
+        int remainingConsumption = consumption;
+
+        // Giá điện theo bậc (VNĐ/kWh) và giới hạn mỗi bậc
+        int[] thresholds = {50, 50, 100, 100, 100}; // Giới hạn từng bậc
+        double[] rates = {1806,  1866, 2167, 2729 , 3050, 3151}; // Giá từng bậc
+
+        for (int i = 0; i < thresholds.length; i++) {
+            if (remainingConsumption <= 0) break;
+
+            int used = Math.min(remainingConsumption, thresholds[i]);
+            totalCost += used * rates[i];
+            remainingConsumption -= used;
+        }
+
+        // Nếu vượt quá bậc 5 thì tính theo bậc 6
+        if (remainingConsumption > 0) {
+            totalCost += remainingConsumption * rates[5];
+        }
+
+        return totalCost;
+    }
+
 }
