@@ -75,10 +75,15 @@ public class ViewApartmantAdmin extends HttpServlet {
         if (filterStatus == null || filterStatus.trim().isEmpty()) {
             filterStatus = "";
         }
+        String searchName = request.getParameter("searchName");
+        if(searchName == null){
+            searchName = ""; 
+        }
+        searchName = Util.nomalizeApartmentNumber(searchName);
         RoomTypeDAO rdao = new RoomTypeDAO();
         List<RoomType> types = rdao.getAll();
         ApartmentDAO dao = new ApartmentDAO();
-        List<Apartment> apartmentes = dao.getViewApartment(floor, filterType, filterStatus);
+        List<Apartment> apartmentes = dao.getViewApartment(searchName,floor, filterType, filterStatus);
         request.setAttribute("floor", floor);
         request.setAttribute("filterType", filterType);
         request.setAttribute("filterStatus", filterStatus);

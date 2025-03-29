@@ -3,7 +3,7 @@
     Created on : Jan 23, 2025, 2:23:52 PM
     Author     : PC
 --%>
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -129,23 +129,23 @@
                                     <h1>Add New Rule</h1>
                                     <form action="add-new-rule" method="post">
                                         <div class="form-group">
-                                            <label for="title">Title</label>
+                                            <label for="title">Tiêu Đề</label>
                                             <input type="text" id="title" name="title" placeholder="Enter rule title" required />
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="description">Description</label>
+                                            <label for="description">Chi Tiết</label>
                                             <textarea id="description" name="description" placeholder="Enter description" required maxlength="500" rows="4" style="width: 100%;"></textarea>
 
                                         </div>
 
                                         <div class="form-group">
-                                            <label for="effectiveDate">Effective Date</label>
+                                            <label for="effectiveDate">Ngày Hiệu Lực</label>
                                             <input type="date" id="effectiveDate" name="effectiveDate" required />
                                         </div>
 
                                         <div class="form-button">
-                                            <button type="submit">Add Rule</button>
+                                            <button type="submit">Tạo</button>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center">${requestScope.message}</h5>
                                             <h5 style="color:red;text-align:center">${requestScope.error}</h5>
                                         </div>

@@ -125,7 +125,7 @@ public class UpdateExpenditure extends HttpServlet {
         String formattedDate = lc.format(format);
 
         if (title.trim().isBlank()) {
-            request.setAttribute("message", "Title can not be blank");
+            request.setAttribute("message", "Tiêu đề không thể để trống");
             request.setAttribute("status", "false");
             request.setAttribute("expenditure", daoE.getExpenditureById(eid));
             request.getRequestDispatcher("updateExpenditure").forward(request, response);
@@ -133,7 +133,7 @@ public class UpdateExpenditure extends HttpServlet {
         }
 
         if (approveDate_raw.isBlank() || paymentDate_raw.isBlank()) {
-            request.setAttribute("message", "Approve date and payment date can not be blank");
+            request.setAttribute("message", "Ngày duyệt chi và ngày giải ngân không thể rỗng.");
             request.setAttribute("status", "false");
             request.setAttribute("expenditure", daoE.getExpenditureById(eid));
             request.getRequestDispatcher("updateExpenditure").forward(request, response);
@@ -141,7 +141,7 @@ public class UpdateExpenditure extends HttpServlet {
         }
 
         if (note.trim().isBlank()) {
-            request.setAttribute("message", "Note can not be blank");
+            request.setAttribute("message", "Note không thể để rỗng.");
             request.setAttribute("status", "false");
             request.setAttribute("expenditure", daoE.getExpenditureById(eid));
             request.getRequestDispatcher("updateExpenditure").forward(request, response);
@@ -158,7 +158,7 @@ public class UpdateExpenditure extends HttpServlet {
                     daoSt.getById(AdminId),
                     "Update", formattedDate, daoSt.getById(a.getpId()), daoExpen.getExpenditureById(eid).getCreatedDate());
             if (!daoE.addNewHistoryExpenditure(he)) {
-                request.setAttribute("message", "Can not create update expenditure request");
+                request.setAttribute("message", "Không thể thêm phiếu chi");
                 request.setAttribute("status", "false");
                 request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
                 return;
@@ -220,7 +220,7 @@ public class UpdateExpenditure extends HttpServlet {
                 send.sendEmail(he.getCurrentAdmin().getEmail(),
                         daoSt.getById(he.getCreatedStaff().getId()) + " has updated an expenditure: " + he.getTitle(),
                         emailContent);
-                request.setAttribute("message", "Your update expenditure request has been successfully saved to the waiting list.");
+                request.setAttribute("message", "Chỉnh sửa của bạn đã được được lưu vào danh sách chờ");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("updateExpenditure.jsp").forward(request, response);
                 return;

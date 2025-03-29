@@ -77,7 +77,7 @@ public class LoginByGoogleServlet extends HttpServlet {
         String email = getEmailUser(accessToken);
         Util util = new Util();
         if (!util.getAllEmail().contains(email)) {
-            request.setAttribute("error", "Email is not exist");
+            request.setAttribute("error", "Email không tồn tại");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }

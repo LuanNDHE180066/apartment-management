@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<html lang="en">
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<html lang="vi">
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-        <title>Apartment management</title>
+        <title>Quản lý căn hộ</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <link rel="stylesheet" href="css/bootstrap.min.css" />
         <link rel="stylesheet" href="style.css" />
@@ -57,7 +58,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2 >BaVi apartment's rules</h2>
+                                        <h2 >Nội quy căn hộ Ba Vì</h2>
                                     </div>
                                 </div>
                             </div>
@@ -66,29 +67,29 @@
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
                                             <div class="heading1 margin_0">
-                                                <h2 style="font-weight: bold">Rule Information</h2>
+                                                <h2 style="font-weight: bold">Thông tin nội quy</h2>
                                             </div>
                                         </div>
                                         <div style="margin-left: 40px; margin-bottom: 15px;">
                                             <form action="view-rule-resident" method="post" class="row align-items-center">
                                                 <div class="col-md-3">
-                                                    <label for="searchDescription" style="font-weight: bold">Search Title</label>
-                                                    <input type="text" id="searchDescription" name="title" class="form-control" placeholder="Enter description" value="${sessionScope.title}">
+                                                    <label for="searchDescription" style="font-weight: bold">Tìm kiếm tiêu đề</label>
+                                                    <input type="text" id="searchDescription" name="title" class="form-control" placeholder="Nhập tiêu đề" value="${sessionScope.title}">
                                                 </div>
                                                 <div class="col-md-3">
-                                                    <label for="dateFilter" style="font-weight: bold">Filter by Effective Date</label>
+                                                    <label for="dateFilter" style="font-weight: bold">Lọc theo ngày hiệu lực</label>
                                                     <select id="dateFilter" class="form-control" name="date">
-                                                        <option value="">Select</option>
-                                                        <option value="1" <c:if test="${sessionScope.date ==1}">selected</c:if>>1 Day Ago</option>
-                                                        <option value="7" <c:if test="${sessionScope.date ==7}">selected</c:if>>7 Days Ago</option>
-                                                        <option value="15" <c:if test="${sessionScope.date ==15}">selected</c:if>>15 Days Ago</option>
-                                                        <option value="30" <c:if test="${sessionScope.date ==30}">selected</c:if>>1 Month Ago</option>
-                                                        <option value="180" <c:if test="${sessionScope.date ==180}">selected</c:if>>6 Months Ago</option>
-                                                        <option value="365" <c:if test="${sessionScope.date ==365}">selected</c:if>>1 Year Ago</option>
+                                                        <option value="">Chọn</option>
+                                                        <option value="1" <c:if test="${sessionScope.date ==1}">selected</c:if>>1 ngày trước</option>
+                                                        <option value="7" <c:if test="${sessionScope.date ==7}">selected</c:if>>7 ngày trước</option>
+                                                        <option value="15" <c:if test="${sessionScope.date ==15}">selected</c:if>>15 ngày trước</option>
+                                                        <option value="30" <c:if test="${sessionScope.date ==30}">selected</c:if>>1 tháng trước</option>
+                                                        <option value="180" <c:if test="${sessionScope.date ==180}">selected</c:if>>6 tháng trước</option>
+                                                        <option value="365" <c:if test="${sessionScope.date ==365}">selected</c:if>>1 năm trước</option>
                                                         </select>
                                                     </div>
                                                     <div class="col-md-3 mt-4">
-                                                        <button type="submit" class="btn btn-primary">Search</button>
+                                                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
                                                     </div>
                                                 </form>
                                             </div>
@@ -97,9 +98,9 @@
                                                     <table class="table w-100">
                                                         <thead>
                                                             <tr>
-                                                                <th>Title</th>
-                                                                <th>Effective Date</th>
-                                                                <th>Description</th>
+                                                                <th>Tiêu đề</th>
+                                                                <th>Ngày hiệu lực</th>
+                                                                <th>Mô tả</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -116,13 +117,13 @@
                                                 </table>
                                                 <div class="pagination">
                                                     <c:if test="${currentPage > 1}">
-                                                        <a href="view-rule-resident?page=${currentPage - 1}" class="btn btn-sm btn-primary">Previous</a>
+                                                        <a href="view-rule-resident?page=${currentPage - 1}" class="btn btn-sm btn-primary">Trước</a>
                                                     </c:if>
                                                     <c:forEach begin="1" end="${totalPages}" var="i">
                                                         <a href="view-rule-resident?page=${i}" class="btn btn-sm ${i == currentPage ? 'btn-dark' : 'btn-light'}">${i}</a>
                                                     </c:forEach>
                                                     <c:if test="${currentPage < totalPages}">
-                                                        <a href="view-rule-resident?page=${currentPage + 1}" class="btn btn-sm btn-primary">Next</a>
+                                                        <a href="view-rule-resident?page=${currentPage + 1}" class="btn btn-sm btn-primary">Tiếp theo</a>
                                                     </c:if>
                                                 </div>
                                             </div>

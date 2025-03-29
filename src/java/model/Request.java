@@ -126,12 +126,12 @@ public class Request {
             return "";
         }
         else if(status.equals("0")){
-            return "Waiting";
+            return "Đợi";
         }else if(status.equals("1")){
-            return "In process";
+            return "Đang làm";
         }
         else{
-            return "Done";
+            return "Xong";
         } 
     }
 

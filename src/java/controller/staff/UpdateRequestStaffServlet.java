@@ -83,9 +83,9 @@ public class UpdateRequestStaffServlet extends HttpServlet {
         String responseDate = LocalDate.now().toString();
         RequestDAO rd = new RequestDAO();
         rd.updateRequest(id, res, status, responseDate);
-        if (status.equals("Done")) {
+        if (status.equals("Xong")) {
             SendEmail send = new SendEmail();
-            send.sendEmail(rd.getById(id).getResidentId().getEmail(), "UPDATE YOUR REQUEST", rd.getById(id).getResponse());
+            send.sendEmail(rd.getById(id).getResidentId().getEmail(), "Yêu cầu được chỉnh sửa", rd.getById(id).getResponse());
         }
 
         response.sendRedirect("view-all-request");

@@ -24,6 +24,14 @@ import org.mindrot.jbcrypt.BCrypt;
  */
 public class Util {
 
+    public static String nomalizeApartmentNumber(String apartmentNumber) {
+        apartmentNumber = apartmentNumber.trim();
+        while (apartmentNumber.contains(" ")) {
+            apartmentNumber = apartmentNumber.replaceAll(" ", "");
+        }
+        return apartmentNumber;
+    }
+
     public String getTableNameByRoleId(int role) {
         String destination = "";
         switch (role) {
@@ -41,53 +49,53 @@ public class Util {
     }
 
     public String getTableNameByRoleIdEdit(int role) {
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             return "editprofileRE.jsp";
         }
         return "editprofileST.jsp";
     }
 
     public String getSiteToViewRule(int role) {
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             return "view-rule-resident";
         }
         return "view-rule-admin";
     }
 
     public String getSiteToViewApartment(int role) {
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             return "view-apartment-resident";
         }
         return "view-apartment-admin";
     }
 
     public String getSiteToViewRequest(int role) {
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             return "viewrequest_history";
         }
         return "view-all-request";
     }
 
     public String getSiteToViewFeedBack(int role) {
-        if (role == 1 || role ==6) {
+        if (role == 1 || role == 6) {
             return "view-feed-back-user";
         }
         return "view-all-feedback";
     }
 
-    public String getSiteViewByNofication(String nofi){
+    public String getSiteViewByNofication(String nofi) {
         String[] ids = nofi.split("\\s+");
-        String id = ids[ids.length-1];
+        String id = ids[ids.length - 1];
         id = id.replaceAll("[0-9]", "");
-        if(id.equalsIgnoreCase("R")){
+        if (id.equalsIgnoreCase("R")) {
             return "view-all-request";
         }
-        if(id.equalsIgnoreCase("IV")){
+        if (id.equalsIgnoreCase("IV")) {
             return "view-invoice-resident";
         }
         return "index.jsp";
     }
-    
+
     public int getNumberFromText(String str) {
         return Integer.parseInt(str.substring(1));
     }

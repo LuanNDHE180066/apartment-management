@@ -114,17 +114,17 @@ public class ChangeRepresentResident extends HttpServlet {
         }
         Util u = new Util();
         if (reDAO.checkDuplicatateUsername(username) || stDAO.checkDuplicatateUsername(username)) {
-            request.setAttribute("message", "Username is existed");
+            request.setAttribute("message", "Tài khoản đã tồn tại.");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
             return;
         } else if (accountExist != null && reDAO.getById_v2(newRepresentId).getUsername() == null) {
-            request.setAttribute("message", "New represent person is not has account");
+            request.setAttribute("message", "Người đại diện mới không có tài khoản.");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
             return;
         } else if (accountExist == null && reDAO.getById_v2(newRepresentId).getUsername() != null) {
-            request.setAttribute("message", "New represent person is already has account");
+            request.setAttribute("message", "Người đại diện đã có tài khoản");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("changeRepresentResident.jsp").forward(request, response);
             return;
@@ -144,13 +144,13 @@ public class ChangeRepresentResident extends HttpServlet {
                     stringDate, accountExist == null ? 0 : 1, username, reDAO.getById_v2(owner));
         }
         if (rrcDAO.insertNewRequest(re)) {
-            request.setAttribute("message", "Add request successful");
+            request.setAttribute("message", "Thêm yêu cầu thành công.");
             SendEmail send = new SendEmail();
             List<Staff> eStaff = stDAO.getAllAdmin();
-            send.sendEmailToWorkingAdmin(eStaff, "REQUEST CHANGE REPRESENT PERSON FROM " + re.getaId() + " is created at " + re.getRequestDate());
+            send.sendEmailToWorkingAdmin(eStaff, "Yêu cầu đổi cư dân đại diện " + re.getaId() + " được tạo vào: " + re.getRequestDate());
             request.setAttribute("status", "true");
         } else {
-            request.setAttribute("message", "Failed to insert request");
+            request.setAttribute("message", "Thêm yêu cầu thất bại.");
             request.setAttribute("status", "false");
         }
 
