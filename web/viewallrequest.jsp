@@ -253,7 +253,7 @@
                                                                         <a style="margin-left: 5px" href="update-request-administrative?requestId=${o.id}" class="fa fa-ban"></a>
                                                                     </td> 
                                                                     <td>
-                                                                        
+
                                                                     </td>
                                                                 </tr>                                                            
                                                             </c:forEach>
@@ -483,39 +483,35 @@
                                 <!-- More tables can be added here -->
                             </div>
                         </div>
-                    </div>
 
-                    <!-- footer -->
-                    <div class="container-fluid">
-                        <div class="footer">
-                            <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
-                        </div>
+                    </div>
+                    <div class="footer" style="position: absolute; bottom: 50px; left: 50px; width: 100%; background: white; color: white; text-align: center; padding: 10px;">
+                        <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                     </div>
                 </div>
                 <!-- end dashboard inner -->
             </div>
         </div>
-
         <!-- jQuery -->
-<!--        <script>
-            function updateOptionsByTime() {
-                const currentHour = new Date().getHours(); // Lấy giờ hiện tại
-                const options = document.querySelectorAll("#shift option");
-
-                options.forEach(option => {
-                    const endHour = parseInt(option.getAttribute("data-time-end"));
-                    if (currentHour < endHour) {
-                        option.hidden = false; // Hiển thị option
-                    } else {
-                        option.hidden = true; // Ẩn option
+        <!--        <script>
+                    function updateOptionsByTime() {
+                        const currentHour = new Date().getHours(); // Lấy giờ hiện tại
+                        const options = document.querySelectorAll("#shift option");
+        
+                        options.forEach(option => {
+                            const endHour = parseInt(option.getAttribute("data-time-end"));
+                            if (currentHour < endHour) {
+                                option.hidden = false; // Hiển thị option
+                            } else {
+                                option.hidden = true; // Ẩn option
+                            }
+                        });
                     }
-                });
-            }
-            // Gọi hàm khi trang load
-            updateOptionsByTime();
-            // Cập nhật mỗi phút để kiểm tra lại điều kiện
-            setInterval(updateOptionsByTime, 60000);
-        </script>-->
+                    // Gọi hàm khi trang load
+                    updateOptionsByTime();
+                    // Cập nhật mỗi phút để kiểm tra lại điều kiện
+                    setInterval(updateOptionsByTime, 60000);
+                </script>-->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>

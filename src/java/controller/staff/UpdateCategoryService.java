@@ -87,21 +87,21 @@ public class UpdateCategoryService extends HttpServlet {
         if(name.isBlank()){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
             request.setAttribute("status", false);
-            request.setAttribute("error", "Name is not allow blank ");
+            request.setAttribute("error", "Tên không được để trống!");
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }
         if(note.isBlank()){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
             request.setAttribute("status", false);
-            request.setAttribute("error", "Note is not allow blank ");
+            request.setAttribute("error", "Ghi chú không được để trống!");
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }
         if(val.isExistedNameExceptSeft(Util.stringNomalize(name),id)){
             request.setAttribute("categoryservice", csd.getByCategoryId(id));
             request.setAttribute("status", false);
-            request.setAttribute("error", "Name is existed");
+            request.setAttribute("error", "Tên đã tồn tại!");
             request.getRequestDispatcher("updatecategoryservice.jsp").forward(request, response);
             return;
         }     

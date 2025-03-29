@@ -69,18 +69,18 @@ public class ResetPassServlet extends HttpServlet {
             SendEmail send = new SendEmail();
             TokenForgetPassword newToken = daoT.getTokenPassword(token);
             if (newToken == null) {
-                request.setAttribute("message", "Token invalid");
+                request.setAttribute("message", "Token không khả dụng!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
 
             if (newToken.isIsUsed()) {
-                request.setAttribute("message", "Token is used");
+                request.setAttribute("message", "Token đã bị sử dụng!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
             if (send.isExpired(newToken.getExpireTime())) {
-                request.setAttribute("message", "Token is expired");
+                request.setAttribute("message", "Token đã quá hạn!");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
@@ -92,7 +92,7 @@ public class ResetPassServlet extends HttpServlet {
             request.getRequestDispatcher("resetpassword.jsp").forward(request, response);
             return;
         } else {
-            request.setAttribute("message", "Token invalid");
+            request.setAttribute("message", "Token không đúng!");
             request.getRequestDispatcher("requestpassword.jsp");
             return;
         }
