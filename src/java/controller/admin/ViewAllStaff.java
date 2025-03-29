@@ -103,8 +103,8 @@ public class ViewAllStaff extends HttpServlet {
             }
         }
 
-        int totalPage = u.getTotalPage(list, 3);
-        list = u.getListPerPage(list, 3, String.valueOf(page));
+        int totalPage = u.getTotalPage(list, 5);
+        list = u.getListPerPage(list, 5, String.valueOf(page));
 
         request.setAttribute("totalPage", totalPage);
         request.setAttribute("currentPage", page);

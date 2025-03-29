@@ -150,7 +150,7 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="dob">Ngày sinh</label>
-                                                    <input type="date" id="dob" name="dob" value="${param.dob}"/>
+                                                    <input type="date" id="dob" name="dob" value="${param.dob}" required=""/>
                                                     <span style="color: red">${requestScope.ageerror}</span>
                                                 </div>
                                             </div>
@@ -218,7 +218,7 @@
                                                         placeholder="Nhập học vấn"
                                                         value="${param.education}" required=""
                                                         />
-<!--                                                    <span style="color: red">${requestScope.nameerror}</span>-->
+                                                    <span style="color: red">${requestScope.eduerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="salary">Lương</label>
@@ -272,7 +272,7 @@
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">
                                                     <label for="startDate">Ngày làm việc</label>
-                                                    <input type="date" id="startDate" name="startDate" value="${param.startDate}"/>
+                                                    <input type="date" id="startDate" name="startDate" value="${param.startDate}" required=""/>
                                                     <span style="color: red">${requestScope.startdateerror}</span>
                                                 </div>
                                                 <div class="col" style="padding: 0; margin-right: 5px">

@@ -101,8 +101,8 @@ public class UpdateStaffInfor extends HttpServlet {
         String dob = request.getParameter("dob");
         String email = request.getParameter("email");
         String address = u.stringNomalize(request.getParameter("address"));
-        String phone = request.getParameter("phone");
-        String cccd = request.getParameter("cccd");
+        String phone = u.stringNomalize(request.getParameter("phone"));
+        String cccd = u.stringNomalize(request.getParameter("cccd"));
         String education = u.stringNomalize(request.getParameter("education"));
         String bank = request.getParameter("bank");
         String salary_raw = request.getParameter("salary");

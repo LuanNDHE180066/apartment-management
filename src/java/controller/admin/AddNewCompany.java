@@ -82,13 +82,13 @@ public class AddNewCompany extends HttpServlet {
         Util u= new Util();
 
         String name =u.stringNomalize(request.getParameter("name")) ;
-        String phone = request.getParameter("phone");
-        String contactPhone = request.getParameter("contactPhone");
-        String fax = request.getParameter("fax");
+        String phone = u.stringNomalize(request.getParameter("phone"));
+        String contactPhone = u.stringNomalize(request.getParameter("contactPhone"));
+        String fax = u.stringNomalize(request.getParameter("fax"));
         String email = request.getParameter("email");
         String contactEmail = request.getParameter("contactemail");
-        String website = request.getParameter("website");
-        String taxCode = request.getParameter("taxCode");
+        String website = u.stringNomalize(request.getParameter("website"));
+        String taxCode = u.stringNomalize(request.getParameter("taxCode"));
         String bank = request.getParameter("bank");
         String address =u.stringNomalize(request.getParameter("address")) ;
         String description =u.stringNomalize(request.getParameter("description")) ;

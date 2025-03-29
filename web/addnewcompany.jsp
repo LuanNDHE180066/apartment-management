@@ -139,65 +139,65 @@
                                     <form action="add-new-company" method="post">
                                         <div class="form-group">
                                             <label for="name">Tên</label>
-                                            <input type="text" id="name" name="name" value="${param.company.name}" placeholder="Nhập tên công ty" required />
+                                            <input type="text" id="name" name="name" value="${param.name}" placeholder="Nhập tên công ty" required />
                                             <p class="error-message">${requestScope.nameError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="phone">Số tư vấn khách hàng</label>
-                                            <input type="tel" id="phone" name="phone" value="${param.company.phone}" placeholder="Nhập số tư vấn khách hàng" required />
+                                            <input type="tel" id="phone" name="phone" value="${param.phone}" placeholder="Nhập số tư vấn khách hàng" required />
                                             <p class="error-message">${requestScope.phoneError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="contactPhone">Số liên lạc</label>
-                                            <input type="tel" id="contactPhone" name="contactPhone" value="${param.company.contactPhone}" placeholder="Nhập số liên lạc" required />
+                                            <input type="tel" id="contactPhone" name="contactPhone" value="${param.contactPhone}" placeholder="Nhập số liên lạc" required />
                                             <p class="error-message">${requestScope.contactPhoneError}</p>
                                         </div>
                                         <div class="form-group">
                                             <label for="website">Website</label>
-                                            <input type="text" id="website" name="website" value="${param.company.website}" placeholder="Nhập website" required />
+                                            <input type="text" id="website" name="website" value="${param.website}" placeholder="Nhập website" required />
                                             <p class="error-message">${requestScope.websiteError}</p>
                                         </div>
                                         <div class="form-group">
                                             <label for="fax">Số Fax</label>
-                                            <input type="text" id="fax" name="fax" value="${param.company.fax}" placeholder="Nhập số fax" required />
+                                            <input type="text" id="fax" name="fax" value="${param.fax}" placeholder="Nhập số fax" required />
                                             <p class="error-message">${requestScope.faxError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="email">Email tư vấn</label>
-                                            <input type="email" id="email" name="email" value="${param.company.email}" placeholder="Nhập email" required />
+                                            <input type="email" id="email" name="email" value="${param.email}" placeholder="Nhập email" required />
                                             <p class="error-message">${requestScope.emailError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="contactemail">Email liên hệ</label>
-                                            <input type="email" id="contactemail" name="contactemail" value="${param.company.contactemail}" placeholder="Nhập email liên hệ" required />
+                                            <input type="email" id="contactemail" name="contactemail" value="${param.contactemail}" placeholder="Nhập email liên hệ" required />
                                             <p class="error-message">${requestScope.contactEmailError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="taxCode">Mã số thuế</label>
-                                            <input type="text" id="taxCode" name="taxCode" value="${param.company.taxCode}" placeholder="Nhập mã số thuế" required />
+                                            <input type="text" id="taxCode" name="taxCode" value="${param.taxCode}" placeholder="Nhập mã số thuế" required />
                                             <p class="error-message">${requestScope.taxCodeError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="bank">Ngân hàng</label>
-                                            <input type="text" id="bank" name="bank" value="${param.company.bank}" placeholder="Nhập ngân hàng" required />
+                                            <input type="text" id="bank" name="bank" value="${param.bank}" placeholder="Nhập ngân hàng" required />
                                             <p class="error-message">${requestScope.bankError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="address">Địa chỉ</label>
-                                            <input type="text" id="address" name="address" value="${param.company.address}" placeholder="Nhập địa chỉ" required />
+                                            <input type="text" id="address" name="address" value="${param.address}" placeholder="Nhập địa chỉ" required />
                                             <p class="error-message">${requestScope.addressError}</p>
                                         </div>
 
                                         <div class="form-group">
                                             <label for="description">Mô tả</label>
-                                            <input type="text" id="description" name="description" value="${param.company.description}"  placeholder="Nhập mô tả" required="" />
+                                            <input type="text" id="description" name="description" value="${param.description}"  placeholder="Nhập mô tả" required="" />
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Thêm</button>

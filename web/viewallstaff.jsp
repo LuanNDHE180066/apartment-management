@@ -186,7 +186,8 @@
                         <input type="hidden" name="searchName" value="${param.searchName}">
                         <input type="hidden" name="filterStatus" value="${param.filterStatus}">
                         <label for="page" style="font-size: 14px; font-weight: bold;">Trang:</label>
-                        <select id="page" name="page" onchange="this.form.submit()" required>
+                        <select id="page" name="page" onchange="this.form.submit()" 
+                                style="padding: 6px 12px; font-size: 14px; border: 1px solid #ddd; border-radius: 4px; cursor: pointer;">
                             <c:forEach begin="1" end="${requestScope.totalPage}" var="p">
                                 <option value="${p}" <c:if test="${p == requestScope.currentPage}">selected</c:if>>${p}</option>
                             </c:forEach>

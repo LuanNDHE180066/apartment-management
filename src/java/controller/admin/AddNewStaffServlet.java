@@ -105,13 +105,13 @@ public class AddNewStaffServlet extends HttpServlet {
         String name = u.stringNomalize(request.getParameter("name"));
         String dob = request.getParameter("dob");
         String address = u.stringNomalize(request.getParameter("address")) ;
-        String phone = request.getParameter("phone");
+        String phone = u.stringNomalize(request.getParameter("phone"));
         String email = u.stringNomalize( request.getParameter("email"));
-        String cccd = request.getParameter("cccd");
-        String education = request.getParameter("education");
+        String cccd = u.stringNomalize(request.getParameter("cccd"));
+        String education = u.stringNomalize(request.getParameter("education"));
         String salary_raw = request.getParameter("salary");
         String bank = request.getParameter("bank");
-        String username = request.getParameter("username");
+        String username = u.stringNomalize(request.getParameter("username"));
 //        String password = request.getParameter("password");
         String company = request.getParameter("company");
         String startDate = request.getParameter("startDate");
@@ -133,8 +133,7 @@ public class AddNewStaffServlet extends HttpServlet {
         password = encryptPassword(password);
         Staff s = null;
         boolean hasError = false;
-        try {
-            salary_raw = salary_raw.replaceAll("\\.", "");
+        salary_raw = salary_raw.replaceAll("\\.", "");
             int salary = Integer.parseInt(salary_raw);
             if (salary <= 0) {
                 request.setAttribute("salaryerror", "Lương không thể âm");
@@ -148,34 +147,50 @@ public class AddNewStaffServlet extends HttpServlet {
             }
             s = new Staff(name, dob, email, phone, address, cccd, salary, education, bank, username, password, role,
                     daoCp.getById(company), startDate, gender);
+        try {
+            
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             ZoneId zone = ZoneId.systemDefault();
 
             for (Staff st : listStaff) {
-                try {
+                
                     if (st.getCccd().equals(s.getCccd())) {
                         request.setAttribute("cccderror", "Căn cước đã tồn tại");
                         hasError = true;
                     }
+                    try {
                     Date start=format.parse(startDate);
                     Date today=new Date();
                     today= format.parse(format.format(today));
                     Date dateOfBirth = format.parse(dob);
                     LocalDate birthDate = dateOfBirth.toInstant().atZone(zone).toLocalDate();
                     LocalDate currentDate = LocalDate.now();
-
                     int age = currentDate.getYear() - birthDate.getYear();
                     if (currentDate.getDayOfYear() < birthDate.getDayOfYear()) {
                         age--;
-                    }
-                    if (name.trim().isEmpty()) {
-                        request.setAttribute("nameerror", "Tên không được trống");
-                        hasError = true;
                     }
                     if (age <= 18) {
                         request.setAttribute("ageerror", "Tuổi phải lớn hơn 18");
                         hasError = true;
                     }
+                    if(start.before(today)){
+                        request.setAttribute("startdateerror", "Ngày bắt đầu từ hôm nay trở đi");
+                        hasError = true;
+                    }
+                    if(startDate==null){
+                        request.setAttribute("startdateerror", "Ngày bắt đầu Không được trống");
+                        hasError = true;
+                    }
+                } catch (Exception e) {
+                }
+                    
+
+                    
+                    if (name.trim().isEmpty()) {
+                        request.setAttribute("nameerror", "Tên không được trống");
+                        hasError = true;
+                    }
+                    
                     if(dob.trim().isEmpty()){
                         request.setAttribute("ageerror", "Phải chọn ngày tháng năm sinh");
                         hasError = true;
@@ -215,16 +230,14 @@ public class AddNewStaffServlet extends HttpServlet {
                     if (st.getBank().equals(s.getBank())) {
                         request.setAttribute("bankerror", "Ngân hàng đã tồn tại");
                         hasError = true;
-                    }if(start.before(today)){
-                        request.setAttribute("startdateerror", "Ngày bắt đầu từ hôm nay trở đi");
-                        hasError = true;
                     }if(company==null){
                         request.setAttribute("companyrror", "Công ty không thể trống");
                         hasError = true;
+                    }if(education.trim().isEmpty()){
+                        request.setAttribute("eduerror", "Học vấn không thể trống");
+                        hasError = true;
                     }
-                } catch (ParseException ex) {
-                    
-                }
+
             }
             if (!s.getPhone().matches("0[0-9]{9}")) {
                 request.setAttribute("phoneerror", "Số điện thoại phải bắt đầu bằng 0 và đủ 10 số");

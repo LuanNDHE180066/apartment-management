@@ -206,7 +206,8 @@
 
                                         <div class="form-group">
                                             <label for="sid">Người tạo đơn</label>
-                                            <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" />
+                                            <input value="${sessionScope.account.pId}" type="text" id="sid" name="sid" placeholder="Enter SID" readonly="" hidden=""/>
+                                            <input type="text" id="author" name="author" value="${sessionScope.person.name}"  readonly />
                                         </div>
                                         <div class="form-group">
                                             <label class="font-weight-bold">Thêm ảnh</label>
