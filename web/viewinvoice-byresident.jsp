@@ -307,6 +307,14 @@
                                                                     this.classList.toggle("fa-minus");
                                                                 });
                                                             });
+                                                            // Lấy tham số trên URL
+                                                            const urlParams = new URLSearchParams(window.location.search);
+                                                            const status = urlParams.get("status");
 
+                                                            if (status === "success") {
+                                                                alert("Thanh toán thành công!");
+                                                            } else if (status === "failed") {
+                                                                alert("Thanh toán thất bại! Vui lòng thử lại.");
+                                                            }
     </script>
 </html>

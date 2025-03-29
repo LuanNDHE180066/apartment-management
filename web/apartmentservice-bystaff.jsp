@@ -79,6 +79,7 @@
                                         <div class="table_section padding_infor_info">
                                             <div style="margin-left: 40px; margin-bottom: 30px; display: flex; align-items: center; gap: 10px;">
                                                 <a href="generate-invoice-staff" 
+                                                   onclick="return confirm('Bạn có chắc chắn muốn tạo hóa đơn tháng này?');"
                                                    style="display: inline-block; padding: 10px 18px; font-size: 16px; font-weight: bold;
                                                    color: white; background-color: #007bff; border-radius: 6px; text-decoration: none;
                                                    transition: background-color 0.3s ease, transform 0.2s ease;">
