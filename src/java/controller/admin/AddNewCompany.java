@@ -79,30 +79,32 @@ public class AddNewCompany extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        Util u= new Util();
+        Util u = new Util();
 
-        String name =u.stringNomalize(request.getParameter("name")) ;
-        String phone = u.stringNomalize(request.getParameter("phone"));
-        String contactPhone = u.stringNomalize(request.getParameter("contactPhone"));
-        String fax = u.stringNomalize(request.getParameter("fax"));
+        String name = u.stringNomalize(request.getParameter("name"));
+        String phone = request.getParameter("phone");
+        String contactPhone = request.getParameter("contactPhone");
+        String fax = request.getParameter("fax");
         String email = request.getParameter("email");
         String contactEmail = request.getParameter("contactemail");
         String website = u.stringNomalize(request.getParameter("website"));
-        String taxCode = u.stringNomalize(request.getParameter("taxCode"));
+        String taxCode = request.getParameter("taxCode");
         String bank = request.getParameter("bank");
-        String address =u.stringNomalize(request.getParameter("address")) ;
-        String description =u.stringNomalize(request.getParameter("description")) ;
+        String address = u.stringNomalize(request.getParameter("address"));
+        String description = u.stringNomalize(request.getParameter("description"));
 
         boolean hasError = false;
-        
 
         CompanyDAO cd = new CompanyDAO();
-        
 
         Company newC = new Company(name, phone, contactPhone, fax, email, contactEmail, website, taxCode, bank, description, address);
         CompanyValidation companyValidation = new CompanyValidation(newC);
         if (name.trim().isEmpty()) {
             request.setAttribute("nameError", "Tên không được trống");
+            hasError = true;
+        }
+        if (!name.matches("[\\p{L}\\s]+")) {
+            request.setAttribute("nameerror", "Tên chỉ được chứa chữ cái và khoảng trắng");
             hasError = true;
         }
         if (!phone.matches("0[0-9]{9}")) {
@@ -117,11 +119,11 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("faxError", "Số fax phải đủ 10 số");
             hasError = true;
         }
-        if (!taxCode.matches("[0-9]{10}")) { 
+        if (!taxCode.matches("[0-9]{10}")) {
             request.setAttribute("taxCodeError", "Mã số thuế phải đủ 10 số");
             hasError = true;
         }
-        if(email.trim().isEmpty()){
+        if (email.trim().isEmpty()) {
             request.setAttribute("emailError", "Email không được trống");
             hasError = true;
         }
@@ -129,11 +131,11 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("emailError", "Email đã tồn tại");
             hasError = true;
         }
-        if(address.trim().isEmpty()){
+        if (address.trim().isEmpty()) {
             request.setAttribute("addressError", "Địa chỉ không được trống");
             hasError = true;
         }
-        if(bank.trim().isEmpty()){
+        if (bank.trim().isEmpty()) {
             request.setAttribute("bankError", "Ngân hàng không được trống");
             hasError = true;
         }
@@ -141,8 +143,12 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("bankError", "Ngân hàng đã tồn tại");
             hasError = true;
         }
-        if(contactEmail.trim().isEmpty()){
+        if (contactEmail.trim().isEmpty()) {
             request.setAttribute("contactEmailError", "Email không được trống");
+            hasError = true;
+        }
+        if (description.trim().isEmpty()) {
+            request.setAttribute("desError", "Mô tả không được trống");
             hasError = true;
         }
         if (companyValidation.isExistContactEmail(contactEmail)) {
@@ -169,7 +175,7 @@ public class AddNewCompany extends HttpServlet {
             request.setAttribute("taxCodeError", "Mã số thuế đã tồn tại");
             hasError = true;
         }
-        if(website.trim().isEmpty()){
+        if (website.trim().isEmpty()) {
             request.setAttribute("webError", "WebSite Không được trống");
             hasError = true;
         }

@@ -158,11 +158,15 @@ public class AddContract extends HttpServlet {
             imagePaths.add("images/contract/" + newFilename);
             System.out.println("Uploaded image: " + newFilename);
         }
-        if(title.trim().isEmpty()){
+        if (title.trim().isEmpty()) {
             request.setAttribute("titleerror", "Tiêu đề không thể trống");
             hasError = true;
         }
-        if(description.trim().isEmpty()){
+        if (!title.matches("[\\p{L}\\s]+")) { 
+            request.setAttribute("titleerror", "Tiêu đề chỉ được chứa chữ cái và khoảng trắng");
+            hasError = true;
+        }
+        if (description.trim().isEmpty()) {
             request.setAttribute("deserror", "Mô tả không thể trống");
             hasError = true;
         }

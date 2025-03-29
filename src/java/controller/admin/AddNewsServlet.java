@@ -2,7 +2,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
  */
-
 package controller.admin;
 
 import dao.NewDAO;
@@ -32,41 +31,44 @@ import validation.CommonValidation;
  *
  * @author PC
  */
-@WebServlet(name="AddNewsServlet", urlPatterns={"/add-news"})
+@WebServlet(name = "AddNewsServlet", urlPatterns = {"/add-news"})
 @MultipartConfig(
         fileSizeThreshold = 1024 * 1024 * 2, // 2MB
         maxFileSize = 1024 * 1024 * 10, // 10MB
         maxRequestSize = 1024 * 1024 * 50 // 50MB
 )
 public class AddNewsServlet extends HttpServlet {
-   
-    /** 
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> methods.
+
+    /**
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * methods.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
     protected void processRequest(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try (PrintWriter out = response.getWriter()) {
             /* TODO output your page here. You may use following sample code. */
             out.println("<!DOCTYPE html>");
             out.println("<html>");
             out.println("<head>");
-            out.println("<title>Servlet AddNewsServlet</title>");  
+            out.println("<title>Servlet AddNewsServlet</title>");
             out.println("</head>");
             out.println("<body>");
-            out.println("<h1>Servlet AddNewsServlet at " + request.getContextPath () + "</h1>");
+            out.println("<h1>Servlet AddNewsServlet at " + request.getContextPath() + "</h1>");
             out.println("</body>");
             out.println("</html>");
         }
-    } 
+    }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
-    /** 
+    /**
      * Handles the HTTP <code>GET</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -74,7 +76,7 @@ public class AddNewsServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
+            throws ServletException, IOException {
         NewDAO ndao = new NewDAO();
         StaffDAO sdao = new StaffDAO();
         List<String> categories = ndao.getAllCategory();
@@ -82,10 +84,11 @@ public class AddNewsServlet extends HttpServlet {
         request.setAttribute("categories", categories);
         request.setAttribute("staffs", staffs);
         request.getRequestDispatcher("addnews.jsp").forward(request, response);
-    } 
+    }
 
-    /** 
+    /**
      * Handles the HTTP <code>POST</code> method.
+     *
      * @param request servlet request
      * @param response servlet response
      * @throws ServletException if a servlet-specific error occurs
@@ -93,11 +96,11 @@ public class AddNewsServlet extends HttpServlet {
      */
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
-    throws ServletException, IOException {
-        Util u= new Util();
-        String title = u.stringNomalize(request.getParameter("title")) ;
-        String content = u.stringNomalize(request.getParameter("content")) ;
-        String source = u.stringNomalize(request.getParameter("source")) ;    
+            throws ServletException, IOException {
+        Util u = new Util();
+        String title = u.stringNomalize(request.getParameter("title"));
+        String content = u.stringNomalize(request.getParameter("content"));
+        String source = u.stringNomalize(request.getParameter("source"));
 //        Part filePart=request.getPart("file");
 //        String image="";
 //        
@@ -132,27 +135,33 @@ public class AddNewsServlet extends HttpServlet {
         StaffDAO sdao = new StaffDAO();
         String newContent = processImages(content, request);
         News anew = new News(title, newContent, source, category, sdao.getById(auther), date);
-        try{
-            if(title.trim().isEmpty()){
+        try {
+            if (title.trim().isEmpty()) {
                 request.setAttribute("titleerror", "Tiêu đề không trống");
                 hasError = true;
-            }if(content.trim().isEmpty()){
+            }
+            if (!title.matches("[\\p{L}\\s]+")) {
+                request.setAttribute("titleerror", "Tiêu đề chỉ được chứa chữ cái và khoảng trắng");
+                hasError = true;
+            }
+            if (content.trim().isEmpty()) {
                 request.setAttribute("contenterror", "Nội dung không trống");
                 hasError = true;
-            }if(source.trim().isEmpty()){
+            }
+            if (source.trim().isEmpty()) {
                 request.setAttribute("sourceerror", "Nguồn không trống");
                 hasError = true;
             }
-            if(!CommonValidation.isValidNewsDate(date)){
+            if (!CommonValidation.isValidNewsDate(date)) {
                 request.setAttribute("dateError", "Ngày đăng phải từ hôm nay trở đi");
                 hasError = true;
             }
-        }catch(ParseException e){
-            System.out.println(""+e);
+        } catch (ParseException e) {
+            System.out.println("" + e);
         }
         if (hasError) {
             request.getRequestDispatcher("addnews.jsp").forward(request, response);
-                return;
+            return;
         }
         if (ndao.insertNews(anew)) {
             request.setAttribute("status", "true");
@@ -164,15 +173,15 @@ public class AddNewsServlet extends HttpServlet {
         doGet(request, response);
         request.removeAttribute("error");
     }
+
     private String processImages(String content, HttpServletRequest request) {
-    // Tìm và tải ảnh về thư mục server nếu cần
-    return content;
-}
-    
+        // Tìm và tải ảnh về thư mục server nếu cần
+        return content;
+    }
 
-
-    /** 
+    /**
      * Returns a short description of the servlet.
+     *
      * @return a String containing servlet description
      */
     @Override

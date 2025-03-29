@@ -104,14 +104,14 @@ public class AddNewStaffServlet extends HttpServlet {
         Util u = new Util();
         String name = u.stringNomalize(request.getParameter("name"));
         String dob = request.getParameter("dob");
-        String address = u.stringNomalize(request.getParameter("address")) ;
-        String phone = u.stringNomalize(request.getParameter("phone"));
-        String email = u.stringNomalize( request.getParameter("email"));
-        String cccd = u.stringNomalize(request.getParameter("cccd"));
+        String address = u.stringNomalize(request.getParameter("address"));
+        String phone = request.getParameter("phone");
+        String email = u.stringNomalize(request.getParameter("email"));
+        String cccd = request.getParameter("cccd");
         String education = u.stringNomalize(request.getParameter("education"));
         String salary_raw = request.getParameter("salary");
         String bank = request.getParameter("bank");
-        String username = u.stringNomalize(request.getParameter("username"));
+        String username = request.getParameter("username");
 //        String password = request.getParameter("password");
         String company = request.getParameter("company");
         String startDate = request.getParameter("startDate");
@@ -124,8 +124,8 @@ public class AddNewStaffServlet extends HttpServlet {
         if (listStaff == null) {
             listStaff = new ArrayList<>();
         }
-        
-        CommonValidation valid=new CommonValidation();
+
+        CommonValidation valid = new CommonValidation();
         String password = u.generatePassword();
         String password2 = password;
 
@@ -134,34 +134,33 @@ public class AddNewStaffServlet extends HttpServlet {
         Staff s = null;
         boolean hasError = false;
         salary_raw = salary_raw.replaceAll("\\.", "");
-            int salary = Integer.parseInt(salary_raw);
-            if (salary <= 0) {
-                request.setAttribute("salaryerror", "Lương không thể âm");
-                hasError = true;
-            }
-            Role role = daoR.getById(roleId);
+        int salary = Integer.parseInt(salary_raw);
+        if (salary <= 0) {
+            request.setAttribute("salaryerror", "Lương không thể âm");
+            hasError = true;
+        }
+        Role role = daoR.getById(roleId);
 
-            if (role == null) {
-                request.setAttribute("roleerror", "Không có vai trò nào được chọn");
-                hasError = true;
-            }
-            s = new Staff(name, dob, email, phone, address, cccd, salary, education, bank, username, password, role,
-                    daoCp.getById(company), startDate, gender);
+        if (role == null) {
+            request.setAttribute("roleerror", "Không có vai trò nào được chọn");
+            hasError = true;
+        }
+        s = new Staff(name, dob, email, phone, address, cccd, salary, education, bank, username, password, role,
+                daoCp.getById(company), startDate, gender);
         try {
-            
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
             ZoneId zone = ZoneId.systemDefault();
 
             for (Staff st : listStaff) {
-                
-                    if (st.getCccd().equals(s.getCccd())) {
-                        request.setAttribute("cccderror", "Căn cước đã tồn tại");
-                        hasError = true;
-                    }
-                    try {
-                    Date start=format.parse(startDate);
-                    Date today=new Date();
-                    today= format.parse(format.format(today));
+
+                if (st.getCccd().equals(s.getCccd())) {
+                    request.setAttribute("cccderror", "Căn cước đã tồn tại");
+                    hasError = true;
+                }
+                try {
+                    Date start = format.parse(startDate);
+                    Date today = new Date();
+                    today = format.parse(format.format(today));
                     Date dateOfBirth = format.parse(dob);
                     LocalDate birthDate = dateOfBirth.toInstant().atZone(zone).toLocalDate();
                     LocalDate currentDate = LocalDate.now();
@@ -173,70 +172,76 @@ public class AddNewStaffServlet extends HttpServlet {
                         request.setAttribute("ageerror", "Tuổi phải lớn hơn 18");
                         hasError = true;
                     }
-                    if(start.before(today)){
+                    if (start.before(today)) {
                         request.setAttribute("startdateerror", "Ngày bắt đầu từ hôm nay trở đi");
                         hasError = true;
                     }
-                    if(startDate==null){
+                    if (startDate == null) {
                         request.setAttribute("startdateerror", "Ngày bắt đầu Không được trống");
                         hasError = true;
                     }
                 } catch (Exception e) {
                 }
-                    
-
-                    
-                    if (name.trim().isEmpty()) {
-                        request.setAttribute("nameerror", "Tên không được trống");
-                        hasError = true;
-                    }
-                    
-                    if(dob.trim().isEmpty()){
-                        request.setAttribute("ageerror", "Phải chọn ngày tháng năm sinh");
-                        hasError = true;
-                    }
-                    if(address.trim().isEmpty()){
-                        request.setAttribute("addresserror", "Địa chỉ không trống");
-                        hasError = true;
-                    }
-                    if (st.getPhone().equals(s.getPhone())) {
-                        request.setAttribute("phoneerror", "Số điện thoại đã tồn tại");
-                        hasError = true;
-                    }
-                    if(email.trim().isEmpty()){
-                        request.setAttribute("emailerror", "Email không trống");
-                        hasError = true;
-                    }
-                    if (st.getEmail().equals(s.getEmail())) {
-                        request.setAttribute("emailerror", "Email đã tồnt tại");
-                        hasError = true;
-                    }
-                    if(username.trim().isEmpty()){
-                        request.setAttribute("usernameerror", "Tên đăng nhập không trống");
-                        hasError = true;
-                    }
-                    if(!valid.isValidUsername(username)){
-                        request.setAttribute("usernameerror", "Tên đăng nhập tối thiểu 6 kí tự");
-                        hasError = true;
-                    }
-                    if (st.getUsername().equals(s.getUsername())) {
-                        request.setAttribute("usernameerror", "Tên đăng nhập đã tồn tại");
-                        hasError = true;
-                    }
-                    if(bank.trim().isEmpty()){
-                        request.setAttribute("bankerror", "Ngân hàng không trống");
-                        hasError = true;
-                    }
-                    if (st.getBank().equals(s.getBank())) {
-                        request.setAttribute("bankerror", "Ngân hàng đã tồn tại");
-                        hasError = true;
-                    }if(company==null){
-                        request.setAttribute("companyrror", "Công ty không thể trống");
-                        hasError = true;
-                    }if(education.trim().isEmpty()){
-                        request.setAttribute("eduerror", "Học vấn không thể trống");
-                        hasError = true;
-                    }
+                if (name.trim().isEmpty()) {
+                    request.setAttribute("nameerror", "Tên không được trống");
+                    hasError = true;
+                }
+                if (!name.matches("[\\p{L}\\s]+")) { 
+                    request.setAttribute("nameerror", "Tên chỉ được chứa chữ cái và khoảng trắng");
+                    hasError = true;
+                }
+                if (dob.trim().isEmpty()) {
+                    request.setAttribute("ageerror", "Phải chọn ngày tháng năm sinh");
+                    hasError = true;
+                }
+                if (address.trim().isEmpty()) {
+                    request.setAttribute("addresserror", "Địa chỉ không trống");
+                    hasError = true;
+                }
+                if (st.getPhone().equals(s.getPhone())) {
+                    request.setAttribute("phoneerror", "Số điện thoại đã tồn tại");
+                    hasError = true;
+                }
+                if (email.trim().isEmpty()) {
+                    request.setAttribute("emailerror", "Email không trống");
+                    hasError = true;
+                }
+                if (st.getEmail().equals(s.getEmail())) {
+                    request.setAttribute("emailerror", "Email đã tồnt tại");
+                    hasError = true;
+                }
+                if (username.trim().isEmpty()) {
+                    request.setAttribute("usernameerror", "Tên đăng nhập không trống");
+                    hasError = true;
+                }
+                if (username.matches(".*\\s+.*")) {
+                    request.setAttribute("usernameerror", "Tên đăng nhập không được chứa khoảng trắng hoặc xuống dòng");
+                    hasError = true;
+                }
+                if (!valid.isValidUsername(username)) {
+                    request.setAttribute("usernameerror", "Tên đăng nhập tối thiểu 6 kí tự");
+                    hasError = true;
+                }
+                if (st.getUsername().equals(s.getUsername())) {
+                    request.setAttribute("usernameerror", "Tên đăng nhập đã tồn tại");
+                    hasError = true;
+                }
+                if (bank.trim().isEmpty()) {
+                    request.setAttribute("bankerror", "Ngân hàng không trống");
+                    hasError = true;
+                }
+                if (st.getBank().equals(s.getBank())) {
+                    request.setAttribute("bankerror", "Ngân hàng đã tồn tại");
+                    hasError = true;
+                }
+                if (company == null) {
+                    request.setAttribute("companyrror", "Công ty không thể trống");
+                    hasError = true;
+                }
+                if (education.trim().isEmpty()) {
+                    request.setAttribute("eduerror", "Học vấn không thể trống");
+                    hasError = true;
+                }
 
             }
             if (!s.getPhone().matches("0[0-9]{9}")) {
@@ -247,7 +252,7 @@ public class AddNewStaffServlet extends HttpServlet {
                 request.setAttribute("cccderror", "Căn cước phải đủ 12 số");
                 hasError = true;
             }
-            
+
         } catch (NumberFormatException st) {
             request.setAttribute("salaryerror", "Lỗi lương");
             hasError = true;
@@ -257,9 +262,9 @@ public class AddNewStaffServlet extends HttpServlet {
             request.getRequestDispatcher("addnewstaff.jsp").forward(request, response);
             return;
         }
-        
+
         if (stDao.insertStaff(s)) {
-            
+
             SendEmail e = new SendEmail();
             e.sendEmailStaff(email, name, username, password2);
             session.setAttribute("staffs", stDao.getAll());

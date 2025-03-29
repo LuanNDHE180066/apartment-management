@@ -101,8 +101,8 @@ public class UpdateStaffInfor extends HttpServlet {
         String dob = request.getParameter("dob");
         String email = request.getParameter("email");
         String address = u.stringNomalize(request.getParameter("address"));
-        String phone = u.stringNomalize(request.getParameter("phone"));
-        String cccd = u.stringNomalize(request.getParameter("cccd"));
+        String phone = request.getParameter("phone");
+        String cccd = request.getParameter("cccd");
         String education = u.stringNomalize(request.getParameter("education"));
         String bank = request.getParameter("bank");
         String salary_raw = request.getParameter("salary");
@@ -161,6 +161,11 @@ public class UpdateStaffInfor extends HttpServlet {
             request.setAttribute("staff", staff);
             hasError = true;
         }
+        if (!name.matches("[\\p{L}\\s]+")) {
+            request.setAttribute("namemessage", "Tên chỉ được chứa chữ cái và khoảng trắng");
+            request.setAttribute("staff", staff);
+            hasError = true;
+        }
         if (address.trim().isEmpty()) {
             request.setAttribute("addressmessage", "Địa chỉ không thể trống");
             request.setAttribute("staff", staff);
@@ -204,7 +209,7 @@ public class UpdateStaffInfor extends HttpServlet {
         if (bank.trim().isEmpty()) {
             request.setAttribute("bankmessage", "Ngân hàng không thể trống");
             request.setAttribute("staff", staff);
-           hasError = true;
+            hasError = true;
         }
         if (!staff.getBank().equals(bank) && daoSt.checkDuplicateBank(bank)) {
             request.setAttribute("bankmessage", "Ngân hàng đã tồn tại");

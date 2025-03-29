@@ -85,13 +85,13 @@ public class UpdateCompanyServlet extends HttpServlet {
         Util u = new Util();
         String id = request.getParameter("id");
         String name = u.stringNomalize(request.getParameter("name"));
-        String phone = u.stringNomalize(request.getParameter("phone"));
-        String contactPhone = u.stringNomalize(request.getParameter("contactPhone"));
-        String fax = u.stringNomalize(request.getParameter("fax"));
+        String phone = request.getParameter("phone");
+        String contactPhone = request.getParameter("contactPhone");
+        String fax = request.getParameter("fax");
         String email = request.getParameter("email");
         String contactEmail = request.getParameter("contactemail");
         String website = u.stringNomalize(request.getParameter("website"));
-        String taxCode = u.stringNomalize(request.getParameter("taxCode"));
+        String taxCode = request.getParameter("taxCode");
         String bank = request.getParameter("bank");
         String address = u.stringNomalize(request.getParameter("address"));
         String description = u.stringNomalize(request.getParameter("description"));
@@ -103,6 +103,11 @@ public class UpdateCompanyServlet extends HttpServlet {
         CompanyValidation companyValidation = new CompanyValidation(company);
         if (name.trim().isEmpty()) {
             request.setAttribute("nameError", "Tên khôgn thể trống");
+            request.setAttribute("company", company);
+            hasError = true;
+        }
+        if (!name.matches("[\\p{L}\\s]+")) {
+            request.setAttribute("nameerror", "Tên chỉ được chứa chữ cái và khoảng trắng");
             request.setAttribute("company", company);
             hasError = true;
         }
@@ -146,7 +151,7 @@ public class UpdateCompanyServlet extends HttpServlet {
             request.setAttribute("company", company);
             hasError = true;
         }
-        if(contactEmail.trim().isEmpty()) {
+        if (contactEmail.trim().isEmpty()) {
             request.setAttribute("contactEmailError", "Email không thể trống");
             request.setAttribute("company", company);
             hasError = true;
@@ -211,8 +216,8 @@ public class UpdateCompanyServlet extends HttpServlet {
         if (daoCompany.updateCompany(updatedCompany)) {
             request.setAttribute("status", "true");
             request.setAttribute("message", "Cập nhật thành công");
-            StaffDAO std= new StaffDAO();
-            Company c= daoCompany.getById(id);
+            StaffDAO std = new StaffDAO();
+            Company c = daoCompany.getById(id);
             std.updatewhenchangecompanystatus(c.getStatus(), c.getId());
         } else {
             request.setAttribute("status", "false");

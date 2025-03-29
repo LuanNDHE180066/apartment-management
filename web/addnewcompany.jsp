@@ -198,6 +198,7 @@
                                         <div class="form-group">
                                             <label for="description">Mô tả</label>
                                             <input type="text" id="description" name="description" value="${param.description}"  placeholder="Nhập mô tả" required="" />
+                                            <p class="error-message">${requestScope.desError}</p>
                                         </div>
                                         <div class="form-button">
                                             <button type="submit">Thêm</button>

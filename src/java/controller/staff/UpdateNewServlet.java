@@ -162,6 +162,11 @@ public class UpdateNewServlet extends HttpServlet {
             request.setAttribute("news", news);
             hasError = true;
         }
+        if (!title.matches("[\\p{L}\\s]+")) {
+            request.setAttribute("titleerror", "Tiêu đề chỉ được chứa chữ cái và khoảng trắng");
+            request.setAttribute("news", news);
+            hasError = true;
+        }
         if (content.trim().isEmpty()) {
             request.setAttribute("contenterror", "Nội dung không thể trống");
             request.setAttribute("news", news);
