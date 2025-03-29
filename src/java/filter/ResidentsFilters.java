@@ -29,7 +29,7 @@ import model.Account;
     "/registerNewLivingOrOwnerResident.jsp",
     "/register-new-living-or-owner-resident",
     "/changeRepresentResident.jsp",
-    "/change-represent-resident"
+    "/change-represent-resident","/update-feed-back", "/filterfeedback", "/sendfeedback","/view-feed-back-user", "/deletefeedback"
 })
 public class ResidentsFilters implements Filter {
 
