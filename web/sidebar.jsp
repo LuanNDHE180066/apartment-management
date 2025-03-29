@@ -123,9 +123,6 @@
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="expenditure-report"><i class="fa fa-money-bill"></i><span>Khoản chi</span></a>
                     </li>
-                    <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
-                        <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
-                    </li>
                     <li class="${(sessionScope.account.roleId == 0 || sessionScope.account.roleId == 2)? '':'display-none'}">
                         <a href="dashboard-request"><i class="fa-solid fa-repeat"></i> <span>Dash Board Request</span></a>
                     </li>
