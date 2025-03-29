@@ -61,18 +61,18 @@ public class AddRoleServlet extends HttpServlet {
         String des= Util.stringNomalize(request.getParameter("des"));
         RoleDAO rd= new RoleDAO();
         if(rd.isExistRoleName(name)){
-            request.setAttribute("error", "Role name is existed");
+            request.setAttribute("error", "Chức vụ đã  tồn tại");
             request.setAttribute("roles", rd.getAll());
             request.getRequestDispatcher("viewrole.jsp").forward(request, response);
         }
         else if(name.isBlank()|| des.isBlank()){
-            request.setAttribute("error", "Name and description is not blank");
+            request.setAttribute("error", "Tên chức vụ và mô tả không được để trống");
             request.setAttribute("roles", rd.getAll());
             request.getRequestDispatcher("viewrole.jsp").forward(request, response);
         }
         else{
             rd.addRole(name, des);
-            request.setAttribute("msg", "Add role success");
+            request.setAttribute("msg", "Thành công thêm chức vụ");
             request.setAttribute("roles", rd.getAll());
             request.getRequestDispatcher("viewrole.jsp").forward(request, response);
         }

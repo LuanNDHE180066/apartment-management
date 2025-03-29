@@ -3,7 +3,7 @@
     Created on : Jan 23, 2025
     Author     : PC
 --%>
-
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -68,29 +68,29 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add New Service</h1>
+                                    <h1 style="margin-bottom: 20px">Chi tiết dịch vụ</h1>
                                     <form action="add-service-staff" method="post" style="max-width: 600px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 10px; background: #f9f9f9; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">Name</label>
+                                            <label for="name" style="display: block; font-weight: bold; margin-bottom: 5px;">Tên dịch vụ</label>
                                             <input type="text" id="name" name="name" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="price" style="display: block; font-weight: bold; margin-bottom: 5px;">Unit Price</label>
+                                            <label for="price" style="display: block; font-weight: bold; margin-bottom: 5px;">Phí </label>
                                             <input min="0" oninput="format(this)" type="text" id="price" name="price" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="unti" style="display: block; font-weight: bold; margin-bottom: 5px;">Unit</label>
+                                            <label for="unti" style="display: block; font-weight: bold; margin-bottom: 5px;">Đơn vị</label>
                                             <input type="text" id="unit" name="unit" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="des" style="display: block; font-weight: bold; margin-bottom: 5px;">Description</label>
+                                            <label for="des" style="display: block; font-weight: bold; margin-bottom: 5px;">Mô tả</label>
                                             <input type="text" id="des" name="des" required style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="category" style="display: block; font-weight: bold; margin-bottom: 5px;">Category</label>
+                                            <label for="category" style="display: block; font-weight: bold; margin-bottom: 5px;">Loại dịch vụ</label>
                                             <select name="category" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                                 <c:forEach items="${requestScope.types}" var="type">
                                                     <option value="${type.id}">${type.name}</option>
@@ -99,7 +99,7 @@
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="company" style="display: block; font-weight: bold; margin-bottom: 5px;">Company</label>
+                                            <label for="company" style="display: block; font-weight: bold; margin-bottom: 5px;">Công ti cung cấp</label>
                                             <select name="company" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
                                                 <c:forEach items="${requestScope.companies}" var="c">
                                                     <option value="${c.id}">${c.name}</option>
@@ -108,15 +108,15 @@
                                         </div>
 
                                         <div class="form-group" style="margin-bottom: 15px;">
-                                            <label for="status" style="display: block; font-weight: bold; margin-bottom: 5px;">Status</label>
+                                            <label for="status" style="display: block; font-weight: bold; margin-bottom: 5px;">Trạng thái</label>
                                             <select name="status" style="width: 100%; padding: 8px; border: 1px solid #ccc; border-radius: 5px;">
-                                                <option value="1">Active</option>
-                                                <option value="2">Inactive</option>
+                                                <option value="1">Đang hoạt động</option>
+                                                <option value="2">Đóng hoạt động</option>
                                             </select>
                                         </div>
 
                                         <div class="form-button" style="text-align: center;">
-                                            <button type="submit" style="background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Add</button>
+                                            <button type="submit" style="background: #007bff; color: white; padding: 10px 15px; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Lưu dịch vụ</button>
                                             <h5 style="color:${status=="true"?"green":"red"}; text-align: center; margin-top: 10px;">${requestScope.message}</h5>
                                             <h5 style="color:red; text-align: center; margin-top: 5px;">${requestScope.error}</h5>
                                         </div>
