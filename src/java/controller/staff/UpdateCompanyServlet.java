@@ -97,116 +97,102 @@ public class UpdateCompanyServlet extends HttpServlet {
         String description = u.stringNomalize(request.getParameter("description"));
         String status_raw = request.getParameter("status");
         int status = Integer.parseInt(status_raw);
-
+        boolean hasError = false;
         CompanyDAO daoCompany = new CompanyDAO();
         Company company = daoCompany.getById(id);
         CompanyValidation companyValidation = new CompanyValidation(company);
         if (name.trim().isEmpty()) {
             request.setAttribute("nameError", "Tên khôgn thể trống");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!phone.matches("0[0-9]{9}")) {
             request.setAttribute("phoneError", "Số điện thoại phải đủ 10 số và bắt đầu bằng 0");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getPhone().equals(phone) && companyValidation.isExistPhone(phone)) {
             request.setAttribute("phoneError", "Số điện thoại đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!contactPhone.matches("0[0-9]{9}")) {
             request.setAttribute("contactPhoneError", "Số điện thoại phải đủ 10 số và bắt đầu bằng 0");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getContactPhone().equals(contactPhone) && companyValidation.isExistContactPhone(contactPhone)) {
             request.setAttribute("contactPhoneError", "Số điện thoại đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!fax.matches("[0-9]{10}")) {
             request.setAttribute("faxError", "Số fax phải đủ 10 số");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getFax().equals(fax) && companyValidation.isExistFax(fax)) {
             request.setAttribute("faxError", "Số fax đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (email.trim().isEmpty()) {
             request.setAttribute("emailError", "Email không thể trống");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getEmail().equals(email) && companyValidation.isExistEmail(email)) {
             request.setAttribute("emailError", "Đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if(contactEmail.trim().isEmpty()) {
             request.setAttribute("contactEmailError", "Email không thể trống");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getContactemail().equals(contactEmail) && companyValidation.isExistContactEmail(contactEmail)) {
             request.setAttribute("contactEmailError", "Email đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
 
         if (website.trim().isEmpty()) {
             request.setAttribute("webError", "Website Không thể trống");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getWebsite().equals(website) && companyValidation.isExistWebsite(website)) {
             request.setAttribute("webError", "Website đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
 
         if (!taxCode.matches("[0-9]{10}")) {
             request.setAttribute("taxCodeError", "Mã số thuế phải đu 10 số");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getTaxCode().equals(taxCode) && companyValidation.isExistTaxCode(taxCode)) {
             request.setAttribute("taxCodeError", "Mã số thuế đã tồn tại");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
 
         if (bank.trim().isEmpty()) {
             request.setAttribute("bankError", "Ngân hàng không thể trống");
             request.setAttribute("company", company);
-            request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (!company.getBank().equals(bank) && companyValidation.isExistBank(bank)) {
             request.setAttribute("bankError", "Ngân hàng đã tồn tại");
             request.setAttribute("company", company);
+            hasError = true;
+        }
+        if (hasError) {
             request.getRequestDispatcher("updatecompany.jsp").forward(request, response);
             return;
         }
-
         Company updatedCompany = new Company();
         updatedCompany.setId(id);
         updatedCompany.setName(name);

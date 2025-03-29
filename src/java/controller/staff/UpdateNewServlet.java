@@ -113,6 +113,7 @@ public class UpdateNewServlet extends HttpServlet {
 //        Part filePart=request.getPart("file");
         NewDAO ndao = new NewDAO();
         News news = ndao.getNewById(id);
+        boolean hasError = false;
 //        String image=news.getImage();
 //        if(filePart!=null && filePart.getSize()>0){
 //            String filename=Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
@@ -149,8 +150,7 @@ public class UpdateNewServlet extends HttpServlet {
             if (inputDate.isBefore(currentDate)) {
                 request.setAttribute("dateError", "Thời gian phải sau ngày kiểm tra cập nhật");
                 request.setAttribute("news", news);
-                request.getRequestDispatcher("updatenews.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
         } catch (Exception e) {
             ;
@@ -160,18 +160,19 @@ public class UpdateNewServlet extends HttpServlet {
         if (title.trim().isEmpty()) {
             request.setAttribute("titleerror", "Tiêu đề không thể trống");
             request.setAttribute("news", news);
-            request.getRequestDispatcher("updatenews.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (content.trim().isEmpty()) {
             request.setAttribute("contenterror", "Nội dung không thể trống");
             request.setAttribute("news", news);
-            request.getRequestDispatcher("updatenews.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if(source.trim().isEmpty()){
             request.setAttribute("sourceerror", "Nguồn không thể trống");
             request.setAttribute("news", news);
+            hasError = true;
+        }
+        if (hasError) {
             request.getRequestDispatcher("updatenews.jsp").forward(request, response);
             return;
         }

@@ -119,6 +119,7 @@ public class AddContract extends HttpServlet {
         String admin = request.getParameter("admin");
         String accountant = request.getParameter("accountant");
         String sid = request.getParameter("sid");
+        boolean hasError = false;
         Collection<Part> fileParts = request.getParts();
         List<String> imagePaths = new ArrayList<>();
         boolean hasFile = false;
@@ -135,8 +136,7 @@ public class AddContract extends HttpServlet {
 
             if (!fileExtension.matches("jpg|jpeg")) {
                 request.setAttribute("fileerror", "Chỉ JPG và JPEG");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
 
             String uploadPath = getServletContext().getRealPath("/") + "images/contract";
@@ -160,64 +160,52 @@ public class AddContract extends HttpServlet {
         }
         if(title.trim().isEmpty()){
             request.setAttribute("titleerror", "Tiêu đề không thể trống");
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if(description.trim().isEmpty()){
             request.setAttribute("deserror", "Mô tả không thể trống");
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (company == null) {
             request.setAttribute("companyerror", "Không tìm thấy công ty");
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (admin == null) {
             request.setAttribute("adminerror", "Không tìm thấy quản lý");
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         if (accountant == null) {
             request.setAttribute("accountanterror", "Không tìm thấy kế toán");
-            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-            return;
+            hasError = true;
         }
         try {
             if (!CommonValidation.isValidNewsDate(signdate)) {
                 request.setAttribute("signdateerror", "Ngày ký phải từ hôm nay trở đi");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.validendateafterstartdate(paydate, signdate)) {
                 request.setAttribute("paydateerror", "Ngày trả tiền phải sau ngày ký");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.isValidNewsDate(paydate)) {
                 request.setAttribute("paydateerror", "Ngày trả tiền phải từ hôm nay trở đi");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.validendateafterstartdate(startDate, signdate)) {
                 request.setAttribute("startdateerror", "Ngày bắt đầu phải sau ngày ký");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.isValidNewsDate(startDate)) {
                 request.setAttribute("startdateerror", "Ngày bắt đầu phải từ hôm nay trở đi");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.isValidNewsDate(endDate)) {
                 request.setAttribute("enddateerror", "Ngày kết thúc phải từ hôm nay trở đi");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
             if (!CommonValidation.validendateafterstartdate(endDate, startDate)) {
                 request.setAttribute("enddateerror", "Ngày kết thúc phải sau ngày bắt đầu");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
 //            if (image.isEmpty()) {
 //                request.setAttribute("fileerror", "Please upload an image");
@@ -227,12 +215,15 @@ public class AddContract extends HttpServlet {
 
             if (!hasFile) {
                 request.setAttribute("fileerror", "Cần ít nhất 1 ảnh");
-                request.getRequestDispatcher("addcontract.jsp").forward(request, response);
-                return;
+                hasError = true;
             }
 
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        if (hasError) {
+            request.getRequestDispatcher("addcontract.jsp").forward(request, response);
+            return;
         }
         CompanyDAO cpd = new CompanyDAO();
         StaffDAO std = new StaffDAO();
