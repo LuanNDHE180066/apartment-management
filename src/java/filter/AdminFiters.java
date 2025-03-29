@@ -43,9 +43,15 @@ import org.apache.http.HttpRequest;
             "/apartmentdetail.jsp",
             "/historyownerapartment.jsp",
             "/historylivingapartment.jsp",
-            "/viewrole.jsp",
+            "/view-pending-change-represent-preson",
+            "/viewPendingChangeRepresentPerson.jsp",
+            "/viewPendingChangeResidentRequest.jsp",
+            "/view-pending-change-represent-preson",
+            "/view-change-resident-request","/viewrole.jsp",
             "/add-role",
-            "/view-role"})
+            "/view-role"}
+            )
+            
 public class AdminFiters implements Filter {
 
     private static final boolean debug = true;

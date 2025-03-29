@@ -110,7 +110,7 @@ public class AddExpenditure extends HttpServlet {
         ExpenditureDAO daoE = new ExpenditureDAO();
 
         if (title.trim().isBlank()) {
-            request.setAttribute("message", "Title can not be blank");
+            request.setAttribute("message", "Tiêu đề không thể để trống");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
             return;
@@ -119,14 +119,14 @@ public class AddExpenditure extends HttpServlet {
         title = u.stringNomalize(title);
 
         if (approveDate_raw.isBlank() || paymentDate_raw.isBlank()) {
-            request.setAttribute("message", "Approve date and payment date can not be blank");
+            request.setAttribute("message", "Ngày duyệt chi và ngày giải ngân không thể để trống");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
             return;
         }
 
         if (note.trim().isBlank()) {
-            request.setAttribute("message", "Note can not be blank");
+            request.setAttribute("message", "Note không thể là blank");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
             return;
@@ -216,7 +216,7 @@ public class AddExpenditure extends HttpServlet {
 
 //            out.print(currentAdmin.getName() + " " + AdminId + " " + chiefAccountantId + createdById + categoryId_raw);
             if (!daoHe.addNewHistoryExpenditure(he)) {
-                request.setAttribute("message", "Can not add expenditure");
+                request.setAttribute("message", "Không thể thêm phiếu chi");
                 request.setAttribute("status", "false");
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
                 return;
@@ -227,7 +227,7 @@ public class AddExpenditure extends HttpServlet {
 //                send.sendEmail(he.getCurrentAdmin().getEmail(), daoSt.getById(he.getCreatedStaff().getName()) + " has created an expenditure " + he.getTitle(),
 //                        "Please check and confirm the expenditure : " + he.getTitle());
                 request.setAttribute("staff", daoSt.getById(he.getCreatedStaff().getId()));
-                request.setAttribute("message", "Your expenditure has been successfully saved to the waiting list.");
+                request.setAttribute("message", "Phiếu chi của bạn đã được thêm vào danh sách chờ.");
                 request.setAttribute("status", "true");
                 request.getRequestDispatcher("addExpenditure.jsp").forward(request, response);
                 return;

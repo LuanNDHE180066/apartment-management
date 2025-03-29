@@ -34,6 +34,12 @@
         <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style>
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+        </style>
     </head>
     <body class="dashboard dashboard_1">
         <div class="full_container">
@@ -101,44 +107,44 @@
                                                     <tbody>
                                                         <c:forEach items="${listRequest}" var="l">
                                                             <tr>
-                                                                <td>${l.aid.id}</td>
-                                                                <td>${l.date}</td>
-                                                                <td>
+                                                                <td style="text-align: left">${l.aid.id}</td>
+                                                                <td style="text-align: left">${l.date}</td>
+                                                                <td style="text-align: left">
                                                                     <c:choose>
                                                                         <c:when test="${l.responseDate == null}">Chưa phản hồi</c:when>
                                                                         <c:otherwise>${l.responseDate}</c:otherwise>
                                                                     </c:choose>
                                                                 </td>
-                                                                <td>${l.requestType.name}</td>
-                                                                <td>
+                                                                <td style="text-align: left">${l.requestType.name}</td>
+                                                                <td style="text-align: left">
                                                                     <c:choose>
                                                                         <c:when test="${l.staffId.name == null}">
-                                                                            <span style="color: orange;">Waiting</span>
+                                                                            <span style="color: orange;">Đợi</span>
                                                                         </c:when>
                                                                         <c:otherwise>
                                                                             <span style="color: green;">${l.staffId.name}</span>
                                                                         </c:otherwise>
                                                                     </c:choose>
                                                                 </td>
-                                                                <td>${l.detail}</td>
-                                                                <td>
+                                                                <td style="text-align: left">${l.detail}</td>
+                                                                <td style="text-align: left">
                                                                     <c:choose>
-                                                                        <c:when test="${l.status == 'In process'}">
-                                                                            <span style="color: blue;">In process</span>
+                                                                        <c:when test="${l.status == 'Đang làm'}">
+                                                                            <span style="color: blue;">Đang làm</span>
                                                                         </c:when>
-                                                                        <c:when test="${l.status == 'Done'}">
-                                                                            <span style="color: green;">Done</span>
+                                                                        <c:when test="${l.status == 'Xong'}">
+                                                                            <span style="color: green;">Xong</span>
                                                                         </c:when>
-                                                                        <c:when test="${l.status == 'Waiting'}">
-                                                                            <span style="color: red;">Waiting</span>
+                                                                        <c:when test="${l.status == 'Đợi'}">
+                                                                            <span style="color: red;">Đợi</span>
                                                                         </c:when>
                                                                     </c:choose>
                                                                 </td>
-                                                                <td>
-                                                                    <c:if test="${l.status == 'Waiting'}">
+                                                                <td style="text-align: left">
+                                                                    <c:if test="${l.status == 'Đợi'}">
                                                                         <a href="delete-request-resident?id=${l.id}" onclick="return confirm('Are you sure to delete this request?')"><i class="fa-solid fa-trash"></i></a>
                                                                     </c:if>
-                                                                    <c:if test="${l.status == 'Waiting'}">
+                                                                    <c:if test="${l.status == 'Đợi'}">
                                                                         <a style="margin-left: 3px" href="update-request?id=${l.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                     </c:if>
                                                                 </td>

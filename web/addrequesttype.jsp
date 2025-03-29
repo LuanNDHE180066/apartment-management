@@ -155,7 +155,7 @@
                                                 <label for="role">Ban phụ trách</label>
                                                 <select  name="role">
                                                     <c:forEach items="${requestScope.rolelist}" var="o">
-                                                        <c:if test="${o.id == 4 ||  o.id == 5}">
+                                                        <c:if test="${o.id == 4 ||  o.id == 5 || o.id == 7}">
                                                             <option value="${o.id}">${o.name}</option>
                                                         </c:if>
                                                     </c:forEach>

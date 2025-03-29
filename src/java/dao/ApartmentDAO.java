@@ -45,8 +45,8 @@ public class ApartmentDAO extends DBContext {
         return list;
     }
 
-    public List<Apartment> getViewApartment(String floor, String type, String status) {
-        String sql = "select * from Apartment";
+    public List<Apartment> getViewApartment(String apartmentNumber,String floor, String type, String status) {
+        String sql = "select * from Apartment where 1 = 1";
         if (!floor.equals("") || !type.equals("") || !status.equals("")) {
             sql += " where id <> 'A00_00' ";
         }
@@ -58,6 +58,9 @@ public class ApartmentDAO extends DBContext {
         }
         if (!status.equals("")) {
             sql += "and status = " + status;
+        }
+        if(apartmentNumber != ""){
+            sql += " and id like '%" + apartmentNumber+"%'";
         }
         List<Apartment> list = new ArrayList<>();
         FloorDAO fdao = new FloorDAO();
@@ -314,11 +317,11 @@ public class ApartmentDAO extends DBContext {
 //a.setId("A01_01");
 //a.setNumberOfPerson(4);
 //
-//        System.out.println(dao.updatenoperson(a));
-        System.out.println(dao.getById("A10_04").getFloor().getSquare());
-        System.out.println(dao.getAll().size());
+////        System.out.println(dao.updatenoperson(a));
+//        System.out.println(dao.getById("A10_04").getFloor().getSquare());
+//        System.out.println(dao.getAll().size());
 //        
-System.out.println(dao.getById("A10_02").getId());
+System.out.println(dao.getViewApartment("a001", "", "", ""));
 
     }
 }
