@@ -43,6 +43,8 @@
                 text-align: center;
                 vertical-align: middle;
                 padding: 12px;
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
             }
 
             .table thead {
@@ -93,7 +95,7 @@
                             <div class="row column_title">
                                 <div class="col-md-12">
                                     <div class="page_title">
-                                        <h2>Tables</h2>
+                                        <h2>Dịch vụ</h2>
                                     </div>
                                 </div>
                             </div>
@@ -101,24 +103,24 @@
                                 <div class="col-md-12">
                                     <div class="white_shd full margin_bottom_30">
                                         <div class="full graph_head">
-                                            <h2>Services Information</h2>
+                                            <h2>Thông tin dịch vụ</h2>
                                         </div>
                                         <div style="margin-left: 40px;">
                                             <form action="all-services" method="post">
                                                 <div class="row align-items-center">
                                                     <div class="col-md-2">
-                                                        <input id="searchInput" name="name" type="text" class="form-control" placeholder="Search by Name">
+                                                        <input id="searchInput" name="name" type="text" class="form-control" placeholder="Tìm kiếm theo tên ">
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="status">
-                                                            <option value="">Filter by Status</option>
-                                                            <option value="1" <c:if test="${sessionScope.status == 1}">selected</c:if>>Active</option>
-                                                            <option value="0" <c:if test="${sessionScope.status == 0}">selected</c:if>>Inactive</option>
+                                                            <option value="">Lọc theo trạng thái</option>
+                                                            <option value="1" <c:if test="${sessionScope.status == 1}">selected</c:if>>Đang hoạt động</option>
+                                                            <option value="0" <c:if test="${sessionScope.status == 0}">selected</c:if>>Đã đóng</option>
                                                             </select>
                                                         </div>
                                                         <div class="col-md-2">
                                                             <select class="form-control" name="category">
-                                                                <option value="" >Select category</option>
+                                                                <option value="" >Thể loại</option>
                                                             <c:forEach items="${requestScope.listCategories}" var="cs">
                                                                 <option value="${cs.id}" <c:if test="${sessionScope.category == cs.id}">selected</c:if>>${cs.name}</option>
                                                             </c:forEach>
@@ -126,7 +128,7 @@
                                                     </div>
                                                     <div class="col-md-2">
                                                         <select class="form-control" name="company">
-                                                            <option value="" >Select Company</option>
+                                                            <option value="" >Công ti cung cấp </option>
                                                             <c:forEach items="${requestScope.listCompanies}" var="c">
                                                                 <option value="${c.id}" <c:if test="${sessionScope.company == c.id}">selected</c:if>>${c.name}</option>
                                                             </c:forEach>
@@ -145,15 +147,15 @@
                                                 <table class="table w-100">
                                                     <thead>
                                                         <tr>
-                                                            <th>Services Name</th>
-                                                            <th>Unit Price</th>
-                                                            <th>Unit</th>
-                                                            <th>Description</th>
-                                                            <th>Category</th>
-                                                            <th>Supplier</th>
-                                                            <th>Status</th>
-                                                            <th style="width: 10%">Start</th>
-                                                            <th>End</th>
+                                                            <th>Tên dịch vụ</th>
+                                                            <th>Phí</th>
+                                                            <th>Đơn vị</th>
+                                                            <th>Mô tả</th>
+                                                            <th>Loại dịch vụ</th>
+                                                            <th>Cung cấp</th>
+                                                            <th>Trạng thái</th>
+                                                            <th style="width: 10%">Ngày tạo</th>
+                                                            <th>Ngày đóng</th>
                                                             <th>Action</th>
                                                         </tr>
                                                     </thead>
@@ -187,6 +189,9 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="footer" style="background: white; color: white; text-align: center; padding: 10px;">
+            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
         </div>
         <!-- jQuery & Bootstrap -->
         <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>

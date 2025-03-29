@@ -65,17 +65,17 @@ public class AddNewCategoryServiceServlet extends HttpServlet {
         CategoryServiceDAO csd = new CategoryServiceDAO();
         CategoryServiceValidation val = new CategoryServiceValidation();
         if(name.isBlank()){
-            request.setAttribute("error", "Name is not allow blank ");
+            request.setAttribute("error", "Tên không được để trống!");
             request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);
             return;
         }
         if(note.isBlank()){
-            request.setAttribute("error", "Note is not allow blank ");
+            request.setAttribute("error", "Ghi chú không được để trống");
             request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);
             return;
         }
         if(val.isExistedName(Util.stringNomalize(name))){
-            request.setAttribute("error", "Name is existed");
+            request.setAttribute("error", "Tên đã tồn tại");
             request.getRequestDispatcher("addcategoryservice.jsp").forward(request, response);
             return;
         }

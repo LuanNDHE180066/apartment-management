@@ -42,6 +42,10 @@
         <![endif]-->
         <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
         <style>
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
             .pagination {
                 margin-top: 20px;
                 margin-left: 1250px;
@@ -136,7 +140,7 @@
                                                         <select class="form-control" name="filterRoles">
                                                             <option value="">Tìm dựa trên vai trò</option>
                                                             <c:forEach items="${requestScope.rolelist}" var="o">
-                                                                <c:if test="${o.id == 4 || o.id == 5}">
+                                                                <c:if test="${o.id == 4 ||  o.id == 5 || o.id == 7}">
                                                                     <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
                                                                 </c:if>
                                                             </c:forEach>
@@ -163,9 +167,9 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.listRequestType}" var="rt">
                                                             <tr>
-                                                                <td>${rt.name}</td>
-                                                                <td>${rt.detail}</td>
-                                                                <td>${rt.destination.name}</td>
+                                                                <td style="text-align: left">${rt.name}</td>
+                                                                <td style="text-align: left">${rt.detail}</td>
+                                                                <td style="text-align: left">${rt.destination.name}</td>
                                                                 <td>
                                                                      <a href="update-request-type?id=${rt.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                                 </td>

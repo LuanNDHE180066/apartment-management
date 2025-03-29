@@ -5,6 +5,9 @@
 --%>
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -13,36 +16,19 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <!-- mobile metas -->
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <meta name="viewport" content="initial-scale=1, maximum-scale=1">
         <!-- site metas -->
-<title>Apartment management</title>        <meta name="keywords" content="">
-        <meta name="description" content="">
-        <meta name="author" content="">
-        <!-- site icon -->
+        <title>Quản lý khoản chi</title>
         <link rel="icon" href="images/fevicon.png" type="image/png" />
         <!-- bootstrap css -->
         <link rel="stylesheet" href="css/bootstrap.min.css" />
-        <!-- site css -->
-        <link rel="stylesheet" href="style.css" />
-        <!-- responsive css -->
-        <link rel="stylesheet" href="css/responsive.css" />
-        <!-- color css -->
-        <link rel="stylesheet" href="css/colors.css" />
-        <!-- select bootstrap -->
-        <link rel="stylesheet" href="css/bootstrap-select.css" />
-        <!-- scrollbar css -->
-        <link rel="stylesheet" href="css/perfect-scrollbar.css" />
         <!-- custom css -->
-        <link rel="stylesheet" href="css/custom.css" />
-        <!-- calendar file css -->
-        <link rel="stylesheet" href="js/semantic.min.css" />
-        <!-- fancy box js -->
-        <link rel="stylesheet" href="css/jquery.fancybox.css" />
-        <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
-        <style> body {
+        <style>
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
+            
+            body {
                 font-family: Arial, sans-serif;
                 background-color: #f4f4f9;
                 margin: 0;
@@ -126,21 +112,21 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="form-container">
-                                    <h1>Add Expense Category</h1>
+                                    <h1>Thêm mới chi phí</h1>
                                     <form action="add-expense-category" method="post">
                                         <input type="hidden" id="id" name="id" value="" />
                                         <div class="form-group">
-                                            <label for="title">Category Name</label>
+                                            <label for="title">Tên chi phí  </label>
                                             <input type="text" id="title" name="categoryName" value="" required />
                                         </div>
                                         <div class="form-group">
-                                            <label for="description">Category Description</label>
+                                            <label for="description">Mô tả</label>
                                             <input type="text" id="description" name="categoryDescription" value="" required />
                                         </div>
                                         <div class="form-button">
-                                            <button type="submit">Add</button>
+                                            <button type="submit">Thêm</button>
                                             <div>
-                                                <a href="view-expense-category" style="font-size: 18px;" >Back</a>
+                                                <a href="view-expense-category" style="font-size: 18px;" >Quay lại</a>
                                             </div>
                                             <h5 style="color:${requestScope.status == 'true' ? 'green' : 'red'}; text-align:center">
                                                 ${requestScope.message}

@@ -39,10 +39,10 @@
             .display-none{
                 display: hidden;
             }
-               .table td{
-                 text-align: left;
-                 color: black;
-                 font-weight: 300;
+            .table td{
+                text-align: left;
+                color: black;
+                font-weight: 300;
             }
         </style>
     </head>
@@ -86,9 +86,13 @@
                                         <span style="margin-left: 5px" class="btn btn-primary ms-2">
                                             <a style="color: white" href="view-pending-expenditure">Khoản chi chờ duyệt</a>
                                         </span>
-                                        <span style="margin-left: 5px" class="btn btn-primary ms-2">
-                                            <a style="color: white" href="view-expense-category">Các loại khoản chi</a>
-                                        </span>
+
+
+                                        <c:if test="${sessionScope.person.role.id == 3}">
+                                            <span style="margin-left: 5px" class="btn btn-primary ms-2">
+                                                <a style="color: white" href="view-expense-category">Các loại khoản chi</a>
+                                            </span>
+                                        </c:if>
                                     </div>
                                 </div>
                             </form>
@@ -133,12 +137,12 @@
                                         <tr>
                                             <td>${expenditure.id}</td>
                                             <td>${expenditure.title}</td>
-                                              <td> <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
+                                            <td> <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
                                             <td>${expenditure.approveddate}</td>
                                             <td>${expenditure.category.categoryName}</td>
                                             <td>${expenditure.company.name}</td>
                                             <td>${expenditure.createdStaff.name}</td>
-                                        
+
                                             <td>
                                                 <a class="${sessionScope.account.roleId != 3 ? 'display-none' : ''}" href="update-expenditure?id=${expenditure.id}"><i class="fa-solid fa-pen-to-square"></i></a>
                                                 <a href="view-expenditure-change-history?id=${expenditure.id}" style="margin-left: 10px;"><i class="fa-solid fa-history"></i></a>
@@ -165,7 +169,7 @@
                                         <tr>
                                             <td>${summary.categoryName}</td>
                                             <td style="text-align: center">${exDAO.getNumberOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}</td>
-                                               <td style="text-align: center"> <fmt:formatNumber value="${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
+                                            <td style="text-align: center"> <fmt:formatNumber value="${exDAO.getTotalFeesOfExpenditureByApproveDateAndExpenseCategory(param.startDate ,param.endDate, summary.id)}" type="currency" currencyCode="VND" maxFractionDigits="2"/> </td>
                                         </tr>
                                     </c:forEach>
                                 </tbody>

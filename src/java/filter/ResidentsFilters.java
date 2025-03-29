@@ -4,6 +4,7 @@
  */
 package filter;
 
+import dao.ResidentDAO;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -22,20 +23,15 @@ import model.Account;
 
 /**
  *
- * @author PC
+ * @author quang
  */
-@WebFilter(filterName = "AdmintrisFilter", urlPatterns = {"/view-all-request",
-    "/assign-request",
-    "/update-request-administrative",
-    "/view-request-type",
-    "/add-request-type",
-    "/update-request-type",
-    "/viewallrequest.jsp",
-    "/viewrequesttype.jsp",
-    "/addrequesttype.jsp",
-    "/updaterequesttype.jsp"
+@WebFilter(filterName = "ResidentsFilters", urlPatterns = {"/registerNewLivingOrOwnerResident.jsp, "
+    + "/register-new-living-or-owner-resident",
+    "/changeRepresentResident.jsp",
+    "/change-represent-resident"
+
 })
-public class AdmintrisFilter implements Filter {
+public class ResidentsFilters implements Filter {
 
     private static final boolean debug = true;
 
@@ -44,13 +40,13 @@ public class AdmintrisFilter implements Filter {
     // configured. 
     private FilterConfig filterConfig = null;
 
-    public AdmintrisFilter() {
+    public ResidentsFilters() {
     }
 
     private void doBeforeProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdmintrisFilter:DoBeforeProcessing");
+            log("ResidentsFilters:DoBeforeProcessing");
         }
 
         // Write code here to process the request and/or response before
@@ -78,7 +74,7 @@ public class AdmintrisFilter implements Filter {
     private void doAfterProcessing(ServletRequest request, ServletResponse response)
             throws IOException, ServletException {
         if (debug) {
-            log("AdmintrisFilter:DoAfterProcessing");
+            log("ResidentsFilters:DoAfterProcessing");
         }
 
         // Write code here to process the request and/or response after
@@ -114,34 +110,26 @@ public class AdmintrisFilter implements Filter {
             throws IOException, ServletException {
 
         if (debug) {
-            log("AdmintrisFilter:doFilter()");
+            log("ResidentsFilters:doFilter()");
         }
 
         doBeforeProcessing(request, response);
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse res = (HttpServletResponse) response;
-        HttpSession session = req.getSession();
+        HttpSession session = req.getSession(false);
+        ResidentDAO rd = new ResidentDAO();
+        Account a = (session != null) ? (Account) session.getAttribute("account") : null;
+
         String uri = req.getServletPath();
-        Account a = (Account) session.getAttribute("account");
-        if (a.getRoleId() != 2) {
-            if (a.getRoleId() == 4 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp")||uri.contains("update-request-staff"))) {
-                chain.doFilter(request, response);
-                return;
-            } else if (a.getRoleId() == 5 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp") || uri.contains("update-request-staff"))) {
-                chain.doFilter(request, response);
-                return;
-            } else if (a.getRoleId() == 7 && (uri.contains("view-all-request") || uri.contains("viewallrequest.jsp") || uri.contains("update-request-staff"))) {
-                chain.doFilter(request, response);
-                return;
-            }
-            else if (a.getRoleId() == 0 && (uri.contains("view-request-type") || uri.contains("viewrequesttype.jsp") || uri.contains("addrequesttype.jsp") || uri.contains("updaterequesttype.jsp") || uri.contains("add-request-type") || uri.contains("update-request-type"))) {
-                chain.doFilter(request, response);
-                return;
-            }else {
-                res.sendRedirect("404_error.jsp");
-                return;
-            }
+        if (a == null) {
+            res.sendRedirect("401_error.jsp");
+            return;
         }
+
+        if (a.getRoleId() != 1 || a.getRoleId() != 6) {
+            res.sendRedirect("404_error.jsp");
+        }
+
         Throwable problem = null;
         try {
             chain.doFilter(request, response);
@@ -197,7 +185,7 @@ public class AdmintrisFilter implements Filter {
         this.filterConfig = filterConfig;
         if (filterConfig != null) {
             if (debug) {
-                log("AdmintrisFilter:Initializing filter");
+                log("ResidentsFilters:Initializing filter");
             }
         }
     }
@@ -208,9 +196,9 @@ public class AdmintrisFilter implements Filter {
     @Override
     public String toString() {
         if (filterConfig == null) {
-            return ("AdmintrisFilter()");
+            return ("ResidentsFilters()");
         }
-        StringBuffer sb = new StringBuffer("AdmintrisFilter(");
+        StringBuffer sb = new StringBuffer("ResidentsFilters(");
         sb.append(filterConfig);
         sb.append(")");
         return (sb.toString());

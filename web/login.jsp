@@ -17,7 +17,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-        <title>JSP Page</title>
+        <title>Login Page</title>
     <html lang="en">
         <head>
             <meta name="description" content="">
@@ -97,23 +97,22 @@
                                 <form action="login" method="post">
                                     <fieldset>
                                         <div class="field">
-                                            <label class="label_field">Username</label>
+                                            <label class="label_field">Tài khoản</label>
                                             <input type="text" name="username" placeholder="Username" value="${cookie.rememberedUser.value}" />
                                         </div>
                                         <div class="field">
-                                            <label class="label_field">Password</label>
+                                            <label class="label_field">Mật khẩu</label>
                                             <input type="password" name="password" placeholder="Password" value="${cookie.rememberedPass.value}" />
                                         </div>
                                         <div class="field">
-                                            <label class="label_field">Role</label>
+                                            <label class="label_field">Vai trò</label>
                                             <span>
                                                 <select id="role" name="role" class="form-control">
-                                                    <c:forEach items="${requestScope.rolelist}" var="o">
-                                                        <option value="${o.id}" <c:if test="${o.id == cookie.rememberedRole.value}">selected</c:if> <c:if test="${null == cookie.rememberedRole.value}"><c:if test="${o.id == 1}">selected</c:if></c:if>>${o.name}</option>
-                                                    </c:forEach>
+                                                    <option value="1" <c:if test="${1 == cookie.rememberedRole.value}">selected</c:if> <c:if test="${null == cookie.rememberedRole.value}"><c:if test="${o.id == 1}">selected</c:if></c:if>>Resident</option>
+                                                    <option value="2" <c:if test="${2 == cookie.rememberedRole.value}">selected</c:if>>Staff</option>
                                                 </select>
                                             </span>
-                                            <a class="forgot" href="requestpassword.jsp">Forgotten Password?</a>
+                                            <a class="forgot" href="requestpassword.jsp">Quên mật khẩu?</a>
                                         </div>
                                         <div class="field remember-me" style="display: flex ;justify-content: start">
                                             <label  class="label_field" for="remember-checkbox">Remember Me</label>
@@ -123,10 +122,10 @@
                                         <h6 style="color:red;text-align:center">${requestScope.error}</h6>
                                         <div class="field margin_0">
                                             <label class="label_field hidden">hidden label</label>
-                                            <button class="main_bt" type="submit">Sign In</button>
+                                            <button class="main_bt" type="submit">Đăng nhập</button>
                                             <div>
                                                 <i class="fa fa-google" aria-hidden="true"></i>
-                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=openid%20email%20profile&redirect_uri=http://localhost:8080/apartment-management/login-google&response_type=code&client_id=879385543144-fh57neia4tt4ogqqjfk4hnb5182npalt.apps.googleusercontent.com&access_type=offline&prompt=consent">Sign In With Google</a>                                            </div>
+                                                <a href="https://accounts.google.com/o/oauth2/auth?scope=openid%20email%20profile&redirect_uri=http://localhost:8080/apartment-management/login-google&response_type=code&client_id=879385543144-fh57neia4tt4ogqqjfk4hnb5182npalt.apps.googleusercontent.com&access_type=offline&prompt=consent">Google</a></div>
                                         </div>
                                     </fieldset>
                                 </form>

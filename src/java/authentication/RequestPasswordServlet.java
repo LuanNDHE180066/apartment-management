@@ -92,17 +92,17 @@ public class RequestPasswordServlet extends HttpServlet {
             daoT.addToken(newToken);
             if (!send.sendEmail(email, "APARTMENT MANAGEMENT SYSTEM: RESET PASSWORD", "<h2>Please click the link to "
                     + "reset your password: <a href=" + link + ">Click here</a></h2>")) {
-                request.setAttribute("message", "Cannot send email!");
+                request.setAttribute("message", "Không thể gửi email!");
                 request.setAttribute("status", "false");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
                 return;
             }
-            request.setAttribute("message", "Your password has been sent to your email!");
+            request.setAttribute("message", "Đã gửi yêu cầu đến email của bạn!");
             request.setAttribute("status", "true");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         } catch (Exception e) {
-            request.setAttribute("message", "Can not found Username!");
+            request.setAttribute("message", "Không tìm thấy tài khoản!");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;

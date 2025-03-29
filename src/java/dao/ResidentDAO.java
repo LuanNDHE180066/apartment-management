@@ -323,7 +323,7 @@ public class ResidentDAO extends DBContext {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                Account a = new Account(rs.getString("username"), rs.getString("password"),
+                Account a = new Account(rs.getString("username") == null?"":rs.getString("username"), rs.getString("password"),
                         rs.getString("email"), rs.getString("id"), rs.getInt("roleid"));
                 list.add(a);
             }

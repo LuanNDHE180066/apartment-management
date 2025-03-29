@@ -81,14 +81,14 @@ public class AddExpenseCategory extends HttpServlet {
         String categoryDescription = request.getParameter("categoryDescription");
 
         if (categoryName.trim().isBlank()) {
-            request.setAttribute("message", "Category name can not be empty");
+            request.setAttribute("message", "Tên chi phí không thể rỗng");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
             return;
         }
 
         if (categoryDescription.trim().isBlank()) {
-            request.setAttribute("message", "Category description can not be empty");
+            request.setAttribute("message", "Mô tả không thể rỗng");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
             return;
@@ -99,11 +99,11 @@ public class AddExpenseCategory extends HttpServlet {
 
         ExpenseCategory e = new ExpenseCategory(categoryName, categoryDescription, 1);
         if (daoEx.addExpenseCategory(e)) {
-            request.setAttribute("message", "Add successfull");
+            request.setAttribute("message", "Thêm thành công");
             request.setAttribute("status", "true");
             request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
         } else {
-            request.setAttribute("message", "Failed to add");
+            request.setAttribute("message", "Thêm thất bại");
             request.setAttribute("status", "false");
             request.getRequestDispatcher("addExpenseCategory.jsp").forward(request, response);
         }

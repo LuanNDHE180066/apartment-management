@@ -41,7 +41,10 @@
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
         <style>
-            /* Custom checkbox */
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
             .custom-checkbox {
                 position: relative;
             }
@@ -179,12 +182,12 @@
                                                         <tbody>
                                                             <c:forEach items="${requestScope.waiting_requestes}" var="o" varStatus="status">
                                                                 <tr>
-                                                                    <td>${o.residentId.name}</td>
-                                                                    <td>${o.aid.id}</td>
-                                                                    <td>${o.detail}</td>
-                                                                    <td>${o.date}</td> 
-                                                                    <td>${o.requestType.name}</td>  
-                                                                    <td>${o.status}</td> 
+                                                                    <td style="text-align: left">${o.residentId.name}</td>
+                                                                    <td style="text-align: left">${o.aid.id}</td>
+                                                                    <td style="text-align: left">${o.detail}</td>
+                                                                    <td style="text-align: left">${o.date}</td> 
+                                                                    <td style="text-align: left">${o.requestType.name}</td>  
+                                                                    <td style="text-align: left">${o.status}</td> 
                                                                     <td>
                                                                         <a href="#assignRequestWaiting${status.index}" class="edit" data-toggle="modal">
                                                                             <i class="material-icons" data-toggle="tooltip" title="Assign">&#xE254;</i>
@@ -218,10 +221,10 @@
 
                                                                                                     <c:forEach items="${targetList}" var="staff">
                                                                                                         <tr>
-                                                                                                            <td>${staff.name}</td>
-                                                                                                            <td>${staff.email}</td>
-                                                                                                            <td>${staff.phone}</td> 
-                                                                                                            <td>${staff.address}</td>   
+                                                                                                            <td style="text-align: left">${staff.name}</td>
+                                                                                                            <td style="text-align: left">${staff.email}</td>
+                                                                                                            <td style="text-align: left">${staff.phone}</td> 
+                                                                                                            <td style="text-align: left">${staff.address}</td>   
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
@@ -250,7 +253,7 @@
                                                                         <a style="margin-left: 5px" href="update-request-administrative?requestId=${o.id}" class="fa fa-ban"></a>
                                                                     </td> 
                                                                     <td>
-                                                                        
+
                                                                     </td>
                                                                 </tr>                                                            
                                                             </c:forEach>
@@ -289,7 +292,7 @@
                                                         <select class="form-control" name="filterRoles">
                                                             <option value="">Tìm dựa trên vai trò</option>
                                                             <c:forEach items="${requestScope.rolelist}" var="o">
-                                                                <c:if test="${o.id == 4 ||  o.id == 5}">
+                                                                <c:if test="${o.id == 4 ||  o.id == 5 || o.id == 7}">
                                                                     <option value="${o.id}" <c:if test="${requestScope.filterRoles == o.id}">selected</c:if>>${o.name}</option>
                                                                 </c:if>
                                                             </c:forEach>
@@ -321,14 +324,14 @@
                                                     <tbody>
                                                         <c:forEach items="${requestScope.inprocess_requestes}" var="o" varStatus="status">
                                                             <tr>
-                                                                <td>${o.residentId.name}</td>
-                                                                <td>${o.aid.id}</td>
-                                                                <td>${o.detail}</td>
-                                                                <td>${o.date}</td> 
-                                                                <td>${o.requestType.name}</td>                                             
-                                                                <td>${o.status}</td>
-                                                                <td>${o.shift}</td>
-                                                                <td>${o.staffId.name}</td> 
+                                                                <td style="text-align: left">${o.residentId.name}</td>
+                                                                <td style="text-align: left">${o.aid.id}</td>
+                                                                <td style="text-align: left">${o.detail}</td>
+                                                                <td style="text-align: left">${o.date}</td> 
+                                                                <td style="text-align: left">${o.requestType.name}</td>                                             
+                                                                <td style="text-align: left">${o.status}</td>
+                                                                <td style="text-align: left">${o.shift}</td>
+                                                                <td style="text-align: left">${o.staffId.name}</td> 
                                                                 <c:if test="${sessionScope.account.roleId!=2}">
                                                                     <td>
                                                                         <a href="update-request-staff?requestId=${o.id}" class="fas fa-edit"></a>
@@ -369,10 +372,10 @@
 
                                                                                                     <c:forEach items="${targetList}" var="staff">
                                                                                                         <tr>
-                                                                                                            <td>${staff.name}</td>
-                                                                                                            <td>${staff.email}</td>
-                                                                                                            <td>${staff.phone}</td> 
-                                                                                                            <td>${staff.address}</td>
+                                                                                                            <td style="text-align: left">${staff.name}</td>
+                                                                                                            <td style="text-align: left">${staff.email}</td>
+                                                                                                            <td style="text-align: left">${staff.phone}</td> 
+                                                                                                            <td style="text-align: left">${staff.address}</td>
                                                                                                             <td>
                                                                                                                 <form action="assign-request" method="get">
                                                                                                                     <select id="shift" name="shift">
@@ -480,39 +483,35 @@
                                 <!-- More tables can be added here -->
                             </div>
                         </div>
-                    </div>
 
-                    <!-- footer -->
-                    <div class="container-fluid">
-                        <div class="footer">
-                            <p>Copyright © 2018 Designed by html.design. All rights reserved.</p>
-                        </div>
+                    </div>
+                    <div class="footer" style="position: absolute; bottom: 50px; left: 50px; width: 100%; background: white; color: white; text-align: center; padding: 10px;">
+                        <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
                     </div>
                 </div>
                 <!-- end dashboard inner -->
             </div>
         </div>
-
         <!-- jQuery -->
-<!--        <script>
-            function updateOptionsByTime() {
-                const currentHour = new Date().getHours(); // Lấy giờ hiện tại
-                const options = document.querySelectorAll("#shift option");
-
-                options.forEach(option => {
-                    const endHour = parseInt(option.getAttribute("data-time-end"));
-                    if (currentHour < endHour) {
-                        option.hidden = false; // Hiển thị option
-                    } else {
-                        option.hidden = true; // Ẩn option
+        <!--        <script>
+                    function updateOptionsByTime() {
+                        const currentHour = new Date().getHours(); // Lấy giờ hiện tại
+                        const options = document.querySelectorAll("#shift option");
+        
+                        options.forEach(option => {
+                            const endHour = parseInt(option.getAttribute("data-time-end"));
+                            if (currentHour < endHour) {
+                                option.hidden = false; // Hiển thị option
+                            } else {
+                                option.hidden = true; // Ẩn option
+                            }
+                        });
                     }
-                });
-            }
-            // Gọi hàm khi trang load
-            updateOptionsByTime();
-            // Cập nhật mỗi phút để kiểm tra lại điều kiện
-            setInterval(updateOptionsByTime, 60000);
-        </script>-->
+                    // Gọi hàm khi trang load
+                    updateOptionsByTime();
+                    // Cập nhật mỗi phút để kiểm tra lại điều kiện
+                    setInterval(updateOptionsByTime, 60000);
+                </script>-->
         <script src="js/jquery.min.js"></script>
         <script src="js/popper.min.js"></script>
         <script src="js/bootstrap.min.js"></script>

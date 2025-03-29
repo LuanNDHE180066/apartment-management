@@ -280,6 +280,9 @@
                             </div>
                         </div>
                         <!-- footer -->
+                        <div class="footer" style="position: absolute; bottom: 0; left: 0; width: 100%; background: white; color: white; text-align: center; padding: 10px;">
+                            <p>Copyright © 2025 Designed by Your Company. All rights reserved.</p>
+                        </div>
 
                     </div>
                     <!-- end dashboard inner -->
@@ -304,6 +307,14 @@
                                                                     this.classList.toggle("fa-minus");
                                                                 });
                                                             });
+                                                            // Lấy tham số trên URL
+                                                            const urlParams = new URLSearchParams(window.location.search);
+                                                            const status = urlParams.get("status");
 
+                                                            if (status === "success") {
+                                                                alert("Thanh toán thành công!");
+                                                            } else if (status === "failed") {
+                                                                alert("Thanh toán thất bại! Vui lòng thử lại.");
+                                                            }
     </script>
 </html>

@@ -101,7 +101,7 @@ public class UpdatePendingChangeRepresentRequestStatus extends HttpServlet {
 
             } else {
                 SendEmail send = new SendEmail();
-                send.sendEmail(oaDAO.getOwnerByApartmentID(re.getaId()).getRid().getEmail(), "Reject change represent person", "ban da bi tu choi kikiki");
+                send.sendEmail(oaDAO.getOwnerByApartmentID(re.getaId()).getRid().getEmail(), "Reject change represent person", "Đơn yêu cầu đổi cư dân đại diện của bạn đã bị từ chối.");
             }
         }
         request.getRequestDispatcher("view-pending-change-represent-preson").forward(request, response);

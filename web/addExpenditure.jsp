@@ -136,7 +136,7 @@
                                         <div class="two-cols">
                                             <div class="col" style="padding: 0; margin-right: 5px">
                                                 <label for="title">Tiêu đề</label>
-                                                <input type="text" id="title" name="title" placeholder="Enter title" value="${expenditure.title}" required=""/>
+                                                <input type="text" id="title" name="title" placeholder="Nhập tiêu đề" value="${expenditure.title}" required=""/>
                                             </div>
                                             <div class="col" style="padding: 0; margin-right: 5px">
                                                 <label for="totalFees">Tổng chi (VND)</label>
@@ -145,7 +145,7 @@
                                                 <fmt:formatNumber value="${expenditure.totalPrice}" type="currency" currencySymbol="VND" var="formattedTotalPrice"/>
 
 
-                                                <input type="text" id="totalFeesDisplay" placeholder="Enter fees" 
+                                                <input type="text" id="totalFeesDisplay" placeholder="Nhập chi phí" 
                                                        value="${formattedTotalPrice}" required=""/>
 
 
@@ -174,7 +174,7 @@
                                                         <option value="${cat.id}" ${cat.id == expenditure.category.id ? 'selected' : ''}>${cat.categoryName}</option>
                                                     </c:forEach>
                                                 </select>
-                                            </div>
+                                            </div>          
                                             <div class="col" style="padding: 0; margin-right: 5px">
                                                 <label for="company">Công ty</label>
                                                 <select id="company" name="company">
@@ -218,7 +218,7 @@
                                     </div>
                                     <div class="form-group">
                                         <label for="note">Ghi chú</label>
-                                        <textarea id="note" name="note" placeholder="Enter any additional notes" rows="4">${expenditure.note}</textarea>
+                                        <textarea id="note" name="note" placeholder="Thêm note" rows="4">${expenditure.note}</textarea>
                                     </div>
                                     <div class="form-button">
                                         <button type="submit">Thêm</button>
