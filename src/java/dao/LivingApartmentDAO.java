@@ -134,19 +134,29 @@ public class LivingApartmentDAO extends DBContext {
     }
 
     public String generateID() {
-        String sql = "select id from LivingAparment";
+        String sql = "SELECT id FROM LivingAparment";
         List<Integer> list = new ArrayList<>();
+
         try {
             PreparedStatement ps = connection.prepareStatement(sql);
             ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                list.add(Integer.parseInt(rs.getString(1)));
-            }
-            return (Collections.max(list) + 1) + "";
-        } catch (SQLException ex) {
 
+            while (rs.next()) {
+                String idStr = rs.getString(1);
+                if (idStr != null && !idStr.isEmpty()) {
+                    list.add(Integer.parseInt(idStr));
+                }
+            }
+
+            // If no records exist, start from 1
+            int newID = list.isEmpty() ? 1 : Collections.max(list) + 1;
+
+            return String.valueOf(newID);
+        } catch (SQLException ex) {
+            ex.printStackTrace(); // Print error for debugging
         }
-        return null;
+
+        return null; // Return null if there's an error
     }
 
     public String getLivingResidentName(String aid) {
@@ -223,54 +233,54 @@ public class LivingApartmentDAO extends DBContext {
         }
         return false;
     }
+
     public boolean insertMultipleLivingApartments(List<String> residentIds, List<String> apartmentIds, String startDate) {
-    String sql = "INSERT INTO LivingAparment(id, rid, aid, Startdate, Enddate, status) VALUES (?, ?, ?, ?, ?, 1)";
-    
-    try {
-        connection.setAutoCommit(false); // Start transaction
-        PreparedStatement ps = connection.prepareStatement(sql);
+        String sql = "INSERT INTO LivingAparment(id, rid, aid, Startdate, Enddate, status) VALUES (?, ?, ?, ?, ?, 1)";
 
-        if (residentIds.size() != apartmentIds.size()) {
-            throw new IllegalArgumentException("Mismatch between resident IDs and apartment IDs count.");
-        }
+        try {
+            connection.setAutoCommit(false); // Start transaction
+            PreparedStatement ps = connection.prepareStatement(sql);
 
-        for (int i = 0; i < residentIds.size(); i++) {
-            ps.setString(1, generateID()); // Assuming generateID() creates a unique ID
-            ps.setString(2, residentIds.get(i));
-            ps.setString(3, apartmentIds.get(i));
-            ps.setString(4, startDate);
-            ps.setNull(5, java.sql.Types.VARCHAR); // Enddate is null
-            ps.addBatch(); // Add to batch
-        }
+            if (residentIds.size() != apartmentIds.size()) {
+                throw new IllegalArgumentException("Mismatch between resident IDs and apartment IDs count.");
+            }
 
-        int[] results = ps.executeBatch(); // Execute all insertions
-        connection.commit(); // Commit transaction
+            for (int i = 0; i < residentIds.size(); i++) {
+                ps.setString(1, generateID()); // Assuming generateID() creates a unique ID
+                ps.setString(2, residentIds.get(i));
+                ps.setString(3, apartmentIds.get(i));
+                ps.setString(4, startDate);
+                ps.setNull(5, java.sql.Types.VARCHAR); // Enddate is null
+                ps.addBatch(); // Add to batch
+            }
 
-        // Check if all insertions were successful
-        for (int result : results) {
-            if (result <= 0) {
-                throw new SQLException("One or more insertions failed.");
+            int[] results = ps.executeBatch(); // Execute all insertions
+            connection.commit(); // Commit transaction
+
+            // Check if all insertions were successful
+            for (int result : results) {
+                if (result <= 0) {
+                    throw new SQLException("One or more insertions failed.");
+                }
+            }
+            return true;
+
+        } catch (SQLException | IllegalArgumentException e) {
+            e.printStackTrace();
+            try {
+                connection.rollback(); // Rollback on error
+            } catch (SQLException rollbackEx) {
+                rollbackEx.printStackTrace();
+            }
+            return false;
+        } finally {
+            try {
+                connection.setAutoCommit(true); // Reset auto-commit
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         }
-        return true;
-
-    } catch (SQLException | IllegalArgumentException e) {
-        e.printStackTrace();
-        try {
-            connection.rollback(); // Rollback on error
-        } catch (SQLException rollbackEx) {
-            rollbackEx.printStackTrace();
-        }
-        return false;
-    } finally {
-        try {
-            connection.setAutoCommit(true); // Reset auto-commit
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
-}
-    
 
     public int getNumberOfLivingPerson(String aid) {
         String sql = "select count (*) as nop from LivingAparment where aId = ? and status  = 1";
@@ -318,6 +328,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
+
     public List<Apartment> getLivingApartmentsByResidentId(String id) {
         ApartmentDAO ad = new ApartmentDAO();
         List<Apartment> list = new ArrayList<>();
@@ -334,6 +345,7 @@ public class LivingApartmentDAO extends DBContext {
         }
         return list;
     }
+
     public List<String> getAllActiveApartment() {
         String sql = "select distinct(aid) as aid from LivingAparment where status =1";
         List<String> list = new ArrayList<>();
@@ -555,6 +567,7 @@ public class LivingApartmentDAO extends DBContext {
         LivingApartmentDAO dao = new LivingApartmentDAO();
         ResidentDAO daoR = new ResidentDAO();
 //        System.out.println(dao.getApartmentsByResidentId("P134"));
-        System.out.println(dao.getNumberLivingByTime(2, 2025));
+//        System.out.println(dao.getNumberLivingByTime(2, 2025));
+        System.out.println(dao.generateID());
     }
 }

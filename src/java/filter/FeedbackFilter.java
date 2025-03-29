@@ -20,7 +20,7 @@ import model.Account;
  *
  * @author Lenovo
  */
-@WebFilter(filterName = "FeedbackFilter", urlPatterns = {"/update-feed-back", "/filterfeedback", "/sendfeedback", "/view-all-feedback", "/view-feed-back-user", "/deletefeedback", "/request-update-feedback"})
+@WebFilter(filterName = "FeedbackFilter", urlPatterns = {"/update-feed-back", "/filterfeedback", "/sendfeedback", "/view-feed-back-user", "/deletefeedback"})
 public class FeedbackFilter implements Filter {
 
     private static final boolean debug = true;
@@ -111,17 +111,10 @@ public class FeedbackFilter implements Filter {
 
         Account a = (session != null) ? (Account) session.getAttribute("account") : null;
         String uri = req.getServletPath();
-        if (uri.contains("request-update-feedback")) {
-            if (a.getRoleId() != 2) {
-                res.sendRedirect("404_error.jsp");
-            }
-        }
-        if (uri.contains("update-feed-back") || uri.contains("sendfeedback") || uri.contains("view-feed-back-user") || uri.contains("filterfeedback") || uri.contains("deletefeedback")) {
-            if (a.getRoleId() == 1 || a.getRoleId() == 6) {
-                chain.doFilter(request, response);
-            } else {
-                res.sendRedirect("404_error.jsp");
-            }
+
+        if (a.getRoleId() != 1 && a.getRoleId() != 6) {
+            res.sendRedirect("404_error.jsp");
+
         }
         Throwable problem = null;
         try {

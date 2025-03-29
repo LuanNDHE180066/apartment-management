@@ -486,7 +486,7 @@
 
                 $("#username").on("input", function () {
                     if ($(this).val().includes(" ")) {
-                        $("#username-error").text("User name không được để trống.");
+                        $("#username-error").text("User name không được có khoảng trống.");
                     } else {
                         checkDuplicate("username", $(this).val(), "#username-error");
                     }

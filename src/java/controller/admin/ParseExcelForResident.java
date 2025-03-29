@@ -69,7 +69,7 @@ public class ParseExcelForResident extends HttpServlet {
                 int rowNum = residents.indexOf(r) + 2;
                 if (r.getName() == null || r.getName().trim().isEmpty()) {
                     errors.add("Row " + rowNum + ": Name is required.");
-                } else if (!r.getName().matches("^[a-zA-Z\\s]+$")) {
+                } else if (!r.getName().matches("^[\\p{L}\\s]+$")) {
                     errors.add("Row " + rowNum + ": Name must contain only letters and spaces.");
                 }
                 if (r.getBod() == null || r.getBod().trim().isEmpty()) {
@@ -133,17 +133,19 @@ public class ParseExcelForResident extends HttpServlet {
             return "";
         }
         switch (cell.getCellType()) {
-           case STRING:
+            case STRING:
                 return cell.getStringCellValue().trim();
             case NUMERIC:
                 if (DateUtil.isCellDateFormatted(cell)) {
                     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
                     return dateFormat.format(cell.getDateCellValue());
                 } else {
-                    return String.valueOf((long) cell.getNumericCellValue());
+                    return String.valueOf(cell.getNumericCellValue()); // Avoid type conversion issues
                 }
             case BOOLEAN:
                 return String.valueOf(cell.getBooleanCellValue());
+            case FORMULA:
+                return String.valueOf(cell.getStringCellValue()); // Handle formula cells
             default:
                 return "";
         }
