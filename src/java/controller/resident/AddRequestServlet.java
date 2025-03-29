@@ -102,14 +102,14 @@ public class AddRequestServlet extends HttpServlet {
         String typeRequestId = request.getParameter("typeRequest");
         String aid = request.getParameter("aparment");
         if(detail.isBlank()){
-            request.setAttribute("message","Content is not allow blank");
+            request.setAttribute("message","Nội dung không được để trống!");
             doGet(request, response);
             return;
         }
         String realPath = getServletContext().getRealPath("/asset/badwords.txt");
         BadWordFilter bwf = new BadWordFilter(realPath);
         if (bwf.containsBadWord(detail.toLowerCase())) {
-            request.setAttribute("message", "Your request detail must not contain bad words!");
+            request.setAttribute("message", "Nội dung không được sử dụng từ có tính công kích!");
             doGet(request, response);
             return;
         }
@@ -123,7 +123,7 @@ public class AddRequestServlet extends HttpServlet {
         List<Staff> staffs = sd.getActiveStaffbyRole("2");
         email.sendEmailToWorkingStaff(staffs,detail,"phòng "+aid,rs.getName());
         request.setAttribute("status", true);
-        request.setAttribute("message","Add new request successful.");
+        request.setAttribute("message","Thêm yêu cầu thành công!");
         doGet(request, response);
     }
 

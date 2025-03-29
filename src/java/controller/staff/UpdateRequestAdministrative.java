@@ -69,7 +69,7 @@ public class UpdateRequestAdministrative extends HttpServlet {
         }
 
         SendEmail sendEmail = new SendEmail();
-        sendEmail.sendEmailDeclineRequestToResident(rd.getById(requestId).getResidentId(), "Your request has been declined", "We can not solve your problem! Thank you and farewell");
+        sendEmail.sendEmailDeclineRequestToResident(rd.getById(requestId).getResidentId(), "Yêu cầu của bạn đã bị từ chối!", "Chúng tôi không thể giải quyết vấn đề của bạn! Cảm ơn đã quan tâm.");
         rd.declineRequestWithoutMessageById(requestId);
         request.getRequestDispatcher("view-all-request").forward(request, response);
     }

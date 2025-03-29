@@ -72,12 +72,12 @@ public class LoginServlet extends HttpServlet {
         AccountDAO dao = new AccountDAO();
         Account ac = dao.getAccountByUsernameandRole(user, role);
         if (user.isEmpty() || pass.isEmpty()) {
-            request.setAttribute("error", "Username or Password is not allowed to be blank");
+            request.setAttribute("error", "Tài khoản và mật khẩu không được để trống!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
         if (ac == null) {
-            request.setAttribute("error", "Username or Password is incorrect");
+            request.setAttribute("error", "Tài khoản hoặc mật khẩu sai!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
             return;
         }
@@ -120,7 +120,7 @@ public class LoginServlet extends HttpServlet {
             }
         } else {
 
-            request.setAttribute("error", "Username or Password is incorrect");
+            request.setAttribute("error", "Tài khoản hoặc mật khẩu sai!");
             request.getRequestDispatcher("login.jsp").forward(request, response);
         }
         //Lấy thông tin hiển thị ở index
