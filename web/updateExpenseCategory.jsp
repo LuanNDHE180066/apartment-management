@@ -5,41 +5,28 @@
 --%>
 
 <!DOCTYPE html>
-<%@taglib
-    prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-    <html lang="en">
-        <head>
-            <!-- basic -->
-            <meta charset="utf-8" />
-            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-            <!-- mobile metas -->
-            <meta name="viewport" content="width=device-width, initial-scale=1" />
-            <meta name="viewport" content="initial-scale=1, maximum-scale=1" />
-            <!-- site metas -->
-            <title>Apartment management</title>            <link rel="icon" href="images/fevicon.png" type="image/png" />
-            <!-- bootstrap css -->
-            <link rel="stylesheet" href="css/bootstrap.min.css" />
-            <!-- site css -->
-            <link rel="stylesheet" href="style.css" />
-            <!-- responsive css -->
-            <link rel="stylesheet" href="css/responsive.css" />
-            <!-- color css -->
-            <link rel="stylesheet" href="css/colors.css" />
-            <!-- select bootstrap -->
-            <link rel="stylesheet" href="css/bootstrap-select.css" />
-            <!-- scrollbar css -->
-            <link rel="stylesheet" href="css/perfect-scrollbar.css" />
-            <!-- custom css -->
-            <link rel="stylesheet" href="css/custom.css" />
-            <!-- calendar file css -->
-            <link rel="stylesheet" href="js/semantic.min.css" />
-            <!-- fancy box js -->
-            <link rel="stylesheet" href="css/jquery.fancybox.css" />
-            <!--[if lt IE 9]>
-              <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-              <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-            <![endif]-->
-            <style>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
+<%@taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <!-- basic -->
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <!-- mobile metas -->
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <!-- site metas -->
+        <title>Quản lý khoản chi</title>
+        <link rel="icon" href="images/fevicon.png" type="image/png" />
+        <!-- bootstrap css -->
+        <link rel="stylesheet" href="css/bootstrap.min.css" />
+        <!-- custom css -->
+        <style>
+            .table th, .table td {
+                border: 1px solid rgba(0, 0, 0, 0.2);
+                text-align: center;
+            }
                 body {
                     font-family: Arial, sans-serif;
                     background-color: #f4f4f9;
@@ -137,12 +124,12 @@
                         <div class="midde_cont">
                             <div class="container-fluid">
                                 <div class="form-container">
-                                    <h1>Update Expense Category</h1>
+                                    <h1>Chỉnh sửa các loại phí</h1>
                                     <form action="update-expense-category" method="post">
                                         
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="name">Category Name</label>
+                                                <label for="name">Tên loại phí:</label>
                                                 <input
                                                     type="text"
                                                     id="name"
@@ -157,7 +144,7 @@
                                                 <input type="text" value="${expenseCategory.id}" name="id" hidden=""><!-- comment -->
                                         <div class="form-group">
                                             <div class="one-col" style="padding: 0; margin-right: 5px">
-                                                <label for="name">Category Description</label>
+                                                <label for="name">Mô tả</label>
                                                 <input
                                                     type="text"
                                                     id="categoryDescription"
@@ -181,7 +168,8 @@
                                         </div>
 
                                         <div class="form-button">
-                                            <button type="submit">Update</button>
+                                            <button type="submit">Lưu</button>
+                                            <div><a href="view-expense-category">Quay lại</a><!-- comment --></div>
                                             <h5 style="color:${status=="true"?"green":"red"};text-align:center ">${requestScope.message}</h5>
                                         </div>
                                     </form>

@@ -114,7 +114,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             Resident newRe = reDAO.getById(newResidentId);
             if (newRe == null) {
                 request.setAttribute("status", "false");
-                request.setAttribute("message", "Resident ID is not exist");
+                request.setAttribute("message", "ID cư dân không tồn tại");
                 request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                 return;
             }
@@ -174,23 +174,23 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
             Resident re1 = reDAO.getResidentById(id);
             if (!reDAO.getByCCCD(id)) {
                 if (!phone.matches("\\d{10}")) {
-                    request.setAttribute("message", "Phone number must be exactly 10 digits.");
+                    request.setAttribute("message", "Số điện thoại phải đúng 10 chữ số.");
                     request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                     return;
                 }
                 if (!id.matches("\\d{12}")) {
-                    request.setAttribute("message", "ID must be exactly 12 digits.");
+                    request.setAttribute("message", "CCCD phải 12 chữ số.");
                     request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                     return;
                 }
 
                 if (reDAO.checkDuplicatePhone(phone, re1.getpId())) {
-                    request.setAttribute("message", "Phone is existed.");
+                    request.setAttribute("message", "Số điện thoại đã tồn tại.");
                     request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                     return;
                 }
                 if (reDAO.checkDuplicateEmail(email, re1.getpId())) {
-                    request.setAttribute("message", "Email is existed..");
+                    request.setAttribute("message", "Email đã tồn tại.");
                     request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                     return;
                 }
@@ -198,7 +198,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
 
             if (!changeResident.equals("living")) {
                 if (reDAO.checkDuplicateUser(username, re1.getpId())) {
-                    request.setAttribute("message", "Username is existed.");
+                    request.setAttribute("message", "Username đã tồn tại.");
                     request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
                     return;
                 }
@@ -273,7 +273,7 @@ public class RegisterNewLivingOrOwnerResident extends HttpServlet {
         SendEmail send = new SendEmail();
         send.sendEmailToWorkingAdmin(listAdmin, emailContent);
         request.setAttribute("status", "true");
-        request.setAttribute("message", "Add request successful");
+        request.setAttribute("message", "Thêm yêu cầu thành công.");
         request.getRequestDispatcher("registerNewLivingOrOwnerResident.jsp").forward(request, response);
 
     }

@@ -117,11 +117,11 @@
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-all-contract"><i class="fa-solid fa-book"></i><span>View contract</span></a>
                     </li>
-                    <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
+<!--                    <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
                         <a  href="view-expenditure"><i class="fa fa-money-bill"></i><span>Khoản chi</span></a>
-                    </li>
+                    </li>-->
                     <li class="${(sessionScope.account.roleId != 0 && sessionScope.account.roleId != 3) ? 'display-none':''}">
-                        <a  href="expenditure-report"><i class="fa fa-money-bill"></i><span>Khoản chi 2</span></a>
+                        <a  href="expenditure-report"><i class="fa fa-money-bill"></i><span>Khoản chi</span></a>
                     </li>
                     <li class="${sessionScope.account.roleId != 0? 'display-none':''}">
                         <a  href="dashboard-resident"><i class="fa fa-dashboard"></i><span>Dash Board Resident</span></a>
